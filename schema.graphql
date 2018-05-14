@@ -1,0 +1,27 @@
+type Account {
+  id: String!
+  balance: Int!
+  seqnum: Int!
+  numsubentries: Int!
+  inflationdest: String
+  homedomain: String
+  thresholds: String
+  flags: Int!
+  lastmodified: Int!
+  trustlines: [Trustline]
+}
+
+type Trustline {
+  assettype: Int!
+  issuer: String!
+  assetcode: String!
+  tlimit: Int!
+  balance: Int!
+  flags: Int!
+  lastmodified: Int!
+}
+
+type Query {
+  Account(id: String): Account
+  Accounts(limit: Int, skip: Int, order: String): [Account]
+}
