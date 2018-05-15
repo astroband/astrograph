@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 	"net/http"
 
 	"github.com/vektah/gqlgen/handler"
@@ -9,10 +10,28 @@ import (
 	"github.com/mobius-network/stellar-graphql-server/config"
 )
 
+var app = &graph.App{}
+
+func simulateAccountActivity() {
+  for {
+    time.Sleep(2 * time.Second)
+		ch := app.Channels["TEST"]
+		if (ch != nil) {
+			a := graph.Account{
+				ID: "TEST",
+				Balance: int(time.Now().UTC().Unix()),
+			}
+			ch <- a
+			log.Println("Tick...")
+		}
+  }
+}
+
 func main() {
-	app := &graph.App{}
 	http.Handle("/", handler.Playground("Todo", "/query"))
 	http.Handle("/query", handler.GraphQL(graph.MakeExecutableSchema(app)))
+
+	go simulateAccountActivity();
 
 	log.Println("Stellar GraphQL Server")
 	log.Println("Listening on", config.BindAndPort)

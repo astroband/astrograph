@@ -22,7 +22,7 @@ type Resolvers interface {
 	Query_Account(ctx context.Context, id *string) (*Account, error)
 	Query_Accounts(ctx context.Context, limit *int, skip *int, order *string) ([]Account, error)
 
-	Subscription_accountChanged(ctx context.Context) (<-chan Account, error)
+	Subscription_accountChanged(ctx context.Context, id string) (<-chan Account, error)
 }
 
 type executableSchema struct {
@@ -503,8 +503,19 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel []query.Selec
 }
 
 func (ec *executionContext) _Subscription_accountChanged(ctx context.Context, field graphql.CollectedField) func() graphql.Marshaler {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := field.Args["id"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return nil
+		}
+	}
+	args["id"] = arg0
 	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{Field: field})
-	results, err := ec.resolvers.Subscription_accountChanged(ctx)
+	results, err := ec.resolvers.Subscription_accountChanged(ctx, args["id"].(string))
 	if err != nil {
 		ec.Error(ctx, err)
 		return nil
@@ -1394,16 +1405,11 @@ type Trustline {
 }
 
 type Subscription {
-  accountChanged: Account!
+  accountChanged(id: String!): Account!
 }
 
 type Query {
   Account(id: String): Account
   Accounts(limit: Int, skip: Int, order: String): [Account]
-}
-
-schema {
-  query: Query
-  subscription: Subscription
 }
 `)
