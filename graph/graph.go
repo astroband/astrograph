@@ -40,7 +40,5 @@ func (a *App) Subscription_accountChanged(ctx context.Context, id string) (<-cha
 		a.mu.Unlock()
 	}()
 
-	fmt.Println("Sending", id)
-
 	return ch, nil
 }

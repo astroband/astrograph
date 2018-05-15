@@ -7,7 +7,7 @@ class App extends Component {
 
         this.state = {
             name: 'tester',
-            channel: '#gophers',
+            channel: 'TEST',
         }
     }
     render() {

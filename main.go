@@ -5,12 +5,17 @@ import (
 	"time"
 	"net/http"
 
+	"github.com/gorilla/websocket"
+	gqlopentracing "github.com/vektah/gqlgen/opentracing"
+
 	"github.com/vektah/gqlgen/handler"
 	"github.com/mobius-network/stellar-graphql-server/graph"
 	"github.com/mobius-network/stellar-graphql-server/config"
 )
 
-var app = &graph.App{}
+var app = &graph.App{
+	Channels: make(map[string]chan graph.Account),
+}
 
 func simulateAccountActivity() {
   for {
@@ -29,13 +34,22 @@ func simulateAccountActivity() {
 
 func main() {
 	http.Handle("/", handler.Playground("Todo", "/query"))
-	http.Handle("/query", handler.GraphQL(graph.MakeExecutableSchema(app)))
+	http.Handle("/query", handler.GraphQL(graph.MakeExecutableSchema(app),
+		handler.ResolverMiddleware(gqlopentracing.ResolverMiddleware()),
+		handler.RequestMiddleware(gqlopentracing.RequestMiddleware()),
+		handler.WebsocketUpgrader(websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
+		})),
+	)
 
 	go simulateAccountActivity();
 
 	log.Println("Stellar GraphQL Server")
 	log.Println("Listening on", config.BindAndPort)
 	log.Fatal(http.ListenAndServe(config.BindAndPort, nil))
+
 }
 
 // package main

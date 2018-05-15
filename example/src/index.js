@@ -7,7 +7,7 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
 
-const client = new SubscriptionClient('ws://localhost:8085/query', {
+const client = new SubscriptionClient('ws://localhost:8000/query', {
     reconnect: true,
 });
 

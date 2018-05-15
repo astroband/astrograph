@@ -14,16 +14,34 @@
   revision = "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a"
 
 [[projects]]
+  branch = "master"
   name = "github.com/gorilla/websocket"
   packages = ["."]
-  revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
-  version = "v1.2.0"
+  revision = "21ab95fa12b9bdd8fecf5fa3586aad941cc98785"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/lib/pq"
+  packages = [".","oid"]
+  revision = "d34b9ff171c21ad295489235aec8b6626023cd04"
+
+[[projects]]
+  name = "github.com/opentracing/opentracing-go"
+  packages = [".","ext","log"]
+  revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
+  version = "v1.0.2"
 
 [[projects]]
   branch = "master"
   name = "github.com/vektah/gqlgen"
-  packages = ["graphql","handler","neelance/common","neelance/errors","neelance/introspection","neelance/query","neelance/schema","neelance/validation"]
+  packages = ["example/chat","graphql","handler","neelance/common","neelance/errors","neelance/introspection","neelance/query","neelance/schema","neelance/validation","opentracing"]
   revision = "e1fd79fed15f60c47471d901c8250ab56aff1c55"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "2491c5de3490fced2f6cff376127c667efeed857"
 
 [[projects]]
   name = "gopkg.in/alecthomas/kingpin.v2"
@@ -34,6 +52,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "59fa43856c41343bb9501326b1ebdc0e22e64c94ad2258142b070acbe9cfb4bb"
+  inputs-digest = "6de7385e9179157e37b8d7ad871edecc88972e13b92bf69ae15f990c35f6b4ac"
   solver-name = "gps-cdcl"
   solver-version = 1
