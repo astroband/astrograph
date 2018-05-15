@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/vektah/gqlgen/handler"
-	"github.com/mobius-network/mobius-stellar-notifications/graph"
-	"github.com/mobius-network/mobius-stellar-notifications/config"
+	"github.com/mobius-network/stellar-graphql-server/graph"
+	"github.com/mobius-network/stellar-graphql-server/config"
 )
 
 func main() {
