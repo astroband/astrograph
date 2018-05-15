@@ -21,6 +21,8 @@ type Resolvers interface {
 	Account_trustlines(ctx context.Context, obj *Account) ([]Trustline, error)
 	Query_Account(ctx context.Context, id *string) (*Account, error)
 	Query_Accounts(ctx context.Context, limit *int, skip *int, order *string) ([]Account, error)
+
+	Subscription_accountChanged(ctx context.Context) (<-chan Account, error)
 }
 
 type executableSchema struct {
@@ -52,7 +54,31 @@ func (e *executableSchema) Mutation(ctx context.Context, op *query.Operation) *g
 }
 
 func (e *executableSchema) Subscription(ctx context.Context, op *query.Operation) func() *graphql.Response {
-	return graphql.OneShot(graphql.ErrorResponse(ctx, "subscriptions are not supported"))
+	ec := executionContext{graphql.GetRequestContext(ctx), e.resolvers}
+
+	next := ec._Subscription(ctx, op.Selections)
+	if ec.Errors != nil {
+		return graphql.OneShot(&graphql.Response{Data: []byte("null"), Errors: ec.Errors})
+	}
+
+	var buf bytes.Buffer
+	return func() *graphql.Response {
+		buf := ec.RequestMiddleware(ctx, func(ctx context.Context) []byte {
+			buf.Reset()
+			data := next()
+
+			if data == nil {
+				return nil
+			}
+			data.MarshalGQL(&buf)
+			return buf.Bytes()
+		})
+
+		return &graphql.Response{
+			Data:   buf,
+			Errors: ec.Errors,
+		}
+	}
 }
 
 type executionContext struct {
@@ -453,6 +479,45 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	return ec.___Type(ctx, field.Selections, res)
+}
+
+var subscriptionImplementors = []string{"Subscription"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _Subscription(ctx context.Context, sel []query.Selection) func() graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, subscriptionImplementors, ec.Variables)
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Subscription",
+	})
+	if len(fields) != 1 {
+		ec.Errorf(ctx, "must subscribe to exactly one stream")
+		return nil
+	}
+
+	switch fields[0].Name {
+	case "accountChanged":
+		return ec._Subscription_accountChanged(ctx, fields[0])
+	default:
+		panic("unknown field " + strconv.Quote(fields[0].Name))
+	}
+}
+
+func (ec *executionContext) _Subscription_accountChanged(ctx context.Context, field graphql.CollectedField) func() graphql.Marshaler {
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{Field: field})
+	results, err := ec.resolvers.Subscription_accountChanged(ctx)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-results
+		if !ok {
+			return nil
+		}
+		var out graphql.OrderedMap
+		out.Add(field.Alias, func() graphql.Marshaler { return ec._Account(ctx, field.Selections, &res) }())
+		return &out
+	}
 }
 
 var trustlineImplementors = []string{"Trustline"}
@@ -1328,8 +1393,17 @@ type Trustline {
   lastmodified: Int!
 }
 
+type Subscription {
+  accountChanged: Account!
+}
+
 type Query {
   Account(id: String): Account
   Accounts(limit: Int, skip: Int, order: String): [Account]
+}
+
+schema {
+  query: Query
+  subscription: Subscription
 }
 `)

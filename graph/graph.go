@@ -19,3 +19,8 @@ func (a *App)	Query_Accounts(ctx context.Context, limit *int, skip *int, order *
 func (a *App) Account_trustlines(ctx context.Context, obj *Account) ([]Trustline, error) {
   return nil, nil
 }
+
+func (a *App) Subscription_accountChanged(context.Context) (<-chan Account, error) {
+	accounts := make(chan Account, 1)
+	return accounts, nil
+}

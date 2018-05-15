@@ -21,7 +21,16 @@ type Trustline {
   lastmodified: Int!
 }
 
+type Subscription {
+  accountChanged: Account!
+}
+
 type Query {
   Account(id: String): Account
   Accounts(limit: Int, skip: Int, order: String): [Account]
+}
+
+schema {
+  query: Query
+  subscription: Subscription
 }
