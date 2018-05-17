@@ -1,3 +1,4 @@
 vendor
 stellar-graphql-server
 example/node_modules
+yarn-error.log

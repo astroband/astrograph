@@ -18,6 +18,7 @@ class Room extends Component {
             updateQuery: (prev, {subscriptionData}) => {
                 if (!subscriptionData.data) { return prev; }
                 const newAccount = subscriptionData.data.accountChanged;
+                console.log("C1");
                 this.setState(
                   { balances: [...this.state.balances, newAccount.balance] }
                 );

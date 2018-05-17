@@ -1,15 +1,15 @@
 package graph
 
 import (
-	"fmt"
 	"sync"
 	"context"
+	"fmt"
 )
 
 type App struct {
-	accounts []Account
-	Channels map[string]chan Account
-	mu       sync.Mutex
+	AccountChannels map[string]chan Account
+	AccountCounters map[string]uint64
+	mu       		    sync.Mutex
 }
 
 func (a *App) Query_Account(ctx context.Context, id *string) (*Account, error) {
@@ -26,17 +26,25 @@ func (a *App) Account_trustlines(ctx context.Context, obj *Account) ([]Trustline
 
 func (a *App) Subscription_accountChanged(ctx context.Context, id string) (<-chan Account, error) {
 	a.mu.Lock()
-	ch := a.Channels[id]
+	ch := a.AccountChannels[id]
+	fmt.Println("Searching for", id, "...")
 	if ch == nil {
+		fmt.Println("Creating", id, "...")
 		ch = make(chan Account, 1)
-		a.Channels[id] = ch
+		a.AccountCounters[id] = 1
+		a.AccountChannels[id] = ch
 	}
 	a.mu.Unlock()
 
 	go func() {
 		<-ctx.Done()
+		fmt.Println(id, "done")
 		a.mu.Lock()
-		delete(a.Channels, id)
+		a.AccountCounters[id]--
+		fmt.Println("Counter", a.AccountCounters[id])
+		if (a.AccountCounters[id] <= 0) {
+			delete(a.AccountChannels, id)
+		}
 		a.mu.Unlock()
 	}()
 

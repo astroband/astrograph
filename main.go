@@ -13,21 +13,23 @@ import (
 	"github.com/mobius-network/stellar-graphql-server/config"
 )
 
-var app = &graph.App{
-	Channels: make(map[string]chan graph.Account),
+var app = &graph.App{}
+
+func init() {
+	app.AccountChannels = make(map[string]chan graph.Account)
+	app.AccountCounters = make(map[string]uint64)
 }
 
 func simulateAccountActivity() {
   for {
     time.Sleep(2 * time.Second)
-		ch := app.Channels["TEST"]
+		ch := app.AccountChannels["TEST"]
 		if (ch != nil) {
 			a := graph.Account{
 				ID: "TEST",
 				Balance: int(time.Now().UTC().Unix()),
 			}
 			ch <- a
-			log.Println("Tick...")
 		}
   }
 }
