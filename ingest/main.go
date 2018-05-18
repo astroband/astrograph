@@ -2,6 +2,7 @@ package ingest
 
 import (
   "log"
+  "sort"
   "database/sql"
 //  "github.com/mobius-network/stellar-graphql-server/graph"
   "github.com/mobius-network/stellar-graphql-server/config"
@@ -30,7 +31,6 @@ func (c *Core) FetchMaxLedger() (uint64) {
 }
 
 func (c *Core) checkLedger() (bool) {
-  // Check that current ledger exists and populated
   row := config.Db.QueryRow("SELECT ledgerseq FROM ledgerheaders WHERE ledgerseq = $1", c.LedgerSeq)
   err := row.Scan(&c.LedgerSeq)
 
@@ -45,11 +45,11 @@ func (c *Core) checkLedger() (bool) {
   return true
 }
 
-func (c *Core) loadUpdatedAccounts() ([]string) {
+func (c *Core) loadUpdated(tableName string) ([]string) {
   var a []string = make([]string, 0)
   var id string
 
-  rows, err := config.Db.Query("SELECT accountid FROM accounts WHERE lastmodified = $1", c.LedgerSeq)
+  rows, err := config.Db.Query("SELECT accountid FROM " + tableName + " WHERE lastmodified = $1", c.LedgerSeq)
   if (err != nil) {
     log.Fatal(err)
   }
@@ -69,7 +69,7 @@ func (c *Core) Pull() {
 
   if (!c.checkLedger()) { return }
 
-  id := c.loadUpdatedAccounts()
+  id := append(c.loadUpdated("accounts"), c.loadUpdated("trustlines")...)
   log.Println(id)
 
   c.LedgerSeq += 1

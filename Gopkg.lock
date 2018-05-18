@@ -34,7 +34,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/vektah/gqlgen"
-  packages = ["example/chat","graphql","handler","neelance/common","neelance/errors","neelance/introspection","neelance/query","neelance/schema","neelance/validation","opentracing"]
+  packages = ["graphql","handler","neelance/common","neelance/errors","neelance/introspection","neelance/query","neelance/schema","neelance/validation","opentracing"]
   revision = "e1fd79fed15f60c47471d901c8250ab56aff1c55"
 
 [[projects]]
@@ -52,6 +52,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6de7385e9179157e37b8d7ad871edecc88972e13b92bf69ae15f990c35f6b4ac"
+  inputs-digest = "492353a03e770b884db36d26a47488b4c46facc4888bba2bfa605085b0972ceb"
   solver-name = "gps-cdcl"
   solver-version = 1

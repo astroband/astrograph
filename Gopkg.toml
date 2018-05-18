@@ -30,5 +30,5 @@
   name = "github.com/gorilla/websocket"
 
 [[constraint]]
-  version="2.2.6"
-  name="gopkg.in/alecthomas/kingpin.v2"
+  version = "2.2.6"
+  name = "gopkg.in/alecthomas/kingpin.v2"
