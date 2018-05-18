@@ -2,9 +2,9 @@ package ingest
 
 import (
   "log"
-  "sort"
   "database/sql"
 //  "github.com/mobius-network/stellar-graphql-server/graph"
+  "github.com/mobius-network/stellar-graphql-server/util"
   "github.com/mobius-network/stellar-graphql-server/config"
 )
 
@@ -45,7 +45,7 @@ func (c *Core) checkLedger() (bool) {
   return true
 }
 
-func (c *Core) loadUpdated(tableName string) ([]string) {
+func (c *Core) loadUpdatedAccounts(tableName string) ([]string) {
   var a []string = make([]string, 0)
   var id string
 
@@ -68,10 +68,8 @@ func (c *Core) Pull() {
   log.Printf("Ingesting ledger %v", c.LedgerSeq)
 
   if (!c.checkLedger()) { return }
-
-  id := append(c.loadUpdated("accounts"), c.loadUpdated("trustlines")...)
-  log.Println(id)
+  id := append(c.loadUpdatedAccounts("accounts"), c.loadUpdatedAccounts("trustlines")...)
+  id = util.UniqueStringSlice(id)
 
   c.LedgerSeq += 1
-  //rows := config.Db.QueryRows("SELECT * FROM accounts WHERE lastmodified = ?", c.LedgerSeq)
 }
