@@ -63,7 +63,7 @@ func main() {
 
 	log.Println("Stellar GraphQL Server")
 	log.Println("Listening on", config.BindAndPort)
-	log.Println("Current ledger sequence number + 1 = ", core.LedgerSeq)
+	log.Println("Current ledger sequence number:", core.LedgerSeq)
 	log.Println("Ingest every", *config.IngestTimeout, "seconds")
 	log.Fatal(http.ListenAndServe(config.BindAndPort, nil))
 }
