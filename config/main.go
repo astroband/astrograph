@@ -13,11 +13,12 @@ const version string = "0.0.1"
 var (
   BindAndPort string
   DatabaseDriver string
-  Database *sql.DB
+  Db *sql.DB
 
   Port = kingpin.Flag("port", "HTTP port to bind").Default("8000").Int()
   Bind = kingpin.Flag("bind", "HTTP address to bind").Default("127.0.0.1").IP()
   DatabaseUrl = kingpin.Flag("database-url", "Stellar Core database URL").Required().URL()
+  IngestTimeout = kingpin.Flag("ingest-timeout", "Ingest frequency").Default("2").Int()
 )
 
 func init() {
@@ -33,5 +34,5 @@ func init() {
   err = db.Ping();
   if err != nil { log.Fatal(err) }
 
-  Database = db
+  Db = db
 }

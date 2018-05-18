@@ -25,23 +25,23 @@ func init() {
 	core = ingest.NewCore()
 }
 
-func simulateAccountActivity() {
-  for {
-    time.Sleep(2 * time.Second)
-		ch := app.AccountChannels["TEST"]
-		if (ch != nil) {
-			a := graph.Account{
-				ID: "TEST",
-				Balance: int(time.Now().UTC().Unix()),
-			}
-			ch <- a
-		}
-  }
-}
+// func simulateAccountActivity() {
+//   for {
+//     time.Sleep(2 * time.Second)
+// 		ch := app.AccountChannels["TEST"]
+// 		if (ch != nil) {
+// 			a := graph.Account{
+// 				ID: "TEST",
+// 				Balance: int(time.Now().UTC().Unix()),
+// 			}
+// 			ch <- a
+// 		}
+//   }
+// }
 
 func main() {
-	defer config.Database.Close()
-	
+	defer config.Db.Close()
+
 	http.Handle("/", handler.Playground("Todo", "/query"))
 	http.Handle("/query", handler.GraphQL(graph.MakeExecutableSchema(app),
 		handler.ResolverMiddleware(gqlopentracing.ResolverMiddleware()),
@@ -53,13 +53,22 @@ func main() {
 		})),
 	)
 
-	go simulateAccountActivity();
+	ticker := time.NewTicker(time.Second * time.Duration(*config.IngestTimeout))
+
+	go func() {
+		for _ = range ticker.C {
+			core.Pull()
+		}
+	}()
 
 	log.Println("Stellar GraphQL Server")
 	log.Println("Listening on", config.BindAndPort)
-	log.Println("Ledger sequence number", core.LedgerSeq)
+	log.Println("Current ledger sequence number + 1 = ", core.LedgerSeq)
+	log.Println("Ingest every", *config.IngestTimeout, "seconds")
 	log.Fatal(http.ListenAndServe(config.BindAndPort, nil))
 }
+
+// go simulateAccountActivity();
 
 // package main
 //
