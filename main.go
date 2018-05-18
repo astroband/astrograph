@@ -11,13 +11,18 @@ import (
 	"github.com/vektah/gqlgen/handler"
 	"github.com/mobius-network/stellar-graphql-server/graph"
 	"github.com/mobius-network/stellar-graphql-server/config"
+	"github.com/mobius-network/stellar-graphql-server/ingest"
 )
 
-var app = &graph.App{}
+var app *graph.App
+var core *ingest.Core
 
 func init() {
+	app = &graph.App{}
 	app.AccountChannels = make(map[string]chan graph.Account)
 	app.AccountCounters = make(map[string]uint64)
+
+	core = ingest.NewCore()
 }
 
 func simulateAccountActivity() {
@@ -35,6 +40,8 @@ func simulateAccountActivity() {
 }
 
 func main() {
+	defer config.Database.Close()
+	
 	http.Handle("/", handler.Playground("Todo", "/query"))
 	http.Handle("/query", handler.GraphQL(graph.MakeExecutableSchema(app),
 		handler.ResolverMiddleware(gqlopentracing.ResolverMiddleware()),
@@ -50,8 +57,8 @@ func main() {
 
 	log.Println("Stellar GraphQL Server")
 	log.Println("Listening on", config.BindAndPort)
+	log.Println("Ledger sequence number", core.LedgerSeq)
 	log.Fatal(http.ListenAndServe(config.BindAndPort, nil))
-
 }
 
 // package main

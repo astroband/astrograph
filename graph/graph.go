@@ -24,7 +24,7 @@ func (a *App) Account_trustlines(ctx context.Context, obj *Account) ([]Trustline
   return nil, nil
 }
 
-func (a *App) Subscription_accountChanged(ctx context.Context, id string) (<-chan Account, error) {
+func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-chan Account, error) {
 	a.mu.Lock()
 	ch := a.AccountChannels[id]
 	fmt.Println("Searching for", id, "...")

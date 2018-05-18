@@ -17,7 +17,7 @@ class Room extends Component {
             },
             updateQuery: (prev, {subscriptionData}) => {
                 if (!subscriptionData.data) { return prev; }
-                const newAccount = subscriptionData.data.accountChanged;
+                const newAccount = subscriptionData.data.accountUpdated;
                 console.log("C1");
                 this.setState(
                   { balances: [...this.state.balances, newAccount.balance] }
@@ -38,8 +38,8 @@ class Room extends Component {
 }
 
 const Subscription = gql`
-    subscription MoreAccountUpdates($id: String!) {
-        accountChanged(id:$id) {
+    subscription AccountUpdated($id: String!) {
+        accountUpdated(id:$id) {
             id
             balance
         }

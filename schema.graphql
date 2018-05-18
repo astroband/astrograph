@@ -22,7 +22,7 @@ type Trustline {
 }
 
 type Subscription {
-  accountChanged(id: String!): Account!
+  accountUpdated(id: String!): Account!
 }
 
 type Query {
