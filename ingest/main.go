@@ -64,8 +64,8 @@ func (c *Core) loadUpdatedAccounts(tableName string) ([]string) {
   return a
 }
 
-func (c *Core) loadAccounts(id []string) ([]*graph.Account) {
-  r := make([]*graph.Account, 0)
+func (c *Core) loadAccounts(id []string) ([]graph.Account) {
+  r := make([]graph.Account, 0)
 
   rows, err := config.Db.Query(`
     SELECT
@@ -87,7 +87,7 @@ func (c *Core) loadAccounts(id []string) ([]*graph.Account) {
   }
 
   for rows.Next() {
-    a := &graph.Account{}
+    a := graph.Account{}
     err := rows.Scan(
       &a.ID,
       &a.Balance,
@@ -110,15 +110,16 @@ func (c *Core) loadAccounts(id []string) ([]*graph.Account) {
   return r
 }
 
-func (c *Core) Pull() {
+func (c *Core) Pull() (accounts []graph.Account) {
   log.Printf("Ingesting ledger %v", c.LedgerSeq)
 
   if (!c.checkLedger()) { return }
   id := append(c.loadUpdatedAccounts("accounts"), c.loadUpdatedAccounts("trustlines")...)
   id = util.UniqueStringSlice(id)
 
-  accounts := c.loadAccounts(id)
-  c.sendNotifications(accounts)
+  r := c.loadAccounts(id)
 
   c.LedgerSeq += 1
+
+  return r
 }

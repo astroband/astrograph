@@ -50,3 +50,16 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 
 	return ch, nil
 }
+
+func (a *App) SendAccountUpdates(accounts []Account) {
+  a.mu.Lock()
+  for _, account := range accounts {
+		ch := a.AccountChannels[account.ID]
+		if (ch == nil) {
+			continue
+		}
+
+		ch <- account
+  }
+	a.mu.Unlock()
+}

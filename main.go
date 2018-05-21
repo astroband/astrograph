@@ -57,7 +57,8 @@ func main() {
 
 	go func() {
 		for _ = range ticker.C {
-			core.Pull()
+			accounts := core.Pull()
+			app.SendAccountUpdates(accounts)
 		}
 	}()
 
