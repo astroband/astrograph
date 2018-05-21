@@ -3,8 +3,8 @@ package ingest
 import (
   "log"
   "database/sql"
-//  "github.com/mobius-network/stellar-graphql-server/graph"
   "github.com/mobius-network/astrograph/util"
+  "github.com/mobius-network/astrograph/graph"
   "github.com/mobius-network/astrograph/config"
 )
 
@@ -64,12 +64,61 @@ func (c *Core) loadUpdatedAccounts(tableName string) ([]string) {
   return a
 }
 
+func (c *Core) loadAccounts(id []string) ([]*graph.Account) {
+  r := make([]*graph.Account, 0)
+
+  rows, err := config.Db.Query(`
+    SELECT
+      accountid,
+      balance,
+      seqnum,
+      numsubentries,
+      inflationdest,
+      homedomain,
+      thresholds,
+      flags,
+      lastmodified
+    FROM accounts
+    WHERE accountid IN ($1)`,
+  id)
+
+  if (err != nil) {
+    log.Fatal(err)
+  }
+
+  for rows.Next() {
+    a := &graph.Account{}
+    err := rows.Scan(
+      &a.ID,
+      &a.Balance,
+      &a.Seqnum,
+      &a.Numsubentries,
+      &a.Inflationdest,
+      &a.Homedomain,
+      &a.Thresholds,
+      &a.Flags,
+      &a.Lastmodified,
+    )
+
+    if (err != nil) {
+      log.Fatal(err)
+    }
+
+    r = append(r, a)
+  }
+
+  return r
+}
+
 func (c *Core) Pull() {
   log.Printf("Ingesting ledger %v", c.LedgerSeq)
 
   if (!c.checkLedger()) { return }
   id := append(c.loadUpdatedAccounts("accounts"), c.loadUpdatedAccounts("trustlines")...)
   id = util.UniqueStringSlice(id)
+
+  accounts := c.loadAccounts(id)
+  c.sendNotifications(accounts)
 
   c.LedgerSeq += 1
 }
