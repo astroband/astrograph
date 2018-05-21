@@ -4,8 +4,8 @@ import (
   "log"
   "database/sql"
 //  "github.com/mobius-network/stellar-graphql-server/graph"
-  "github.com/mobius-network/stellar-graphql-server/util"
-  "github.com/mobius-network/stellar-graphql-server/config"
+  "github.com/mobius-network/astrograph/util"
+  "github.com/mobius-network/astrograph/config"
 )
 
 type Core struct {

@@ -9,9 +9,9 @@ import (
 	gqlopentracing "github.com/vektah/gqlgen/opentracing"
 
 	"github.com/vektah/gqlgen/handler"
-	"github.com/mobius-network/stellar-graphql-server/graph"
-	"github.com/mobius-network/stellar-graphql-server/config"
-	"github.com/mobius-network/stellar-graphql-server/ingest"
+	"github.com/mobius-network/astrograph/graph"
+	"github.com/mobius-network/astrograph/config"
+	"github.com/mobius-network/astrograph/ingest"
 )
 
 var app *graph.App
