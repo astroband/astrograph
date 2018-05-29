@@ -69,6 +69,7 @@ func (c *Core) loadAccounts(id []string) ([]graph.Account) {
   r := make([]graph.Account, 0)
 
   if (len(id) == 0) {
+    log.Println("No accounts are passed")
     return r
   }
 
@@ -84,13 +85,13 @@ func (c *Core) loadAccounts(id []string) ([]graph.Account) {
       flags,
       lastmodified
     FROM accounts
-    WHERE accountid IN ($1)`,
-  strings.Join(id, ", "))
+    WHERE accountid IN ('` + strings.Join(id, "', '") + "')")
 
   if (err != nil) {
     log.Fatal(err)
   }
 
+  defer rows.Close()
   for rows.Next() {
     a := graph.Account{}
     err := rows.Scan(
@@ -112,6 +113,10 @@ func (c *Core) loadAccounts(id []string) ([]graph.Account) {
     r = append(r, a)
   }
 
+  if err = rows.Err(); err != nil {
+    log.Fatal(err)
+  }
+
   return r
 }
 
@@ -122,7 +127,7 @@ func (c *Core) Pull() (accounts []graph.Account) {
   id := append(c.loadUpdatedAccounts("accounts"), c.loadUpdatedAccounts("trustlines")...)
   id = util.UniqueStringSlice(id)
 
-  log.Println(id)
+  log.Println("Updated accounts & trustlines:", id)
 
   r := c.loadAccounts(id)
 

@@ -58,8 +58,10 @@ func (a *App) SendAccountUpdates(accounts []Account) {
   for _, account := range accounts {
 		ch := a.AccountChannels[account.ID]
 		if (ch == nil) {
+			log.Println(account.ID, "subscription not found")
 			continue
 		}
+		log.Println("Sending updates to", account.ID)
 
 		ch <- account
   }
