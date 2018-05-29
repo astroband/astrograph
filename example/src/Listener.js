@@ -47,7 +47,13 @@ const Subscription = gql`
         accountUpdated(id:$id) {
             id
             balance
+            seqnum
+            numsubentries
+            inflationdest
+            thresholds
+            homedomain
             trustlines {
+              tlimit
               balance
             }
         }
