@@ -4,6 +4,7 @@ import (
 	"log"
 	"sync"
 	"context"
+	"github.com/mobius-network/astrograph/config"
 )
 
 type App struct {
@@ -21,7 +22,45 @@ func (a *App)	Query_Accounts(ctx context.Context, limit *int, skip *int, order *
 }
 
 func (a *App) Account_trustlines(ctx context.Context, obj *Account) ([]Trustline, error) {
-  return nil, nil
+	r := make([]Trustline, 1)
+
+  rows, err := config.Db.Query(`
+    SELECT
+      assettype,
+      issuer,
+      assetcode,
+      tlimit,
+      balance,
+      flags,
+      lastmodified
+    FROM trustlines
+    WHERE accountid = $1
+		ORDER BY assettype, assetcode`, obj.ID)
+
+  if (err != nil) { log.Fatal(err) }
+
+  defer rows.Close()
+  for rows.Next() {
+    t := Trustline{}
+
+    err := rows.Scan(
+      &t.Assettype,
+      &t.Issuer,
+      &t.Assetcode,
+      &t.Tlimit,
+      &t.Balance,
+      &t.Flags,
+      &t.Lastmodified,
+    )
+
+    if (err != nil) {
+      log.Fatal(err)
+    }
+
+    r = append(r, t)
+  }
+
+  return r, nil
 }
 
 func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-chan Account, error) {

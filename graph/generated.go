@@ -1391,7 +1391,7 @@ var parsedSchema = schema.MustParse(`type Account {
   thresholds: String
   flags: Int!
   lastmodified: Int!
-  trustlines: [Trustline]
+  trustlines: [Trustline!]!
 }
 
 type Trustline {

@@ -73,6 +73,8 @@ func (c *Core) loadAccounts(id []string) ([]graph.Account) {
     return r
   }
 
+  // trustlines := c.loadTrustlines(id)
+
   rows, err := config.Db.Query(`
     SELECT
       accountid,
@@ -87,9 +89,7 @@ func (c *Core) loadAccounts(id []string) ([]graph.Account) {
     FROM accounts
     WHERE accountid IN ('` + strings.Join(id, "', '") + "')")
 
-  if (err != nil) {
-    log.Fatal(err)
-  }
+  if (err != nil) { log.Fatal(err) }
 
   defer rows.Close()
   for rows.Next() {

@@ -47,6 +47,9 @@ const Subscription = gql`
         accountUpdated(id:$id) {
             id
             balance
+            trustlines {
+              balance
+            }
         }
     }
 `;
