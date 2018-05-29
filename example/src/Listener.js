@@ -1,5 +1,5 @@
 import React , { Component } from 'react';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 class Listener extends Component {
@@ -11,9 +11,9 @@ class Listener extends Component {
     }
   }
 
-  componentWillMount() {
-    if (this.props.id == '') { return; }
-    
+  componentWillUpdate() {
+    if (this.props.id === '') { return; }
+
     this.props.data.subscribeToMore({
       document: Subscription,
       variables: {
@@ -33,7 +33,7 @@ class Listener extends Component {
     return (
       <div>
         <div>
-          {this.state.accounts.map((a, ns) =>
+          {this.state.accounts.map((a, n) =>
               <div key={n}>{JSON.stringify(a)}</div>
           )}
         </div>
@@ -52,8 +52,8 @@ const Subscription = gql`
 `;
 
 const Query = gql`
-    query Room($channel: String!) {
-        room(name: $channel) {
+    query Room($id: String!) {
+        room(name: $id) {
             messages { id text createdBy }
         }
     }
@@ -66,4 +66,4 @@ const Query = gql`
 // `;
 
 
-export default graphql(Query)(Room); //compose(graphql(Mutation), graphql(Query))(Room);
+export default graphql(Query)(Listener); //compose(graphql(Mutation), graphql(Query))(Room);

@@ -2,6 +2,7 @@ package ingest
 
 import (
   "log"
+  "strings"
   "database/sql"
   "github.com/mobius-network/astrograph/util"
   "github.com/mobius-network/astrograph/graph"
@@ -67,6 +68,10 @@ func (c *Core) loadUpdatedAccounts(tableName string) ([]string) {
 func (c *Core) loadAccounts(id []string) ([]graph.Account) {
   r := make([]graph.Account, 0)
 
+  if (len(id) == 0) {
+    return r
+  }
+
   rows, err := config.Db.Query(`
     SELECT
       accountid,
@@ -80,7 +85,7 @@ func (c *Core) loadAccounts(id []string) ([]graph.Account) {
       lastmodified
     FROM accounts
     WHERE accountid IN ($1)`,
-  id)
+  strings.Join(id, ", "))
 
   if (err != nil) {
     log.Fatal(err)

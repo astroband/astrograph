@@ -14,7 +14,7 @@ class App extends Component {
     return (
       <div>
         <div>
-          <label for="account_id">Account ID:</label>
+          <label htmlFor="account_id">Account ID:</label>
           <input id="account_id" value={this.state.id} onChange={(e) => this.setState({id: e.target.value })} />
         </div>
 
