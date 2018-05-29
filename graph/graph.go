@@ -1,9 +1,9 @@
 package graph
 
 import (
+	"log"
 	"sync"
 	"context"
-	"fmt"
 )
 
 type App struct {
@@ -27,9 +27,9 @@ func (a *App) Account_trustlines(ctx context.Context, obj *Account) ([]Trustline
 func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-chan Account, error) {
 	a.mu.Lock()
 	ch := a.AccountChannels[id]
-	fmt.Println("Searching for", id, "...")
+	log.Println("Searching for subscription", id, "...")
 	if ch == nil {
-		fmt.Println("Creating", id, "...")
+		log.Println("Creating subscription on", id, "...")
 		ch = make(chan Account, 1)
 		a.AccountCounters[id] = 1
 		a.AccountChannels[id] = ch
@@ -38,10 +38,10 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 
 	go func() {
 		<-ctx.Done()
-		fmt.Println(id, "done")
+		log.Println(id, "unsubscribed")
 		a.mu.Lock()
 		a.AccountCounters[id]--
-		fmt.Println("Counter", a.AccountCounters[id])
+		log.Println("Counter for", id, "is", a.AccountCounters[id])
 		if (a.AccountCounters[id] <= 0) {
 			delete(a.AccountChannels, id)
 		}

@@ -122,6 +122,8 @@ func (c *Core) Pull() (accounts []graph.Account) {
   id := append(c.loadUpdatedAccounts("accounts"), c.loadUpdatedAccounts("trustlines")...)
   id = util.UniqueStringSlice(id)
 
+  log.Println(id)
+
   r := c.loadAccounts(id)
 
   c.LedgerSeq += 1
