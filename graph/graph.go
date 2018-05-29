@@ -33,6 +33,8 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 		ch = make(chan Account, 1)
 		a.AccountCounters[id] = 1
 		a.AccountChannels[id] = ch
+	} else {
+		a.AccountCounters[id]++
 	}
 	a.mu.Unlock()
 
