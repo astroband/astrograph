@@ -6,18 +6,19 @@ class App extends Component {
     super(props);
 
     this.state = {
-        account_id: ''
+      id: ''
     }
   }
+
   render() {
     return (
       <div>
         <div>
           <label for="account_id">Account ID:</label>
-          <input id="account_id" value={this.state.account_id} onChange={(e) => this.setState({id: e.target.value })} />
+          <input id="account_id" value={this.state.id} onChange={(e) => this.setState({id: e.target.value })} />
         </div>
 
-        <Subscription account_id={this.state.account_id} />
+        <Subscription id={this.state.id} />
       </div>
     );
   }

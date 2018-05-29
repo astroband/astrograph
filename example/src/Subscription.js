@@ -1,40 +1,40 @@
-import React , {Component} from 'react';
+import React , { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
-class Room extends Component {
-    constructor(props) {
-        super(props)
+class Subscription extends Component {
+  constructor(props) {
+    super(props)
 
-        this.state = {balances: []}
-    }
+    this.state = {balances: []}
+  }
 
-    componentWillMount() {
-        this.props.data.subscribeToMore({
-            document: Subscription,
-            variables: {
-                id: this.props.channel,
-            },
-            updateQuery: (prev, {subscriptionData}) => {
-                if (!subscriptionData.data) { return prev; }
-                const newAccount = subscriptionData.data.accountUpdated;
-                console.log("C1");
-                this.setState(
-                  { balances: [...this.state.balances, newAccount.balance] }
-                );
-            }
-        });
-    }
+  componentWillMount() {
+    this.props.data.subscribeToMore({
+      document: Subscription,
+      variables: {
+        id: this.props.channel,
+      },
+      updateQuery: (prev, {subscriptionData}) => {
+        if (!subscriptionData.data) { return prev; }
+        const newAccount = subscriptionData.data.accountUpdated;
+        console.log("C1");
+        this.setState(
+          { balances: [...this.state.balances, newAccount.balance] }
+        );
+      }
+    });
+  }
 
-    render() {
-        return <div>
-            <div>
-                {this.state.balances.map((msg) =>
-                    <div key={msg}>{msg}</div>
-                )}
-            </div>
-        </div>;
-    }
+  render() {
+    return <div>
+      <div>
+        {this.state.balances.map((msg) =>
+            <div key={msg}>{msg}</div>
+        )}
+      </div>
+    </div>;
+  }
 }
 
 const Subscription = gql`
