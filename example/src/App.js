@@ -1,27 +1,26 @@
 import React, { Component } from 'react';
-import Room from './Room';
+import Subscription from './Subscription';
 
 class App extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            name: 'tester',
-            channel: 'TEST',
-        }
+    this.state = {
+        account_id: ''
     }
-    render() {
-        return (<div>
-            name: <br/>
-            <input value={this.state.name} onChange={(e) => this.setState({name: e.target.value })} /> <br />
-
-            channel: <br />
-            <input value={this.state.channel} onChange={(e) => this.setState({channel: e.target.value })}/> <br/>
-
-            <Room channel={this.state.channel} name={this.state.name} />
+  }
+  render() {
+    return (
+      <div>
+        <div>
+          <label for="account_id">Account ID:</label>
+          <input id="account_id" value={this.state.account_id} onChange={(e) => this.setState({id: e.target.value })} />
         </div>
-        );
-    }
+
+        <Subscription account_id={this.state.account_id} />
+      </div>
+    );
+  }
 }
 
 
