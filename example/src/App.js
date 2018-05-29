@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Subscription from './Subscription';
+import Listener from './Listener';
 
 class App extends Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class App extends Component {
           <input id="account_id" value={this.state.id} onChange={(e) => this.setState({id: e.target.value })} />
         </div>
 
-        <Subscription id={this.state.id} />
+        <Listener id={this.state.id} />
       </div>
     );
   }

@@ -2,38 +2,43 @@ import React , { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
-class Subscription extends Component {
+class Listener extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {balances: []}
+    this.state = {
+      accounts: []
+    }
   }
 
   componentWillMount() {
+    if (this.props.id == '') { return; }
+    
     this.props.data.subscribeToMore({
       document: Subscription,
       variables: {
-        id: this.props.channel,
+        id: this.props.id,
       },
-      updateQuery: (prev, {subscriptionData}) => {
+      updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) { return prev; }
-        const newAccount = subscriptionData.data.accountUpdated;
-        console.log("C1");
+        const updatedAccount = subscriptionData.data.accountUpdated;
         this.setState(
-          { balances: [...this.state.balances, newAccount.balance] }
+          { accounts: [...this.state.accounts, updatedAccount] }
         );
       }
     });
   }
 
   render() {
-    return <div>
+    return (
       <div>
-        {this.state.balances.map((msg) =>
-            <div key={msg}>{msg}</div>
-        )}
+        <div>
+          {this.state.accounts.map((a, ns) =>
+              <div key={n}>{JSON.stringify(a)}</div>
+          )}
+        </div>
       </div>
-    </div>;
+    );
   }
 }
 
