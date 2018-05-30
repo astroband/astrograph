@@ -68,15 +68,14 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 	a.mu.Lock()
 	ch := a.AccountChannels[id]
 
-	util.LogDebug("Searching for subscription", id, "...")
-
 	if ch == nil {
-		util.LogDebug("Creating subscription on", id, "...")
+		util.LogDebug(id, "subscribed")
 
 		ch = make(chan Account, 1)
 		a.AccountCounters[id] = 1
 		a.AccountChannels[id] = ch
 	} else {
+		util.LogDebug(id, "already has subscription")
 		a.AccountCounters[id]++
 	}
 	a.mu.Unlock()
