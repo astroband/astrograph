@@ -2,8 +2,8 @@ package ingest
 
 import (
   "log"
-  "strings"
   "database/sql"
+  "github.com/mobius-network/astrograph/db"
   "github.com/mobius-network/astrograph/util"
   "github.com/mobius-network/astrograph/graph"
   "github.com/mobius-network/astrograph/config"
@@ -73,51 +73,8 @@ func (c *Core) loadUpdatesFrom(tableName string) ([]string) {
 
 // Loads accounts with given ids
 func (c *Core) loadAccounts(id []string) ([]graph.Account) {
-  r := make([]graph.Account, 0)
-
-  if (len(id) == 0) { return r }
-
-  rows, err := config.Db.Query(`
-    SELECT
-      accountid,
-      balance,
-      seqnum,
-      numsubentries,
-      inflationdest,
-      homedomain,
-      thresholds,
-      flags,
-      lastmodified
-    FROM accounts
-    WHERE accountid IN ('` + strings.Join(id, "', '") + "')")
-
+  r, err := db.QueryAccounts(id)
   if (err != nil) { log.Fatal(err) }
-
-  defer rows.Close()
-  for rows.Next() {
-    a := graph.Account{}
-    err := rows.Scan(
-      &a.ID,
-      &a.Balance,
-      &a.Seqnum,
-      &a.Numsubentries,
-      &a.Inflationdest,
-      &a.Homedomain,
-      &a.Thresholds,
-      &a.Flags,
-      &a.Lastmodified,
-    )
-
-    if (err != nil) {
-      log.Fatal(err)
-    }
-
-    r = append(r, a)
-  }
-
-  if err = rows.Err(); err != nil {
-    log.Fatal(err)
-  }
 
   return r
 }
