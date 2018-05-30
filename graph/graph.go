@@ -6,6 +6,7 @@ import (
 	"log"
 	"sync"
 	"context"
+	"database/sql"
 	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/config"
 )
@@ -17,7 +18,40 @@ type App struct {
 }
 
 func (a *App) Query_Account(ctx context.Context, id string) (*Account, error) {
-	return nil, nil
+	ac := &Account{}
+
+	err := config.Db.QueryRow(`
+		SELECT
+      accountid,
+      balance,
+      seqnum,
+      numsubentries,
+      inflationdest,
+      homedomain,
+      thresholds,
+      flags,
+      lastmodified
+    FROM accounts
+    WHERE accountid = $1`, id).Scan(
+			&ac.ID,
+			&ac.Balance,
+			&ac.Seqnum,
+			&ac.Numsubentries,
+			&ac.Inflationdest,
+			&ac.Homedomain,
+			&ac.Thresholds,
+			&ac.Flags,
+			&ac.Lastmodified,
+		)
+
+	switch {
+	case err == sql.ErrNoRows:
+		return nil, nil
+	case err != nil:
+		return nil, err
+	default:
+		return ac, nil
+	}
 }
 
 func (a *App)	Query_Accounts(ctx context.Context, limit *int, skip *int, order *string) ([]Account, error) {
