@@ -16,7 +16,7 @@ type Core struct {
 func NewCore () *Core {
   c := new(Core)
 
-  c.LedgerSeq = c.FetchMaxLedger()
+  c.LedgerSeq = c.FetchMaxLedger() + 1
 
   return c
 }
