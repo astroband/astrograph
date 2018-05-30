@@ -19,4 +19,3 @@ Stellar GraphQL interface.
 5. Solve N+1 for trustlines.
 6. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
 7. Monitor account deletion.
-9. Start ledger from +1

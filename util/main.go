@@ -5,6 +5,7 @@ import (
 	"github.com/mobius-network/astrograph/config"
 )
 
+// Ruby Array#uniq
 func UniqueStringSlice(input []string) []string {
 	u := make([]string, 0, len(input))
 	m := make(map[string]bool)
