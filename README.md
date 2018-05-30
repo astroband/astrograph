@@ -13,10 +13,11 @@ Stellar GraphQL interface.
 
 # TODO
 
-1. SQL logging.
+1. Base account queries.
 2. Fast rewind to last ledger
 3. Data fields loading/monitoring.
 5. Solve N+1 for trustlines.
 6. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
 7. Monitor account deletion.
 8. Lock gqlgen
+9. Start ledger from +1
