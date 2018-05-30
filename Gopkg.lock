@@ -15,6 +15,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/gchaincl/sqlhooks"
+  packages = ["."]
+  revision = "0ce9882095c14a1155631cf466fd5d8369177683"
+
+[[projects]]
+  branch = "master"
   name = "github.com/gorilla/websocket"
   packages = ["."]
   revision = "21ab95fa12b9bdd8fecf5fa3586aad941cc98785"
@@ -24,6 +30,12 @@
   name = "github.com/lib/pq"
   packages = [".","oid"]
   revision = "d34b9ff171c21ad295489235aec8b6626023cd04"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mattn/go-sqlite3"
+  packages = ["."]
+  revision = "52b8080d4d0eb6d16f3a5f9336c29192dac68185"
 
 [[projects]]
   name = "github.com/opentracing/opentracing-go"
@@ -52,6 +64,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "492353a03e770b884db36d26a47488b4c46facc4888bba2bfa605085b0972ceb"
+  inputs-digest = "3e81bc6220e9cbefd38af59cf0931a7e8fe9430fadeb8331accd15581621c694"
   solver-name = "gps-cdcl"
   solver-version = 1

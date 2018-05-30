@@ -32,3 +32,11 @@
 [[constraint]]
   version = "2.2.6"
   name = "gopkg.in/alecthomas/kingpin.v2"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/gchaincl/sqlhooks"
+
+[[constraint]]
+  branch = "master"
+  name = 	"github.com/mattn/go-sqlite3"

@@ -3,12 +3,18 @@ package config
 import (
   "fmt"
   "log"
+  "time"
+  "context"
   "database/sql"
-	_ "github.com/lib/pq"
+	"github.com/lib/pq"
+  d "database/sql/driver"
+  "github.com/mattn/go-sqlite3"
+  "github.com/gchaincl/sqlhooks"
   "gopkg.in/alecthomas/kingpin.v2"
 )
 
-const version string = "0.0.1"
+// Application version
+const Version string = "0.0.1"
 
 var (
   BindAndPort string
@@ -22,14 +28,41 @@ var (
   Debug = kingpin.Flag("debug", "Log debug messages").Default("false").Bool()
 )
 
+// Drivers list for sqlhooks wrapping
+var drivers = map[string]d.Driver{
+  "postgres": &pq.Driver{},
+  "sqlite3": &sqlite3.SQLiteDriver{},
+}
+
+// sqlhooks
+type hooks struct {}
+
+func (h *hooks) Before(ctx context.Context, query string, args ...interface{}) (context.Context, error) {
+	log.Printf("> %s %q", query, args)
+	return context.WithValue(ctx, "begin", time.Now()), nil
+}
+
+func (h *hooks) After(ctx context.Context, query string, args ...interface{}) (context.Context, error) {
+	begin := ctx.Value("begin").(time.Time)
+	log.Printf(". took: %s\n", time.Since(begin))
+	return ctx, nil
+}
+
 func init() {
-  kingpin.Version(version)
+  kingpin.Version(Version)
   kingpin.Parse()
 
   BindAndPort = fmt.Sprintf("%s:%v", *Bind, *Port)
   DatabaseDriver = (*DatabaseUrl).Scheme
 
-  db, err := sql.Open(DatabaseDriver, (*DatabaseUrl).String())
+  driver := DatabaseDriver
+
+  if (*Debug) {
+    sql.Register("sqlWithHooks", sqlhooks.Wrap(drivers[driver], &hooks{}))
+    driver = "sqlWithHooks"
+  }
+
+  db, err := sql.Open(driver, (*DatabaseUrl).String())
   if err != nil { log.Fatal(err) }
 
   err = db.Ping();
