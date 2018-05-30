@@ -19,6 +19,7 @@ var (
   Bind = kingpin.Flag("bind", "HTTP address to bind").Default("127.0.0.1").IP()
   DatabaseUrl = kingpin.Flag("database-url", "Stellar Core database URL").Required().URL()
   IngestTimeout = kingpin.Flag("ingest-timeout", "Ingest frequency").Default("2").Int()
+  Debug = kingpin.Flag("debug", "Log debug messages").Default("false").Bool()
 )
 
 func init() {

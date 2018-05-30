@@ -4,6 +4,7 @@ import (
 	"log"
 	"sync"
 	"context"
+	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/config"
 )
 
@@ -66,9 +67,12 @@ func (a *App) Account_trustlines(ctx context.Context, obj *Account) ([]Trustline
 func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-chan Account, error) {
 	a.mu.Lock()
 	ch := a.AccountChannels[id]
-	log.Println("Searching for subscription", id, "...")
+
+	util.LogDebug("Searching for subscription", id, "...")
+
 	if ch == nil {
-		log.Println("Creating subscription on", id, "...")
+		util.LogDebug("Creating subscription on", id, "...")
+
 		ch = make(chan Account, 1)
 		a.AccountCounters[id] = 1
 		a.AccountChannels[id] = ch
@@ -79,10 +83,10 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 
 	go func() {
 		<-ctx.Done()
-		log.Println(id, "unsubscribed")
+		util.LogDebug(id, "unsubscribed")
 		a.mu.Lock()
 		a.AccountCounters[id]--
-		log.Println("Counter for", id, "is", a.AccountCounters[id])
+		util.LogDebug("Counter for", id, "is", a.AccountCounters[id])
 		if (a.AccountCounters[id] <= 0) {
 			delete(a.AccountChannels, id)
 		}
@@ -97,10 +101,10 @@ func (a *App) SendAccountUpdates(accounts []Account) {
   for _, account := range accounts {
 		ch := a.AccountChannels[account.ID]
 		if (ch == nil) {
-			log.Println(account.ID, "subscription not found")
+			util.LogDebug(account.ID, "subscription not found")
 			continue
 		}
-		log.Println("Sending updates to", account.ID)
+		util.LogDebug("Sending updates to", account.ID)
 
 		ch <- account
   }

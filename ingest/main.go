@@ -68,12 +68,7 @@ func (c *Core) loadUpdatedAccounts(tableName string) ([]string) {
 func (c *Core) loadAccounts(id []string) ([]graph.Account) {
   r := make([]graph.Account, 0)
 
-  if (len(id) == 0) {
-    log.Println("No accounts are passed")
-    return r
-  }
-
-  // trustlines := c.loadTrustlines(id)
+  if (len(id) == 0) { return r }
 
   rows, err := config.Db.Query(`
     SELECT
@@ -121,13 +116,14 @@ func (c *Core) loadAccounts(id []string) ([]graph.Account) {
 }
 
 func (c *Core) Pull() (accounts []graph.Account) {
-  log.Printf("Ingesting ledger %v", c.LedgerSeq)
+  log.Println("Ingesting ledger", c.LedgerSeq)
 
   if (!c.checkLedger()) { return }
   id := append(c.loadUpdatedAccounts("accounts"), c.loadUpdatedAccounts("trustlines")...)
   id = util.UniqueStringSlice(id)
 
-  log.Println("Updated accounts & trustlines:", id)
+  util.LogDebug("Updated accounts & trustlines:", id)
+  log.Println("Updated", len(id), "accounts & trustlines")
 
   r := c.loadAccounts(id)
 
