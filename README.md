@@ -5,11 +5,11 @@ Stellar GraphQL interface.
 
 # Installation
 
-  go get https://github.com/mobius-network/Astrograph
+`go get https://github.com/mobius-network/Astrograph`
 
 # Usage
 
-  astrograph --database-url=postgres://localhost/core?sslmode=disable
+`astrograph --database-url=postgres://localhost/core?sslmode=disable`
 
 # TODO
 
