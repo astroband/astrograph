@@ -1,3 +1,5 @@
+//go:generate gorunpkg github.com/vektah/gqlgen -schema ../schema.graphql
+
 package graph
 
 import (
@@ -14,7 +16,7 @@ type App struct {
 	mu       		    sync.Mutex
 }
 
-func (a *App) Query_Account(ctx context.Context, id *string) (*Account, error) {
+func (a *App) Query_Account(ctx context.Context, id string) (*Account, error) {
 	return nil, nil
 }
 

@@ -1,5 +1,3 @@
-//go:generate gorunpkg github.com/vektah/gqlgen -schema schema.graphql -package main
-
 package main
 
 import (

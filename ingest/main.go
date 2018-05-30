@@ -13,6 +13,7 @@ type Core struct {
   LedgerSeq uint64
 }
 
+// Constructor
 func NewCore () *Core {
   c := new(Core)
   c.LedgerSeq = c.FetchMaxLedger() + 1
@@ -35,7 +36,7 @@ func (c *Core) checkLedgerExist() (bool) {
   row := config.Db.QueryRow("SELECT ledgerseq FROM ledgerheaders WHERE ledgerseq = $1", c.LedgerSeq)
   err := row.Scan(&c.LedgerSeq)
 
-  // If current ledger does not exist and is less than max ledger (meaning there is a gap in history), rewinds
+  // If current ledger does not exist and is less than max ledger (meaning there is a gap in history), fast-forwards
   // to the head.
   //
   // NOTE: Might need to send updates to all subscriptions in this case.

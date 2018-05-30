@@ -19,7 +19,7 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 
 type Resolvers interface {
 	Account_trustlines(ctx context.Context, obj *Account) ([]Trustline, error)
-	Query_Account(ctx context.Context, id *string) (*Account, error)
+	Query_Account(ctx context.Context, id string) (*Account, error)
 	Query_Accounts(ctx context.Context, limit *int, skip *int, order *string) ([]Account, error)
 
 	Subscription_accountUpdated(ctx context.Context, id string) (<-chan Account, error)
@@ -310,15 +310,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel []query.Selection) g
 
 func (ec *executionContext) _Query_Account(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	args := map[string]interface{}{}
-	var arg0 *string
+	var arg0 string
 	if tmp, ok := field.Args["id"]; ok {
 		var err error
-		var ptr1 string
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalString(tmp)
-			arg0 = &ptr1
-		}
-
+		arg0, err = graphql.UnmarshalString(tmp)
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
@@ -340,7 +335,7 @@ func (ec *executionContext) _Query_Account(ctx context.Context, field graphql.Co
 		}()
 
 		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query_Account(ctx, args["id"].(*string))
+			return ec.resolvers.Query_Account(ctx, args["id"].(string))
 		})
 		if err != nil {
 			ec.Error(ctx, err)
@@ -1409,7 +1404,7 @@ type Subscription {
 }
 
 type Query {
-  Account(id: String): Account
+  Account(id: String!): Account
   Accounts(limit: Int, skip: Int, order: String): [Account]
 }
 `)
