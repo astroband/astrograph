@@ -2,6 +2,7 @@ package db
 
 import (
   "strings"
+  "database/sql"
   "github.com/mobius-network/astrograph/graph"
   "github.com/mobius-network/astrograph/config"
 )
@@ -31,7 +32,17 @@ type scanner interface {
 
 // Returns single account or nil
 func QueryAccount(id string) (*graph.Account, error) {
-  return nil, nil
+  row := config.Db.QueryRow(selectAccount + " WHERE accountid = $1", id)
+  ac, err := scanAccount(row)
+
+  switch {
+	case err == sql.ErrNoRows:
+		return nil, nil
+	case err != nil:
+		return nil, err
+	default:
+		return ac, nil
+	}
 }
 
 // Returns a set of accounts by id
