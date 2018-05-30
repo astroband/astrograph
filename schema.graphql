@@ -27,5 +27,5 @@ type Subscription {
 
 type Query {
   Account(id: String!): Account
-  Accounts(limit: Int, skip: Int, order: String): [Account]
+  Accounts(id: [String!]): [Account]
 }

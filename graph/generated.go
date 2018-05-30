@@ -7,6 +7,7 @@ import (
 	context "context"
 	strconv "strconv"
 
+	model "github.com/mobius-network/astrograph/model"
 	graphql "github.com/vektah/gqlgen/graphql"
 	introspection "github.com/vektah/gqlgen/neelance/introspection"
 	query "github.com/vektah/gqlgen/neelance/query"
@@ -18,11 +19,11 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 }
 
 type Resolvers interface {
-	Account_trustlines(ctx context.Context, obj *Account) ([]Trustline, error)
-	Query_Account(ctx context.Context, id string) (*Account, error)
-	Query_Accounts(ctx context.Context, limit *int, skip *int, order *string) ([]Account, error)
+	Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error)
+	Query_Account(ctx context.Context, id string) (*model.Account, error)
+	Query_Accounts(ctx context.Context, id []string) ([]model.Account, error)
 
-	Subscription_accountUpdated(ctx context.Context, id string) (<-chan Account, error)
+	Subscription_accountUpdated(ctx context.Context, id string) (<-chan model.Account, error)
 }
 
 type executableSchema struct {
@@ -90,7 +91,7 @@ type executionContext struct {
 var accountImplementors = []string{"Account"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _Account(ctx context.Context, sel []query.Selection, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account(ctx context.Context, sel []query.Selection, obj *model.Account) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.Doc, sel, accountImplementors, ec.Variables)
 
 	out := graphql.NewOrderedMap(len(fields))
@@ -128,7 +129,7 @@ func (ec *executionContext) _Account(ctx context.Context, sel []query.Selection,
 	return out
 }
 
-func (ec *executionContext) _Account_id(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_id(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Account"
 	rctx.Args = nil
@@ -139,7 +140,7 @@ func (ec *executionContext) _Account_id(ctx context.Context, field graphql.Colle
 	return graphql.MarshalString(res)
 }
 
-func (ec *executionContext) _Account_balance(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_balance(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Account"
 	rctx.Args = nil
@@ -150,7 +151,7 @@ func (ec *executionContext) _Account_balance(ctx context.Context, field graphql.
 	return graphql.MarshalInt(res)
 }
 
-func (ec *executionContext) _Account_seqnum(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_seqnum(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Account"
 	rctx.Args = nil
@@ -161,7 +162,7 @@ func (ec *executionContext) _Account_seqnum(ctx context.Context, field graphql.C
 	return graphql.MarshalInt(res)
 }
 
-func (ec *executionContext) _Account_numsubentries(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_numsubentries(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Account"
 	rctx.Args = nil
@@ -172,7 +173,7 @@ func (ec *executionContext) _Account_numsubentries(ctx context.Context, field gr
 	return graphql.MarshalInt(res)
 }
 
-func (ec *executionContext) _Account_inflationdest(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_inflationdest(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Account"
 	rctx.Args = nil
@@ -186,7 +187,7 @@ func (ec *executionContext) _Account_inflationdest(ctx context.Context, field gr
 	return graphql.MarshalString(*res)
 }
 
-func (ec *executionContext) _Account_homedomain(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_homedomain(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Account"
 	rctx.Args = nil
@@ -200,7 +201,7 @@ func (ec *executionContext) _Account_homedomain(ctx context.Context, field graph
 	return graphql.MarshalString(*res)
 }
 
-func (ec *executionContext) _Account_thresholds(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_thresholds(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Account"
 	rctx.Args = nil
@@ -214,7 +215,7 @@ func (ec *executionContext) _Account_thresholds(ctx context.Context, field graph
 	return graphql.MarshalString(*res)
 }
 
-func (ec *executionContext) _Account_flags(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_flags(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Account"
 	rctx.Args = nil
@@ -225,7 +226,7 @@ func (ec *executionContext) _Account_flags(ctx context.Context, field graphql.Co
 	return graphql.MarshalInt(res)
 }
 
-func (ec *executionContext) _Account_lastmodified(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_lastmodified(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Account"
 	rctx.Args = nil
@@ -236,7 +237,7 @@ func (ec *executionContext) _Account_lastmodified(ctx context.Context, field gra
 	return graphql.MarshalInt(res)
 }
 
-func (ec *executionContext) _Account_trustlines(ctx context.Context, field graphql.CollectedField, obj *Account) graphql.Marshaler {
+func (ec *executionContext) _Account_trustlines(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
 	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
 		Object: "Account",
 		Args:   nil,
@@ -261,7 +262,7 @@ func (ec *executionContext) _Account_trustlines(ctx context.Context, field graph
 		if resTmp == nil {
 			return graphql.Null
 		}
-		res := resTmp.([]Trustline)
+		res := resTmp.([]model.Trustline)
 		arr1 := graphql.Array{}
 		for idx1 := range res {
 			arr1 = append(arr1, func() graphql.Marshaler {
@@ -344,7 +345,7 @@ func (ec *executionContext) _Query_Account(ctx context.Context, field graphql.Co
 		if resTmp == nil {
 			return graphql.Null
 		}
-		res := resTmp.(*Account)
+		res := resTmp.(*model.Account)
 		if res == nil {
 			return graphql.Null
 		}
@@ -354,51 +355,23 @@ func (ec *executionContext) _Query_Account(ctx context.Context, field graphql.Co
 
 func (ec *executionContext) _Query_Accounts(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	args := map[string]interface{}{}
-	var arg0 *int
-	if tmp, ok := field.Args["limit"]; ok {
+	var arg0 []string
+	if tmp, ok := field.Args["id"]; ok {
 		var err error
-		var ptr1 int
+		var rawIf1 []interface{}
 		if tmp != nil {
-			ptr1, err = graphql.UnmarshalInt(tmp)
-			arg0 = &ptr1
+			rawIf1 = tmp.([]interface{})
 		}
-
+		arg0 = make([]string, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg0[idx1], err = graphql.UnmarshalString(rawIf1[idx1])
+		}
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
 		}
 	}
-	args["limit"] = arg0
-	var arg1 *int
-	if tmp, ok := field.Args["skip"]; ok {
-		var err error
-		var ptr1 int
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalInt(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["skip"] = arg1
-	var arg2 *string
-	if tmp, ok := field.Args["order"]; ok {
-		var err error
-		var ptr1 string
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalString(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["order"] = arg2
+	args["id"] = arg0
 	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
@@ -414,7 +387,7 @@ func (ec *executionContext) _Query_Accounts(ctx context.Context, field graphql.C
 		}()
 
 		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query_Accounts(ctx, args["limit"].(*int), args["skip"].(*int), args["order"].(*string))
+			return ec.resolvers.Query_Accounts(ctx, args["id"].([]string))
 		})
 		if err != nil {
 			ec.Error(ctx, err)
@@ -423,7 +396,7 @@ func (ec *executionContext) _Query_Accounts(ctx context.Context, field graphql.C
 		if resTmp == nil {
 			return graphql.Null
 		}
-		res := resTmp.([]Account)
+		res := resTmp.([]model.Account)
 		arr1 := graphql.Array{}
 		for idx1 := range res {
 			arr1 = append(arr1, func() graphql.Marshaler {
@@ -529,7 +502,7 @@ func (ec *executionContext) _Subscription_accountUpdated(ctx context.Context, fi
 var trustlineImplementors = []string{"Trustline"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selection, obj *Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selection, obj *model.Trustline) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.Doc, sel, trustlineImplementors, ec.Variables)
 
 	out := graphql.NewOrderedMap(len(fields))
@@ -561,7 +534,7 @@ func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selectio
 	return out
 }
 
-func (ec *executionContext) _Trustline_assettype(ctx context.Context, field graphql.CollectedField, obj *Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_assettype(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -572,7 +545,7 @@ func (ec *executionContext) _Trustline_assettype(ctx context.Context, field grap
 	return graphql.MarshalInt(res)
 }
 
-func (ec *executionContext) _Trustline_issuer(ctx context.Context, field graphql.CollectedField, obj *Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_issuer(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -583,7 +556,7 @@ func (ec *executionContext) _Trustline_issuer(ctx context.Context, field graphql
 	return graphql.MarshalString(res)
 }
 
-func (ec *executionContext) _Trustline_assetcode(ctx context.Context, field graphql.CollectedField, obj *Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_assetcode(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -594,7 +567,7 @@ func (ec *executionContext) _Trustline_assetcode(ctx context.Context, field grap
 	return graphql.MarshalString(res)
 }
 
-func (ec *executionContext) _Trustline_tlimit(ctx context.Context, field graphql.CollectedField, obj *Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_tlimit(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -605,7 +578,7 @@ func (ec *executionContext) _Trustline_tlimit(ctx context.Context, field graphql
 	return graphql.MarshalInt(res)
 }
 
-func (ec *executionContext) _Trustline_balance(ctx context.Context, field graphql.CollectedField, obj *Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_balance(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -616,7 +589,7 @@ func (ec *executionContext) _Trustline_balance(ctx context.Context, field graphq
 	return graphql.MarshalInt(res)
 }
 
-func (ec *executionContext) _Trustline_flags(ctx context.Context, field graphql.CollectedField, obj *Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_flags(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -627,7 +600,7 @@ func (ec *executionContext) _Trustline_flags(ctx context.Context, field graphql.
 	return graphql.MarshalInt(res)
 }
 
-func (ec *executionContext) _Trustline_lastmodified(ctx context.Context, field graphql.CollectedField, obj *Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_lastmodified(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -1405,6 +1378,6 @@ type Subscription {
 
 type Query {
   Account(id: String!): Account
-  Accounts(limit: Int, skip: Int, order: String): [Account]
+  Accounts(id: [String!]): [Account]
 }
 `)

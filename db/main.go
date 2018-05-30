@@ -3,7 +3,7 @@ package db
 import (
   "strings"
   "database/sql"
-  "github.com/mobius-network/astrograph/graph"
+  "github.com/mobius-network/astrograph/model"
   "github.com/mobius-network/astrograph/config"
 )
 
@@ -31,7 +31,7 @@ type scanner interface {
 }
 
 // Returns single account or nil
-func QueryAccount(id string) (*graph.Account, error) {
+func QueryAccount(id string) (*model.Account, error) {
   row := config.Db.QueryRow(selectAccount + " WHERE accountid = $1", id)
   ac, err := scanAccount(row)
 
@@ -46,8 +46,8 @@ func QueryAccount(id string) (*graph.Account, error) {
 }
 
 // Returns a set of accounts by id
-func QueryAccounts(id []string) ([]graph.Account, error) {
-  r := make([]graph.Account, 0)
+func QueryAccounts(id []string) ([]model.Account, error) {
+  r := make([]model.Account, 0)
 
   if (len(id) == 0) { return r, nil }
 
@@ -68,8 +68,8 @@ func QueryAccounts(id []string) ([]graph.Account, error) {
   return r, nil
 }
 
-func scanAccount(r scanner) (*graph.Account, error) {
-  a := graph.Account{}
+func scanAccount(r scanner) (*model.Account, error) {
+  a := model.Account{}
 
   err := r.Scan(
     &a.ID,

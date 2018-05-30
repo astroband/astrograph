@@ -10,6 +10,7 @@ import (
 
 	"github.com/vektah/gqlgen/handler"
 	"github.com/mobius-network/astrograph/graph"
+	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
 	"github.com/mobius-network/astrograph/ingest"
 )
@@ -19,7 +20,7 @@ var core *ingest.Core
 
 func init() {
 	app = &graph.App{}
-	app.AccountChannels = make(map[string]chan graph.Account)
+	app.AccountChannels = make(map[string]chan model.Account)
 	app.AccountCounters = make(map[string]uint64)
 
 	core = ingest.NewCore()

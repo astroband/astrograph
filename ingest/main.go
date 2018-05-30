@@ -5,7 +5,7 @@ import (
   "database/sql"
   "github.com/mobius-network/astrograph/db"
   "github.com/mobius-network/astrograph/util"
-  "github.com/mobius-network/astrograph/graph"
+  "github.com/mobius-network/astrograph/model"
   "github.com/mobius-network/astrograph/config"
 )
 
@@ -72,7 +72,7 @@ func (c *Core) loadUpdatesFrom(tableName string) ([]string) {
 }
 
 // Loads accounts with given ids
-func (c *Core) loadAccounts(id []string) ([]graph.Account) {
+func (c *Core) loadAccounts(id []string) ([]model.Account) {
   r, err := db.QueryAccounts(id)
   if (err != nil) { log.Fatal(err) }
 
@@ -80,7 +80,7 @@ func (c *Core) loadAccounts(id []string) ([]graph.Account) {
 }
 
 // Loads updates from current ledger
-func (c *Core) Pull() (accounts []graph.Account) {
+func (c *Core) Pull() (accounts []model.Account) {
   log.Println("Ingesting ledger", c.LedgerSeq)
 
   if (!c.checkLedgerExist()) { return }
