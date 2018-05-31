@@ -8,7 +8,9 @@ import (
 	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
-) 
+)
+
+const trustlineLoaderKey = "trustlineloader"
 
 type App struct {
 	AccountChannels map[string]chan model.Account
@@ -73,3 +75,11 @@ func (a *App) SendAccountUpdates(accounts []model.Account) {
   }
 	a.mu.Unlock()
 }
+
+// func getTrustlineLoader(ctx context.Context) *dataloader.TrustlineLoader {
+// 	return ctx.Value(trustlineLoaderKey).(*dataloader.TrustlineLoader)
+// }
+//
+// func (a *App) Account_trustlineLoader(ctx context.Context, obj *Account) ([]*Trustline, error) {
+// 	return getTrustlineLoader(ctx).Load(obj.ID)
+// }

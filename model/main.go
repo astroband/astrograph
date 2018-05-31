@@ -12,6 +12,7 @@ type Account struct {
 	Lastmodified  int     `json:"lastmodified"`
 }
 type Trustline struct {
+	AccountID    string `json:"accountid"`
 	Assettype    int    `json:"assettype"`
 	Issuer       string `json:"issuer"`
 	Assetcode    string `json:"assetcode"`

@@ -12,6 +12,7 @@ type Account {
 }
 
 type Trustline {
+  accountid: String!
   assettype: Int!
   issuer: String!
   assetcode: String!

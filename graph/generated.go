@@ -512,6 +512,8 @@ func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selectio
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Trustline")
+		case "accountid":
+			out.Values[i] = ec._Trustline_accountid(ctx, field, obj)
 		case "assettype":
 			out.Values[i] = ec._Trustline_assettype(ctx, field, obj)
 		case "issuer":
@@ -532,6 +534,17 @@ func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selectio
 	}
 
 	return out
+}
+
+func (ec *executionContext) _Trustline_accountid(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Trustline"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.AccountID
+	return graphql.MarshalString(res)
 }
 
 func (ec *executionContext) _Trustline_assettype(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
@@ -1363,6 +1376,7 @@ var parsedSchema = schema.MustParse(`type Account {
 }
 
 type Trustline {
+  accountid: String!
   assettype: Int!
   issuer: String!
   assetcode: String!

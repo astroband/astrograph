@@ -9,9 +9,7 @@ import (
   "github.com/mobius-network/astrograph/model"
 )
 
-const trustlineLoaderKey = "trustlineloader"
-
-func TustlineloaderMiddleware(db *sql.DB, next http.Handler) http.Handler {
+func TustlineLoaderMiddleware(db *sql.DB, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		trustlineLoader := TrustlineLoader{
 			maxBatch: 100,
@@ -33,11 +31,3 @@ func TustlineloaderMiddleware(db *sql.DB, next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-
-func getTrustlineLoader(ctx context.Context) *TrustlineLoader {
-	return ctx.Value(trustlineLoaderKey).(*TrustlineLoader)
-}
-
-// func (r *Resolver) Todo_userLoader(ctx context.Context, obj *Todo) (*User, error) {
-// 	return getUserLoader(ctx).Load(obj.UserID)
-// }

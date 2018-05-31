@@ -23,6 +23,7 @@ const (
 
   selectTrustline = `
     SELECT
+      accountid,
       assettype,
       issuer,
       assetcode,
