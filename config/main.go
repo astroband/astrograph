@@ -48,6 +48,12 @@ func (h *hooks) After(ctx context.Context, query string, args ...interface{}) (c
 	return ctx, nil
 }
 
+func (h *hooks) OnError(ctx context.Context, err error, query string, args ...interface{}) error {
+  log.Printf("> %s %q", query, args)
+  log.Printf("> [FATAL] %v", err)
+  return err
+}
+
 func init() {
   kingpin.Version(Version)
   kingpin.Parse()

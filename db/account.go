@@ -8,7 +8,7 @@ import (
 
 // Returns single account or nil
 func QueryAccount(id string) (*model.Account, error) {
-  row := config.Db.QueryRow(selectAccount + " WHERE accountid = $1", id)
+  row := config.Db.QueryRow(selectAccount + " = $1", id)
   ac, err := scanAccount(row)
 
   switch {
