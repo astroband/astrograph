@@ -3,14 +3,12 @@
 package graph
 
 import (
-	"log"
 	"sync"
 	"context"
 	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
-	"github.com/mobius-network/astrograph/config"
-)
+) 
 
 type App struct {
 	AccountChannels map[string]chan model.Account
@@ -27,45 +25,7 @@ func (a *App)	Query_Accounts(ctx context.Context, id []string) ([]model.Account,
 }
 
 func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error) {
-	r := make([]model.Trustline, 1)
-
-  rows, err := config.Db.Query(`
-    SELECT
-      assettype,
-      issuer,
-      assetcode,
-      tlimit,
-      balance,
-      flags,
-      lastmodified
-    FROM trustlines
-    WHERE accountid = $1
-		ORDER BY assettype, assetcode`, obj.ID)
-
-  if (err != nil) { log.Fatal(err) }
-
-  defer rows.Close()
-  for rows.Next() {
-    t := model.Trustline{}
-
-    err := rows.Scan(
-      &t.Assettype,
-      &t.Issuer,
-      &t.Assetcode,
-      &t.Tlimit,
-      &t.Balance,
-      &t.Flags,
-      &t.Lastmodified,
-    )
-
-    if (err != nil) {
-      log.Fatal(err)
-    }
-
-    r = append(r, t)
-  }
-
-  return r, nil
+	return db.QueryTrustlines([]string{obj.ID})
 }
 
 func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-chan model.Account, error) {

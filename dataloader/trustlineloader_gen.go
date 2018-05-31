@@ -12,7 +12,7 @@ import (
 // TrustlineLoader batches and caches requests
 type TrustlineLoader struct {
 	// this method provides the data for the loader
-	fetch func(keys []int) ([]*model.Trustline, []error)
+	fetch func(keys []string) ([]*model.Trustline, []error)
 
 	// how long to done before sending a batch
 	wait time.Duration
@@ -23,7 +23,7 @@ type TrustlineLoader struct {
 	// INTERNAL
 
 	// lazily created cache
-	cache map[int]*model.Trustline
+	cache map[string]*model.Trustline
 
 	// the current batch. keys will continue to be collected until timeout is hit,
 	// then everything will be sent to the fetch method and out to the listeners
@@ -34,7 +34,7 @@ type TrustlineLoader struct {
 }
 
 type trustlineBatch struct {
-	keys    []int
+	keys    []string
 	data    []*model.Trustline
 	error   []error
 	closing bool
@@ -42,14 +42,14 @@ type trustlineBatch struct {
 }
 
 // Load a trustline by key, batching and caching will be applied automatically
-func (l *TrustlineLoader) Load(key int) (*model.Trustline, error) {
+func (l *TrustlineLoader) Load(key string) (*model.Trustline, error) {
 	return l.LoadThunk(key)()
 }
 
 // LoadThunk returns a function that when called will block waiting for a trustline.
 // This method should be used if you want one goroutine to make requests to many
 // different data loaders without blocking until the thunk is called.
-func (l *TrustlineLoader) LoadThunk(key int) func() (*model.Trustline, error) {
+func (l *TrustlineLoader) LoadThunk(key string) func() (*model.Trustline, error) {
 	l.mu.Lock()
 	if it, ok := l.cache[key]; ok {
 		l.mu.Unlock()
@@ -83,7 +83,7 @@ func (l *TrustlineLoader) LoadThunk(key int) func() (*model.Trustline, error) {
 		if err == nil {
 			l.mu.Lock()
 			if l.cache == nil {
-				l.cache = map[int]*model.Trustline{}
+				l.cache = map[string]*model.Trustline{}
 			}
 			l.cache[key] = data
 			l.mu.Unlock()
@@ -95,7 +95,7 @@ func (l *TrustlineLoader) LoadThunk(key int) func() (*model.Trustline, error) {
 
 // LoadAll fetches many keys at once. It will be broken into appropriate sized
 // sub batches depending on how the loader is configured
-func (l *TrustlineLoader) LoadAll(keys []int) ([]*model.Trustline, []error) {
+func (l *TrustlineLoader) LoadAll(keys []string) ([]*model.Trustline, []error) {
 	results := make([]func() (*model.Trustline, error), len(keys))
 
 	for i, key := range keys {
@@ -112,7 +112,7 @@ func (l *TrustlineLoader) LoadAll(keys []int) ([]*model.Trustline, []error) {
 
 // Prime the cache with the provided key and value. If the key already exists, no change is made.
 // (To forcefully prime the cache, clear the key first with loader.clear(key).prime(key, value).)
-func (l *TrustlineLoader) Prime(key int, value *model.Trustline) {
+func (l *TrustlineLoader) Prime(key string, value *model.Trustline) {
 	l.mu.Lock()
 	if _, found := l.cache[key]; !found {
 		l.cache[key] = value
@@ -121,7 +121,7 @@ func (l *TrustlineLoader) Prime(key int, value *model.Trustline) {
 }
 
 // Clear the value at key from the cache, if it exists
-func (l *TrustlineLoader) Clear(key int) {
+func (l *TrustlineLoader) Clear(key string) {
 	l.mu.Lock()
 	delete(l.cache, key)
 	l.mu.Unlock()
@@ -129,7 +129,7 @@ func (l *TrustlineLoader) Clear(key int) {
 
 // keyIndex will return the location of the key in the batch, if its not found
 // it will add the key to the batch
-func (b *trustlineBatch) keyIndex(l *TrustlineLoader, key int) int {
+func (b *trustlineBatch) keyIndex(l *TrustlineLoader, key string) int {
 	for i, existingKey := range b.keys {
 		if key == existingKey {
 			return i

@@ -23,6 +23,19 @@ const (
     FROM accounts
     WHERE accountid
   `
+
+  selectTrustline = `
+    SELECT
+      assettype,
+      issuer,
+      assetcode,
+      tlimit,
+      balance,
+      flags,
+      lastmodified
+    FROM trustlines
+    WHERE accountid
+  `
 )
 
 // database/sql has no interface to sql.Scan(...interface{]})
@@ -68,6 +81,26 @@ func QueryAccounts(id []string) ([]model.Account, error) {
   return r, nil
 }
 
+func QueryTrustlines(id []string) ([]model.Trustline, error) {
+  r := make([]model.Trustline, 0)
+
+  rows, err := config.Db.Query(selectTrustline + sqlIn(id) + " ORDER BY accountid, assettype, assetcode")
+  if (err != nil) { return nil, err }
+
+  defer rows.Close()
+  for rows.Next() {
+    t, err := scanTrustline(rows)
+    if (err != nil) { return nil, err }
+    r = append(r, *t)
+  }
+
+  if err = rows.Err(); err != nil {
+    return nil, err
+  }
+
+  return r, nil
+}
+
 // Fetch account data from request
 func scanAccount(r scanner) (*model.Account, error) {
   a := model.Account{}
@@ -87,6 +120,25 @@ func scanAccount(r scanner) (*model.Account, error) {
   if (err != nil) { return nil, err }
 
   return &a, nil
+}
+
+// Fetch trustline data from request
+func scanTrustline(r scanner) (*model.Trustline, error) {
+  t := model.Trustline{}
+
+  err := r.Scan(
+    &t.Assettype,
+    &t.Issuer,
+    &t.Assetcode,
+    &t.Tlimit,
+    &t.Balance,
+    &t.Flags,
+    &t.Lastmodified,
+  )
+
+  if (err != nil) { return nil, err }
+
+  return &t, nil
 }
 
 func sqlIn(v []string) string {
