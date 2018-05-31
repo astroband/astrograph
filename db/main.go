@@ -68,6 +68,7 @@ func QueryAccounts(id []string) ([]model.Account, error) {
   return r, nil
 }
 
+// Fetch account data from request
 func scanAccount(r scanner) (*model.Account, error) {
   a := model.Account{}
 
