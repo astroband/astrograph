@@ -4,13 +4,12 @@ package graph
 
 import (
 	"context"
+	"github.com/mobius-network/astrograph/dataloader"
 	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/util"
 	"sync"
 )
-
-const trustlineLoaderKey = "trustlineloader"
 
 type App struct {
 	AccountChannels map[string]chan model.Account
@@ -27,7 +26,21 @@ func (a *App) Query_Accounts(ctx context.Context, id []string) ([]model.Account,
 }
 
 func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error) {
-	return db.QueryTrustlines([]string{obj.ID})
+	loader := ctx.Value(dataloader.TrustlineLoaderKey).(*dataloader.TrustlineLoader)
+	trustlines, errors := loader.LoadAll([]string{obj.ID})
+
+	for _, e := range errors {
+		if e != nil {
+			return nil, e
+		}
+	}
+
+	result := make([]model.Trustline, len(trustlines))
+	for i, t := range trustlines {
+		result[i] = *t
+	}
+
+	return result, nil
 }
 
 func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-chan model.Account, error) {
@@ -75,11 +88,3 @@ func (a *App) SendAccountUpdates(accounts []model.Account) {
 	}
 	a.mu.Unlock()
 }
-
-// func getTrustlineLoader(ctx context.Context) *dataloader.TrustlineLoader {
-// 	return ctx.Value(trustlineLoaderKey).(*dataloader.TrustlineLoader)
-// }
-//
-// func (a *App) Account_trustlineLoader(ctx context.Context, obj *Account) ([]*Trustline, error) {
-// 	return getTrustlineLoader(ctx).Load(obj.ID)
-// }
