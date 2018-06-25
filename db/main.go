@@ -1,12 +1,12 @@
 package db
 
 import (
-  "strings"
+	"strings"
 )
 
 // Template queries
 const (
-  selectAccount = `
+	selectAccount = `
     SELECT
       accountid,
       balance,
@@ -21,7 +21,7 @@ const (
     WHERE accountid
   `
 
-  selectTrustline = `
+	selectTrustline = `
     SELECT
       accountid,
       assettype,
@@ -38,9 +38,9 @@ const (
 
 // database/sql has no interface to sql.Scan(...interface{]})
 type scanner interface {
-  Scan(...interface {}) error
+	Scan(...interface{}) error
 }
 
 func sqlIn(v []string) string {
-  return " IN('" + strings.Join(v, "', '") + "')";
+	return " IN('" + strings.Join(v, "', '") + "')"
 }

@@ -3,11 +3,11 @@
 package graph
 
 import (
-	"sync"
 	"context"
 	"github.com/mobius-network/astrograph/db"
-	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
+	"github.com/mobius-network/astrograph/util"
+	"sync"
 )
 
 const trustlineLoaderKey = "trustlineloader"
@@ -15,15 +15,15 @@ const trustlineLoaderKey = "trustlineloader"
 type App struct {
 	AccountChannels map[string]chan model.Account
 	AccountCounters map[string]uint64
-	mu       		    sync.Mutex
+	mu              sync.Mutex
 }
 
 func (a *App) Query_Account(ctx context.Context, id string) (*model.Account, error) {
 	return db.QueryAccount(id)
 }
 
-func (a *App)	Query_Accounts(ctx context.Context, id []string) ([]model.Account, error) {
-  return db.QueryAccounts(id)
+func (a *App) Query_Accounts(ctx context.Context, id []string) ([]model.Account, error) {
+	return db.QueryAccounts(id)
 }
 
 func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error) {
@@ -52,7 +52,7 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 		a.mu.Lock()
 		a.AccountCounters[id]--
 		util.LogDebug("Counter for", id, "is", a.AccountCounters[id])
-		if (a.AccountCounters[id] <= 0) {
+		if a.AccountCounters[id] <= 0 {
 			delete(a.AccountChannels, id)
 		}
 		a.mu.Unlock()
@@ -62,17 +62,17 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 }
 
 func (a *App) SendAccountUpdates(accounts []model.Account) {
-  a.mu.Lock()
-  for _, account := range accounts {
+	a.mu.Lock()
+	for _, account := range accounts {
 		ch := a.AccountChannels[account.ID]
-		if (ch == nil) {
+		if ch == nil {
 			util.LogDebug(account.ID, "subscription not found")
 			continue
 		}
 		util.LogDebug("Sending updates to", account.ID)
 
 		ch <- account
-  }
+	}
 	a.mu.Unlock()
 }
 

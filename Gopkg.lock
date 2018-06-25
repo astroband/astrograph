@@ -4,7 +4,10 @@
 [[projects]]
   branch = "master"
   name = "github.com/alecthomas/template"
-  packages = [".","parse"]
+  packages = [
+    ".",
+    "parse"
+  ]
   revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
 
 [[projects]]
@@ -23,37 +26,54 @@
   branch = "master"
   name = "github.com/gorilla/websocket"
   packages = ["."]
-  revision = "21ab95fa12b9bdd8fecf5fa3586aad941cc98785"
+  revision = "5ed622c449da6d44c3c8329331ff47a9e5844f71"
 
 [[projects]]
   branch = "master"
   name = "github.com/lib/pq"
-  packages = [".","oid"]
-  revision = "d34b9ff171c21ad295489235aec8b6626023cd04"
+  packages = [
+    ".",
+    "oid"
+  ]
+  revision = "90697d60dd844d5ef6ff15135d0203f65d2f53b8"
 
 [[projects]]
-  branch = "master"
   name = "github.com/mattn/go-sqlite3"
   packages = ["."]
-  revision = "52b8080d4d0eb6d16f3a5f9336c29192dac68185"
+  revision = "25ecb14adfc7543176f7d85291ec7dba82c6f7e4"
+  version = "v1.9.0"
 
 [[projects]]
   name = "github.com/opentracing/opentracing-go"
-  packages = [".","ext","log"]
+  packages = [
+    ".",
+    "ext",
+    "log"
+  ]
   revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
   version = "v1.0.2"
 
 [[projects]]
   branch = "master"
   name = "github.com/vektah/gqlgen"
-  packages = ["graphql","handler","neelance/common","neelance/errors","neelance/introspection","neelance/query","neelance/schema","neelance/validation","opentracing"]
-  revision = "e1fd79fed15f60c47471d901c8250ab56aff1c55"
+  packages = [
+    "graphql",
+    "handler",
+    "neelance/common",
+    "neelance/errors",
+    "neelance/introspection",
+    "neelance/query",
+    "neelance/schema",
+    "neelance/validation",
+    "opentracing"
+  ]
+  revision = "a39c63a5ef9dadec023241f049d511380dbce189"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context"]
-  revision = "2491c5de3490fced2f6cff376127c667efeed857"
+  revision = "afe8f62b1d6bbd81f31868121a50b06d8188e1f9"
 
 [[projects]]
   name = "gopkg.in/alecthomas/kingpin.v2"

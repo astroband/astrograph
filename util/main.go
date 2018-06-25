@@ -1,8 +1,8 @@
 package util
 
 import (
-	"log"
 	"github.com/mobius-network/astrograph/config"
+	"log"
 )
 
 // Ruby Array#uniq
@@ -21,7 +21,7 @@ func UniqueStringSlice(input []string) []string {
 }
 
 func LogDebug(v ...interface{}) {
-	if (*config.Debug) {
+	if *config.Debug {
 		log.Println(v...)
 	}
 }

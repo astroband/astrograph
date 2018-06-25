@@ -2,17 +2,17 @@ package main
 
 import (
 	"log"
-	"time"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 	gqlopentracing "github.com/vektah/gqlgen/opentracing"
 
-	"github.com/vektah/gqlgen/handler"
-	"github.com/mobius-network/astrograph/graph"
-	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
+	"github.com/mobius-network/astrograph/graph"
 	"github.com/mobius-network/astrograph/ingest"
+	"github.com/mobius-network/astrograph/model"
+	"github.com/vektah/gqlgen/handler"
 )
 
 var app *graph.App
