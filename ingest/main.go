@@ -92,8 +92,12 @@ func (c *Core) Pull() (accounts []model.Account) {
 	log.Println("Ingesting ledger", c.LedgerSeq)
 
 	if !c.checkLedgerExist() { return }
-	
-	id := append(c.loadUpdatesFrom("accounts"), c.loadUpdatesFrom("accountdata"), c.loadUpdatesFrom("trustlines")...)
+
+	id := append(
+		c.loadUpdatesFrom("accounts"),
+		c.loadUpdatesFrom("accountdata"),
+		c.loadUpdatesFrom("trustlines")...
+	)
 	id = util.UniqueStringSlice(id)
 
 	util.LogDebug("Updated accounts, trustlines and data entries:", id)
