@@ -1,6 +1,7 @@
 package db
 
 import (
+	"math"
 	"database/sql"
 	"github.com/mobius-network/astrograph/config"
 	"github.com/mobius-network/astrograph/model"
@@ -65,6 +66,8 @@ func scanAccount(r scanner) (*model.Account, error) {
 		&a.Flags,
 		&a.LastModified,
 	)
+
+	a.Balance = a.Balance / math.Pow(10, 7)
 
 	if err != nil {
 		return nil, err

@@ -2,7 +2,7 @@ scalar AccountID
 
 type Account {
   id: AccountID!
-  balance: Int!
+  balance: Float!
   sequenceNumber: Int!
   numSubentries: Int!
   inflationDest: String
@@ -18,8 +18,8 @@ type Trustline {
   assetType: Int!
   issuer: String!
   assetCode: String!
-  limit: Int!
-  balance: Int!
+  limit: Float!
+  balance: Float!
   flags: Int!
   lastModified: Int!
 }

@@ -148,7 +148,7 @@ func (ec *executionContext) _Account_balance(ctx context.Context, field graphql.
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	res := obj.Balance
-	return graphql.MarshalInt(res)
+	return graphql.MarshalFloat(res)
 }
 
 func (ec *executionContext) _Account_sequenceNumber(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
@@ -590,7 +590,7 @@ func (ec *executionContext) _Trustline_limit(ctx context.Context, field graphql.
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	res := obj.Limit
-	return graphql.MarshalInt(res)
+	return graphql.MarshalFloat(res)
 }
 
 func (ec *executionContext) _Trustline_balance(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
@@ -601,7 +601,7 @@ func (ec *executionContext) _Trustline_balance(ctx context.Context, field graphq
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	res := obj.Balance
-	return graphql.MarshalInt(res)
+	return graphql.MarshalFloat(res)
 }
 
 func (ec *executionContext) _Trustline_flags(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
@@ -1368,7 +1368,7 @@ var parsedSchema = schema.MustParse(`scalar AccountID
 
 type Account {
   id: AccountID!
-  balance: Int!
+  balance: Float!
   sequenceNumber: Int!
   numSubentries: Int!
   inflationDest: String
@@ -1384,8 +1384,8 @@ type Trustline {
   assetType: Int!
   issuer: String!
   assetCode: String!
-  limit: Int!
-  balance: Int!
+  limit: Float!
+  balance: Float!
   flags: Int!
   lastModified: Int!
 }
