@@ -1,7 +1,7 @@
 package ingest
 
 import (
-	"log"	
+	"log"
 	"database/sql"
 	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/util"
@@ -80,10 +80,7 @@ func (c *Core) loadUpdatesFrom(tableName string) []string {
 // Loads accounts with given ids
 func (c *Core) loadAccounts(id []string) []model.Account {
 	r, err := db.QueryAccounts(id)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	if err != nil { log.Fatal(err) }
 	return r
 }
 

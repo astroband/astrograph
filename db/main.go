@@ -6,6 +6,8 @@ import (
 
 // Template queries
 const (
+	selectMaxLedger = "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1"
+		
 	selectAccount = `
     SELECT
       accountid,

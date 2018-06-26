@@ -11,10 +11,14 @@ Stellar GraphQL interface.
 
 `astrograph --database-url=postgres://localhost/core?sslmode=disable`
 
+`open localhost:8000`
+
 # TODO
 
 7. Remove SQL from ingest
+8. Generate GraphQL ID for every entity
 2. Data fields in account results + watch
+9. QueryAccounts -> * and ordered - ?
 3. Abstraction over dataloader
 3. Fast rewind to last ledger - ?
 4. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
