@@ -57,7 +57,7 @@ func scanAccount(r scanner) (*model.Account, error) {
 	err := r.Scan(
 		&a.ID,
 		&a.Balance,
-		&a.SeqenceNumber,
+		&a.SequenceNumber,
 		&a.NumSubentries,
 		&a.InflationDest,
 		&a.HomeDomain,
