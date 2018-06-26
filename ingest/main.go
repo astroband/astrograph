@@ -55,7 +55,7 @@ func (c *Core) checkLedgerExist() bool {
 	return true
 }
 
-// Loads updated account ids from given table (accounts, trustlines, data entries in future)
+// Loads updated account ids from given table (accounts, trustlines, data entries, ...)
 func (c *Core) loadUpdatesFrom(tableName string) []string {
 	var a []string = make([]string, 0)
 	var id string
@@ -91,14 +91,13 @@ func (c *Core) loadAccounts(id []string) []model.Account {
 func (c *Core) Pull() (accounts []model.Account) {
 	log.Println("Ingesting ledger", c.LedgerSeq)
 
-	if !c.checkLedgerExist() {
-		return
-	}
-	id := append(c.loadUpdatesFrom("accounts"), c.loadUpdatesFrom("trustlines")...)
+	if !c.checkLedgerExist() { return }
+	
+	id := append(c.loadUpdatesFrom("accounts"), c.loadUpdatesFrom("accountdata"), c.loadUpdatesFrom("trustlines")...)
 	id = util.UniqueStringSlice(id)
 
-	util.LogDebug("Updated accounts & trustlines:", id)
-	log.Println("Updated", len(id), "accounts & trustlines")
+	util.LogDebug("Updated accounts, trustlines and data entries:", id)
+	log.Println("Updated", len(id), "accounts, trustlines and data entries")
 
 	r := c.loadAccounts(id)
 
