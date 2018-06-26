@@ -45,12 +45,12 @@ func scanTrustline(r scanner) (*model.Trustline, error) {
 		&t.LastModified,
 	)
 
-	t.Balance = t.Balance / model.BalancePrecision
-	t.Limit = t.Limit / model.BalancePrecision
-
 	if err != nil {
 		return nil, err
 	}
+
+	t.Balance = t.Balance / model.BalancePrecision
+	t.Limit = t.Limit / model.BalancePrecision
 
 	return &t, nil
 }

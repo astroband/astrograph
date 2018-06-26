@@ -20,7 +20,7 @@ type Account {
   numSubentries: Int!
   inflationDest: String
   homeDomain: String
-  thresholds: String
+  thresholds: AccountThresholds!
   flags: AccountFlags!
   lastModified: Int!
   trustlines: [Trustline!]!

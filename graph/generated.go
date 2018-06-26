@@ -19,8 +19,6 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 }
 
 type Resolvers interface {
-	Account_flags(ctx context.Context, obj *model.Account) (model.AccountFlags, error)
-
 	Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error)
 
 	Query_Account(ctx context.Context, id string) (*model.Account, error)
@@ -212,40 +210,18 @@ func (ec *executionContext) _Account_thresholds(ctx context.Context, field graph
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	res := obj.Thresholds
-	if res == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalString(*res)
+	return ec._AccountThresholds(ctx, field.Selections, &res)
 }
 
 func (ec *executionContext) _Account_flags(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
-		Object: "Account",
-		Args:   nil,
-		Field:  field,
-	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Account_flags(ctx, obj)
-		})
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(model.AccountFlags)
-		return ec._AccountFlags(ctx, field.Selections, &res)
-	})
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Account"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Flags
+	return ec._AccountFlags(ctx, field.Selections, &res)
 }
 
 func (ec *executionContext) _Account_lastModified(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
@@ -356,6 +332,79 @@ func (ec *executionContext) _AccountFlags_authImmutable(ctx context.Context, fie
 	defer rctx.Pop()
 	res := obj.AuthImmutable
 	return graphql.MarshalBoolean(res)
+}
+
+var accountThresholdsImplementors = []string{"AccountThresholds"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _AccountThresholds(ctx context.Context, sel []query.Selection, obj *model.AccountThresholds) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, accountThresholdsImplementors, ec.Variables)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AccountThresholds")
+		case "masterWeight":
+			out.Values[i] = ec._AccountThresholds_masterWeight(ctx, field, obj)
+		case "low":
+			out.Values[i] = ec._AccountThresholds_low(ctx, field, obj)
+		case "medium":
+			out.Values[i] = ec._AccountThresholds_medium(ctx, field, obj)
+		case "high":
+			out.Values[i] = ec._AccountThresholds_high(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _AccountThresholds_masterWeight(ctx context.Context, field graphql.CollectedField, obj *model.AccountThresholds) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountThresholds"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.MasterWeight
+	return graphql.MarshalInt(res)
+}
+
+func (ec *executionContext) _AccountThresholds_low(ctx context.Context, field graphql.CollectedField, obj *model.AccountThresholds) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountThresholds"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Low
+	return graphql.MarshalInt(res)
+}
+
+func (ec *executionContext) _AccountThresholds_medium(ctx context.Context, field graphql.CollectedField, obj *model.AccountThresholds) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountThresholds"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Medium
+	return graphql.MarshalInt(res)
+}
+
+func (ec *executionContext) _AccountThresholds_high(ctx context.Context, field graphql.CollectedField, obj *model.AccountThresholds) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountThresholds"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.High
+	return graphql.MarshalInt(res)
 }
 
 var queryImplementors = []string{"Query"}
@@ -1454,6 +1503,13 @@ type AccountFlags {
   authImmutable: Boolean!
 }
 
+type AccountThresholds {
+  masterWeight: Int!
+  low: Int!
+  medium: Int!
+  high: Int!
+}
+
 type Account {
   id: AccountID!
   balance: Float!
@@ -1461,7 +1517,7 @@ type Account {
   numSubentries: Int!
   inflationDest: String
   homeDomain: String
-  thresholds: String
+  thresholds: AccountThresholds!
   flags: AccountFlags!
   lastModified: Int!
   trustlines: [Trustline!]!

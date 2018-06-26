@@ -1,7 +1,10 @@
 package db
 
 import (
+	"log"
 	"database/sql"
+	b64 "encoding/base64"
+	"github.com/stellar/go/xdr"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
 )
@@ -54,6 +57,9 @@ func QueryAccounts(id []string) ([]model.Account, error) {
 func scanAccount(r scanner) (*model.Account, error) {
 	a := model.Account{}
 
+	var thresholds string
+	var flags int
+
 	err := r.Scan(
 		&a.ID,
 		&a.Balance,
@@ -61,16 +67,38 @@ func scanAccount(r scanner) (*model.Account, error) {
 		&a.NumSubentries,
 		&a.InflationDest,
 		&a.HomeDomain,
-		&a.Thresholds,
-		&a.RawFlags,
+		&thresholds,
+		&flags,
 		&a.LastModified,
 	)
 
-	a.Balance = a.Balance / model.BalancePrecision
+	if err != nil { return nil, err }
 
-	if err != nil {
-		return nil, err
-	}
+	a.Balance = a.Balance / model.BalancePrecision
+	a.Flags = fetchFlags(flags)
+
+	a.Thresholds, err = fetchThresholds(thresholds)
+	if err != nil { return nil, err }
 
 	return &a, nil
+}
+
+func fetchFlags(flags int) (model.AccountFlags) {
+	return model.AccountFlags{
+		AuthRequired: flags & int(xdr.AccountFlagsAuthRequiredFlag) == 1,
+		AuthRevokable: flags & int(xdr.AccountFlagsAuthRevocableFlag) == 1,
+		AuthImmutable: flags & int(xdr.AccountFlagsAuthImmutableFlag) == 1,
+	}
+}
+
+func fetchThresholds(thresholds string) (model.AccountThresholds, error) {
+	t, err := b64.StdEncoding.DecodeString(thresholds)
+	if (err != nil) { return model.AccountThresholds{}, err }
+
+	return model.AccountThresholds{
+		MasterWeight: int(t[xdr.ThresholdIndexesThresholdMasterWeight]),
+		Low: int(t[xdr.ThresholdIndexesThresholdLow]),
+		Medium: int(t[xdr.ThresholdIndexesThresholdMed]),
+		High: int(t[xdr.ThresholdIndexesThresholdHigh]),
+	}, nil
 }
