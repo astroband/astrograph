@@ -3,21 +3,21 @@ package model
 type Account struct {
 	ID            string  `json:"id"`
 	Balance       int     `json:"balance"`
-	Seqnum        int     `json:"seqnum"`
-	Numsubentries int     `json:"numsubentries"`
-	Inflationdest *string `json:"inflationdest"`
-	Homedomain    *string `json:"homedomain"`
+	SeqenceNumber int     `json:"sequenceNumber"`
+	NumSubentries int     `json:"numSubentries"`
+	InflationDest *string `json:"inflationDest"`
+	HomeDomain    *string `json:"homeDomain"`
 	Thresholds    *string `json:"thresholds"`
 	Flags         int     `json:"flags"`
-	Lastmodified  int     `json:"lastmodified"`
+	LastModified  int     `json:"lastModified"`
 }
 type Trustline struct {
-	AccountID    string `json:"accountid"`
-	Assettype    int    `json:"assettype"`
+	AccountID    string `json:"accountId"`
+	AssetType    int    `json:"assetType"`
 	Issuer       string `json:"issuer"`
-	Assetcode    string `json:"assetcode"`
-	Tlimit       int    `json:"tlimit"`
+	AssetCode    string `json:"assetCode"`
+	Limit        int    `json:"limit"`
 	Balance      int    `json:"balance"`
 	Flags        int    `json:"flags"`
-	Lastmodified int    `json:"lastmodified"`
+	LastModified int    `json:"lastModified"`
 }

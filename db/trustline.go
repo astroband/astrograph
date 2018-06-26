@@ -36,13 +36,13 @@ func scanTrustline(r scanner) (*model.Trustline, error) {
 
 	err := r.Scan(
 		&t.AccountID,
-		&t.Assettype,
+		&t.AssetType,
 		&t.Issuer,
-		&t.Assetcode,
-		&t.Tlimit,
+		&t.AssetCode,
+		&t.Limit,
 		&t.Balance,
 		&t.Flags,
-		&t.Lastmodified,
+		&t.LastModified,
 	)
 
 	if err != nil {

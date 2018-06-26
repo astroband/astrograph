@@ -41,7 +41,7 @@ func startIngest() {
 func main() {
 	defer config.Db.Close()
 
-	http.Handle("/", handler.Playground("Todo", "/query"))
+	http.Handle("/", handler.Playground("Stellar", "/query"))
 	http.Handle(
 		"/query",
 		dataloader.TrustlineLoaderMiddleware(

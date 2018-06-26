@@ -57,13 +57,13 @@ func scanAccount(r scanner) (*model.Account, error) {
 	err := r.Scan(
 		&a.ID,
 		&a.Balance,
-		&a.Seqnum,
-		&a.Numsubentries,
-		&a.Inflationdest,
-		&a.Homedomain,
+		&a.SeqenceNumber,
+		&a.NumSubentries,
+		&a.InflationDest,
+		&a.HomeDomain,
 		&a.Thresholds,
 		&a.Flags,
-		&a.Lastmodified,
+		&a.LastModified,
 	)
 
 	if err != nil {

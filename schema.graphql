@@ -1,32 +1,34 @@
+scalar AccountID
+
 type Account {
-  id: String!
+  id: AccountID!
   balance: Int!
-  seqnum: Int!
-  numsubentries: Int!
-  inflationdest: String
-  homedomain: String
+  sequenceNumber: Int!
+  numSubentries: Int!
+  inflationDest: String
+  homeDomain: String
   thresholds: String
   flags: Int!
-  lastmodified: Int!
+  lastModified: Int!
   trustlines: [Trustline!]!
 }
 
 type Trustline {
-  accountid: String!
-  assettype: Int!
+  accountId: AccountID!
+  assetType: Int!
   issuer: String!
-  assetcode: String!
-  tlimit: Int!
+  assetCode: String!
+  limit: Int!
   balance: Int!
   flags: Int!
-  lastmodified: Int!
+  lastModified: Int!
 }
 
 type Subscription {
-  accountUpdated(id: String!): Account!
+  accountUpdated(id: AccountID!): Account!
 }
 
 type Query {
-  Account(id: String!): Account
-  Accounts(id: [String!]): [Account]
+  Account(id: AccountID!): Account
+  Accounts(id: [AccountID!]): [Account]
 }
