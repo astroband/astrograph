@@ -1,5 +1,11 @@
 scalar AccountID
 
+type AccountFlags {
+  authRequired: Boolean!
+  authRevokable: Boolean!
+  authImmutable: Boolean!
+}
+
 type Account {
   id: AccountID!
   balance: Float!
@@ -8,7 +14,7 @@ type Account {
   inflationDest: String
   homeDomain: String
   thresholds: String
-  flags: Int!
+  flags: AccountFlags!
   lastModified: Int!
   trustlines: [Trustline!]!
 }

@@ -19,7 +19,10 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 }
 
 type Resolvers interface {
+	Account_flags(ctx context.Context, obj *model.Account) (model.AccountFlags, error)
+
 	Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error)
+
 	Query_Account(ctx context.Context, id string) (*model.Account, error)
 	Query_Accounts(ctx context.Context, id []string) ([]model.Account, error)
 
@@ -216,14 +219,33 @@ func (ec *executionContext) _Account_thresholds(ctx context.Context, field graph
 }
 
 func (ec *executionContext) _Account_flags(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Account"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	res := obj.Flags
-	return graphql.MarshalInt(res)
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Account",
+		Args:   nil,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Account_flags(ctx, obj)
+		})
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(model.AccountFlags)
+		return ec._AccountFlags(ctx, field.Selections, &res)
+	})
 }
 
 func (ec *executionContext) _Account_lastModified(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
@@ -274,6 +296,66 @@ func (ec *executionContext) _Account_trustlines(ctx context.Context, field graph
 		}
 		return arr1
 	})
+}
+
+var accountFlagsImplementors = []string{"AccountFlags"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _AccountFlags(ctx context.Context, sel []query.Selection, obj *model.AccountFlags) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, accountFlagsImplementors, ec.Variables)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AccountFlags")
+		case "authRequired":
+			out.Values[i] = ec._AccountFlags_authRequired(ctx, field, obj)
+		case "authRevokable":
+			out.Values[i] = ec._AccountFlags_authRevokable(ctx, field, obj)
+		case "authImmutable":
+			out.Values[i] = ec._AccountFlags_authImmutable(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _AccountFlags_authRequired(ctx context.Context, field graphql.CollectedField, obj *model.AccountFlags) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountFlags"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.AuthRequired
+	return graphql.MarshalBoolean(res)
+}
+
+func (ec *executionContext) _AccountFlags_authRevokable(ctx context.Context, field graphql.CollectedField, obj *model.AccountFlags) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountFlags"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.AuthRevokable
+	return graphql.MarshalBoolean(res)
+}
+
+func (ec *executionContext) _AccountFlags_authImmutable(ctx context.Context, field graphql.CollectedField, obj *model.AccountFlags) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountFlags"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.AuthImmutable
+	return graphql.MarshalBoolean(res)
 }
 
 var queryImplementors = []string{"Query"}
@@ -1366,6 +1448,12 @@ func (ec *executionContext) introspectType(name string) *introspection.Type {
 
 var parsedSchema = schema.MustParse(`scalar AccountID
 
+type AccountFlags {
+  authRequired: Boolean!
+  authRevokable: Boolean!
+  authImmutable: Boolean!
+}
+
 type Account {
   id: AccountID!
   balance: Float!
@@ -1374,7 +1462,7 @@ type Account {
   inflationDest: String
   homeDomain: String
   thresholds: String
-  flags: Int!
+  flags: AccountFlags!
   lastModified: Int!
   trustlines: [Trustline!]!
 }

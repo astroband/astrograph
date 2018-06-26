@@ -18,3 +18,6 @@
   branch = "master"
   name = "github.com/mattn/go-sqlite3"
 
+[[constraint]]
+  branch = "master"
+  name = "github.com/stellar/go"

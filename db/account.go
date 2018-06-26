@@ -1,10 +1,9 @@
 package db
 
 import (
-	"math"
 	"database/sql"
-	"github.com/mobius-network/astrograph/config"
 	"github.com/mobius-network/astrograph/model"
+	"github.com/mobius-network/astrograph/config"
 )
 
 // Returns single account or nil
@@ -63,11 +62,11 @@ func scanAccount(r scanner) (*model.Account, error) {
 		&a.InflationDest,
 		&a.HomeDomain,
 		&a.Thresholds,
-		&a.Flags,
+		&a.RawFlags,
 		&a.LastModified,
 	)
 
-	a.Balance = a.Balance / math.Pow(10, 7)
+	a.Balance = a.Balance / model.BalancePrecision
 
 	if err != nil {
 		return nil, err

@@ -4,10 +4,11 @@ package graph
 
 import (
 	"context"
-	"github.com/mobius-network/astrograph/dataloader"
+	"github.com/stellar/go/xdr"
 	"github.com/mobius-network/astrograph/db"
-	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/util"
+	"github.com/mobius-network/astrograph/model"
+	"github.com/mobius-network/astrograph/dataloader"
 	"sync"
 )
 
@@ -15,6 +16,14 @@ type App struct {
 	AccountChannels map[string]chan model.Account
 	AccountCounters map[string]uint64
 	mu              sync.Mutex
+}
+
+func (a *App) Account_flags(ctx context.Context, obj *model.Account) (model.AccountFlags, error) {
+	return model.AccountFlags{
+		AuthRequired: obj.RawFlags & int(xdr.AccountFlagsAuthRequiredFlag) == 1,
+		AuthRevokable: obj.RawFlags & int(xdr.AccountFlagsAuthRevocableFlag) == 1,
+		AuthImmutable: obj.RawFlags & int(xdr.AccountFlagsAuthImmutableFlag) == 1,
+	}, nil
 }
 
 func (a *App) Query_Account(ctx context.Context, id string) (*model.Account, error) {

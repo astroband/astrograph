@@ -1,4 +1,5 @@
 {
   "Account": "github.com/mobius-network/astrograph/model.Account",
-  "Trustline": "github.com/mobius-network/astrograph/model.Trustline"
+  "Trustline": "github.com/mobius-network/astrograph/model.Trustline",
+  "AccountFlags": "github.com/mobius-network/astrograph/model.AccountFlags"
 }

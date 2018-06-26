@@ -4,10 +4,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/alecthomas/template"
-  packages = [
-    ".",
-    "parse"
-  ]
+  packages = [".","parse"]
   revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
 
 [[projects]]
@@ -31,10 +28,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/lib/pq"
-  packages = [
-    ".",
-    "oid"
-  ]
+  packages = [".","oid"]
   revision = "90697d60dd844d5ef6ff15135d0203f65d2f53b8"
 
 [[projects]]
@@ -44,36 +38,34 @@
   version = "v1.9.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/nullstyle/go-xdr"
+  packages = ["xdr3"]
+  revision = "a875e7c9fa2388ce03279f6b5ba1c2ccd1f9e917"
+
+[[projects]]
+  branch = "master"
   name = "github.com/opentracing/opentracing-go"
-  packages = [
-    ".",
-    "ext",
-    "log"
-  ]
-  revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
-  version = "v1.0.2"
+  packages = [".","ext","log"]
+  revision = "bd9c3193394760d98b2fa6ebb2291f0cd1d06a7d"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/stellar/go"
+  packages = ["crc16","strkey","support/errors","xdr"]
+  revision = "9305f617ab3896931f81362a8679207d9d97721d"
 
 [[projects]]
   branch = "master"
   name = "github.com/vektah/gqlgen"
-  packages = [
-    "graphql",
-    "handler",
-    "neelance/common",
-    "neelance/errors",
-    "neelance/introspection",
-    "neelance/query",
-    "neelance/schema",
-    "neelance/validation",
-    "opentracing"
-  ]
+  packages = ["graphql","handler","neelance/common","neelance/errors","neelance/introspection","neelance/query","neelance/schema","neelance/validation","opentracing"]
   revision = "a39c63a5ef9dadec023241f049d511380dbce189"
-
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/net"
-  packages = ["context"]
-  revision = "afe8f62b1d6bbd81f31868121a50b06d8188e1f9"
 
 [[projects]]
   name = "gopkg.in/alecthomas/kingpin.v2"
@@ -84,6 +76,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3e81bc6220e9cbefd38af59cf0931a7e8fe9430fadeb8331accd15581621c694"
+  inputs-digest = "b51bd3755b47624c3e415689885d85f86457a99cbe1538762942d2144d8ee6f7"
   solver-name = "gps-cdcl"
   solver-version = 1
