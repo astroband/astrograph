@@ -19,8 +19,6 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 }
 
 type Resolvers interface {
-	Account_sequenceNumber(ctx context.Context, obj *model.Account) (int, error)
-
 	Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error)
 	Query_Account(ctx context.Context, id string) (*model.Account, error)
 	Query_Accounts(ctx context.Context, id []string) ([]model.Account, error)
@@ -154,33 +152,14 @@ func (ec *executionContext) _Account_balance(ctx context.Context, field graphql.
 }
 
 func (ec *executionContext) _Account_sequenceNumber(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
-		Object: "Account",
-		Args:   nil,
-		Field:  field,
-	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Account_sequenceNumber(ctx, obj)
-		})
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(int)
-		return graphql.MarshalInt(res)
-	})
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Account"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.SequenceNumber
+	return graphql.MarshalInt(res)
 }
 
 func (ec *executionContext) _Account_numSubentries(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
