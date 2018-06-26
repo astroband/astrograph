@@ -6,6 +6,13 @@ type AccountFlags {
   authImmutable: Boolean!
 }
 
+type AccountThresholds {
+  masterWeight: Int!
+  low: Int!
+  medium: Int!
+  high: Int!
+}
+
 type Account {
   id: AccountID!
   balance: Float!

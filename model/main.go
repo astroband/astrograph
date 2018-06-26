@@ -7,6 +7,12 @@ type AccountFlags struct {
 	AuthRevokable bool `json:"authRevokable"`
 	AuthImmutable bool `json:"authImmutable"`
 }
+type AccountThresholds struct {
+	MasterWeight int `json:"masterWeight"`
+	Low          int `json:"low"`
+	Medium       int `json:"medium"`
+	High         int `json:"high"`
+}
 type Account struct {
 	ID             string       `json:"id"`
 	Balance        float64      `json:"balance"`
