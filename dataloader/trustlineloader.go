@@ -2,14 +2,15 @@ package dataloader
 
 import (
 	"context"
-	"database/sql"
 	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/model"
 	"net/http"
 	"time"
 )
 
-func TustlineLoaderMiddleware(db *sql.DB, next http.Handler) http.Handler {
+const TrustlineLoaderKey = "trustlineloader"
+
+func TrustlineLoaderMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		trustlineLoader := TrustlineLoader{
 			maxBatch: 100,
@@ -28,7 +29,7 @@ func TustlineLoaderMiddleware(db *sql.DB, next http.Handler) http.Handler {
 				return rh, nil
 			},
 		}
-		ctx := context.WithValue(r.Context(), trustlineLoaderKey, &trustlineLoader)
+		ctx := context.WithValue(r.Context(), TrustlineLoaderKey, &trustlineLoader)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})

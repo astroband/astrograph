@@ -9,6 +9,7 @@ import (
 	gqlopentracing "github.com/vektah/gqlgen/opentracing"
 
 	"github.com/mobius-network/astrograph/config"
+	"github.com/mobius-network/astrograph/dataloader"
 	"github.com/mobius-network/astrograph/graph"
 	"github.com/mobius-network/astrograph/ingest"
 	"github.com/mobius-network/astrograph/model"
@@ -41,14 +42,20 @@ func main() {
 	defer config.Db.Close()
 
 	http.Handle("/", handler.Playground("Todo", "/query"))
-	http.Handle("/query", handler.GraphQL(graph.MakeExecutableSchema(app),
-		handler.ResolverMiddleware(gqlopentracing.ResolverMiddleware()),
-		handler.RequestMiddleware(gqlopentracing.RequestMiddleware()),
-		handler.WebsocketUpgrader(websocket.Upgrader{
-			CheckOrigin: func(r *http.Request) bool {
-				return true
-			},
-		})),
+	http.Handle(
+		"/query",
+		dataloader.TrustlineLoaderMiddleware(
+			handler.GraphQL(
+				graph.MakeExecutableSchema(app),
+				handler.ResolverMiddleware(gqlopentracing.ResolverMiddleware()),
+				handler.RequestMiddleware(gqlopentracing.RequestMiddleware()),
+				handler.WebsocketUpgrader(websocket.Upgrader{
+					CheckOrigin: func(r *http.Request) bool {
+						return true
+					},
+				}),
+			),
+		),
 	)
 
 	log.Println("Stellar GraphQL Server")
