@@ -20,6 +20,7 @@ func UniqueStringSlice(input []string) []string {
 	return u
 }
 
+// Logs debug message if --debug flag passed
 func LogDebug(v ...interface{}) {
 	if *config.Debug {
 		log.Println(v...)

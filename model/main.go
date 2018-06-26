@@ -3,7 +3,7 @@ package model
 const BalancePrecision = 10000000
 
 type AccountFlags struct {
-	AuthRequired bool  `json:"authRequired"`
+	AuthRequired  bool  `json:"authRequired"`
 	AuthRevokable bool `json:"authRevokable"`
 	AuthImmutable bool `json:"authImmutable"`
 }
