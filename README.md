@@ -13,7 +13,6 @@ Stellar GraphQL interface.
 
 # TODO
 
-1. Solve N+1 for trustlines.
 2. Data fields in account results
 3. Fast rewind to last ledger
 4. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
