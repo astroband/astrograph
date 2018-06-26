@@ -34,6 +34,8 @@ const (
     FROM trustlines
     WHERE accountid
   `
+
+	selectTrustlineOrder = " ORDER BY accountid, assettype, assetcode"
 )
 
 // database/sql has no interface to sql.Scan(...interface{]})

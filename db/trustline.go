@@ -36,7 +36,7 @@ func QueryTrustlines(id []string) ([][]*model.Trustline, error) {
 
 // Returns slice of trustlines for requested accounts ordered
 func fetchRows(id []string) ([]*model.Trustline, error) {
-	rows, err := config.Db.Query(selectTrustline + sqlIn(id) + " ORDER BY accountid, assettype, assetcode")
+	rows, err := config.Db.Query(selectTrustline + sqlIn(id) + selectTrustlineOrder)
 	if err != nil { return nil, err }
 
 	result := make([]*model.Trustline, 0)
