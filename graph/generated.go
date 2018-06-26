@@ -407,6 +407,79 @@ func (ec *executionContext) _AccountThresholds_high(ctx context.Context, field g
 	return graphql.MarshalInt(res)
 }
 
+var dataEntryImplementors = []string{"DataEntry"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _DataEntry(ctx context.Context, sel []query.Selection, obj *model.DataEntry) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, dataEntryImplementors, ec.Variables)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("DataEntry")
+		case "accountId":
+			out.Values[i] = ec._DataEntry_accountId(ctx, field, obj)
+		case "name":
+			out.Values[i] = ec._DataEntry_name(ctx, field, obj)
+		case "value":
+			out.Values[i] = ec._DataEntry_value(ctx, field, obj)
+		case "lastModified":
+			out.Values[i] = ec._DataEntry_lastModified(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _DataEntry_accountId(ctx context.Context, field graphql.CollectedField, obj *model.DataEntry) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "DataEntry"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.AccountID
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _DataEntry_name(ctx context.Context, field graphql.CollectedField, obj *model.DataEntry) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "DataEntry"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Name
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _DataEntry_value(ctx context.Context, field graphql.CollectedField, obj *model.DataEntry) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "DataEntry"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Value
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _DataEntry_lastModified(ctx context.Context, field graphql.CollectedField, obj *model.DataEntry) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "DataEntry"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.LastModified
+	return graphql.MarshalInt(res)
+}
+
 var queryImplementors = []string{"Query"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -1508,6 +1581,13 @@ type AccountThresholds {
   low: Int!
   medium: Int!
   high: Int!
+}
+
+type DataEntry {
+  accountId: AccountID!
+  name: String!
+  value: String!
+  lastModified: Int!
 }
 
 type Account {

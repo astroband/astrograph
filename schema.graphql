@@ -13,6 +13,13 @@ type AccountThresholds {
   high: Int!
 }
 
+type DataEntry {
+  accountId: AccountID!
+  name: String!
+  value: String!
+  lastModified: Int!
+}
+
 type Account {
   id: AccountID!
   balance: Float!

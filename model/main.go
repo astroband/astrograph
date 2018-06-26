@@ -1,9 +1,10 @@
 package model
 
+// Amounts are divided by this value to float conversion
 const BalancePrecision = 10000000
 
 type AccountFlags struct {
-	AuthRequired  bool  `json:"authRequired"`
+	AuthRequired  bool `json:"authRequired"`
 	AuthRevokable bool `json:"authRevokable"`
 	AuthImmutable bool `json:"authImmutable"`
 }
@@ -12,6 +13,12 @@ type AccountThresholds struct {
 	Low          int `json:"low"`
 	Medium       int `json:"medium"`
 	High         int `json:"high"`
+}
+type DataEntry struct {
+	AccountID    string `json:"accountId"`
+	Name         string `json:"name"`
+	Value        string `json:"value"`
+	LastModified int    `json:"lastModified"`
 }
 type Account struct {
 	ID             string            `json:"id"`
