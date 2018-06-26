@@ -3,6 +3,7 @@
 package graph
 
 import (
+	// "log"
 	"sync"
 	"context"
 	"github.com/mobius-network/astrograph/db"
@@ -27,9 +28,11 @@ func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]mod
 		}
 	}
 
-	result := make([]model.Trustline, len(trustlines))
-	for i, t := range trustlines {
-		result[i] = *t
+	result := make([]model.Trustline, 0)
+	for _, t := range trustlines {
+		if (t != nil) {
+			result = append(result, *t)
+		}
 	}
 
 	return result, nil

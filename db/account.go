@@ -1,7 +1,6 @@
 package db
 
 import (
-	"log"
 	"database/sql"
 	b64 "encoding/base64"
 	"github.com/stellar/go/xdr"
