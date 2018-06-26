@@ -1,12 +1,12 @@
 package ingest
 
 import (
+	"log"	
 	"database/sql"
-	"github.com/mobius-network/astrograph/config"
 	"github.com/mobius-network/astrograph/db"
-	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/util"
-	"log"
+	"github.com/mobius-network/astrograph/model"
+	"github.com/mobius-network/astrograph/config"
 )
 
 type Core struct {
