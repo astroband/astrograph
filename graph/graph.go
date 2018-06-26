@@ -29,7 +29,11 @@ func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]mod
 	}
 
 	result := make([]model.Trustline, 0)
-	for _, t := range trustlines {
+	if (trustlines[0] == nil) {
+		return nil, nil
+	}
+
+	for _, t := range trustlines[0] {
 		if (t != nil) {
 			result = append(result, *t)
 		}

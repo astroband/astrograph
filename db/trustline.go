@@ -10,9 +10,9 @@ func QueryTrustlines(id []string) ([][]*model.Trustline, error) {
 	rows, err := fetchRows(id)
 	if (err != nil) { return nil, err }
 
-	r := make([][]*model.Trustline, len(id))
+	result := make([][]*model.Trustline, len(id))
 
-	// For each given account
+	// For every given account
 	for n, accountId := range id {
 		accountTrustlines := make([]*model.Trustline, 0)
 
@@ -27,10 +27,11 @@ func QueryTrustlines(id []string) ([][]*model.Trustline, error) {
 				rows[i] = nil
 			}
 		}
-		r[n] = accountTrustlines // Put account trustlines slice to the same position as account id has in source slice
+
+		result[n] = accountTrustlines // Put account trustlines slice to the same position as account id has in source slice
 	}
 
-	return r, nil
+	return result, nil
 }
 
 // Returns slice of trustlines for requested accounts ordered
@@ -38,20 +39,20 @@ func fetchRows(id []string) ([]*model.Trustline, error) {
 	rows, err := config.Db.Query(selectTrustline + sqlIn(id) + " ORDER BY accountid, assettype, assetcode")
 	if err != nil { return nil, err }
 
-	r := make([]*model.Trustline, 0)
+	result := make([]*model.Trustline, 0)
 
 	defer rows.Close()
 	for rows.Next() {
 		t, err := scanTrustline(rows)
 		if err != nil { return nil, err }
-		r = append(r, t)
+		result = append(result, t)
 	}
 
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return r, nil
+	return result, nil
 }
 
 // Fetch trustline data from request

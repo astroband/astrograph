@@ -25,11 +25,9 @@ func QueryAccount(id string) (*model.Account, error) {
 
 // Returns a set of accounts by id
 func QueryAccounts(id []string) ([]model.Account, error) {
-	r := make([]model.Account, 0)
+	result := make([]model.Account, 0)
 
-	if len(id) == 0 {
-		return r, nil
-	}
+	if len(id) == 0 { return result, nil }
 
 	rows, err := config.Db.Query(selectAccount + sqlIn(id))
 	if err != nil {
@@ -42,14 +40,14 @@ func QueryAccounts(id []string) ([]model.Account, error) {
 		if err != nil {
 			return nil, err
 		}
-		r = append(r, *a)
+		result = append(result, *a)
 	}
 
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return r, nil
+	return result, nil
 }
 
 // Fetch account data from request

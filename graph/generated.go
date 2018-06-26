@@ -1515,7 +1515,7 @@ type Account {
   balance: Float!
   sequenceNumber: Int!
   numSubentries: Int!
-  inflationDest: String
+  inflationDest: AccountID
   homeDomain: String
   thresholds: AccountThresholds!
   flags: AccountFlags!

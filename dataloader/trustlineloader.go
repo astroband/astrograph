@@ -2,7 +2,7 @@ package dataloader
 
 import (
 	"context"
-	//"github.com/mobius-network/astrograph/db"
+	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/model"
 	"net/http"
 	"time"
@@ -15,19 +15,10 @@ func TrustlineLoaderMiddleware(next http.Handler) http.Handler {
 		trustlineLoader := TrustlineLoader{
 			maxBatch: 100,
 			wait:     1 * time.Millisecond,
-			fetch: func(keys []string) ([]*model.Trustline, []error) {
-				// r, err := db.QueryTrustlines(keys)
-				// if err != nil {
-				// 	return nil, []error{err}
-				// }
-				//
-				// rh := make([]*model.Trustline, len(r))
-				// for i, v := range r {
-				// 	rh[i] = &v
-				// }
-				//
-				// return rh, nil
-				return nil, nil
+			fetch: func(keys []string) ([][]*model.Trustline, []error) {
+				r, err := db.QueryTrustlines(keys)
+				if err != nil { return nil, []error{err} }
+				return r, nil
 			},
 		}
 		ctx := context.WithValue(r.Context(), TrustlineLoaderKey, &trustlineLoader)

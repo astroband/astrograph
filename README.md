@@ -5,7 +5,7 @@ Stellar GraphQL interface.
 
 # Installation
 
-`go get https://github.com/mobius-network/Astrograph`
+`go get https://github.com/mobius-network/astrograph`
 
 # Usage
 
@@ -14,8 +14,8 @@ Stellar GraphQL interface.
 # TODO
 
 1. Solve N+1 for trustlines.
-2. Fast rewind to last ledger
-3. Data fields loading/monitoring.
+2. Data fields in account results
+3. Fast rewind to last ledger
 4. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
 5. Monitor account deletion.
 6. Proper error handling
