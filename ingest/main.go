@@ -1,8 +1,7 @@
 package ingest
 
 import (
-		log "github.com/sirupsen/logrus"
-	"strconv"
+	log "github.com/sirupsen/logrus"
 	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
@@ -21,9 +20,10 @@ func NewCore() *Core {
 		c.LedgerSeq = *config.StartLedger
 	} else {
 		seq, err := db.FetchMaxLedger()
-		if err != nil { config.Log.Fatal("Can not fetch max ledger", "err", err) }
+		if err != nil { log.Fatal(err) }
 		c.LedgerSeq = seq + 1
 	}
+
 	return c
 }
 
@@ -37,7 +37,7 @@ func (c *Core) checkLedgerExist() bool {
 	// NOTE: Might need to send updates to all subscriptions in this case.
 	if !exist {
 		newSeq, err := db.FetchMaxLedger()
-		if (err != nil) { config.Log.Fatal("Can not fetch max ledger", "err", err) }
+		if (err != nil) { log.Fatal(err) }
 
 		if c.LedgerSeq < newSeq {
 			c.LedgerSeq = newSeq
@@ -51,26 +51,26 @@ func (c *Core) checkLedgerExist() bool {
 // Loads accounts with given ids
 func (c *Core) loadAccounts(id []string) []*model.Account {
 	r, err := db.QueryAccounts(id)
-	if err != nil { config.Log.Fatal("Can not load accounts", "err", err) }
+	if err != nil { log.Fatal(err) }
 	return r
 }
 
 // Loads updates from current ledger
 func (c *Core) Pull() (accounts []*model.Account) {
-	config.Log.Info("Ingesting ledger", "LedgerSeq", strconv.Itoa(int(c.LedgerSeq)))
+	log.WithFields(log.Fields{"LedgerSeq": c.LedgerSeq}).Info("Ingesting ledger")
 
 	if !c.checkLedgerExist() { return nil }
 
 	id, err := db.GetLedgerUpdatedAccountId(c.LedgerSeq)
-	if (err != nil) { config.Log.Fatal("Can not get updated accounts", "err", err) }
+	if (err != nil) { log.Fatal(err) }
 	id = util.UniqueStringSlice(id)
 
-	config.Log.Debug("Account updates", "id", id)
-	config.Log.Info("Account updates", "len(id)", len(id))
+	log.WithFields(log.Fields{"count": len(id)}).Info("Received updates")
+	log.WithFields(log.Fields{"id": id}).Debug("Accounts being updated")
 
 	r := c.loadAccounts(id)
 
 	c.LedgerSeq += 1
-	log.Info("AAAAAA!!!!")
+
 	return r
 }

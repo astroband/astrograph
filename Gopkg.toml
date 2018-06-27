@@ -27,9 +27,13 @@
   name = "gopkg.in/mgutz/dat.v1"
 
 [[constraint]]
-  branch = "mgutz/v2"
-  name = "github.com/mgutz/logxi"
+  branch = "master"
+  name = "github.com/sirupsen/logrus"
 
 [[constraint]]
   branch = "master"
-  name = "github.com/sirupsen/logrus"
+  name = "github.com/Masterminds/squirrel"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/jmoiron/sqlx"

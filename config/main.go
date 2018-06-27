@@ -5,7 +5,6 @@ import (
 	"time"
 	"database/sql"
 	"gopkg.in/mgutz/dat.v1"
-	"github.com/mgutz/logxi"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"gopkg.in/mgutz/dat.v1/sqlx-runner"
 	log "github.com/sirupsen/logrus"
@@ -18,7 +17,6 @@ var (
 	BindAndPort    string
 	DatabaseDriver string
 	DB             *runner.DB
-	Log            logxi.Logger = logxi.New("astrograph")
 
 	Port          = kingpin.Flag("port", "HTTP port to bind").Default("8000").Int()
 	Bind          = kingpin.Flag("bind", "HTTP address to bind").Default("127.0.0.1").IP()
@@ -32,7 +30,9 @@ func init() {
 	kingpin.Version(Version)
 	kingpin.Parse()
 
-	if (*Debug) { Log.SetLevel(logxi.LevelAll) }
+	if (*Debug) { log.SetLevel(log.DebugLevel) }
+
+	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
 
 	BindAndPort = fmt.Sprintf("%s:%v", *Bind, *Port)
 	DatabaseDriver = (*DatabaseUrl).Scheme

@@ -27,3 +27,5 @@ Stellar GraphQL interface.
 4. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
 5. Monitor entity deletion.
 6. Proper error handling
+
+10. extract sqlhooks, extract dataloader-generic

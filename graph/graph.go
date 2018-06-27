@@ -5,9 +5,9 @@ package graph
 import (
 	"sync"
 	"context"
+	log "github.com/sirupsen/logrus"
 	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/model"
-	"github.com/mobius-network/astrograph/config"
 	"github.com/mobius-network/astrograph/dataloader"
 )
 
@@ -64,23 +64,22 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 	ch := a.AccountChannels[id]
 
 	if ch == nil {
-		config.Log.Debug("Subscribed", "id", id)
+		log.WithFields(log.Fields{"id": id}).Debug("Subscribed")
 
 		ch = make(chan model.Account, 1)
 		a.AccountCounters[id] = 1
 		a.AccountChannels[id] = ch
 	} else {
-		config.Log.Debug("Already has subscription", "id", id)
+		log.WithFields(log.Fields{"id": id}).Debug("Already subscribed, skipping")
 		a.AccountCounters[id]++
 	}
 	a.mu.Unlock()
 
 	go func() {
 		<-ctx.Done()
-		config.Log.Debug("Unsubscribed", "id", id)
 		a.mu.Lock()
 		a.AccountCounters[id]--
-		config.Log.Debug("Counter for", "id", id, "AccountCounters[id]", a.AccountCounters[id])
+		log.WithFields(log.Fields{"id": id, "counter": a.AccountCounters[id]}).Debug("Unsubscribed")
 		if a.AccountCounters[id] <= 0 {
 			delete(a.AccountChannels, id)
 		}
@@ -95,10 +94,10 @@ func (a *App) SendAccountUpdates(accounts []*model.Account) {
 	for _, account := range accounts {
 		ch := a.AccountChannels[account.ID]
 		if ch == nil {
-			config.Log.Debug("Subscription not found", "id", account.ID)
+			log.WithFields(log.Fields{"id": account.ID}).Debug("Subscription not found")
 			continue
 		}
-		config.Log.Debug("Sending updates to", "id", account.ID)
+		log.WithFields(log.Fields{"id": account.ID}).Debug("Sending updates")
 
 		ch <- *account
 	}

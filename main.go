@@ -2,17 +2,17 @@ package main
 
 import (
 	"time"
-	"strconv"
 	"net/http"
 
 	"github.com/gorilla/websocket"
-	gqlopentracing "github.com/vektah/gqlgen/opentracing"
-
+	log "github.com/sirupsen/logrus"
+	"github.com/mobius-network/astrograph/graph"
+	"github.com/mobius-network/astrograph/model"
+	"github.com/mobius-network/astrograph/ingest"
 	"github.com/mobius-network/astrograph/config"
 	"github.com/mobius-network/astrograph/dataloader"
-	"github.com/mobius-network/astrograph/graph"
-	"github.com/mobius-network/astrograph/ingest"
-	"github.com/mobius-network/astrograph/model"
+	gqlopentracing "github.com/vektah/gqlgen/opentracing"
+
 	"github.com/vektah/gqlgen/handler"
 )
 
@@ -56,12 +56,12 @@ func main() {
 		),
 	)
 
-	config.Log.Info("Stellar GraphQL Server")
-	config.Log.Info("Listening on", "BindAndPort", config.BindAndPort)
-	config.Log.Info("Current ledger sequence number", "LedgerSeq", strconv.Itoa(int(core.LedgerSeq)))
-	config.Log.Info("Ingest every seconds", "IngestTimeout", *config.IngestTimeout)
+	log.Info("Stellar GraphQL Server")
+	log.WithFields(log.Fields{"bind_and_port": config.BindAndPort}).Info("Listening")
+	log.WithFields(log.Fields{"ledgerseq": core.LedgerSeq}).Info("Current ledger sequence")
+	log.WithFields(log.Fields{"timeout": *config.IngestTimeout}).Info("Ingest timeout set")
 
 	startIngest()
 
-	config.Log.Fatal("Error starting HTTP", "err", http.ListenAndServe(config.BindAndPort, nil))
+	log.Fatal(http.ListenAndServe(config.BindAndPort, nil))
 }
