@@ -12,10 +12,10 @@ const TrustlineLoaderKey = "trustlineloader"
 
 func TrustlineLoaderMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		trustlineLoader := TrustlineLoader{
+		trustlineLoader := TrustlineSliceLoader{
 			maxBatch: 100,
-			wait:     1 * time.Millisecond,
-			fetch: func(keys []string) ([][]*model.Trustline, []error) {
+			wait:     100 * time.Millisecond,
+			fetch: func(keys []string) ([][]model.Trustline, []error) {
 				r, err := db.QueryTrustlines(keys)
 				if err != nil { return nil, []error{err} }
 				return r, nil

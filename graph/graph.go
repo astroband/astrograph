@@ -18,27 +18,9 @@ type App struct {
 }
 
 func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error) {
-	loader := ctx.Value(dataloader.TrustlineLoaderKey).(*dataloader.TrustlineLoader)
-	trustlines, errors := loader.LoadAll([]string{obj.ID})
-
-	for _, e := range errors {
-		if e != nil {
-			return nil, e
-		}
-	}
-
-	result := make([]model.Trustline, 0)
-	if (trustlines[0] == nil) {
-		return nil, nil
-	}
-
-	for _, t := range trustlines[0] {
-		if (t != nil) {
-			result = append(result, *t)
-		}
-	}
-
-	return result, nil
+	loader := ctx.Value(dataloader.TrustlineLoaderKey).(*dataloader.TrustlineSliceLoader)
+	trustlines, error := loader.Load(obj.ID)
+	return trustlines, error
 }
 
 func (a *App) Query_Account(ctx context.Context, id string) (*model.Account, error) {

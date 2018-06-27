@@ -1,22 +1,23 @@
 package db
 
 import (
-	sq "github.com/Masterminds/squirrel"	
+	"log"
+	sq "github.com/Masterminds/squirrel"
 	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
 )
 
 // Requests trustlines for given accounts and returns slices of trustlines in same order as given id
-func QueryTrustlines(id []string) ([][]*model.Trustline, error) {
+func QueryTrustlines(id []string) ([][]model.Trustline, error) {
 	rows, err := fetchRows(id)
 	if (err != nil) { return nil, err }
 
-	result := make([][]*model.Trustline, len(id))
+	result := make([][]model.Trustline, len(id))
 
 	// For every given account
 	for n, accountId := range id {
-		accountTrustlines := make([]*model.Trustline, 0)
+		accountTrustlines := make([]model.Trustline, 0)
 
 		// Scan all rows
 		for i, t := range rows {
@@ -25,7 +26,7 @@ func QueryTrustlines(id []string) ([][]*model.Trustline, error) {
 			if (t != nil) && (t.AccountID == accountId) {
 
 				// Add it to current slice and mark as "used"
-				accountTrustlines = append(accountTrustlines, t)
+				accountTrustlines = append(accountTrustlines, *t)
 				rows[i] = nil
 			}
 		}
