@@ -8,6 +8,7 @@ import (
 	"github.com/mgutz/logxi"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"gopkg.in/mgutz/dat.v1/sqlx-runner"
+	log "github.com/sirupsen/logrus"
 )
 
 // Application version
@@ -32,13 +33,13 @@ func init() {
 	kingpin.Parse()
 
 	if (*Debug) { Log.SetLevel(logxi.LevelAll) }
-	
+
 	BindAndPort = fmt.Sprintf("%s:%v", *Bind, *Port)
 	DatabaseDriver = (*DatabaseUrl).Scheme
 
 	db, err := sql.Open(DatabaseDriver, (*DatabaseUrl).String())
 	if err != nil {
-		Log.Fatal("Can not open database:", err)
+		log.Fatal(err)
 	}
 
 	runner.LogQueriesThreshold = 50 * time.Millisecond

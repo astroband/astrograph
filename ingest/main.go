@@ -1,6 +1,7 @@
 package ingest
 
 import (
+		log "github.com/sirupsen/logrus"
 	"strconv"
 	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/util"
@@ -70,6 +71,6 @@ func (c *Core) Pull() (accounts []*model.Account) {
 	r := c.loadAccounts(id)
 
 	c.LedgerSeq += 1
-
+	log.Info("AAAAAA!!!!")
 	return r
 }

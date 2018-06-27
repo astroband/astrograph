@@ -29,3 +29,7 @@
 [[constraint]]
   branch = "mgutz/v2"
   name = "github.com/mgutz/logxi"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/sirupsen/logrus"
