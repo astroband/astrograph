@@ -20,6 +20,7 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 
 type Resolvers interface {
 	Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error)
+	Account_data(ctx context.Context, obj *model.Account) ([]model.DataEntry, error)
 
 	Query_Account(ctx context.Context, id string) (*model.Account, error)
 	Query_Accounts(ctx context.Context, id []string) ([]model.Account, error)
@@ -122,6 +123,8 @@ func (ec *executionContext) _Account(ctx context.Context, sel []query.Selection,
 			out.Values[i] = ec._Account_lastModified(ctx, field, obj)
 		case "trustlines":
 			out.Values[i] = ec._Account_trustlines(ctx, field, obj)
+		case "data":
+			out.Values[i] = ec._Account_data(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -268,6 +271,45 @@ func (ec *executionContext) _Account_trustlines(ctx context.Context, field graph
 				rctx.PushIndex(idx1)
 				defer rctx.Pop()
 				return ec._Trustline(ctx, field.Selections, &res[idx1])
+			}())
+		}
+		return arr1
+	})
+}
+
+func (ec *executionContext) _Account_data(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Account",
+		Args:   nil,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Account_data(ctx, obj)
+		})
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.([]model.DataEntry)
+		arr1 := graphql.Array{}
+		for idx1 := range res {
+			arr1 = append(arr1, func() graphql.Marshaler {
+				rctx := graphql.GetResolverContext(ctx)
+				rctx.PushIndex(idx1)
+				defer rctx.Pop()
+				return ec._DataEntry(ctx, field.Selections, &res[idx1])
 			}())
 		}
 		return arr1
@@ -1656,6 +1698,7 @@ type Account {
   flags: AccountFlags!
   lastModified: Int!
   trustlines: [Trustline!]!
+  data: [DataEntry!]
 }
 
 type Trustline {
@@ -1676,6 +1719,6 @@ type Subscription {
 
 type Query {
   Account(id: AccountID!): Account
-  Accounts(id: [AccountID!]): [Account!]!
+  Accounts(id: [AccountID!]): [Account]
 }
 `)

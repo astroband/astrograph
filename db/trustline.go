@@ -9,7 +9,7 @@ import (
 
 // Requests trustlines for given accounts and returns slices of trustlines in same order as given id
 func QueryTrustlines(id []string) ([][]model.Trustline, error) {
-	rows, err := fetchRows(id)
+	rows, err := fetchTrustlineRows(id)
 	if (err != nil) { return nil, err }
 
 	result := make([][]model.Trustline, len(id))
@@ -37,7 +37,7 @@ func QueryTrustlines(id []string) ([][]model.Trustline, error) {
 }
 
 // Returns slice of trustlines for requested accounts ordered
-func fetchRows(id []string) ([]*model.Trustline, error) {
+func fetchTrustlineRows(id []string) ([]*model.Trustline, error) {
 	var trustlines []*model.Trustline
 
 	q, args, err := b.

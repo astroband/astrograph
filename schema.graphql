@@ -34,6 +34,7 @@ type Account {
   flags: AccountFlags!
   lastModified: Int!
   trustlines: [Trustline!]!
+  data: [DataEntry!]
 }
 
 type Trustline {

@@ -17,6 +17,13 @@ type App struct {
 	mu              sync.Mutex
 }
 
+func (a *App) Account_data(ctx context.Context, obj *model.Account) ([]model.DataEntry, error) {
+	loader := ctx.Value(dataloader.DataEntryLoaderKey).(*dataloader.DataEntrySliceLoader)
+	dataEntries, error := loader.Load(obj.ID)
+	return dataEntries, error
+
+}
+
 func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error) {
 	loader := ctx.Value(dataloader.TrustlineLoaderKey).(*dataloader.TrustlineSliceLoader)
 	trustlines, error := loader.Load(obj.ID)

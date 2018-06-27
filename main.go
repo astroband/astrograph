@@ -42,16 +42,18 @@ func main() {
 	http.Handle("/", handler.Playground("Stellar", "/query"))
 	http.Handle(
 		"/query",
-		dataloader.TrustlineLoaderMiddleware(
-			handler.GraphQL(
-				graph.MakeExecutableSchema(app),
-				handler.ResolverMiddleware(gqlopentracing.ResolverMiddleware()),
-				handler.RequestMiddleware(gqlopentracing.RequestMiddleware()),
-				handler.WebsocketUpgrader(websocket.Upgrader{
-					CheckOrigin: func(r *http.Request) bool {
-						return true
-					},
-				}),
+		dataloader.DataEntryLoaderMiddleware(
+			dataloader.TrustlineLoaderMiddleware(
+				handler.GraphQL(
+					graph.MakeExecutableSchema(app),
+					handler.ResolverMiddleware(gqlopentracing.ResolverMiddleware()),
+					handler.RequestMiddleware(gqlopentracing.RequestMiddleware()),
+					handler.WebsocketUpgrader(websocket.Upgrader{
+						CheckOrigin: func(r *http.Request) bool {
+							return true
+						},
+					}),
+				),
 			),
 		),
 	)
