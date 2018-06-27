@@ -19,11 +19,10 @@ Stellar GraphQL interface.
 
 # TODO
 
-3. Abstraction over dataloader
-2. Data fields in account results + watch
-3. Fast rewind to last ledger - ?
-4. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
-5. Monitor entity deletion.
-6. Proper error handling
-
-10. extract sqlhooks, extract dataloader-generic
+0. AssetType + Trustline flags
+1. Fast rewind to last ledger - ?
+2. Send updates to all accounts on gap
+3. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
+4. Monitor entity deletion.
+5. Proper error handling
+6. extract sqlhooks
