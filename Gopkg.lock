@@ -3,6 +3,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/Masterminds/squirrel"
+  packages = ["."]
+  revision = "e13dbacee404686afd0acf2d44b8d34869605e03"
+
+[[projects]]
+  branch = "master"
   name = "github.com/alecthomas/template"
   packages = [".","parse"]
   revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
@@ -12,18 +18,6 @@
   name = "github.com/alecthomas/units"
   packages = ["."]
   revision = "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a"
-
-[[projects]]
-  name = "github.com/cenkalti/backoff"
-  packages = ["."]
-  revision = "2ea60e5f094469f9e65adb9cd103795b73ae743e"
-  version = "v2.0.0"
-
-[[projects]]
-  name = "github.com/garyburd/redigo"
-  packages = ["internal","redis"]
-  revision = "a69d19351219b6dd56f274f96d85a7014a2ec34e"
-  version = "v1.6.0"
 
 [[projects]]
   branch = "master"
@@ -36,6 +30,18 @@
   name = "github.com/jmoiron/sqlx"
   packages = [".","reflectx"]
   revision = "0dae4fefe7c0e190f7b5a78dac28a1c82cc8d849"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/lann/builder"
+  packages = ["."]
+  revision = "1b87b36280d04fe7882d1512bf038ea2967ad534"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/lann/ps"
+  packages = ["."]
+  revision = "62de8c46ede02a7675c4c79c84883eb164cb71e3"
 
 [[projects]]
   branch = "master"
@@ -98,18 +104,6 @@
   version = "v0.8.0"
 
 [[projects]]
-  name = "github.com/pmylund/go-cache"
-  packages = ["."]
-  revision = "a3647f8e31d79543b2d0f0ae2fe5c379d72cedc0"
-  version = "v2.1.0"
-
-[[projects]]
-  name = "github.com/satori/go.uuid"
-  packages = ["."]
-  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
-  version = "v1.2.0"
-
-[[projects]]
   branch = "master"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
@@ -135,12 +129,6 @@
 
 [[projects]]
   branch = "master"
-  name = "golang.org/x/net"
-  packages = ["context"]
-  revision = "afe8f62b1d6bbd81f31868121a50b06d8188e1f9"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
   revision = "c4afb3effaa53fd9a06ca61262dc7ce8df4c081b"
@@ -153,13 +141,13 @@
 
 [[projects]]
   name = "gopkg.in/mgutz/dat.v1"
-  packages = [".","common","kvs","postgres","reflectx","sqlx-runner"]
+  packages = [".","common","reflectx"]
   revision = "f2918ee2c9dd12bc7f27302aa28333ffcabc24d2"
   version = "v1.1.11"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1d6d75a0a9a26803e3f76581b62dcbc9d8d5fcc4e3328defa9228d9aae4f506d"
+  inputs-digest = "64be8a2b45820b0a37ff14e1e570d562df302f804ad6f405df1624f0746444be"
   solver-name = "gps-cdcl"
   solver-version = 1

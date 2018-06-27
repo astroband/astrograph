@@ -1,6 +1,7 @@
 package db
 
 import (
+	sq "github.com/Masterminds/squirrel"	
 	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
@@ -39,13 +40,16 @@ func QueryTrustlines(id []string) ([][]*model.Trustline, error) {
 func fetchRows(id []string) ([]*model.Trustline, error) {
 	var trustlines []*model.Trustline
 
-	err := config.DB.
+	q, args, err := b.
 		Select("*").
 		From("trustlines").
-		Where("accountid IN $1", id).
+		Where(sq.Eq{"accountid": id}).
 		OrderBy("accountid, assettype, assetcode").
-		QueryStructs(&trustlines)
+		ToSql()
 
+	if err != nil { return nil, err }
+
+	err = config.DB.Select(&trustlines, q, args...)
 	if err != nil { return nil, err }
 
 	for _, t := range trustlines {

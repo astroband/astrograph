@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"gopkg.in/alecthomas/kingpin.v2"
 	log "github.com/sirupsen/logrus"
+	sq "github.com/Masterminds/squirrel"
 )
 
 // Application version
@@ -14,6 +15,7 @@ var (
 	BindAndPort    string
 	DatabaseDriver string
 	DB             *sqlx.DB
+	SqlBuilder     sq.StatementBuilderType
 
 	Port          = kingpin.Flag("port", "HTTP port to bind").Default("8000").Int()
 	Bind          = kingpin.Flag("bind", "HTTP address to bind").Default("127.0.0.1").IP()
@@ -27,7 +29,9 @@ func init() {
 	kingpin.Version(Version)
 	kingpin.Parse()
 
-	if (*Debug) { log.SetLevel(log.DebugLevel) }
+	if (*Debug) {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
 
@@ -40,4 +44,5 @@ func init() {
 	}
 
 	DB = db
+	SqlBuilder = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 }

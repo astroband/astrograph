@@ -1,7 +1,8 @@
 package db
 
 import (
-	"gopkg.in/mgutz/dat.v1"
+	"database/sql"
+	sq "github.com/Masterminds/squirrel"
 	"github.com/mobius-network/astrograph/config"
 )
 
@@ -9,12 +10,11 @@ import (
 func FetchMaxLedger() (uint64, error) {
 	var seq uint64
 
-	err := config.DB.
-    Select("ledgerseq").
-    From("ledgerheaders").
-    OrderBy("ledgerseq DESC").
-    Limit(1).
-    QueryScalar(&seq)
+	q, args, err := ledgerSeqSql.OrderBy("ledgerseq DESC").Limit(1).ToSql()
+	if (err != nil) { return 0, err }
+
+	err = config.DB.Get(&seq, q, args...)
+	if (err != nil) { return 0, err }
 
 	return seq, err
 }
@@ -23,13 +23,11 @@ func FetchMaxLedger() (uint64, error) {
 func LedgerExist(seq uint64) (bool, error) {
   var newSeq uint64
 
-  err := config.DB.
-    Select("ledgerseq").
-    From("ledgerheaders").
-    Where("ledgerseq = $1", seq).
-    QueryScalar(&newSeq)
+	q, args, err := ledgerSeqSql.Where(sq.Eq{"ledgerseq": seq}).ToSql()
+	if (err != nil) { return false, err }
 
-	if err == dat.ErrNotFound {
+	err = config.DB.Get(&newSeq, q, args...)
+	if err == sql.ErrNoRows {
 		return false, nil
 	} else if err != nil {
 		return false, err
@@ -58,13 +56,11 @@ func GetLedgerUpdatedAccountId(seq uint64) ([]string, error) {
 func fetchUpdatedAccountId(tableName string, seq uint64) ([]string, error) {
   var id []string
 
-  err := config.DB.
-    Select("accountid").
-    From(tableName).
-    Where("lastmodified = $1", seq).
-    QuerySlice(&id)
+	q, args, err := b.Select("accountid").From(tableName).Where(sq.Eq{"lastmodified": seq}).ToSql()
+	if err != nil { return nil, err }
 
-  if (err != nil) { return nil, err }
+	err = config.DB.Select(&id, q, args...)
+	if err != nil { return nil, err }
 
   return id, nil
 }
