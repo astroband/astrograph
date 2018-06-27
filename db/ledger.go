@@ -1,8 +1,8 @@
 package db
 
-import(
-  "database/sql"
-  "github.com/mobius-network/astrograph/config"
+import (
+	"database/sql"
+	"github.com/mobius-network/astrograph/config"
 )
 
 // Returns number of maximum ledger in database
@@ -12,20 +12,20 @@ func FetchMaxLedger() (uint64, error) {
 	row := config.Db.QueryRow(selectMaxLedger)
 	err := row.Scan(&seq)
 
-  return seq, err
+	return seq, err
 }
 
 func LedgerExist(seq uint64) (bool, error) {
-  var newSeq uint64
+	var newSeq uint64
 
-  row := config.Db.QueryRow(selectLedger, seq)
+	row := config.Db.QueryRow(selectLedger, seq)
 	err := row.Scan(&newSeq)
 
 	if err == sql.ErrNoRows {
-    return false, nil
-  } else if err != nil {
-    return false, err
-  }
+		return false, nil
+	} else if err != nil {
+		return false, err
+	}
 
-  return true, nil
+	return true, nil
 }
