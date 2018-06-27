@@ -16,11 +16,11 @@ type Core struct {
 func NewCore() *Core {
 	c := new(Core)
 	if (config.StartLedger != nil) {
-		c.LedgerSeq = *config.StartLedger
+		c.LedgerSeq = uint64(*config.StartLedger)
 	} else {
 		seq, err := db.FetchMaxLedger()
 		if err != nil { log.Fatal(err) }
-		c.LedgerSeq = seq + 1		
+		c.LedgerSeq = seq + 1
 	}
 	return c
 }
@@ -28,7 +28,6 @@ func NewCore() *Core {
 // Checks if current ledger is populated
 func (c *Core) checkLedgerExist() bool {
 	exist, err := db.LedgerExist(c.LedgerSeq)
-
 	if (err != nil) { log.Fatal(err) }
 
 	// If current ledger does not exist and is less than max ledger (meaning there is a gap in history), fast-forwards
@@ -48,28 +47,6 @@ func (c *Core) checkLedgerExist() bool {
 	return true
 }
 
-// Loads updated account ids from given table (accounts, trustlines, data entries, ...)
-func (c *Core) loadUpdatesFrom(tableName string) []string {
-	var a []string = make([]string, 0)
-	var id string
-
-	rows, err := config.Db.Query("SELECT accountid FROM "+tableName+" WHERE lastmodified = $1", c.LedgerSeq)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.Scan(&id)
-		if err != nil {
-			log.Fatal(err)
-		}
-		a = append(a, id)
-	}
-
-	return a
-}
-
 // Loads accounts with given ids
 func (c *Core) loadAccounts(id []string) []model.Account {
 	r, err := db.QueryAccounts(id)
@@ -85,8 +62,6 @@ func (c *Core) Pull() (accounts []model.Account) {
 
 	id, err := db.GetLedgerUpdatedAccountId(c.LedgerSeq)
 	if (err != nil) { log.Fatal(err) }
-	// id := append(c.loadUpdatesFrom("accounts"), c.loadUpdatesFrom("accountdata")...)
-	// id = append(id, c.loadUpdatesFrom("trustlines")...)
 	id = util.UniqueStringSlice(id)
 
 	util.LogDebug("Updated accounts, trustlines and data entries:", id)
