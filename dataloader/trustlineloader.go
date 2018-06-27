@@ -1,3 +1,4 @@
+//go:generate gorunpkg github.com/vektah/dataloaden -keys string -slice github.com/mobius-network/astrograph/model.Trustline
 package dataloader
 
 import (
