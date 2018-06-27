@@ -43,17 +43,15 @@ class Listener extends Component {
 }
 
 const Subscription = gql`
-    subscription AccountUpdated($id: String!) {
+    subscription AccountUpdated($id: AccountID!) {
         accountUpdated(id:$id) {
             id
             balance
-            seqnum
-            numsubentries
-            inflationdest
-            thresholds
-            homedomain
+            sequenceNumber
+            numSubentries
+            inflationDest
             trustlines {
-              tlimit
+              limit
               balance
             }
         }
@@ -61,7 +59,7 @@ const Subscription = gql`
 `;
 
 const Query = gql`
-    query Room($id: String!) {
+    query Room($id: AccountID!) {
         room(name: $id) {
             messages { id text createdBy }
         }
