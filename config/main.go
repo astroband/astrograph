@@ -2,11 +2,8 @@ package config
 
 import (
 	"fmt"
-	"time"
-	"database/sql"
-	"gopkg.in/mgutz/dat.v1"
+	"github.com/jmoiron/sqlx"
 	"gopkg.in/alecthomas/kingpin.v2"
-	"gopkg.in/mgutz/dat.v1/sqlx-runner"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -16,7 +13,7 @@ const Version string = "0.0.1"
 var (
 	BindAndPort    string
 	DatabaseDriver string
-	DB             *runner.DB
+	DB             *sqlx.DB
 
 	Port          = kingpin.Flag("port", "HTTP port to bind").Default("8000").Int()
 	Bind          = kingpin.Flag("bind", "HTTP address to bind").Default("127.0.0.1").IP()
@@ -37,18 +34,10 @@ func init() {
 	BindAndPort = fmt.Sprintf("%s:%v", *Bind, *Port)
 	DatabaseDriver = (*DatabaseUrl).Scheme
 
-	db, err := sql.Open(DatabaseDriver, (*DatabaseUrl).String())
+	db, err := sqlx.Connect(DatabaseDriver, (*DatabaseUrl).String())
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	runner.LogQueriesThreshold = 50 * time.Millisecond
-	runner.LogErrNoRows = false
-
-	dat.EnableInterpolation = true
-	dat.Strict = false
-
-	runner.MustPing(db)
-
-	DB = runner.NewDB(db, DatabaseDriver)
+	DB = db
 }
