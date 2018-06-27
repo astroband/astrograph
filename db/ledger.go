@@ -1,7 +1,8 @@
 package db
 
 import (
-	"database/sql"
+	// "database/sql"
+	"gopkg.in/mgutz/dat.v1"	
 	"github.com/mobius-network/astrograph/config"
 )
 
@@ -29,7 +30,7 @@ func LedgerExist(seq uint64) (bool, error) {
     Where("ledgerseq = $1", seq).
     QueryScalar(&newSeq)
 
-	if err == sql.ErrNoRows {
+	if err == dat.ErrNotFound {
 		return false, nil
 	} else if err != nil {
 		return false, err

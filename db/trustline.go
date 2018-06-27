@@ -64,7 +64,7 @@ func fetchRows(id []string) ([]*model.Trustline, error) {
 	// 	return nil, err
 	// }
 	//
-	return result, nil
+	return trustlines, nil
 }
 
 // Fetch trustline data from request

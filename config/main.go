@@ -29,7 +29,7 @@ var (
 	DatabaseUrl   = kingpin.Flag("database-url", "Stellar Core database URL").Required().URL()
 	IngestTimeout = kingpin.Flag("ingest-timeout", "Ingest frequency").Default("2").Int()
 	Debug         = kingpin.Flag("debug", "Log debug messages").Default("false").Bool()
-	StartLedger   = kingpin.Flag("start-ledger", "Start with ledger (debug)").Int()
+	StartLedger   = kingpin.Flag("start-ledger", "Start with ledger (debug)").Uint64()
 )
 
 // // Drivers list for sqlhooks wrapping
@@ -79,6 +79,7 @@ func init() {
 	}
 
 	runner.LogQueriesThreshold = 10 * time.Millisecond
+	runner.LogErrNoRows = false
 
 	dat.EnableInterpolation = true
 	dat.Strict = false

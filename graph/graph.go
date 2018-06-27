@@ -47,7 +47,17 @@ func (a *App) Query_Account(ctx context.Context, id string) (*model.Account, err
 }
 
 func (a *App) Query_Accounts(ctx context.Context, id []string) ([]model.Account, error) {
-	return db.QueryAccounts(id)
+	sourceAccounts, err := db.QueryAccounts(id)
+
+	if (err != nil) { return nil, err }
+
+	accounts := make([]model.Account, 0)
+
+	for _, account := range sourceAccounts {
+		accounts = append(accounts, *account)
+	}
+
+	return accounts, nil
 }
 
 func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-chan model.Account, error) {
@@ -81,7 +91,7 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 	return ch, nil
 }
 
-func (a *App) SendAccountUpdates(accounts []model.Account) {
+func (a *App) SendAccountUpdates(accounts []*model.Account) {
 	a.mu.Lock()
 	for _, account := range accounts {
 		ch := a.AccountChannels[account.ID]
@@ -91,7 +101,7 @@ func (a *App) SendAccountUpdates(accounts []model.Account) {
 		}
 		util.LogDebug("Sending updates to", account.ID)
 
-		ch <- account
+		ch <- *account
 	}
 	a.mu.Unlock()
 }

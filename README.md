@@ -20,7 +20,7 @@ Stellar GraphQL interface.
 # TODO
 
 1. SQL builder
-2. logxi
+2. logxi + --debug flag
 3. Abstraction over dataloader
 2. Data fields in account results + watch
 9. QueryAccounts -> * and ordered - ?

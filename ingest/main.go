@@ -15,8 +15,9 @@ type Core struct {
 // Constructor
 func NewCore() *Core {
 	c := new(Core)
-	if (config.StartLedger != nil) {
-		c.LedgerSeq = uint64(*config.StartLedger)
+
+	if (*config.StartLedger != 0) {
+		c.LedgerSeq = *config.StartLedger
 	} else {
 		seq, err := db.FetchMaxLedger()
 		if err != nil { log.Fatal(err) }
@@ -27,8 +28,7 @@ func NewCore() *Core {
 
 // Checks if current ledger is populated
 func (c *Core) checkLedgerExist() bool {
-	exist, err := db.LedgerExist(c.LedgerSeq)
-	if (err != nil) { log.Fatal(err) }
+	exist, _ := db.LedgerExist(c.LedgerSeq)
 
 	// If current ledger does not exist and is less than max ledger (meaning there is a gap in history), fast-forwards
 	// to the head.
@@ -48,17 +48,17 @@ func (c *Core) checkLedgerExist() bool {
 }
 
 // Loads accounts with given ids
-func (c *Core) loadAccounts(id []string) []model.Account {
+func (c *Core) loadAccounts(id []string) []*model.Account {
 	r, err := db.QueryAccounts(id)
 	if err != nil { log.Fatal(err) }
 	return r
 }
 
 // Loads updates from current ledger
-func (c *Core) Pull() (accounts []model.Account) {
+func (c *Core) Pull() (accounts []*model.Account) {
 	log.Println("Ingesting ledger", c.LedgerSeq)
 
-	if !c.checkLedgerExist() { return }
+	if !c.checkLedgerExist() { return nil }
 
 	id, err := db.GetLedgerUpdatedAccountId(c.LedgerSeq)
 	if (err != nil) { log.Fatal(err) }

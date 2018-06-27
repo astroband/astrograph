@@ -24,24 +24,30 @@ type DataEntry struct {
 	LastModified int    `json:"lastModified"`
 }
 type Account struct {
-	ID             string            `json:"id"`
+	ID             string            `json:"id" db:"accountid"`
 	Balance        float64           `json:"balance"`
-	SequenceNumber int               `json:"sequenceNumber"`
-	NumSubentries  int               `json:"numSubentries"`
-	InflationDest  *string           `json:"inflationDest"`
-	HomeDomain     *string           `json:"homeDomain"`
-	Thresholds     AccountThresholds `json:"thresholds"`
-	Flags          AccountFlags      `json:"flags"`
-	LastModified   int               `json:"lastModified"`
+	SequenceNumber int               `json:"sequenceNumber" db:"seqnum"`
+	NumSubentries  int               `json:"numSubentries" db:"numsubentries"`
+	InflationDest  *string           `json:"inflationDest" db:"inflationdest"`
+	HomeDomain     *string           `json:"homeDomain" db:"homedomain"`
+	Thresholds     AccountThresholds `json:"thresholds" db:"-"`
+	Flags          AccountFlags      `json:"flags" db:"-"`
+	LastModified   int               `json:"lastModified" db:"lastmodified"`
+
+	RawThresholds  string            `db:"thresholds"`
+	RawFlags       int							 `db:"flags"`
 }
 type Trustline struct {
 	ID           string  `json:"id"`
-	AccountID    string  `json:"accountId"`
-	AssetType    int     `json:"assetType"`
-	Issuer       string  `json:"issuer"`
-	AssetCode    string  `json:"assetCode"`
-	Limit        float64 `json:"limit"`
-	Balance      float64 `json:"balance"`
-	Flags        int     `json:"flags"`
-	LastModified int     `json:"lastModified"`
+	AccountID    string  `json:"accountId" db:"accountid"`
+	AssetType    int     `json:"assetType" db:"assettype"`
+	Issuer       string  `json:"issuer" db:"assetissuer"`
+	AssetCode    string  `json:"assetCode" db:"assetcode"`
+	Limit        float64 `json:"limit" db:"-"`
+	Balance      float64 `json:"balance" db:"-"`
+	Flags        int     `json:"flags" db:"flags"`
+	LastModified int     `json:"lastModified" db:"lastmodified"`
+
+	RawLimit     int     `db:"tlimit"`
+	RawBalance   int     `db:"balance"`
 }

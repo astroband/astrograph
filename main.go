@@ -39,8 +39,6 @@ func startIngest() {
 }
 
 func main() {
-	defer config.Db.Close()
-
 	http.Handle("/", handler.Playground("Stellar", "/query"))
 	http.Handle(
 		"/query",

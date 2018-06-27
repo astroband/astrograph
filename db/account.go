@@ -1,8 +1,8 @@
 package db
 
 import (
-	"database/sql"
 	b64 "encoding/base64"
+	"gopkg.in/mgutz/dat.v1"
 	"github.com/stellar/go/xdr"
 	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
@@ -21,7 +21,7 @@ func QueryAccount(id string) (*model.Account, error) {
 		QueryStruct(&a)
 
 	switch {
-	case err == sql.ErrNoRows:
+	case err == dat.ErrNotFound:
 		return nil, nil
 	case err != nil:
 		return nil, err
@@ -37,7 +37,7 @@ func QueryAccounts(id []string) ([]*model.Account, error) {
 	err := config.DB.
 		Select("*").
 		From("accounts").
-		Where("id = $1", id).
+		Where("accountid IN $1", id).
 		QueryStructs(&accounts)
 
 	if err != nil { return nil, err }

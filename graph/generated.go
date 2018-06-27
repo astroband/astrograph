@@ -1676,6 +1676,6 @@ type Subscription {
 
 type Query {
   Account(id: AccountID!): Account
-  Accounts(id: [AccountID!]): [Account]
+  Accounts(id: [AccountID!]): [Account!]!
 }
 `)
