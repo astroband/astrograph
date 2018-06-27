@@ -19,8 +19,6 @@ Stellar GraphQL interface.
 
 # TODO
 
-11. github.com/sirupsen/logrus instead of loxie
-10. sqlx + squirrel instead of doc
 3. Abstraction over dataloader
 2. Data fields in account results + watch
 3. Fast rewind to last ledger - ?
