@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
-	"net/http"
 	"time"
+	"strconv"
+	"net/http"
 
 	"github.com/gorilla/websocket"
 	gqlopentracing "github.com/vektah/gqlgen/opentracing"
@@ -56,12 +56,12 @@ func main() {
 		),
 	)
 
-	log.Println("Stellar GraphQL Server")
-	log.Println("Listening on", config.BindAndPort)
-	log.Println("Current ledger sequence number:", core.LedgerSeq)
-	log.Println("Ingest every", *config.IngestTimeout, "seconds")
+	config.Log.Info("Stellar GraphQL Server")
+	config.Log.Info("Listening on", "BindAndPort", config.BindAndPort)
+	config.Log.Info("Current ledger sequence number", "LedgerSeq", strconv.Itoa(int(core.LedgerSeq)))
+	config.Log.Info("Ingest every seconds", "IngestTimeout", *config.IngestTimeout)
 
 	startIngest()
 
-	log.Fatal(http.ListenAndServe(config.BindAndPort, nil))
+	config.Log.Fatal("Error starting HTTP", "err", http.ListenAndServe(config.BindAndPort, nil))
 }

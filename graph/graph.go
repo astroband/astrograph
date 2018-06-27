@@ -3,12 +3,11 @@
 package graph
 
 import (
-	// "log"
 	"sync"
 	"context"
 	"github.com/mobius-network/astrograph/db"
-	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
+	"github.com/mobius-network/astrograph/config"
 	"github.com/mobius-network/astrograph/dataloader"
 )
 
@@ -65,23 +64,23 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 	ch := a.AccountChannels[id]
 
 	if ch == nil {
-		util.LogDebug(id, "subscribed")
+		config.Log.Debug("Subscribed", "id", id)
 
 		ch = make(chan model.Account, 1)
 		a.AccountCounters[id] = 1
 		a.AccountChannels[id] = ch
 	} else {
-		util.LogDebug(id, "already has subscription")
+		config.Log.Debug("Already has subscription", "id", id)
 		a.AccountCounters[id]++
 	}
 	a.mu.Unlock()
 
 	go func() {
 		<-ctx.Done()
-		util.LogDebug(id, "unsubscribed")
+		config.Log.Debug("Unsubscribed", "id", id)
 		a.mu.Lock()
 		a.AccountCounters[id]--
-		util.LogDebug("Counter for", id, "is", a.AccountCounters[id])
+		config.Log.Debug("Counter for", "id", id, "AccountCounters[id]", a.AccountCounters[id])
 		if a.AccountCounters[id] <= 0 {
 			delete(a.AccountChannels, id)
 		}
@@ -96,10 +95,10 @@ func (a *App) SendAccountUpdates(accounts []*model.Account) {
 	for _, account := range accounts {
 		ch := a.AccountChannels[account.ID]
 		if ch == nil {
-			util.LogDebug(account.ID, "subscription not found")
+			config.Log.Debug("Subscription not found", "id", account.ID)
 			continue
 		}
-		util.LogDebug("Sending updates to", account.ID)
+		config.Log.Debug("Sending updates to", "id", account.ID)
 
 		ch <- *account
 	}

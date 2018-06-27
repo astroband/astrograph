@@ -2,10 +2,10 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"time"
 	"database/sql"
 	"gopkg.in/mgutz/dat.v1"
+	"github.com/mgutz/logxi"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"gopkg.in/mgutz/dat.v1/sqlx-runner"
 )
@@ -17,6 +17,7 @@ var (
 	BindAndPort    string
 	DatabaseDriver string
 	DB             *runner.DB
+	Log            logxi.Logger = logxi.New("astrograph")
 
 	Port          = kingpin.Flag("port", "HTTP port to bind").Default("8000").Int()
 	Bind          = kingpin.Flag("bind", "HTTP address to bind").Default("127.0.0.1").IP()
@@ -30,17 +31,19 @@ func init() {
 	kingpin.Version(Version)
 	kingpin.Parse()
 
+	if (*Debug) { Log.SetLevel(logxi.LevelAll) }
+	
 	BindAndPort = fmt.Sprintf("%s:%v", *Bind, *Port)
 	DatabaseDriver = (*DatabaseUrl).Scheme
 
 	db, err := sql.Open(DatabaseDriver, (*DatabaseUrl).String())
 	if err != nil {
-		log.Fatal(err)
+		Log.Fatal("Can not open database:", err)
 	}
 
 	runner.LogQueriesThreshold = 50 * time.Millisecond
 	runner.LogErrNoRows = false
-	
+
 	dat.EnableInterpolation = true
 	dat.Strict = false
 

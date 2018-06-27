@@ -25,3 +25,7 @@
 [[constraint]]
   version = "1.1.11"
   name = "gopkg.in/mgutz/dat.v1"
+
+[[constraint]]
+  branch = "mgutz/v2"
+  name = "github.com/mgutz/logxi"

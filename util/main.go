@@ -1,10 +1,8 @@
 package util
 
 import (
-	"log"
 	"crypto/sha1"
 	"encoding/hex"
-	"github.com/mobius-network/astrograph/config"
 )
 
 // Ruby Array#uniq
@@ -30,11 +28,4 @@ func SHA1(values ...string) string {
 		h.Write([]byte("|"))
 	}
   return hex.EncodeToString(h.Sum(nil))
-}
-
-// Logs debug message if --debug flag passed
-func LogDebug(v ...interface{}) {
-	if *config.Debug {
-		log.Println(v...)
-	}
 }
