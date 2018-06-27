@@ -26,6 +26,7 @@ var (
 	DatabaseUrl   = kingpin.Flag("database-url", "Stellar Core database URL").Required().URL()
 	IngestTimeout = kingpin.Flag("ingest-timeout", "Ingest frequency").Default("2").Int()
 	Debug         = kingpin.Flag("debug", "Log debug messages").Default("false").Bool()
+	StartLedger   = kingpin.Flag("start-legder", "Start with ledger (debug)").Int()
 )
 
 // Drivers list for sqlhooks wrapping

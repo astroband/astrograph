@@ -10,6 +10,10 @@ const (
 
 	selectLedger = "SELECT ledgerseq FROM ledgerheaders WHERE ledgerseq = $1"
 
+	selectUpdatedAccount = "SELECT accountid FROM "
+
+	whereUpdatedAccount = " WHERE lastmodified = $1"
+
 	selectAccount = `
     SELECT
       accountid,

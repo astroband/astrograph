@@ -15,9 +15,13 @@ type Core struct {
 // Constructor
 func NewCore() *Core {
 	c := new(Core)
-	seq, err := db.FetchMaxLedger()
-	if err != nil { log.Fatal(err) }
-	c.LedgerSeq = seq + 1
+	if (config.StartLedger != nil) {
+		c.LedgerSeq = *config.StartLedger
+	} else {
+		seq, err := db.FetchMaxLedger()
+		if err != nil { log.Fatal(err) }
+		c.LedgerSeq = seq + 1		
+	}
 	return c
 }
 
@@ -79,8 +83,10 @@ func (c *Core) Pull() (accounts []model.Account) {
 
 	if !c.checkLedgerExist() { return }
 
-	id := append(c.loadUpdatesFrom("accounts"), c.loadUpdatesFrom("accountdata")...)
-	id = append(id, c.loadUpdatesFrom("trustlines")...)
+	id, err := db.GetLedgerUpdatedAccountId(c.LedgerSeq)
+	if (err != nil) { log.Fatal(err) }
+	// id := append(c.loadUpdatesFrom("accounts"), c.loadUpdatesFrom("accountdata")...)
+	// id = append(id, c.loadUpdatesFrom("trustlines")...)
 	id = util.UniqueStringSlice(id)
 
 	util.LogDebug("Updated accounts, trustlines and data entries:", id)
