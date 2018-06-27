@@ -64,8 +64,8 @@ func (c *Core) Pull() (accounts []*model.Account) {
 	if (err != nil) { config.Log.Fatal("Can not get updated accounts", "err", err) }
 	id = util.UniqueStringSlice(id)
 
-	config.Log.Debug("Updated accounts, trustlines and data entries", "id", id)
-	config.Log.Info("Updated accounts, trustlines and data entries len", "len(id)", len(id))
+	config.Log.Debug("Account updates", "id", id)
+	config.Log.Info("Account updates", "len(id)", len(id))
 
 	r := c.loadAccounts(id)
 
