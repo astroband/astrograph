@@ -42,69 +42,20 @@ func QueryAccounts(id []string) ([]*model.Account, error) {
 
 	if err != nil { return nil, err }
 
-	for _, account := range accounts {
-		populate(account)
+	for _, a := range accounts {
+		populate(a)
 	}
 
 	return accounts, nil
-	// result := make([]model.Account, 0)
-	//
-	// if len(id) == 0 { return result, nil }
-	//
-	// rows, err := config.DB.Query(selectAccount + sqlIn(id))
-	// if err != nil {
-	// 	return nil, err
-	// }
-	//
-	// defer rows.Close()
-	// for rows.Next() {
-	// 	a, err := scanAccount(rows)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	result = append(result, *a)
-	// }
-	//
-	// if err = rows.Err(); err != nil {
-	// 	return nil, err
-	// }
-	//
-	// return result, nil
 }
 
 func populate(account *model.Account) {
 	account.Balance = float64(account.RawBalance) / model.BalancePrecision
-	account.Flags = fetchFlags(account)
-	account.Thresholds = fetchThresholds(account)
+	account.Flags = flags(account)
+	account.Thresholds = thresholds(account)
 }
 
-// Fetch account data from request
-func scanAccount(r scanner) (*model.Account, error) {
-	a := model.Account{}
-
-	var thresholds string
-	var flags int
-
-	err := r.Scan(
-		&a.ID,
-		&a.Balance,
-		&a.SequenceNumber,
-		&a.NumSubentries,
-		&a.InflationDest,
-		&a.HomeDomain,
-		&thresholds,
-		&flags,
-		&a.LastModified,
-	)
-
-	if err != nil { return nil, err }
-
-	if err != nil { return nil, err }
-
-	return &a, nil
-}
-
-func fetchFlags(a *model.Account) model.AccountFlags {
+func flags(a *model.Account) model.AccountFlags {
 	f := model.AccountFlags{
 		AuthRequired: a.RawFlags & int(xdr.AccountFlagsAuthRequiredFlag) == 1,
 		AuthRevokable: a.RawFlags & int(xdr.AccountFlagsAuthRevocableFlag) == 1,
@@ -116,7 +67,7 @@ func fetchFlags(a *model.Account) model.AccountFlags {
 	return f
 }
 
-func fetchThresholds(a *model.Account) model.AccountThresholds {
+func thresholds(a *model.Account) model.AccountThresholds {
 	t, err := b64.StdEncoding.DecodeString(a.RawThresholds)
 	if (err != nil) { return model.AccountThresholds{} }
 

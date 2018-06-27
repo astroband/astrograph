@@ -1,8 +1,7 @@
 package db
 
 import (
-	// "database/sql"
-	"gopkg.in/mgutz/dat.v1"	
+	"gopkg.in/mgutz/dat.v1"
 	"github.com/mobius-network/astrograph/config"
 )
 
@@ -68,19 +67,4 @@ func fetchUpdatedAccountId(tableName string, seq uint64) ([]string, error) {
   if (err != nil) { return nil, err }
 
   return id, nil
-
-	// var a []string = make([]string, 0)
-	// var id string
-  //
-	// rows, err := config.DB.Query(selectUpdatedAccount + tableName + whereUpdatedAccount, seq)
-	// if err != nil { return nil, err }
-	// defer rows.Close()
-  //
-	// for rows.Next() {
-	// 	err := rows.Scan(&id)
-	// 	if err != nil { return nil, err }
-	// 	a = append(a, id)
-	// }
-  //
-	// return a, nil
 }

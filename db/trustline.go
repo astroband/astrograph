@@ -48,47 +48,11 @@ func fetchRows(id []string) ([]*model.Trustline, error) {
 
 	if err != nil { return nil, err }
 
-	// rows, err := config.DB.Query(selectTrustline + sqlIn(id) + selectTrustlineOrder)
-	// if err != nil { return nil, err }
-	//
-	// result := make([]*model.Trustline, 0)
-	//
-	// defer rows.Close()
-	// for rows.Next() {
-	// 	t, err := scanTrustline(rows)
-	// 	if err != nil { return nil, err }
-	// 	result = append(result, t)
-	// }
-	//
-	// if err = rows.Err(); err != nil {
-	// 	return nil, err
-	// }
-	//
-	return trustlines, nil
-}
-
-// Fetch trustline data from request
-func scanTrustline(r scanner) (*model.Trustline, error) {
-	t := model.Trustline{}
-
-	err := r.Scan(
-		&t.AccountID,
-		&t.AssetType,
-		&t.Issuer,
-		&t.AssetCode,
-		&t.Limit,
-		&t.Balance,
-		&t.Flags,
-		&t.LastModified,
-	)
-
-	if err != nil {
-		return nil, err
+	for _, t := range trustlines {
+		t.Balance = float64(t.RawBalance) / model.BalancePrecision
+		t.Limit = float64(t.RawLimit) / model.BalancePrecision
+		t.ID = util.SHA1(t.AccountID, string(t.AssetType), t.AssetCode, t.Issuer, "_trustline")
 	}
 
-	t.Balance = t.Balance / model.BalancePrecision
-	t.Limit = t.Limit / model.BalancePrecision
-	t.ID = util.SHA1(t.AccountID, string(t.AssetType), t.AssetCode, t.Issuer, "_trustline")
-
-	return &t, nil
+	return trustlines, nil
 }
