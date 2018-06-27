@@ -9,18 +9,25 @@ import (
 func FetchMaxLedger() (uint64, error) {
 	var seq uint64
 
-	row := config.Db.QueryRow(selectMaxLedger)
-	err := row.Scan(&seq)
+	err := config.DB.
+    Select("ledgerseq").
+    From("ledgerheaders").
+    OrderBy("ledgerseq DESC").
+    Limit(1).
+    QueryScalar(&seq)
 
 	return seq, err
 }
 
 // Returns true if specified ledger exist in database
 func LedgerExist(seq uint64) (bool, error) {
-	var newSeq uint64
+  var newSeq uint64
 
-	row := config.Db.QueryRow(selectLedger, seq)
-	err := row.Scan(&newSeq)
+  err := config.DB.
+    Select("ledgerseq").
+    From("ledgerheaders").
+    Where("ledgerseq = $1", seq).
+    QueryScalar(&newSeq)
 
 	if err == sql.ErrNoRows {
 		return false, nil
@@ -33,13 +40,13 @@ func LedgerExist(seq uint64) (bool, error) {
 
 // Returns account ids of accounts changed in this ledger
 func GetLedgerUpdatedAccountId(seq uint64) ([]string, error) {
-  accountId, err := updatedAccountId("accounts", seq)
+  accountId, err := fetchUpdatedAccountId("accounts", seq)
   if (err != nil) { return nil, err }
 
-  accountDataId, err := updatedAccountId("accountdata", seq)
+  accountDataId, err := fetchUpdatedAccountId("accountdata", seq)
   if (err != nil) { return nil, err }
 
-  trustlineId, err := updatedAccountId("trustlines", seq)
+  trustlineId, err := fetchUpdatedAccountId("trustlines", seq)
   if (err != nil) { return nil, err }
 
   id := append(accountId, trustlineId...)
@@ -48,20 +55,31 @@ func GetLedgerUpdatedAccountId(seq uint64) ([]string, error) {
   return id, nil
 }
 
+func fetchUpdatedAccountId(tableName string, seq uint64) ([]string, error) {
+  var id []string
 
-func updatedAccountId(tableName string, seq uint64) ([]string, error) {
-	var a []string = make([]string, 0)
-	var id string
+  err := config.DB.
+    Select("accountid").
+    From(tableName).
+    Where("lastmodified = $1", seq).
+    QuerySlice(&id)
 
-	rows, err := config.Db.Query(selectUpdatedAccount + tableName + whereUpdatedAccount, seq)
-	if err != nil { return nil, err }
-	defer rows.Close()
+  if (err != nil) { return nil, err }
 
-	for rows.Next() {
-		err := rows.Scan(&id)
-		if err != nil { return nil, err }
-		a = append(a, id)
-	}
+  return id, nil
 
-	return a, nil
+	// var a []string = make([]string, 0)
+	// var id string
+  //
+	// rows, err := config.DB.Query(selectUpdatedAccount + tableName + whereUpdatedAccount, seq)
+	// if err != nil { return nil, err }
+	// defer rows.Close()
+  //
+	// for rows.Next() {
+	// 	err := rows.Scan(&id)
+	// 	if err != nil { return nil, err }
+	// 	a = append(a, id)
+	// }
+  //
+	// return a, nil
 }

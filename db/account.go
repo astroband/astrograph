@@ -11,8 +11,14 @@ import (
 
 // Returns single account or nil
 func QueryAccount(id string) (*model.Account, error) {
-	row := config.Db.QueryRow(selectAccount+" = $1", id)
-	ac, err := scanAccount(row)
+	//row := config.DB.QueryRow(selectAccount+" = $1", id)
+	var a model.Account
+
+	err := config.DB.
+		Select("*").
+		From("accounts").
+		Where("accountid = $1", id).
+		QueryStruct(&a)
 
 	switch {
 	case err == sql.ErrNoRows:
@@ -20,35 +26,50 @@ func QueryAccount(id string) (*model.Account, error) {
 	case err != nil:
 		return nil, err
 	default:
-		return ac, nil
+		return &a, nil
 	}
 }
 
 // Returns a set of accounts by id
-func QueryAccounts(id []string) ([]model.Account, error) {
-	result := make([]model.Account, 0)
+func QueryAccounts(id []string) ([]*model.Account, error) {
+	var accounts []*model.Account
 
-	if len(id) == 0 { return result, nil }
+	err := config.DB.
+		Select("*").
+		From("accounts").
+		Where("id = $1", id).
+		QueryStructs(&accounts)
 
-	rows, err := config.Db.Query(selectAccount + sqlIn(id))
-	if err != nil {
-		return nil, err
-	}
+	if err != nil { return nil, err }
 
-	defer rows.Close()
-	for rows.Next() {
-		a, err := scanAccount(rows)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, *a)
-	}
+	// for _, account = range accounts {
+	// 	populate(*account)
+	// }
 
-	if err = rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return accounts, nil
+	// result := make([]model.Account, 0)
+	//
+	// if len(id) == 0 { return result, nil }
+	//
+	// rows, err := config.DB.Query(selectAccount + sqlIn(id))
+	// if err != nil {
+	// 	return nil, err
+	// }
+	//
+	// defer rows.Close()
+	// for rows.Next() {
+	// 	a, err := scanAccount(rows)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	result = append(result, *a)
+	// }
+	//
+	// if err = rows.Err(); err != nil {
+	// 	return nil, err
+	// }
+	//
+	// return result, nil
 }
 
 // Fetch account data from request

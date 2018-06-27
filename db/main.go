@@ -5,7 +5,7 @@ import (
 )
 
 // Template queries
-const (
+const (	
 	selectMaxLedger = "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1"
 
 	selectLedger = "SELECT ledgerseq FROM ledgerheaders WHERE ledgerseq = $1"
