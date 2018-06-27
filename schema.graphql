@@ -1,12 +1,14 @@
 scalar AccountID
 
 type AccountFlags {
+  id: ID!
   authRequired: Boolean!
   authRevokable: Boolean!
   authImmutable: Boolean!
 }
 
 type AccountThresholds {
+  id: ID!
   masterWeight: Int!
   low: Int!
   medium: Int!
@@ -14,6 +16,7 @@ type AccountThresholds {
 }
 
 type DataEntry {
+  id: ID!
   accountId: AccountID!
   name: String!
   value: String!
@@ -34,6 +37,7 @@ type Account {
 }
 
 type Trustline {
+  id: ID!
   accountId: AccountID!
   assetType: Int!
   issuer: String!

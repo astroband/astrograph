@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
 )
@@ -76,6 +77,7 @@ func scanTrustline(r scanner) (*model.Trustline, error) {
 
 	t.Balance = t.Balance / model.BalancePrecision
 	t.Limit = t.Limit / model.BalancePrecision
+	t.ID = util.SHA1(t.AccountID, string(t.AssetType), t.AssetCode, t.Issuer, "_trustline")
 
 	return &t, nil
 }

@@ -4,17 +4,20 @@ package model
 const BalancePrecision = 10000000
 
 type AccountFlags struct {
-	AuthRequired  bool `json:"authRequired"`
-	AuthRevokable bool `json:"authRevokable"`
-	AuthImmutable bool `json:"authImmutable"`
+	ID            string `json:"id"`
+	AuthRequired  bool 	 `json:"authRequired"`
+	AuthRevokable bool   `json:"authRevokable"`
+	AuthImmutable bool   `json:"authImmutable"`
 }
 type AccountThresholds struct {
-	MasterWeight int `json:"masterWeight"`
-	Low          int `json:"low"`
-	Medium       int `json:"medium"`
-	High         int `json:"high"`
+	ID           string `json:"id"`
+	MasterWeight int 		`json:"masterWeight"`
+	Low          int 		`json:"low"`
+	Medium       int 		`json:"medium"`
+	High         int 		`json:"high"`
 }
 type DataEntry struct {
+	ID           string `json:"id"`
 	AccountID    string `json:"accountId"`
 	Name         string `json:"name"`
 	Value        string `json:"value"`
@@ -32,6 +35,7 @@ type Account struct {
 	LastModified   int               `json:"lastModified"`
 }
 type Trustline struct {
+	ID           string  `json:"id"`
 	AccountID    string  `json:"accountId"`
 	AssetType    int     `json:"assetType"`
 	Issuer       string  `json:"issuer"`

@@ -1,8 +1,10 @@
 package util
 
 import (
-	"github.com/mobius-network/astrograph/config"
 	"log"
+	"crypto/sha1"
+	"encoding/hex"
+	"github.com/mobius-network/astrograph/config"
 )
 
 // Ruby Array#uniq
@@ -18,6 +20,16 @@ func UniqueStringSlice(input []string) []string {
 	}
 
 	return u
+}
+
+// Return sha1 hash of given string
+func SHA1(values ...string) string {
+  h := sha1.New()
+	for _, value := range values {
+		h.Write([]byte(value))
+		h.Write([]byte("|"))
+	}
+  return hex.EncodeToString(h.Sum(nil))
 }
 
 // Logs debug message if --debug flag passed

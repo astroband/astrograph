@@ -287,6 +287,8 @@ func (ec *executionContext) _AccountFlags(ctx context.Context, sel []query.Selec
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("AccountFlags")
+		case "id":
+			out.Values[i] = ec._AccountFlags_id(ctx, field, obj)
 		case "authRequired":
 			out.Values[i] = ec._AccountFlags_authRequired(ctx, field, obj)
 		case "authRevokable":
@@ -299,6 +301,17 @@ func (ec *executionContext) _AccountFlags(ctx context.Context, sel []query.Selec
 	}
 
 	return out
+}
+
+func (ec *executionContext) _AccountFlags_id(ctx context.Context, field graphql.CollectedField, obj *model.AccountFlags) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountFlags"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.ID
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _AccountFlags_authRequired(ctx context.Context, field graphql.CollectedField, obj *model.AccountFlags) graphql.Marshaler {
@@ -347,6 +360,8 @@ func (ec *executionContext) _AccountThresholds(ctx context.Context, sel []query.
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("AccountThresholds")
+		case "id":
+			out.Values[i] = ec._AccountThresholds_id(ctx, field, obj)
 		case "masterWeight":
 			out.Values[i] = ec._AccountThresholds_masterWeight(ctx, field, obj)
 		case "low":
@@ -361,6 +376,17 @@ func (ec *executionContext) _AccountThresholds(ctx context.Context, sel []query.
 	}
 
 	return out
+}
+
+func (ec *executionContext) _AccountThresholds_id(ctx context.Context, field graphql.CollectedField, obj *model.AccountThresholds) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountThresholds"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.ID
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _AccountThresholds_masterWeight(ctx context.Context, field graphql.CollectedField, obj *model.AccountThresholds) graphql.Marshaler {
@@ -420,6 +446,8 @@ func (ec *executionContext) _DataEntry(ctx context.Context, sel []query.Selectio
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("DataEntry")
+		case "id":
+			out.Values[i] = ec._DataEntry_id(ctx, field, obj)
 		case "accountId":
 			out.Values[i] = ec._DataEntry_accountId(ctx, field, obj)
 		case "name":
@@ -434,6 +462,17 @@ func (ec *executionContext) _DataEntry(ctx context.Context, sel []query.Selectio
 	}
 
 	return out
+}
+
+func (ec *executionContext) _DataEntry_id(ctx context.Context, field graphql.CollectedField, obj *model.DataEntry) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "DataEntry"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.ID
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _DataEntry_accountId(ctx context.Context, field graphql.CollectedField, obj *model.DataEntry) graphql.Marshaler {
@@ -718,6 +757,8 @@ func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selectio
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Trustline")
+		case "id":
+			out.Values[i] = ec._Trustline_id(ctx, field, obj)
 		case "accountId":
 			out.Values[i] = ec._Trustline_accountId(ctx, field, obj)
 		case "assetType":
@@ -740,6 +781,17 @@ func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selectio
 	}
 
 	return out
+}
+
+func (ec *executionContext) _Trustline_id(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Trustline"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.ID
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _Trustline_accountId(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
@@ -1571,12 +1623,14 @@ func (ec *executionContext) introspectType(name string) *introspection.Type {
 var parsedSchema = schema.MustParse(`scalar AccountID
 
 type AccountFlags {
+  id: ID!
   authRequired: Boolean!
   authRevokable: Boolean!
   authImmutable: Boolean!
 }
 
 type AccountThresholds {
+  id: ID!
   masterWeight: Int!
   low: Int!
   medium: Int!
@@ -1584,6 +1638,7 @@ type AccountThresholds {
 }
 
 type DataEntry {
+  id: ID!
   accountId: AccountID!
   name: String!
   value: String!
@@ -1604,6 +1659,7 @@ type Account {
 }
 
 type Trustline {
+  id: ID!
   accountId: AccountID!
   assetType: Int!
   issuer: String!
