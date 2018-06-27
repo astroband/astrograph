@@ -37,22 +37,33 @@ func QueryTrustlines(id []string) ([][]*model.Trustline, error) {
 
 // Returns slice of trustlines for requested accounts ordered
 func fetchRows(id []string) ([]*model.Trustline, error) {
-	rows, err := config.DB.Query(selectTrustline + sqlIn(id) + selectTrustlineOrder)
+	var trustlines []*model.Trustline
+
+	err := config.DB.
+		Select("*").
+		From("trustlines").
+		Where("lastmodified = ?", id).
+		OrderBy("accountid, assettype, assetcode").
+		QueryStructs(&trustlines)
+
 	if err != nil { return nil, err }
 
-	result := make([]*model.Trustline, 0)
-
-	defer rows.Close()
-	for rows.Next() {
-		t, err := scanTrustline(rows)
-		if err != nil { return nil, err }
-		result = append(result, t)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, err
-	}
-
+	// rows, err := config.DB.Query(selectTrustline + sqlIn(id) + selectTrustlineOrder)
+	// if err != nil { return nil, err }
+	//
+	// result := make([]*model.Trustline, 0)
+	//
+	// defer rows.Close()
+	// for rows.Next() {
+	// 	t, err := scanTrustline(rows)
+	// 	if err != nil { return nil, err }
+	// 	result = append(result, t)
+	// }
+	//
+	// if err = rows.Err(); err != nil {
+	// 	return nil, err
+	// }
+	//
 	return result, nil
 }
 
