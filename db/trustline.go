@@ -42,7 +42,7 @@ func fetchRows(id []string) ([]*model.Trustline, error) {
 	err := config.DB.
 		Select("*").
 		From("trustlines").
-		Where("lastmodified = ?", id).
+		Where("accountid IN $1", id).
 		OrderBy("accountid, assettype, assetcode").
 		QueryStructs(&trustlines)
 

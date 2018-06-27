@@ -25,7 +25,7 @@ type DataEntry struct {
 }
 type Account struct {
 	ID             string            `json:"id" db:"accountid"`
-	Balance        float64           `json:"balance"`
+	Balance        float64           `json:"balance" db:"-"`
 	SequenceNumber int               `json:"sequenceNumber" db:"seqnum"`
 	NumSubentries  int               `json:"numSubentries" db:"numsubentries"`
 	InflationDest  *string           `json:"inflationDest" db:"inflationdest"`
@@ -34,6 +34,7 @@ type Account struct {
 	Flags          AccountFlags      `json:"flags" db:"-"`
 	LastModified   int               `json:"lastModified" db:"lastmodified"`
 
+	RawBalance     int               `db:"balance"`
 	RawThresholds  string            `db:"thresholds"`
 	RawFlags       int							 `db:"flags"`
 }
@@ -41,7 +42,7 @@ type Trustline struct {
 	ID           string  `json:"id"`
 	AccountID    string  `json:"accountId" db:"accountid"`
 	AssetType    int     `json:"assetType" db:"assettype"`
-	Issuer       string  `json:"issuer" db:"assetissuer"`
+	Issuer       string  `json:"issuer" db:"issuer"`
 	AssetCode    string  `json:"assetCode" db:"assetcode"`
 	Limit        float64 `json:"limit" db:"-"`
 	Balance      float64 `json:"balance" db:"-"`

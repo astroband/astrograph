@@ -11,14 +11,13 @@ import (
 
 // Returns single account or nil
 func QueryAccount(id string) (*model.Account, error) {
-	//row := config.DB.QueryRow(selectAccount+" = $1", id)
-	var a model.Account
+	var account model.Account
 
 	err := config.DB.
 		Select("*").
 		From("accounts").
 		Where("accountid = $1", id).
-		QueryStruct(&a)
+		QueryStruct(&account)
 
 	switch {
 	case err == dat.ErrNotFound:
@@ -26,7 +25,8 @@ func QueryAccount(id string) (*model.Account, error) {
 	case err != nil:
 		return nil, err
 	default:
-		return &a, nil
+		populate(&account)
+		return &account, nil
 	}
 }
 
@@ -42,9 +42,9 @@ func QueryAccounts(id []string) ([]*model.Account, error) {
 
 	if err != nil { return nil, err }
 
-	// for _, account = range accounts {
-	// 	populate(*account)
-	// }
+	for _, account := range accounts {
+		populate(account)
+	}
 
 	return accounts, nil
 	// result := make([]model.Account, 0)
@@ -72,6 +72,12 @@ func QueryAccounts(id []string) ([]*model.Account, error) {
 	// return result, nil
 }
 
+func populate(account *model.Account) {
+	account.Balance = float64(account.RawBalance) / model.BalancePrecision
+	account.Flags = fetchFlags(account)
+	account.Thresholds = fetchThresholds(account)
+}
+
 // Fetch account data from request
 func scanAccount(r scanner) (*model.Account, error) {
 	a := model.Account{}
@@ -93,20 +99,16 @@ func scanAccount(r scanner) (*model.Account, error) {
 
 	if err != nil { return nil, err }
 
-	a.Balance = a.Balance / model.BalancePrecision
-	a.Flags = fetchFlags(a, flags)
-
-	a.Thresholds, err = fetchThresholds(a, thresholds)
 	if err != nil { return nil, err }
 
 	return &a, nil
 }
 
-func fetchFlags(a model.Account, flags int) (model.AccountFlags) {
+func fetchFlags(a *model.Account) model.AccountFlags {
 	f := model.AccountFlags{
-		AuthRequired: flags & int(xdr.AccountFlagsAuthRequiredFlag) == 1,
-		AuthRevokable: flags & int(xdr.AccountFlagsAuthRevocableFlag) == 1,
-		AuthImmutable: flags & int(xdr.AccountFlagsAuthImmutableFlag) == 1,
+		AuthRequired: a.RawFlags & int(xdr.AccountFlagsAuthRequiredFlag) == 1,
+		AuthRevokable: a.RawFlags & int(xdr.AccountFlagsAuthRevocableFlag) == 1,
+		AuthImmutable: a.RawFlags & int(xdr.AccountFlagsAuthImmutableFlag) == 1,
 	}
 
 	f.ID = util.SHA1(a.ID, "flags")
@@ -114,9 +116,9 @@ func fetchFlags(a model.Account, flags int) (model.AccountFlags) {
 	return f
 }
 
-func fetchThresholds(a model.Account, thresholds string) (model.AccountThresholds, error) {
-	t, err := b64.StdEncoding.DecodeString(thresholds)
-	if (err != nil) { return model.AccountThresholds{}, err }
+func fetchThresholds(a *model.Account) model.AccountThresholds {
+	t, err := b64.StdEncoding.DecodeString(a.RawThresholds)
+	if (err != nil) { return model.AccountThresholds{} }
 
 	tr := model.AccountThresholds{
 		MasterWeight: int(t[xdr.ThresholdIndexesThresholdMasterWeight]),
@@ -127,5 +129,5 @@ func fetchThresholds(a model.Account, thresholds string) (model.AccountThreshold
 
 	tr.ID = util.SHA1(a.ID, "thresholds")
 
-	return tr, nil
+	return tr
 }
