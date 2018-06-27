@@ -2,7 +2,6 @@ package ingest
 
 import (
 	"log"
-	"database/sql"
 	"github.com/mobius-network/astrograph/db"
 	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
@@ -16,40 +15,30 @@ type Core struct {
 // Constructor
 func NewCore() *Core {
 	c := new(Core)
-	c.LedgerSeq = c.FetchMaxLedger() + 1
+	seq, err := db.FetchMaxLedger()
+	if err != nil { log.Fatal(err) }
+	c.LedgerSeq = seq + 1
 	return c
-}
-
-// Fetches maximum current ledger number
-func (c *Core) FetchMaxLedger() uint64 {
-	var seq uint64
-
-	row := config.Db.QueryRow("SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1")
-	err := row.Scan(&seq)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return seq
 }
 
 // Checks if current ledger is populated
 func (c *Core) checkLedgerExist() bool {
-	row := config.Db.QueryRow("SELECT ledgerseq FROM ledgerheaders WHERE ledgerseq = $1", c.LedgerSeq)
-	err := row.Scan(&c.LedgerSeq)
+	exist, err := db.LedgerExist(c.LedgerSeq)
+
+	if (err != nil) { log.Fatal(err) }
 
 	// If current ledger does not exist and is less than max ledger (meaning there is a gap in history), fast-forwards
 	// to the head.
 	//
 	// NOTE: Might need to send updates to all subscriptions in this case.
-	if err == sql.ErrNoRows {
-		newSeq := c.FetchMaxLedger()
+	if !exist {
+		newSeq, err := db.FetchMaxLedger()
+		if (err != nil) { log.Fatal(err) }
+
 		if c.LedgerSeq < newSeq {
 			c.LedgerSeq = newSeq
 		}
 		return false
-	} else if err != nil {
-		log.Fatal(err)
 	}
 
 	return true
