@@ -1,7 +1,6 @@
 package db
 
 import (
-	"log"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
@@ -26,7 +25,7 @@ func QueryTrustlines(id []string) ([][]model.Trustline, error) {
 			if (t != nil) && (t.AccountID == accountId) {
 
 				// Add it to current slice and mark as "used"
-				accountTrustlines = append(accountTrustlines, t)
+				accountTrustlines = append(accountTrustlines, *t)
 				rows[i] = nil
 			}
 		}
@@ -38,8 +37,8 @@ func QueryTrustlines(id []string) ([][]model.Trustline, error) {
 }
 
 // Returns slice of trustlines for requested accounts ordered
-func fetchRows(id []string) ([]model.Trustline, error) {
-	var trustlines []model.Trustline
+func fetchRows(id []string) ([]*model.Trustline, error) {
+	var trustlines []*model.Trustline
 
 	q, args, err := b.
 		Select("*").
