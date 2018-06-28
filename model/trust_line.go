@@ -1,7 +1,7 @@
 package model
 
 import (
-  "github.com/mobius-network/astrograph/util"
+	"github.com/mobius-network/astrograph/util"
 )
 
 type Trustline struct {
