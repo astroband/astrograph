@@ -910,7 +910,7 @@ func (ec *executionContext) _Trustline_flags(ctx context.Context, field graphql.
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	res := obj.Flags
-	return graphql.MarshalInt(res)
+	return ec._TrustlineFlags(ctx, field.Selections, &res)
 }
 
 func (ec *executionContext) _Trustline_lastModified(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
@@ -922,6 +922,53 @@ func (ec *executionContext) _Trustline_lastModified(ctx context.Context, field g
 	defer rctx.Pop()
 	res := obj.LastModified
 	return graphql.MarshalInt(res)
+}
+
+var trustlineFlagsImplementors = []string{"TrustlineFlags"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _TrustlineFlags(ctx context.Context, sel []query.Selection, obj *model.TrustlineFlags) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, trustlineFlagsImplementors, ec.Variables)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TrustlineFlags")
+		case "ID":
+			out.Values[i] = ec._TrustlineFlags_ID(ctx, field, obj)
+		case "authorized":
+			out.Values[i] = ec._TrustlineFlags_authorized(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _TrustlineFlags_ID(ctx context.Context, field graphql.CollectedField, obj *model.TrustlineFlags) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "TrustlineFlags"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.ID
+	return graphql.MarshalID(res)
+}
+
+func (ec *executionContext) _TrustlineFlags_authorized(ctx context.Context, field graphql.CollectedField, obj *model.TrustlineFlags) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "TrustlineFlags"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Authorized
+	return graphql.MarshalBoolean(res)
 }
 
 var __DirectiveImplementors = []string{"__Directive"}
@@ -1701,6 +1748,11 @@ type Account {
   data: [DataEntry!]
 }
 
+type TrustlineFlags {
+  ID: ID!
+  authorized: Boolean!
+}
+
 type Trustline {
   id: ID!
   accountId: AccountID!
@@ -1709,7 +1761,7 @@ type Trustline {
   assetCode: String!
   limit: Float!
   balance: Float!
-  flags: Int!
+  flags: TrustlineFlags
   lastModified: Int!
 }
 

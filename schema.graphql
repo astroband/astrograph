@@ -37,6 +37,11 @@ type Account {
   data: [DataEntry!]
 }
 
+type TrustlineFlags {
+  ID: ID!
+  authorized: Boolean!
+}
+
 type Trustline {
   id: ID!
   accountId: AccountID!
@@ -45,7 +50,7 @@ type Trustline {
   assetCode: String!
   limit: Float!
   balance: Float!
-  flags: Int!
+  flags: TrustlineFlags
   lastModified: Int!
 }
 
