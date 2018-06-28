@@ -19,7 +19,7 @@ Stellar GraphQL interface.
 
 # TODO
 
-0. AssetType -> AssetType
+0. QueryTrustlines, DataEntries -> interface BelongsToAccount
 7. DecodeRaw -> err
 0. Trustline -> TrustLine
 1. Interface ParseRaw
