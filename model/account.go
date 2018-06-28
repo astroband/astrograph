@@ -1,5 +1,9 @@
 package model
 
+import (
+  "github.com/mobius-network/astrograph/util"
+)
+
 type Account struct {
 	ID             string            `json:"id" db:"accountid"`
 	Balance        float64           `json:"balance" db:"-"`
@@ -14,4 +18,10 @@ type Account struct {
 	RawBalance     int               `db:"balance"`
 	RawThresholds  string            `db:"thresholds"`
 	RawFlags       int							 `db:"flags"`
+}
+
+func (a *Account) DecodeRaw() {
+  a.Balance = float64(a.RawBalance) / BalancePrecision
+	a.Flags = NewAccountFlags(a.RawFlags, util.SHA1(a.ID, "flags"))
+	a.Thresholds = NewAccountThresholds(a.RawThresholds, util.SHA1(a.ID, "thresholds"))
 }

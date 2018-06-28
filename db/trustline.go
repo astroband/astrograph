@@ -59,6 +59,9 @@ func fetchTrustlineRows(id []string) ([]*model.Trustline, error) {
 		t.Flags = model.TrustlineFlags{
 			Authorized: xdr.TrustLineFlags(t.RawFlags) & xdr.TrustLineFlagsAuthorizedFlag != 0,
 		}
+
+		assetType := xdr.AssetType(t.RawAssetType).String()
+		t.AssetType = model.AssetType(assetType)
 		t.ID = util.SHA1(t.AccountID, string(t.AssetType), t.AssetCode, t.Issuer, "_trustline")
 	}
 
