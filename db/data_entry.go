@@ -1,9 +1,7 @@
 package db
 
 import (
-  b64 "encoding/base64"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
 )
@@ -55,11 +53,7 @@ func fetchDataEntryRows(id []string) ([]*model.DataEntry, error) {
 	if err != nil { return nil, err }
 
 	for _, e := range dataEntries {
-		value, err := b64.StdEncoding.DecodeString(e.RawValue)
-    if (err != nil) { return nil, err }
-    
-    e.Value = string(value)
-		e.ID = util.SHA1(e.AccountID, e.Name, "_dataentry")
+    e.DecodeRaw()
 	}
 
 	return dataEntries, nil

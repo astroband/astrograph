@@ -19,6 +19,7 @@ Stellar GraphQL interface.
 
 # TODO
 
+7. DecodeRaw -> err
 0. Trustline -> TrustLine
 1. Asset
 1. Fast rewind to last ledger - ?
