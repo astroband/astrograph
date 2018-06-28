@@ -54,10 +54,12 @@ func populate(account *model.Account) {
 }
 
 func flags(a *model.Account) model.AccountFlags {
+	flags := xdr.AccountFlags(a.RawFlags)
+
 	f := model.AccountFlags{
-		AuthRequired: a.RawFlags & int(xdr.AccountFlagsAuthRequiredFlag) == 1,
-		AuthRevokable: a.RawFlags & int(xdr.AccountFlagsAuthRevocableFlag) == 1,
-		AuthImmutable: a.RawFlags & int(xdr.AccountFlagsAuthImmutableFlag) == 1,
+		AuthRequired:  flags & xdr.AccountFlagsAuthRequiredFlag != 0,
+		AuthRevokable: flags & xdr.AccountFlagsAuthRevocableFlag != 0,
+		AuthImmutable: flags & xdr.AccountFlagsAuthImmutableFlag != 0,
 	}
 
 	f.ID = util.SHA1(a.ID, "flags")

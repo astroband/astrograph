@@ -1711,6 +1711,12 @@ func (ec *executionContext) introspectType(name string) *introspection.Type {
 
 var parsedSchema = schema.MustParse(`scalar AccountID
 
+enum AssetType {
+  NATIVE
+  ALPHANUM_4
+  ALPHANUM_12
+}
+
 type AccountFlags {
   id: ID!
   authRequired: Boolean!
