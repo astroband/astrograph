@@ -1,9 +1,7 @@
 package db
 
 import (
-	"github.com/stellar/go/xdr"
 	sq "github.com/Masterminds/squirrel"
-	"github.com/mobius-network/astrograph/util"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
 )
@@ -54,15 +52,10 @@ func fetchTrustlineRows(id []string) ([]*model.Trustline, error) {
 	if err != nil { return nil, err }
 
 	for _, t := range trustlines {
-		t.Balance = float64(t.RawBalance) / model.BalancePrecision
-		t.Limit = float64(t.RawLimit) / model.BalancePrecision
-		t.Flags = model.TrustlineFlags{
-			Authorized: xdr.TrustLineFlags(t.RawFlags) & xdr.TrustLineFlagsAuthorizedFlag != 0,
-		}
+		t.DecodeRaw()
 
-		assetType := xdr.AssetType(t.RawAssetType).String()
-		t.AssetType = model.AssetType(assetType)
-		t.ID = util.SHA1(t.AccountID, string(t.AssetType), t.AssetCode, t.Issuer, "_trustline")
+		// assetType := xdr.AssetType(t.RawAssetType).String()
+		// t.AssetType = model.AssetType(assetType)
 	}
 
 	return trustlines, nil

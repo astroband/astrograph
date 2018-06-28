@@ -1,5 +1,9 @@
 package model
 
+import (
+  "github.com/mobius-network/astrograph/util"
+)
+
 type Trustline struct {
 	ID           string         `json:"id"`
 	AccountID    string         `json:"accountId" db:"accountid"`
@@ -15,4 +19,12 @@ type Trustline struct {
 	RawBalance   int `db:"balance"`
 	RawFlags     int `db:"flags"`
 	RawAssetType int `db:"assettype"`
+}
+
+func (t *Trustline) DecodeRaw() {
+	t.Balance = float64(t.RawBalance) / BalancePrecision
+	t.Limit = float64(t.RawLimit) / BalancePrecision
+	t.Flags = NewTrustLineFlags(t.RawFlags)
+
+	t.ID = util.SHA1(t.AccountID, t.AssetType.String(), t.AssetCode, t.Issuer, "_trustline")
 }
