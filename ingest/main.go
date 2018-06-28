@@ -57,16 +57,15 @@ func (c *Core) loadAccounts(id []string) []*model.Account {
 
 // Loads updates from current ledger
 func (c *Core) Pull() (accounts []*model.Account) {
-	log.WithFields(log.Fields{"LedgerSeq": c.LedgerSeq}).Info("Ingesting ledger")
-
 	if !c.checkLedgerExist() { return nil }
+
+	log.WithFields(log.Fields{"LedgerSeq": c.LedgerSeq}).Info("Ingesting ledger")
 
 	id, err := db.GetLedgerUpdatedAccountId(c.LedgerSeq)
 	if (err != nil) { log.Fatal(err) }
 	id = util.UniqueStringSlice(id)
 
-	log.WithFields(log.Fields{"count": len(id)}).Info("Received updates")
-	log.WithFields(log.Fields{"id": id}).Debug("Accounts being updated")
+	log.WithFields(log.Fields{"id": id}).Info("Accounts updated")
 
 	r := c.loadAccounts(id)
 
