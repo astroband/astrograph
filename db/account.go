@@ -37,9 +37,7 @@ func QueryAccounts(id []string) ([]*model.Account, error) {
 	err = config.DB.Select(&accounts, q, args...)
 	if err != nil { return nil, err }
 
-	for _, a := range accounts {
-		a.DecodeRaw()
-	}
+	decodeRawOnSlice(accounts)
 
 	return accounts, nil
 }

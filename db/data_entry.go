@@ -52,9 +52,7 @@ func fetchDataEntryRows(id []string) ([]*model.DataEntry, error) {
 	err = config.DB.Select(&dataEntries, q, args...)
 	if err != nil { return nil, err }
 
-	for _, e := range dataEntries {
-    e.DecodeRaw()
-	}
+  decodeRawOnSlice(dataEntries)
 
 	return dataEntries, nil
 }

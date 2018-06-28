@@ -51,9 +51,7 @@ func fetchTrustLineRows(id []string) ([]*model.TrustLine, error) {
 	err = config.DB.Select(&trustLines, q, args...)
 	if err != nil { return nil, err }
 
-	for _, t := range trustLines {
-		t.DecodeRaw()
-	}
+	decodeRawOnSlice(trustLines)
 
 	return trustLines, nil
 }

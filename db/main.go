@@ -1,9 +1,23 @@
 package db
 
-import "github.com/mobius-network/astrograph/config"
+import (
+  "reflect"
+  "github.com/mobius-network/astrograph/config"
+)
 
 var (
   b = config.SqlBuilder
   accountsSql = b.Select("*").From("accounts")
   ledgerSeqSql = b.Select("ledgerseq").From("ledgerheaders")
 )
+
+type HasRawFields interface {
+  DecodeRaw()
+}
+
+func decodeRawOnSlice(s interface {}) {
+  v := reflect.ValueOf(s)
+  for i := 0; i < v.Len(); i++ {
+    v.Index(i).Interface().(HasRawFields).DecodeRaw()
+  }
+}
