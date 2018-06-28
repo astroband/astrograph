@@ -15,7 +15,7 @@ type DataEntry struct {
 	RawValue     string `db:"datavalue"`
 }
 
-func (e *DataEntry) DecodeRaw() {
+func (e DataEntry) DecodeRaw() {
   value, _ := b64.StdEncoding.DecodeString(e.RawValue)
   // if (err != nil) { err }
 

@@ -21,7 +21,7 @@ type Trustline struct {
 	RawAssetType int `db:"assettype"`
 }
 
-func (t *Trustline) DecodeRaw() {
+func (t Trustline) DecodeRaw() {
 	t.Balance = float64(t.RawBalance) / BalancePrecision
 	t.Limit = float64(t.RawLimit) / BalancePrecision
 	t.Flags = NewTrustLineFlagsFromRaw(t.RawFlags)
