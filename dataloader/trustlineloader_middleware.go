@@ -1,4 +1,4 @@
-//go:generate gorunpkg github.com/vektah/dataloaden -keys string -slice github.com/mobius-network/astrograph/model.Trustline
+//go:generate gorunpkg github.com/vektah/dataloaden -keys string -slice github.com/mobius-network/astrograph/model.TrustLine
 package dataloader
 
 import (
@@ -9,20 +9,20 @@ import (
 	"time"
 )
 
-const TrustlineLoaderKey = "trustlineloader"
+const TrustLineLoaderKey = "trustlineloader"
 
-func TrustlineLoaderMiddleware(next http.Handler) http.Handler {
+func TrustLineLoaderMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		trustlineLoader := TrustlineSliceLoader{
+		trustLineLoader := TrustLineSliceLoader{
 			maxBatch: 100,
 			wait:     100 * time.Millisecond,
-			fetch: func(keys []string) ([][]model.Trustline, []error) {
-				r, err := db.QueryTrustlines(keys)
+			fetch: func(keys []string) ([][]model.TrustLine, []error) {
+				r, err := db.QueryTrustLines(keys)
 				if err != nil { return nil, []error{err} }
 				return r, nil
 			},
 		}
-		ctx := context.WithValue(r.Context(), TrustlineLoaderKey, &trustlineLoader)
+		ctx := context.WithValue(r.Context(), TrustLineLoaderKey, &trustLineLoader)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})

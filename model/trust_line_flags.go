@@ -2,13 +2,13 @@ package model
 
 import "github.com/stellar/go/xdr"
 
-type TrustlineFlags struct {
+type TrustLineFlags struct {
   ID				 string `json:"id"`
   Authorized bool   `json:"authorized" db:"-"`
 }
 
-func NewTrustLineFlagsFromRaw(raw int) TrustlineFlags {
-  return TrustlineFlags{
+func NewTrustLineFlagsFromRaw(raw int) TrustLineFlags {
+  return TrustLineFlags{
 		Authorized: xdr.TrustLineFlags(raw) & xdr.TrustLineFlagsAuthorizedFlag != 0,
 	}
 }

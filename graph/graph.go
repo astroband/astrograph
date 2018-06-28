@@ -24,8 +24,8 @@ func (a *App) Account_data(ctx context.Context, obj *model.Account) ([]model.Dat
 
 }
 
-func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error) {
-	loader := ctx.Value(dataloader.TrustlineLoaderKey).(*dataloader.TrustlineSliceLoader)
+func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]model.TrustLine, error) {
+	loader := ctx.Value(dataloader.TrustLineLoaderKey).(*dataloader.TrustLineSliceLoader)
 	trustlines, error := loader.Load(obj.ID)
 	return trustlines, error
 }

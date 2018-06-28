@@ -7,15 +7,15 @@ import (
 )
 
 // Requests trustlines for given accounts and returns slices of trustlines in same order as given id
-func QueryTrustlines(id []string) ([][]model.Trustline, error) {
-	rows, err := fetchTrustlineRows(id)
+func QueryTrustLines(id []string) ([][]model.TrustLine, error) {
+	rows, err := fetchTrustLineRows(id)
 	if (err != nil) { return nil, err }
 
-	result := make([][]model.Trustline, len(id))
+	result := make([][]model.TrustLine, len(id))
 
 	// For every given account
 	for n, accountId := range id {
-		accountTrustlines := make([]model.Trustline, 0)
+		accountTrustLines := make([]model.TrustLine, 0)
 
 		// Scan all rows
 		for i, t := range rows {
@@ -24,20 +24,20 @@ func QueryTrustlines(id []string) ([][]model.Trustline, error) {
 			if (t != nil) && (t.AccountID == accountId) {
 
 				// Add it to current slice and mark as "used"
-				accountTrustlines = append(accountTrustlines, *t)
+				accountTrustLines = append(accountTrustLines, *t)
 				rows[i] = nil
 			}
 		}
 
-		result[n] = accountTrustlines // Put account trustlines slice to the same position as account id has in source slice
+		result[n] = accountTrustLines // Put account trustlines slice to the same position as account id has in source slice
 	}
 
 	return result, nil
 }
 
 // Returns slice of trustlines for requested accounts ordered
-func fetchTrustlineRows(id []string) ([]*model.Trustline, error) {
-	var trustlines []*model.Trustline
+func fetchTrustLineRows(id []string) ([]*model.TrustLine, error) {
+	var trustLines []*model.TrustLine
 
 	q, args, err := b.
 		Select("*").
@@ -48,15 +48,12 @@ func fetchTrustlineRows(id []string) ([]*model.Trustline, error) {
 
 	if err != nil { return nil, err }
 
-	err = config.DB.Select(&trustlines, q, args...)
+	err = config.DB.Select(&trustLines, q, args...)
 	if err != nil { return nil, err }
 
-	for _, t := range trustlines {
+	for _, t := range trustLines {
 		t.DecodeRaw()
-
-		// assetType := xdr.AssetType(t.RawAssetType).String()
-		// t.AssetType = model.AssetType(assetType)
 	}
 
-	return trustlines, nil
+	return trustLines, nil
 }

@@ -43,7 +43,7 @@ func main() {
 	http.Handle(
 		"/query",
 		dataloader.DataEntryLoaderMiddleware(
-			dataloader.TrustlineLoaderMiddleware(
+			dataloader.TrustLineLoaderMiddleware(
 				handler.GraphQL(
 					graph.MakeExecutableSchema(app),
 					handler.ResolverMiddleware(gqlopentracing.ResolverMiddleware()),

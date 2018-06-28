@@ -4,6 +4,6 @@
   "AccountThresholds": "github.com/mobius-network/astrograph/model.AccountThresholds",
   "DataEntry": "github.com/mobius-network/astrograph/model.DataEntry",
   "Account": "github.com/mobius-network/astrograph/model.Account",
-  "Trustline": "github.com/mobius-network/astrograph/model.Trustline",
-  "TrustlineFlags": "github.com/mobius-network/astrograph/model.TrustlineFlags"
+  "Trustline": "github.com/mobius-network/astrograph/model.TrustLine",
+  "TrustlineFlags": "github.com/mobius-network/astrograph/model.TrustLineFlags"
 }

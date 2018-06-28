@@ -19,7 +19,7 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 }
 
 type Resolvers interface {
-	Account_trustlines(ctx context.Context, obj *model.Account) ([]model.Trustline, error)
+	Account_trustlines(ctx context.Context, obj *model.Account) ([]model.TrustLine, error)
 	Account_data(ctx context.Context, obj *model.Account) ([]model.DataEntry, error)
 
 	Query_Account(ctx context.Context, id string) (*model.Account, error)
@@ -263,7 +263,7 @@ func (ec *executionContext) _Account_trustlines(ctx context.Context, field graph
 		if resTmp == nil {
 			return graphql.Null
 		}
-		res := resTmp.([]model.Trustline)
+		res := resTmp.([]model.TrustLine)
 		arr1 := graphql.Array{}
 		for idx1 := range res {
 			arr1 = append(arr1, func() graphql.Marshaler {
@@ -789,7 +789,7 @@ func (ec *executionContext) _Subscription_accountUpdated(ctx context.Context, fi
 var trustlineImplementors = []string{"Trustline"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selection, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selection, obj *model.TrustLine) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.Doc, sel, trustlineImplementors, ec.Variables)
 
 	out := graphql.NewOrderedMap(len(fields))
@@ -825,7 +825,7 @@ func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selectio
 	return out
 }
 
-func (ec *executionContext) _Trustline_id(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_id(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -836,7 +836,7 @@ func (ec *executionContext) _Trustline_id(ctx context.Context, field graphql.Col
 	return graphql.MarshalID(res)
 }
 
-func (ec *executionContext) _Trustline_accountId(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_accountId(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -847,7 +847,7 @@ func (ec *executionContext) _Trustline_accountId(ctx context.Context, field grap
 	return graphql.MarshalString(res)
 }
 
-func (ec *executionContext) _Trustline_assetType(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_assetType(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -858,7 +858,7 @@ func (ec *executionContext) _Trustline_assetType(ctx context.Context, field grap
 	return res
 }
 
-func (ec *executionContext) _Trustline_issuer(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_issuer(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -869,7 +869,7 @@ func (ec *executionContext) _Trustline_issuer(ctx context.Context, field graphql
 	return graphql.MarshalString(res)
 }
 
-func (ec *executionContext) _Trustline_assetCode(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_assetCode(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -880,7 +880,7 @@ func (ec *executionContext) _Trustline_assetCode(ctx context.Context, field grap
 	return graphql.MarshalString(res)
 }
 
-func (ec *executionContext) _Trustline_limit(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_limit(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -891,7 +891,7 @@ func (ec *executionContext) _Trustline_limit(ctx context.Context, field graphql.
 	return graphql.MarshalFloat(res)
 }
 
-func (ec *executionContext) _Trustline_balance(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_balance(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -902,7 +902,7 @@ func (ec *executionContext) _Trustline_balance(ctx context.Context, field graphq
 	return graphql.MarshalFloat(res)
 }
 
-func (ec *executionContext) _Trustline_flags(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_flags(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -913,7 +913,7 @@ func (ec *executionContext) _Trustline_flags(ctx context.Context, field graphql.
 	return ec._TrustlineFlags(ctx, field.Selections, &res)
 }
 
-func (ec *executionContext) _Trustline_lastModified(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
+func (ec *executionContext) _Trustline_lastModified(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
@@ -927,7 +927,7 @@ func (ec *executionContext) _Trustline_lastModified(ctx context.Context, field g
 var trustlineFlagsImplementors = []string{"TrustlineFlags"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _TrustlineFlags(ctx context.Context, sel []query.Selection, obj *model.TrustlineFlags) graphql.Marshaler {
+func (ec *executionContext) _TrustlineFlags(ctx context.Context, sel []query.Selection, obj *model.TrustLineFlags) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.Doc, sel, trustlineFlagsImplementors, ec.Variables)
 
 	out := graphql.NewOrderedMap(len(fields))
@@ -949,7 +949,7 @@ func (ec *executionContext) _TrustlineFlags(ctx context.Context, sel []query.Sel
 	return out
 }
 
-func (ec *executionContext) _TrustlineFlags_ID(ctx context.Context, field graphql.CollectedField, obj *model.TrustlineFlags) graphql.Marshaler {
+func (ec *executionContext) _TrustlineFlags_ID(ctx context.Context, field graphql.CollectedField, obj *model.TrustLineFlags) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "TrustlineFlags"
 	rctx.Args = nil
@@ -960,7 +960,7 @@ func (ec *executionContext) _TrustlineFlags_ID(ctx context.Context, field graphq
 	return graphql.MarshalID(res)
 }
 
-func (ec *executionContext) _TrustlineFlags_authorized(ctx context.Context, field graphql.CollectedField, obj *model.TrustlineFlags) graphql.Marshaler {
+func (ec *executionContext) _TrustlineFlags_authorized(ctx context.Context, field graphql.CollectedField, obj *model.TrustLineFlags) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "TrustlineFlags"
 	rctx.Args = nil

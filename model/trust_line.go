@@ -4,7 +4,7 @@ import (
 	"github.com/mobius-network/astrograph/util"
 )
 
-type Trustline struct {
+type TrustLine struct {
 	ID           string         `json:"id"`
 	AccountID    string         `json:"accountId" db:"accountid"`
 	AssetType    AssetType      `json:"assetType" db:"-"`
@@ -12,7 +12,7 @@ type Trustline struct {
 	AssetCode    string         `json:"assetCode" db:"assetcode"`
 	Limit        float64        `json:"limit" db:"-"`
 	Balance      float64        `json:"balance" db:"-"`
-	Flags        TrustlineFlags `json:"flags" db:"-"`
+	Flags        TrustLineFlags `json:"flags" db:"-"`
 	LastModified int            `json:"lastModified" db:"lastmodified"`
 
 	RawLimit     int `db:"tlimit"`
@@ -21,7 +21,7 @@ type Trustline struct {
 	RawAssetType int `db:"assettype"`
 }
 
-func (t Trustline) DecodeRaw() {
+func (t *TrustLine) DecodeRaw() {
 	t.Balance = float64(t.RawBalance) / BalancePrecision
 	t.Limit = float64(t.RawLimit) / BalancePrecision
 	t.Flags = NewTrustLineFlagsFromRaw(t.RawFlags)
