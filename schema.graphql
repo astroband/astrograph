@@ -51,7 +51,7 @@ type TrustlineFlags {
 type Trustline {
   id: ID!
   accountId: AccountID!
-  assetType: Int!
+  assetType: AssetType!
   issuer: String!
   assetCode: String!
   limit: Float!

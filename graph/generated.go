@@ -855,7 +855,7 @@ func (ec *executionContext) _Trustline_assetType(ctx context.Context, field grap
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	res := obj.AssetType
-	return graphql.MarshalInt(res)
+	return res
 }
 
 func (ec *executionContext) _Trustline_issuer(ctx context.Context, field graphql.CollectedField, obj *model.Trustline) graphql.Marshaler {
@@ -1762,7 +1762,7 @@ type TrustlineFlags {
 type Trustline {
   id: ID!
   accountId: AccountID!
-  assetType: Int!
+  assetType: AssetType!
   issuer: String!
   assetCode: String!
   limit: Float!
