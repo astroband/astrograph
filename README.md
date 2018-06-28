@@ -19,8 +19,10 @@ Stellar GraphQL interface.
 
 # TODO
 
+0. AssetType -> AssetType
 7. DecodeRaw -> err
 0. Trustline -> TrustLine
+1. Interface ParseRaw
 1. Asset
 1. Fast rewind to last ledger - ?
 2. Send updates to all accounts on gap

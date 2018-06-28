@@ -13,7 +13,7 @@ type AccountThresholds struct {
 	High         int 		`json:"high"`
 }
 
-func NewAccountThresholds(raw string, id string) AccountThresholds {
+func NewAccountThresholdsFromRaw(raw string, id string) AccountThresholds {
 	t, err := b64.StdEncoding.DecodeString(raw)
 	if (err != nil) { return AccountThresholds{} }
 

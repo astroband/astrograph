@@ -22,6 +22,6 @@ type Account struct {
 
 func (a *Account) DecodeRaw() {
   a.Balance = float64(a.RawBalance) / BalancePrecision
-	a.Flags = NewAccountFlags(a.RawFlags, util.SHA1(a.ID, "flags"))
-	a.Thresholds = NewAccountThresholds(a.RawThresholds, util.SHA1(a.ID, "thresholds"))
+	a.Flags = NewAccountFlagsFromRaw(a.RawFlags, util.SHA1(a.ID, "flags"))
+	a.Thresholds = NewAccountThresholdsFromRaw(a.RawThresholds, util.SHA1(a.ID, "thresholds"))
 }

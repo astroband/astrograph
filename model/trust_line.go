@@ -24,7 +24,8 @@ type Trustline struct {
 func (t *Trustline) DecodeRaw() {
 	t.Balance = float64(t.RawBalance) / BalancePrecision
 	t.Limit = float64(t.RawLimit) / BalancePrecision
-	t.Flags = NewTrustLineFlags(t.RawFlags)
+	t.Flags = NewTrustLineFlagsFromRaw(t.RawFlags)
+	t.AssetType = NewAssetTypeFromRaw(t.RawAssetType)
 
 	t.ID = util.SHA1(t.AccountID, t.AssetType.String(), t.AssetCode, t.Issuer, "_trustline")
 }

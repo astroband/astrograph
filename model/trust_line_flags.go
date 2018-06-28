@@ -7,8 +7,8 @@ type TrustlineFlags struct {
   Authorized bool   `json:"authorized" db:"-"`
 }
 
-func NewTrustLineFlags(f int) TrustlineFlags {
+func NewTrustLineFlagsFromRaw(raw int) TrustlineFlags {
   return TrustlineFlags{
-		Authorized: xdr.TrustLineFlags(f) & xdr.TrustLineFlagsAuthorizedFlag != 0,
+		Authorized: xdr.TrustLineFlags(raw) & xdr.TrustLineFlagsAuthorizedFlag != 0,
 	}
 }

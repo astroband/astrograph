@@ -4,6 +4,7 @@ import(
 	"io"
 	"fmt"
 	"strconv"
+	"github.com/stellar/go/xdr"
 )
 
 type AssetType string
@@ -13,6 +14,16 @@ const (
 	AssetTypeAlphanum4  AssetType = "ALPHANUM_4"
 	AssetTypeAlphanum12 AssetType = "ALPHANUM_12"
 )
+
+var assetTypeMap = map[xdr.AssetType]AssetType{
+	xdr.AssetTypeAssetTypeNative: AssetTypeNative,
+	xdr.AssetTypeAssetTypeCreditAlphanum4: AssetTypeAlphanum4,
+	xdr.AssetTypeAssetTypeCreditAlphanum12: AssetTypeAlphanum12,
+}
+
+func NewAssetTypeFromRaw(raw int) AssetType {
+	return assetTypeMap[xdr.AssetType(raw)]
+}
 
 func (e AssetType) IsValid() bool {
 	switch e {

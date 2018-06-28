@@ -11,7 +11,7 @@ type AccountFlags struct {
 	AuthImmutable bool   `json:"authImmutable"`
 }
 
-func NewAccountFlags(raw int, id string) AccountFlags {
+func NewAccountFlagsFromRaw(raw int, id string) AccountFlags {
   f := xdr.AccountFlags(raw)
 
 	return AccountFlags{
