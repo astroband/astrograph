@@ -1,8 +1,7 @@
 package db
 
 import (
-	// "fmt"
-	// "gopkg.in/ahmetb/go-linq.v3"
+	"gopkg.in/ahmetb/go-linq.v3"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
@@ -13,35 +12,24 @@ func QueryTrustLines(id []string) ([][]model.TrustLine, error) {
 	rows, err := fetchTrustLineRows(id)
 	if (err != nil) { return nil, err }
 
-	// var r [][]model.TrustLine
-	//
-	// linq.
-	// 	From(id).
-	// 	Select(
-	// 		func (n interface{}) interface{} {
-	// 			var l []model.TrustLine
-	//
-	// 			linq.
-	// 				From(rows).
-	// 				Where(func(i interface{}) bool { return i.(*model.TrustLine).AccountID == n }).
-	// 				Select(func(i interface{}) interface{} { return *(i.(*model.TrustLine)) }).
-	// 				ToSlice(&l)
-	//
-	// 			return l
-	// 	  },
-	// 	).
-	// 	ToSlice(&r)
-	//
-	// fmt.Println(r)
-	r := make([][]model.TrustLine, len(id))
-	i := make([]model.TrustLine, len(rows))
+	var r [][]model.TrustLine
 
-	for n, r := range(rows) {
-		i[n] = *r
-	}
+	linq.
+		From(id).
+		Select(
+			func (n interface{}) interface{} {
+				var l []model.TrustLine
 
-	err = groupBy("AccountID", id, i, &r)
-	if err != nil { return nil, err }
+				linq.
+					From(rows).
+					WhereT(func(i *model.TrustLine) bool { return i.AccountID == n }).
+					SelectT(func(i *model.TrustLine) model.TrustLine { return *i }).
+					ToSlice(&l)
+
+				return l
+		  },
+		).
+		ToSlice(&r)
 
 	return r, nil
 }
@@ -56,7 +44,9 @@ func fetchTrustLineRows(id []string) ([]*model.TrustLine, error) {
 	err = config.DB.Select(&r, q, args...)
 	if err != nil { return nil, err }
 
-	decodeAllRaw(r)
+	for _, t := range r {
+		t.DecodeRaw()
+	}
 
 	return r, nil
 }
