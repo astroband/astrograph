@@ -475,6 +475,79 @@ func (ec *executionContext) _AccountThresholds_high(ctx context.Context, field g
 	return graphql.MarshalInt(res)
 }
 
+var assetImplementors = []string{"Asset"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _Asset(ctx context.Context, sel []query.Selection, obj *model.Asset) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, assetImplementors, ec.Variables)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Asset")
+		case "id":
+			out.Values[i] = ec._Asset_id(ctx, field, obj)
+		case "type":
+			out.Values[i] = ec._Asset_type(ctx, field, obj)
+		case "issuer":
+			out.Values[i] = ec._Asset_issuer(ctx, field, obj)
+		case "code":
+			out.Values[i] = ec._Asset_code(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _Asset_id(ctx context.Context, field graphql.CollectedField, obj *model.Asset) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Asset"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.ID
+	return graphql.MarshalID(res)
+}
+
+func (ec *executionContext) _Asset_type(ctx context.Context, field graphql.CollectedField, obj *model.Asset) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Asset"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Type
+	return res
+}
+
+func (ec *executionContext) _Asset_issuer(ctx context.Context, field graphql.CollectedField, obj *model.Asset) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Asset"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Issuer
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _Asset_code(ctx context.Context, field graphql.CollectedField, obj *model.Asset) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Asset"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Code
+	return graphql.MarshalString(res)
+}
+
 var dataEntryImplementors = []string{"DataEntry"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -803,12 +876,8 @@ func (ec *executionContext) _Trustline(ctx context.Context, sel []query.Selectio
 			out.Values[i] = ec._Trustline_id(ctx, field, obj)
 		case "accountId":
 			out.Values[i] = ec._Trustline_accountId(ctx, field, obj)
-		case "assetType":
-			out.Values[i] = ec._Trustline_assetType(ctx, field, obj)
-		case "issuer":
-			out.Values[i] = ec._Trustline_issuer(ctx, field, obj)
-		case "assetCode":
-			out.Values[i] = ec._Trustline_assetCode(ctx, field, obj)
+		case "asset":
+			out.Values[i] = ec._Trustline_asset(ctx, field, obj)
 		case "limit":
 			out.Values[i] = ec._Trustline_limit(ctx, field, obj)
 		case "balance":
@@ -847,37 +916,15 @@ func (ec *executionContext) _Trustline_accountId(ctx context.Context, field grap
 	return graphql.MarshalString(res)
 }
 
-func (ec *executionContext) _Trustline_assetType(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
+func (ec *executionContext) _Trustline_asset(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Trustline"
 	rctx.Args = nil
 	rctx.Field = field
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
-	res := obj.AssetType
-	return res
-}
-
-func (ec *executionContext) _Trustline_issuer(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Trustline"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	res := obj.Issuer
-	return graphql.MarshalString(res)
-}
-
-func (ec *executionContext) _Trustline_assetCode(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Trustline"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	res := obj.AssetCode
-	return graphql.MarshalString(res)
+	res := obj.Asset
+	return ec._Asset(ctx, field.Selections, &res)
 }
 
 func (ec *executionContext) _Trustline_limit(ctx context.Context, field graphql.CollectedField, obj *model.TrustLine) graphql.Marshaler {
@@ -1710,11 +1757,19 @@ func (ec *executionContext) introspectType(name string) *introspection.Type {
 }
 
 var parsedSchema = schema.MustParse(`scalar AccountID
+scalar AssetCode
 
 enum AssetType {
   NATIVE
   ALPHANUM_4
   ALPHANUM_12
+}
+
+type Asset {
+  id: ID!
+  type: AssetType!
+  issuer: AccountID
+  code: AssetCode
 }
 
 type AccountFlags {
@@ -1762,9 +1817,7 @@ type TrustlineFlags {
 type Trustline {
   id: ID!
   accountId: AccountID!
-  assetType: AssetType!
-  issuer: String!
-  assetCode: String!
+  asset: Asset!
   limit: Float!
   balance: Float!
   flags: TrustlineFlags

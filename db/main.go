@@ -15,6 +15,7 @@ type HasRawFields interface {
   DecodeRaw()
 }
 
+// Calls DecodeRaw() on every element of a slice
 func decodeRawOnSlice(s interface {}) {
   v := reflect.ValueOf(s)
   for i := 0; i < v.Len(); i++ {

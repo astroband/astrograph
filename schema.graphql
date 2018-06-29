@@ -1,9 +1,17 @@
 scalar AccountID
+scalar AssetCode
 
 enum AssetType {
   NATIVE
   ALPHANUM_4
   ALPHANUM_12
+}
+
+type Asset {
+  id: ID!
+  type: AssetType!
+  issuer: AccountID
+  code: AssetCode
 }
 
 type AccountFlags {
@@ -51,9 +59,7 @@ type TrustlineFlags {
 type Trustline {
   id: ID!
   accountId: AccountID!
-  assetType: AssetType!
-  issuer: String!
-  assetCode: String!
+  asset: Asset!
   limit: Float!
   balance: Float!
   flags: TrustlineFlags

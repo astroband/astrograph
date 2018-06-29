@@ -1,5 +1,6 @@
 {
   "AssetType": "github.com/mobius-network/astrograph/model.AssetType",
+  "Asset": "github.com/mobius-network/astrograph/model.Asset",
   "AccountFlags": "github.com/mobius-network/astrograph/model.AccountFlags",
   "AccountThresholds": "github.com/mobius-network/astrograph/model.AccountThresholds",
   "DataEntry": "github.com/mobius-network/astrograph/model.DataEntry",
