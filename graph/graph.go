@@ -30,6 +30,12 @@ func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]mod
 	return trustlines, error
 }
 
+func (a *App) Account_signers(ctx context.Context, obj *model.Account) ([]model.Signer, error) {
+	loader := ctx.Value(dataloader.SignerLoaderKey).(*dataloader.SignerSliceLoader)
+	signers, error := loader.Load(obj.ID)
+	return signers, error	
+}
+
 func (a *App) Query_Account(ctx context.Context, id string) (*model.Account, error) {
 	return db.QueryAccount(id)
 }
