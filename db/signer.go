@@ -13,25 +13,8 @@ func QuerySigners(id []string) ([][]model.Signer, error) {
 
 	result := make([][]model.Signer, len(id))
 
-	// For every given account
-	for n, accountId := range id {
-		accountSigners := make([]model.Signer, 0)
-
-		// Scan all rows
-		for i, e := range rows {
-
-			// If rows present and belongs to current account
-			if (e != nil) && (e.AccountID == accountId) {
-
-				// Add it to current slice and mark as "used"
-				accountSigners = append(accountSigners, *e)
-				rows[i] = nil
-			}
-		}
-
-    // Put account data entries slice to the same position as account id has in source slice
-		result[n] = accountSigners
-	}
+  err = groupBy("AccountID", id, rows, &result)
+	if err != nil { return nil, err }
 
 	return result, nil
 }
