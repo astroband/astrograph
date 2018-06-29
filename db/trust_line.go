@@ -1,3 +1,5 @@
+//go:generate gorunpkg github.com/cheekybits/genny -in=../gen/group_by_account_id.go -out=group_by_account_id_trust_line_gen.go gen "Model=model.TrustLine"
+
 package db
 
 import (
@@ -15,21 +17,21 @@ func QueryTrustLines(id []string) ([][]model.TrustLine, error) {
 	var r [][]model.TrustLine
 
 	linq.
-		From(id).
-		Select(
-			func (n interface{}) interface{} {
-				var l []model.TrustLine
+	  From(id).
+	  Select(
+	    func (n interface{}) interface{} {
+	      var l []model.TrustLine
 
-				linq.
-					From(rows).
-					WhereT(func(i *model.TrustLine) bool { return i.AccountID == n }).
-					SelectT(func(i *model.TrustLine) model.TrustLine { return *i }).
-					ToSlice(&l)
+	      linq.
+	        From(rows).
+	        WhereT(func(i *model.TrustLine) bool { return i.AccountID == n }).
+	        SelectT(func(i *model.TrustLine) model.TrustLine { return *i }).
+	        ToSlice(&l)
 
-				return l
-		  },
-		).
-		ToSlice(&r)
+	      return l
+	    },
+	  ).
+	  ToSlice(&r)
 
 	return r, nil
 }

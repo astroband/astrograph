@@ -21,6 +21,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/cheekybits/genny"
+  packages = ["generic"]
+  revision = "9127e812e1e9e501ce899a18121d316ecb52e4ba"
+
+[[projects]]
+  branch = "master"
   name = "github.com/gorilla/websocket"
   packages = ["."]
   revision = "5ed622c449da6d44c3c8329331ff47a9e5844f71"
@@ -112,6 +118,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5420b35238250870b670d863582bd253e6e1fd093329893ba14c7bc09c66f7e3"
+  inputs-digest = "e66fdff993188ceaf7528988fd12d0679c5cf06e708cdbf1423b8c19bb5cb3f6"
   solver-name = "gps-cdcl"
   solver-version = 1

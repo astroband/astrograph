@@ -1,6 +1,7 @@
 package db
 
 import (
+	"gopkg.in/ahmetb/go-linq.v3"	
 	sq "github.com/Masterminds/squirrel"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
@@ -11,12 +12,26 @@ func QueryDataEntries(id []string) ([][]model.DataEntry, error) {
 	rows, err := fetchDataEntryRows(id)
 	if (err != nil) { return nil, err }
 
-	result := make([][]model.DataEntry, len(id))
+	var r [][]model.DataEntry
 
-	err = groupBy("AccountID", id, rows, &result)
-	if err != nil { return nil, err }
+	linq.
+	  From(id).
+	  Select(
+	    func (n interface{}) interface{} {
+	      var l []model.DataEntry
 
-	return result, nil
+	      linq.
+	        From(rows).
+	        WhereT(func(i *model.DataEntry) bool { return i.AccountID == n }).
+	        SelectT(func(i *model.DataEntry) model.DataEntry { return *i }).
+	        ToSlice(&l)
+
+	      return l
+	    },
+	  ).
+	  ToSlice(&r)
+
+	return r, nil
 }
 
 // Returns slice of data entries for requested accounts ordered
