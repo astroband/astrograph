@@ -21,21 +21,19 @@ func QuerySigners(id []string) ([][]model.Signer, error) {
 
 // Returns slice of data entries for requested accounts ordered
 func fetchSignerRows(id []string) ([]*model.Signer, error) {
-	var signers []*model.Signer
+	var r []*model.Signer
 
-	q, args, err := b.
-		Select("*").
-		From("signers").
+	q, args, err := signersSql.
 		Where(sq.Eq{"accountid": id}).
 		OrderBy("accountid, publickey").
 		ToSql()
 
 	if err != nil { return nil, err }
 
-	err = config.DB.Select(&signers, q, args...)
+	err = config.DB.Select(&r, q, args...)
 	if err != nil { return nil, err }
 
-  decodeRawOnSlice(signers)
+  decodeRaw(r)
 
-	return signers, nil
+	return r, nil
 }

@@ -17,32 +17,11 @@ func QueryTrustLines(id []string) ([][]model.TrustLine, error) {
 	if err != nil { return nil, err }
 
 	return result, nil
-
-	// // For every given account
-	// for n, accountId := range id {
-	// 	accountTrustLines := make([]model.TrustLine, 0)
-	//
-	// 	// Scan all rows
-	// 	for i, t := range rows {
-	//
-	// 		// If rows present and belongs to current account
-	// 		if (t != nil) && (t.AccountID == accountId) {
-	//
-	// 			// Add it to current slice and mark as "used"
-	// 			accountTrustLines = append(accountTrustLines, *t)
-	// 			rows[i] = nil
-	// 		}
-	// 	}
-	//
-	// 	result[n] = accountTrustLines // Put account trustlines slice to the same position as account id has in source slice
-	// }
-	//
-	// return result, nil
 }
 
 // Returns slice of trustlines for requested accounts ordered
 func fetchTrustLineRows(id []string) ([]*model.TrustLine, error) {
-	var trustLines []*model.TrustLine
+	var r []*model.TrustLine
 
 	q, args, err := b.
 		Select("*").
@@ -53,10 +32,10 @@ func fetchTrustLineRows(id []string) ([]*model.TrustLine, error) {
 
 	if err != nil { return nil, err }
 
-	err = config.DB.Select(&trustLines, q, args...)
+	err = config.DB.Select(&r, q, args...)
 	if err != nil { return nil, err }
 
-	decodeRawOnSlice(trustLines)
+	decodeRaw(r)
 
-	return trustLines, nil
+	return r, nil
 }

@@ -29,15 +29,15 @@ func QueryAccount(id string) (*model.Account, error) {
 
 // Returns a set of accounts by id
 func QueryAccounts(id []string) ([]*model.Account, error) {
-	var accounts []*model.Account
+	var r []*model.Account
 
 	q, args, err := accountsSql.Where(sq.Eq{"accountid": id}).ToSql()
 	if err != nil { return nil, err }
 
-	err = config.DB.Select(&accounts, q, args...)
+	err = config.DB.Select(&r, q, args...)
 	if err != nil { return nil, err }
 
-	decodeRawOnSlice(accounts)
+	decodeRaw(r)
 
-	return accounts, nil
+	return r, nil
 }

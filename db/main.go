@@ -3,6 +3,8 @@ package db
 import (
   "fmt"
   "reflect"
+  "gopkg.in/ahmetb/go-linq.v3"
+  "github.com/mobius-network/astrograph/model"
   "github.com/mobius-network/astrograph/config"
 )
 
@@ -10,21 +12,18 @@ var (
   b = config.SqlBuilder
   accountsSql = b.Select("*").From("accounts")
   ledgerSeqSql = b.Select("ledgerseq").From("ledgerheaders")
+  signersSql = b.Select("*").From("signers")
 )
 
-type HasRawFields interface {
-  DecodeRaw()
-}
-
 // Calls DecodeRaw() on every element of a slice
-func decodeRawOnSlice(s interface {}) {
-  v := reflect.ValueOf(s)
-  for i := 0; i < v.Len(); i++ {
-    v.Index(i).Interface().(HasRawFields).DecodeRaw()
-  }
+func decodeRaw(s interface {}) {
+  linq.From(s).ForEach(func(v interface{}) {
+		v.(model.HasRawFields).DecodeRaw()
+	})
 }
 
-// Groups array of in structs by value of field in order specified in keys and puts it to out
+// Groups array of in structs by value of field in order specified in keys and puts it to out. Output may contain gaps
+// if nothing was found.
 func groupBy(field string, keys []string, in interface{}, out interface{}) error {
   vin := reflect.ValueOf(in)
   vout := reflect.ValueOf(out)

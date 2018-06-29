@@ -21,7 +21,7 @@ func QueryDataEntries(id []string) ([][]model.DataEntry, error) {
 
 // Returns slice of data entries for requested accounts ordered
 func fetchDataEntryRows(id []string) ([]*model.DataEntry, error) {
-	var dataEntries []*model.DataEntry
+	var r []*model.DataEntry
 
 	q, args, err := b.
 		Select("*").
@@ -32,10 +32,10 @@ func fetchDataEntryRows(id []string) ([]*model.DataEntry, error) {
 
 	if err != nil { return nil, err }
 
-	err = config.DB.Select(&dataEntries, q, args...)
+	err = config.DB.Select(&r, q, args...)
 	if err != nil { return nil, err }
 
-  decodeRawOnSlice(dataEntries)
+  decodeRaw(r)
 
-	return dataEntries, nil
+	return r, nil
 }

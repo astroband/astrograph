@@ -33,3 +33,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/jmoiron/sqlx"
+
+[[constraint]]
+  version = "3.0.0"
+  name = "gopkg.in/ahmetb/go-linq.v3"
