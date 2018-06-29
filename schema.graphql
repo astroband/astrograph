@@ -37,6 +37,13 @@ type DataEntry {
   lastModified: Int!
 }
 
+type Signer {
+  id: ID!
+  accountId: AccountID!
+  signer: AccountID!
+  weight: Int!
+}
+
 type Account {
   id: AccountID!
   balance: Float!
@@ -49,6 +56,7 @@ type Account {
   lastModified: Int!
   trustlines: [Trustline!]!
   data: [DataEntry!]
+  signers: [Signer!]
 }
 
 type TrustlineFlags {

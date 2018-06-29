@@ -4,6 +4,7 @@
   "AccountFlags": "github.com/mobius-network/astrograph/model.AccountFlags",
   "AccountThresholds": "github.com/mobius-network/astrograph/model.AccountThresholds",
   "DataEntry": "github.com/mobius-network/astrograph/model.DataEntry",
+  "Signer": "github.com/mobius-network/astrograph/model.Signer",
   "Account": "github.com/mobius-network/astrograph/model.Account",
   "Trustline": "github.com/mobius-network/astrograph/model.TrustLine",
   "TrustlineFlags": "github.com/mobius-network/astrograph/model.TrustLineFlags"

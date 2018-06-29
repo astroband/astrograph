@@ -21,6 +21,7 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 type Resolvers interface {
 	Account_trustlines(ctx context.Context, obj *model.Account) ([]model.TrustLine, error)
 	Account_data(ctx context.Context, obj *model.Account) ([]model.DataEntry, error)
+	Account_signers(ctx context.Context, obj *model.Account) ([]model.Signer, error)
 
 	Query_Account(ctx context.Context, id string) (*model.Account, error)
 	Query_Accounts(ctx context.Context, id []string) ([]model.Account, error)
@@ -125,6 +126,8 @@ func (ec *executionContext) _Account(ctx context.Context, sel []query.Selection,
 			out.Values[i] = ec._Account_trustlines(ctx, field, obj)
 		case "data":
 			out.Values[i] = ec._Account_data(ctx, field, obj)
+		case "signers":
+			out.Values[i] = ec._Account_signers(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -310,6 +313,45 @@ func (ec *executionContext) _Account_data(ctx context.Context, field graphql.Col
 				rctx.PushIndex(idx1)
 				defer rctx.Pop()
 				return ec._DataEntry(ctx, field.Selections, &res[idx1])
+			}())
+		}
+		return arr1
+	})
+}
+
+func (ec *executionContext) _Account_signers(ctx context.Context, field graphql.CollectedField, obj *model.Account) graphql.Marshaler {
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Account",
+		Args:   nil,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Account_signers(ctx, obj)
+		})
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.([]model.Signer)
+		arr1 := graphql.Array{}
+		for idx1 := range res {
+			arr1 = append(arr1, func() graphql.Marshaler {
+				rctx := graphql.GetResolverContext(ctx)
+				rctx.PushIndex(idx1)
+				defer rctx.Pop()
+				return ec._Signer(ctx, field.Selections, &res[idx1])
 			}())
 		}
 		return arr1
@@ -807,6 +849,79 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	return ec.___Type(ctx, field.Selections, res)
+}
+
+var signerImplementors = []string{"Signer"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _Signer(ctx context.Context, sel []query.Selection, obj *model.Signer) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, signerImplementors, ec.Variables)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Signer")
+		case "id":
+			out.Values[i] = ec._Signer_id(ctx, field, obj)
+		case "accountId":
+			out.Values[i] = ec._Signer_accountId(ctx, field, obj)
+		case "signer":
+			out.Values[i] = ec._Signer_signer(ctx, field, obj)
+		case "weight":
+			out.Values[i] = ec._Signer_weight(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _Signer_id(ctx context.Context, field graphql.CollectedField, obj *model.Signer) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Signer"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.ID
+	return graphql.MarshalID(res)
+}
+
+func (ec *executionContext) _Signer_accountId(ctx context.Context, field graphql.CollectedField, obj *model.Signer) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Signer"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.AccountID
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _Signer_signer(ctx context.Context, field graphql.CollectedField, obj *model.Signer) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Signer"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Signer
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _Signer_weight(ctx context.Context, field graphql.CollectedField, obj *model.Signer) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Signer"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Weight
+	return graphql.MarshalInt(res)
 }
 
 var subscriptionImplementors = []string{"Subscription"}
@@ -1795,6 +1910,13 @@ type DataEntry {
   lastModified: Int!
 }
 
+type Signer {
+  id: ID!
+  accountId: AccountID!
+  signer: AccountID!
+  weight: Int!
+}
+
 type Account {
   id: AccountID!
   balance: Float!
@@ -1807,6 +1929,7 @@ type Account {
   lastModified: Int!
   trustlines: [Trustline!]!
   data: [DataEntry!]
+  signers: [Signer!]
 }
 
 type TrustlineFlags {

@@ -19,8 +19,7 @@ Stellar GraphQL interface.
 
 # TODO
 
-1. Asset
-1. Interface ParseRaw
+1. Signer
 1. Fast rewind to last ledger - ?
 2. Send updates to all accounts on gap
 3. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
