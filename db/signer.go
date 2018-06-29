@@ -30,7 +30,7 @@ func fetchSignerRows(id []string) ([]*model.Signer, error) {
 	err = config.DB.Select(&r, q, args...)
 	if err != nil { return nil, err }
 
-  decodeRaw(r)
+  decodeAllRaw(r)
 
 	return r, nil
 }

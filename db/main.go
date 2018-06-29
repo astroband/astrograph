@@ -18,7 +18,7 @@ var (
 )
 
 // Calls DecodeRaw() on every element of a slice
-func decodeRaw(s interface {}) {
+func decodeAllRaw(s interface {}) {
   linq.From(s).ForEach(func(v interface{}) {
 		v.(model.HasRawFields).DecodeRaw()
 	})

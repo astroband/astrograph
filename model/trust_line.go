@@ -6,7 +6,7 @@ import (
 
 type TrustLine struct {
 	ID           string         `json:"id"`
-	AccountID    string         `json:"accountId" db:"accountid"`	
+	AccountID    string         `json:"accountId" db:"accountid"`
 	Asset        Asset          `json:"asset"`
 	Limit        float64        `json:"limit" db:"-"`
 	Balance      float64        `json:"balance" db:"-"`

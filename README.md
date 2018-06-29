@@ -15,7 +15,7 @@ Stellar GraphQL interface.
 
 # TODO
 
-1. linq, refactor db a litle (base queries)
+1. linq
 4. Monitor entity deletion.
 1. Fast rewind to last ledger - ?
 2. Send updates to all accounts on gap
