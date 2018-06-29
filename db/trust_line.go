@@ -23,12 +23,7 @@ func QueryTrustLines(id []string) ([][]model.TrustLine, error) {
 func fetchTrustLineRows(id []string) ([]*model.TrustLine, error) {
 	var r []*model.TrustLine
 
-	q, args, err := b.
-		Select("*").
-		From("trustlines").
-		Where(sq.Eq{"accountid": id}).
-		OrderBy("accountid, assettype, assetcode").
-		ToSql()
+	q, args, err := bTrustLines.Where(sq.Eq{"accountid": id}).ToSql()
 
 	if err != nil { return nil, err }
 
