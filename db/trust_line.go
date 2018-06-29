@@ -1,8 +1,8 @@
 package db
 
 import (
-	"fmt"
-	"gopkg.in/ahmetb/go-linq.v3"
+	// "fmt"
+	// "gopkg.in/ahmetb/go-linq.v3"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
@@ -13,29 +13,35 @@ func QueryTrustLines(id []string) ([][]model.TrustLine, error) {
 	rows, err := fetchTrustLineRows(id)
 	if (err != nil) { return nil, err }
 
-	var r [][]model.TrustLine
+	// var r [][]model.TrustLine
+	//
+	// linq.
+	// 	From(id).
+	// 	Select(
+	// 		func (n interface{}) interface{} {
+	// 			var l []model.TrustLine
+	//
+	// 			linq.
+	// 				From(rows).
+	// 				Where(func(i interface{}) bool { return i.(*model.TrustLine).AccountID == n }).
+	// 				Select(func(i interface{}) interface{} { return *(i.(*model.TrustLine)) }).
+	// 				ToSlice(&l)
+	//
+	// 			return l
+	// 	  },
+	// 	).
+	// 	ToSlice(&r)
+	//
+	// fmt.Println(r)
+	r := make([][]model.TrustLine, len(id))
+	i := make([]model.TrustLine, len(rows))
 
-	linq.
-		From(id).
-		Select(
-			func (n interface{}) interface{} {
-				var l []model.TrustLine
+	for n, r := range(rows) {
+		i[n] = *r
+	}
 
-				linq.
-					From(rows).
-					Where(func(i interface{}) bool { return i.(*model.TrustLine).AccountID == n }).
-					Select(func(i interface{}) interface{} { return *(i.(*model.TrustLine)) }).
-					ToSlice(&l)
-
-				return l
-		  },
-		).
-		ToSlice(&r)
-
-	fmt.Println(r)
-
-	//err = groupBy("AccountID", id, rows, &result)
-	//if err != nil { return nil, err }
+	err = groupBy("AccountID", id, i, &r)
+	if err != nil { return nil, err }
 
 	return r, nil
 }

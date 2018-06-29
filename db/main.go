@@ -1,8 +1,8 @@
 package db
 
 import (
-  "fmt"
-  "reflect"
+  // "fmt"
+  // "reflect"
   "gopkg.in/ahmetb/go-linq.v3"
   "github.com/mobius-network/astrograph/model"
   "github.com/mobius-network/astrograph/config"
@@ -27,47 +27,89 @@ func decodeAllRaw(s interface {}) {
 // Groups array of in structs by value of field in order specified in keys and puts it to out. Output may contain gaps
 // if nothing was found.
 func groupBy(field string, keys []string, in interface{}, out interface{}) error {
-  vin := reflect.ValueOf(in)
-  vout := reflect.ValueOf(out)
-  vintype := reflect.TypeOf(in)
+  // vin := reflect.ValueOf(in)
+  // vout := reflect.ValueOf(out)
+  // vintype := reflect.TypeOf(in)
+  //
+  // if vintype.Kind() != reflect.Slice {
+	// 	return fmt.Errorf("in must be slice")
+	// }
+  //
+  // if vout.Type().Kind() != reflect.Ptr {
+  //   return fmt.Errorf("out must be *slice")
+  // }
+  //
+  // vout = vout.Elem()
+  // if vout.Type().Kind() != reflect.Slice {
+  //   return fmt.Errorf("out must be *slice")
+  // }
+  //
+  // voutype := vintype.Elem()
+  // if voutype.Kind() == reflect.Ptr {
+  //   voutype = reflect.SliceOf(voutype.Elem())
+  // }
+  //
+  // var used = make([]bool, vin.Len())
+  //
+	// for n, key := range keys {
+	// 	s := reflect.MakeSlice(voutype, 0, 0)
+  //
+  //   for i := 0; i < vin.Len(); i++ {
+  //     row := vin.Index(i)
+  //     if (row.Kind() == reflect.Ptr) { row = row.Elem() }
+  //
+  //     rowKey := row.FieldByName(field).String()
+  //
+  //     if (!used[i]) && (rowKey == key) {
+  //       s = reflect.Append(s, row)
+  //       used[i] = true
+  //     }
+  //   }
+  //
+  //   vout.Index(n).Set(s)
+	// }
+  //
+  // return nil
 
-  if vintype.Kind() != reflect.Slice {
-		return fmt.Errorf("in must be slice")
-	}
+  linq.
+		From(keys).
+		Select(
+			func (k interface{}) interface{} {
+        // t := reflect.TypeOf(out).Elem().Elem()
+				// l := reflect.MakeSlice(t, 10, 10)
+        // z := reflect.New(l.Type())
+        // z.Elem().Set(l)
+        //
+        // res := reflect.ValueOf(z)
+      	// slice := reflect.Indirect(res)
+        // fmt.Println(res.Kind())
+        // fmt.Println(slice.Kind())
+        // fmt.Println(slice.Cap())
+        // fmt.Println(res.Elem())
+        // fmt.Println(reflect.TypeOf(slice).String())
 
-  if vout.Type().Kind() != reflect.Ptr {
-    return fmt.Errorf("out must be *slice")
-  }
+        // res := reflect.ValueOf(l)
+        // fmt.Println(res.String())
+      	// slice := reflect.Indirect(res)
+        // fmt.Println(reflect.TypeOf(slice.Interface()).String())
 
-  vout = vout.Elem()
-  if vout.Type().Kind() != reflect.Slice {
-    return fmt.Errorf("out must be *slice")
-  }
+				return linq.
+					From(in).
+					//Where(func(i interface{}) bool { return reflect.ValueOf(i).Elem().FieldByName(field).Interface() == k }).
+					Select(func(i interface{}) interface{} {
+            return i
+            // v := reflect.Indirect(reflect.ValueOf(i)).Interface()
+            // fmt.Println(v)
+            // fmt.Println(reflect.TypeOf(v))
+            // return v
+          }).
+					Results()
+		  },
+		).
+    Select(func (i interface {}) interface {} {
 
-  voutype := vintype.Elem()
-  if voutype.Kind() == reflect.Ptr {
-    voutype = reflect.SliceOf(voutype.Elem())
-  }
-
-  var used = make([]bool, vin.Len())
-
-	for n, key := range keys {
-		s := reflect.MakeSlice(voutype, 0, 0)
-
-    for i := 0; i < vin.Len(); i++ {
-      row := vin.Index(i)
-      if (row.Kind() == reflect.Ptr) { row = row.Elem() }
-
-      rowKey := row.FieldByName(field).String()
-
-      if (!used[i]) && (rowKey == key) {
-        s = reflect.Append(s, row)
-        used[i] = true
-      }
-    }
-
-    vout.Index(n).Set(s)
-	}
+    }).
+		ToSlice(out)
 
   return nil
 }
