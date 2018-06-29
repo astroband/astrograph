@@ -14,6 +14,27 @@ func QueryTrustLines(id []string) ([][]model.TrustLine, error) {
 	rows, err := fetchTrustLineRows(id)
 	if (err != nil) { return nil, err }
 
+	return groupTrustLines(id, rows), nil
+}
+
+// Returns slice of trustlines for requested accounts ordered
+func fetchTrustLineRows(id []string) ([]*model.TrustLine, error) {
+	var r []*model.TrustLine
+
+	q, args, err := bTrustLines.Where(sq.Eq{"accountid": id}).ToSql()
+	if err != nil { return nil, err }
+
+	err = config.DB.Select(&r, q, args...)
+	if err != nil { return nil, err }
+
+	for _, t := range r {
+		t.DecodeRaw()
+	}
+
+	return r, nil
+}
+
+func groupTrustLines(id []string, rows []*model.TrustLine) [][]model.TrustLine {
 	var r [][]model.TrustLine
 
 	linq.
@@ -33,22 +54,5 @@ func QueryTrustLines(id []string) ([][]model.TrustLine, error) {
 	  ).
 	  ToSlice(&r)
 
-	return r, nil
-}
-
-// Returns slice of trustlines for requested accounts ordered
-func fetchTrustLineRows(id []string) ([]*model.TrustLine, error) {
-	var r []*model.TrustLine
-
-	q, args, err := bTrustLines.Where(sq.Eq{"accountid": id}).ToSql()
-	if err != nil { return nil, err }
-
-	err = config.DB.Select(&r, q, args...)
-	if err != nil { return nil, err }
-
-	for _, t := range r {
-		t.DecodeRaw()
-	}
-
-	return r, nil
+	return r
 }

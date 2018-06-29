@@ -12,6 +12,28 @@ func QuerySigners(id []string) ([][]model.Signer, error) {
 	rows, err := fetchSignerRows(id)
 	if (err != nil) { return nil, err }
 
+	return groupSigners(id, rows), nil
+}
+
+// Returns slice of data entries for requested accounts ordered
+func fetchSignerRows(id []string) ([]*model.Signer, error) {
+	var r []*model.Signer
+
+	q, args, err := bSigners.Where(sq.Eq{"accountid": id}).ToSql()
+
+	if err != nil { return nil, err }
+
+	err = config.DB.Select(&r, q, args...)
+	if err != nil { return nil, err }
+
+	for _, t := range r {
+		t.DecodeRaw()
+	}
+
+	return r, nil
+}
+
+func groupSigners(id []string, rows []*model.Signer) [][]model.Signer {
 	var r [][]model.Signer
 
 	linq.
@@ -31,23 +53,5 @@ func QuerySigners(id []string) ([][]model.Signer, error) {
 	  ).
 	  ToSlice(&r)
 
-	return r, nil
-}
-
-// Returns slice of data entries for requested accounts ordered
-func fetchSignerRows(id []string) ([]*model.Signer, error) {
-	var r []*model.Signer
-
-	q, args, err := bSigners.Where(sq.Eq{"accountid": id}).ToSql()
-
-	if err != nil { return nil, err }
-
-	err = config.DB.Select(&r, q, args...)
-	if err != nil { return nil, err }
-
-	for _, t := range r {
-		t.DecodeRaw()
-	}
-
-	return r, nil
+	return r
 }
