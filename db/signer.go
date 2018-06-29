@@ -23,10 +23,7 @@ func QuerySigners(id []string) ([][]model.Signer, error) {
 func fetchSignerRows(id []string) ([]*model.Signer, error) {
 	var r []*model.Signer
 
-	q, args, err := signersSql.
-		Where(sq.Eq{"accountid": id}).
-		OrderBy("accountid, publickey").
-		ToSql()
+	q, args, err := bSigners.Where(sq.Eq{"accountid": id}).ToSql()
 
 	if err != nil { return nil, err }
 

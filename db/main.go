@@ -10,9 +10,10 @@ import (
 
 var (
   b = config.SqlBuilder
-  accountsSql = b.Select("*").From("accounts")
-  ledgerSeqSql = b.Select("ledgerseq").From("ledgerheaders")
-  signersSql = b.Select("*").From("signers")
+  bAccounts = b.Select("*").From("accounts")
+  bLedgers = b.Select("ledgerseq").From("ledgerheaders")
+  bSigners = b.Select("*").From("signers").OrderBy("accountid, publickey")
+  bDataEntries = b.Select("*").From("accountdata").OrderBy("accountid, dataname")
 )
 
 // Calls DecodeRaw() on every element of a slice

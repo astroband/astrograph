@@ -10,7 +10,7 @@ import (
 func FetchMaxLedger() (uint64, error) {
 	var seq uint64
 
-	q, args, err := ledgerSeqSql.OrderBy("ledgerseq DESC").Limit(1).ToSql()
+	q, args, err := bLedgers.OrderBy("ledgerseq DESC").Limit(1).ToSql()
 	if (err != nil) { return 0, err }
 
 	err = config.DB.Get(&seq, q, args...)
@@ -23,7 +23,7 @@ func FetchMaxLedger() (uint64, error) {
 func LedgerExist(seq uint64) (bool, error) {
   var newSeq uint64
 
-	q, args, err := ledgerSeqSql.Where(sq.Eq{"ledgerseq": seq}).ToSql()
+	q, args, err := bLedgers.Where(sq.Eq{"ledgerseq": seq}).ToSql()
 	if (err != nil) { return false, err }
 
 	err = config.DB.Get(&newSeq, q, args...)

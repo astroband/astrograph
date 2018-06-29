@@ -23,12 +23,7 @@ func QueryDataEntries(id []string) ([][]model.DataEntry, error) {
 func fetchDataEntryRows(id []string) ([]*model.DataEntry, error) {
 	var r []*model.DataEntry
 
-	q, args, err := b.
-		Select("*").
-		From("accountdata").
-		Where(sq.Eq{"accountid": id}).
-		OrderBy("accountid, dataname").
-		ToSql()
+	q, args, err := bDataEntries.Where(sq.Eq{"accountid": id}).ToSql()
 
 	if err != nil { return nil, err }
 

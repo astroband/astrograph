@@ -11,7 +11,7 @@ import (
 func QueryAccount(id string) (*model.Account, error) {
 	var account model.Account
 
-	q, args, err := accountsSql.Where(sq.Eq{"accountid": id}).ToSql()
+	q, args, err := bAccounts.Where(sq.Eq{"accountid": id}).ToSql()
 	if (err != nil) { return nil, err }
 
 	err = config.DB.Get(&account, q, args...)
@@ -31,7 +31,7 @@ func QueryAccount(id string) (*model.Account, error) {
 func QueryAccounts(id []string) ([]*model.Account, error) {
 	var r []*model.Account
 
-	q, args, err := accountsSql.Where(sq.Eq{"accountid": id}).ToSql()
+	q, args, err := bAccounts.Where(sq.Eq{"accountid": id}).ToSql()
 	if err != nil { return nil, err }
 
 	err = config.DB.Select(&r, q, args...)
