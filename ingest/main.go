@@ -61,7 +61,7 @@ func (c *Core) Pull() (accounts []*model.Account) {
 
 	log.WithFields(log.Fields{"LedgerSeq": c.LedgerSeq}).Info("Ingesting ledger")
 
-	id, err := db.GetLedgerUpdatedAccountId(c.LedgerSeq)
+	id, err := db.GetLedgerUpdatedAccountID(c.LedgerSeq)
 	if (err != nil) { log.Fatal(err) }
 	id = util.UniqueStringSlice(id)
 

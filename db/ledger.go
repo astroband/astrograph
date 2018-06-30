@@ -37,7 +37,7 @@ func LedgerExist(seq uint64) (bool, error) {
 }
 
 // Returns account ids of accounts changed in this ledger
-func GetLedgerUpdatedAccountId(seq uint64) ([]string, error) {
+func GetLedgerUpdatedAccountID(seq uint64) ([]string, error) {
   accountId, err := fetchUpdatedAccountId("accounts", seq)
   if (err != nil) { return nil, err }
 

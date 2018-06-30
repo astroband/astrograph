@@ -7,8 +7,6 @@ import(
 	"github.com/stellar/go/xdr"
 )
 
-type AssetType string
-
 const (
 	AssetTypeNative     AssetType = "NATIVE"
 	AssetTypeAlphanum4  AssetType = "ALPHANUM_4"

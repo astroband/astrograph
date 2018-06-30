@@ -4,7 +4,7 @@ import (
   // "fmt"
   // "reflect"
   // "gopkg.in/ahmetb/go-linq.v3"
-  // "github.com/mobius-network/astrograph/model"
+  //"github.com/mobius-network/astrograph/model"
   "github.com/mobius-network/astrograph/config"
 )
 
@@ -16,6 +16,39 @@ var (
   bSigners = b.Select("*").From("signers").OrderBy("accountid, publickey")
   bDataEntries = b.Select("*").From("accountdata").OrderBy("accountid, dataname")
 )
+
+// func groupByAccountID(id []string, in []model.Model) [][]model.Model {
+//   var out [][]model.Model = make([][]model.Model, len(id))
+//
+//   for y, i := range id {
+//     out[y] = make([]model.Model, 0)
+//     for x := 0; x < len(in); x++ {
+//       if (in[x].(model.Model).GetAccountID() == i) {
+//         out[y] = append(out[y], in[x])
+//       }
+//     }
+//   }
+//
+//   return out
+
+  // for y := 0; y < len(y); y++ {
+  //   out[y] = make([]model.Model, len(in[y]))
+  //   for x := 0; x < len(in[y]); x++ {
+  //     out[y][x] = model.Model(in[y][x])
+  //   }
+  // }
+  // linq.
+  //   From(id).
+  //   Select(
+  //     func (n interface{}) interface{} {
+  //       return linq.
+  //         From(rows).
+  //         Where(func(i interface{}) bool { return i.(model.Model).GetAccountID() == n }).
+  //         Results()
+  //     },
+  //   ).
+  //   ToSlice(&z)
+//}
 
 // // Groups array of in structs by value of field in order specified in keys and puts it to out. Output may contain gaps
 // // if nothing was found.

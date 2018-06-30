@@ -7,7 +7,7 @@ import (
 	"github.com/mobius-network/astrograph/config"
 )
 
-// Requests trustlines for given accounts and returns slices of trustlines in same order as given id
+// Requests data entries for given accounts and returns slices of trustlines in same order as given id
 func QueryDataEntries(id []string) ([][]model.DataEntry, error) {
 	rows, err := fetchDataEntryRows(id)
 	if (err != nil) { return nil, err }
@@ -20,7 +20,6 @@ func fetchDataEntryRows(id []string) ([]*model.DataEntry, error) {
 	var r []*model.DataEntry
 
 	q, args, err := bDataEntries.Where(sq.Eq{"accountid": id}).ToSql()
-
 	if err != nil { return nil, err }
 
 	err = config.DB.Select(&r, q, args...)

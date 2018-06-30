@@ -4,13 +4,6 @@ import (
   "github.com/mobius-network/astrograph/util"
 )
 
-type Asset struct {
-	ID      string    `json:"id"`
-	Type    AssetType `json:"type"`
-	Code    string  	`json:"code"`
-	Issuer  string 	  `json:"issuer"`
-}
-
 func NewAssetFromRaw(rawCode string, rawType int, rawIssuer string) Asset {
   a := Asset{
     Code: rawCode,

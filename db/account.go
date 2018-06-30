@@ -9,7 +9,7 @@ import (
 
 // Returns single account or nil
 func QueryAccount(id string) (*model.Account, error) {
-	var account model.Account
+	var account *model.Account
 
 	q, args, err := bAccounts.Where(sq.Eq{"accountid": id}).ToSql()
 	if (err != nil) { return nil, err }
@@ -23,7 +23,7 @@ func QueryAccount(id string) (*model.Account, error) {
 		return nil, err
 	default:
 		account.DecodeRaw()
-		return &account, nil
+		return account, nil
 	}
 }
 
