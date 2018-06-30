@@ -96,23 +96,28 @@ func GroupByAccountID(id []string, in interface{}, out interface{}) {
 	ptr := reflect.ValueOf(out)
 	slice := reflect.Indirect(ptr)
 
+  // Set resulting slice length to id length
 	ptr.Elem().Set(
 		reflect.MakeSlice(slice.Type(), len(id), len(id)),
 	)
 
+  // For each account id
 	for y, v := range id {
+    // Filter models having account id in source slice
 		r := linq.
 			From(in).
 			WhereT(func(m Model) bool { return m.GetAccountID() == v }).
 			Results()
 
+    // Create target slice of size of filtered items
 		z := reflect.MakeSlice(slice.Type().Elem(), len(r), len(r))
 
-		linq.From(r).ForEachIndexed(func(x int, i interface{}) {
+    // Copy filtered items to target slice
+    for x, i := range r {
 			z.Index(x).Set(
         reflect.Indirect(reflect.ValueOf(i)),
       )
-		})
+		}
 
 		slice.Index(y).Set(z)
 	}
