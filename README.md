@@ -21,3 +21,4 @@ Stellar GraphQL interface.
 3. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
 5. Proper error handling
 6. extract sqlhooks
+7. DecodeRaw err

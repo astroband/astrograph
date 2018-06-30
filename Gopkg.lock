@@ -21,12 +21,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/cheekybits/genny"
-  packages = ["generic"]
-  revision = "9127e812e1e9e501ce899a18121d316ecb52e4ba"
-
-[[projects]]
-  branch = "master"
   name = "github.com/gorilla/websocket"
   packages = ["."]
   revision = "5ed622c449da6d44c3c8329331ff47a9e5844f71"
@@ -104,12 +98,6 @@
   revision = "c4afb3effaa53fd9a06ca61262dc7ce8df4c081b"
 
 [[projects]]
-  name = "gopkg.in/ahmetb/go-linq.v3"
-  packages = ["."]
-  revision = "7e71c124c1f903df09ca08678f145f68b45d125e"
-  version = "v3.0.0"
-
-[[projects]]
   name = "gopkg.in/alecthomas/kingpin.v2"
   packages = ["."]
   revision = "947dcec5ba9c011838740e680966fd7087a71d0d"
@@ -118,6 +106,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e66fdff993188ceaf7528988fd12d0679c5cf06e708cdbf1423b8c19bb5cb3f6"
+  inputs-digest = "89d42bd89fae4c2a955eab0e1944165039a3be488691fed9a48435bce4910eb3"
   solver-name = "gps-cdcl"
   solver-version = 1
