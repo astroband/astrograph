@@ -63,7 +63,7 @@ func (c *Core) Pull() (accounts []*model.Account) {
 
 	id, err := db.QueryLedgerUpdatedAccountID(c.LedgerSeq)
 	if (err != nil) { log.Fatal(err) }
-	id = util.UniqueStringSlice(id)
+	id = util.Uniq(id)
 
 	log.WithFields(log.Fields{"id": id}).Info("Accounts updated")
 

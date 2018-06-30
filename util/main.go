@@ -6,7 +6,7 @@ import (
 )
 
 // Ruby Array#uniq
-func UniqueStringSlice(input []string) []string {
+func Uniq(input []string) []string {
 	u := make([]string, 0, len(input))
 	m := make(map[string]bool)
 
