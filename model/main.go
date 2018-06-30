@@ -1,5 +1,10 @@
 package model
 
+import(
+  "reflect"
+  "gopkg.in/ahmetb/go-linq.v3"
+)
+
 // Amounts are divided by this value to float conversion
 const BalancePrecision = 10000000
 
@@ -85,4 +90,30 @@ type TrustLine struct {
 	RawAssetType   int    			`db:"assettype"`
 	RawAssetCode   string 			`db:"assetcode"`
 	RawAssetIssuer string 			`db:"issuer"`
+}
+
+func GroupByAccountID(id []string, in interface{}, out interface{}) {
+	ptr := reflect.ValueOf(out)
+	slice := reflect.Indirect(ptr)
+
+	ptr.Elem().Set(
+		reflect.MakeSlice(slice.Type(), len(id), len(id)),
+	)
+
+	for y, v := range id {
+		r := linq.
+			From(in).
+			WhereT(func(m Model) bool { return m.GetAccountID() == v }).
+			Results()
+
+		z := reflect.MakeSlice(slice.Type().Elem(), len(r), len(r))
+
+		linq.From(r).ForEachIndexed(func(x int, i interface{}) {
+			z.Index(x).Set(
+        reflect.Indirect(reflect.ValueOf(i)),
+      )
+		})
+
+		slice.Index(y).Set(z)
+	}
 }

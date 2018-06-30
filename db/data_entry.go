@@ -8,11 +8,11 @@ import (
 )
 
 // Requests data entries for given accounts and returns slices of trustlines in same order as given id
-func QueryDataEntries(id []string) ([][]model.DataEntry, error) {
-	rows, err := fetchDataEntryRows(id)
-	if (err != nil) { return nil, err }
+func QueryDataEntries(id []string) (r []*model.DataEntry, err error) {
+	r, err = fetchDataEntryRows(id)
+	if (err != nil) { return }
 
-	return groupDataEntries(id, rows), nil
+	return
 }
 
 // Returns slice of data entries for requested accounts ordered
@@ -30,27 +30,4 @@ func fetchDataEntryRows(id []string) ([]*model.DataEntry, error) {
 	}
 
 	return r, nil
-}
-
-func groupDataEntries(id []string, rows []*model.DataEntry) [][]model.DataEntry {
-	var r [][]model.DataEntry
-
-	linq.
-	  From(id).
-	  Select(
-	    func (n interface{}) interface{} {
-	      var l []model.DataEntry
-
-	      linq.
-	        From(rows).
-	        WhereT(func(i *model.DataEntry) bool { return i.AccountID == n }).
-	        SelectT(func(i *model.DataEntry) model.DataEntry { return *i }).
-	        ToSlice(&l)
-
-	      return l
-	    },
-	  ).
-	  ToSlice(&r)
-
-	return r
 }

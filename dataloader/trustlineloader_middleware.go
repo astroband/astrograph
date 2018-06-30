@@ -17,8 +17,11 @@ func TrustLineLoaderMiddleware(next http.Handler) http.Handler {
 			maxBatch: 100,
 			wait:     100 * time.Millisecond,
 			fetch: func(keys []string) ([][]model.TrustLine, []error) {
-				r, err := db.QueryTrustLines(keys)
+				rows, err := db.QueryTrustLines(keys)
 				if err != nil { return nil, []error{err} }
+
+				var r [][]model.TrustLine
+				model.GroupByAccountID(keys, rows, &r)
 				return r, nil
 			},
 		}

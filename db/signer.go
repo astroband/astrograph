@@ -8,11 +8,11 @@ import (
 )
 
 // Requests trustlines for given accounts and returns slices of trustlines in same order as given id
-func QuerySigners(id []string) ([][]model.Signer, error) {
-	rows, err := fetchSignerRows(id)
-	if (err != nil) { return nil, err }
+func QuerySigners(id []string) (r []*model.Signer, err error) {
+	r, err = fetchSignerRows(id)
+	if (err != nil) { return }
 
-	return groupSigners(id, rows), nil
+	return
 }
 
 // Returns slice of data entries for requested accounts ordered
@@ -31,27 +31,4 @@ func fetchSignerRows(id []string) ([]*model.Signer, error) {
 	}
 
 	return r, nil
-}
-
-func groupSigners(id []string, rows []*model.Signer) [][]model.Signer {
-	var r [][]model.Signer
-
-	linq.
-	  From(id).
-	  Select(
-	    func (n interface{}) interface{} {
-	      var l []model.Signer
-
-	      linq.
-	        From(rows).
-	        WhereT(func(i *model.Signer) bool { return i.AccountID == n }).
-	        SelectT(func(i *model.Signer) model.Signer { return *i }).
-	        ToSlice(&l)
-
-	      return l
-	    },
-	  ).
-	  ToSlice(&r)
-
-	return r
 }

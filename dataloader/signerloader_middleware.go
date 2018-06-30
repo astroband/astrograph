@@ -17,8 +17,11 @@ func SignerLoaderMiddleware(next http.Handler) http.Handler {
 			maxBatch: 100,
 			wait:     100 * time.Millisecond,
 			fetch: func(keys []string) ([][]model.Signer, []error) {
-				r, err := db.QuerySigners(keys)
+				rows, err := db.QuerySigners(keys)
 				if err != nil { return nil, []error{err} }
+
+				var r [][]model.Signer
+				model.GroupByAccountID(keys, rows, &r)
 				return r, nil
 			},
 		}

@@ -18,8 +18,11 @@ func DataEntryLoaderMiddleware(next http.Handler) http.Handler {
 			maxBatch: 100,
 			wait:     100 * time.Millisecond,
 			fetch: func(keys []string) ([][]model.DataEntry, []error) {
-				r, err := db.QueryDataEntries(keys)
+				rows, err := db.QueryDataEntries(keys)
 				if err != nil { return nil, []error{err} }
+
+				var r [][]model.DataEntry
+				model.GroupByAccountID(keys, rows, &r)
 				return r, nil
 			},
 		}
