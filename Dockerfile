@@ -1,5 +1,6 @@
 FROM golang:1.9-alpine
 
+ENV ASTROGRAPH_CONFIG /root/.astrograph # In k8s this file must be provided directly, see docker_entrypoint.sh
 ENV ASTROGRAPH_PORT 8000
 ENV ASTROGRAPH_DATABASE_URL postgres://gzigzigzeo@docker.for.mac.localhost/core?sslmode=disable
 ENV ASTROGRAPH_INGEST_TIMEOUT 2
