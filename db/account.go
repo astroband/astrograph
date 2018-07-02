@@ -28,8 +28,8 @@ func QueryAccount(id string) (*model.Account, error) {
 }
 
 // Returns a set of accounts by id
-func QueryAccounts(id []string) ([]*model.Account, error) {
-	var r []*model.Account
+func QueryAccounts(id []string) (r []*model.Account, err error) {
+	if (len(id) == 0) { return }
 
 	q, args, err := bAccounts.Where(sq.Eq{"accountid": id}).ToSql()
 	if err != nil { return nil, err }
@@ -41,5 +41,5 @@ func QueryAccounts(id []string) ([]*model.Account, error) {
 		t.DecodeRaw()
 	}
 
-	return r, nil
+	return
 }

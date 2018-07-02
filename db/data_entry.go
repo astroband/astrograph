@@ -8,6 +8,8 @@ import (
 
 // Requests data entries for given accounts and returns slices of trustlines in same order as given id
 func QueryDataEntries(id []string) (r []*model.DataEntry, err error) {
+	if (len(id) == 0) { return }
+
 	q, args, err := bDataEntries.Where(sq.Eq{"accountid": id}).ToSql()
 	if err != nil { return }
 

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/mobius-network/astrograph/model"
@@ -51,25 +52,26 @@ func QueryLedgerUpdatedAccountID(seq uint64) ([]string, error) {
   id := append(accountId, trustlineId...)
   id = append(id, accountDataId...)
 
-	err = fetchLedgerTransactions(seq)
+	tx, err := fetchLedgerTransactions(seq)
+	for _, t := range tx {
+		fmt.Println(t.MergingAccountIDs())
+	}
 
   return id, nil
 }
 
-func fetchLedgerTransactions(seq uint64) error {
-	var tx []model.Transaction
-
+func fetchLedgerTransactions(seq uint64) (tx []*model.Transaction, err error) {
 	q, args, err := b.Select("*").From("txhistory").Where(sq.Eq{"ledgerseq": seq}).OrderBy("txindex").ToSql()
-	if (err != nil) { return err }
+	if (err != nil) { return }
 
 	err = config.DB.Select(&tx, q, args...)
-	if (err != nil) { return err }
+	if (err != nil) { return }
 
 	for _, t := range tx {
 		t.DecodeRaw()
 	}
 
-	return nil
+	return
 }
 
 func fetchUpdatedAccountIDs(tableName string, seq uint64) ([]string, error) {

@@ -8,6 +8,8 @@ import (
 
 // Requests trustlines for given accounts and returns slices of trustlines in same order as given id
 func QuerySigners(id []string) (r []*model.Signer, err error) {
+	if (len(id) == 0) { return }
+	
 	q, args, err := bSigners.Where(sq.Eq{"accountid": id}).ToSql()
 
 	if err != nil { return }

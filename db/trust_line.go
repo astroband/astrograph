@@ -10,6 +10,8 @@ import (
 
 // Requests trustlines for given accounts and returns slices of trustlines in same order as given id
 func QueryTrustLines(id []string) (r []*model.TrustLine, err error) {
+	if (len(id) == 0) { return }
+	
 	q, args, err := bTrustLines.Where(sq.Eq{"accountid": id}).ToSql()
 	if err != nil { return }
 
