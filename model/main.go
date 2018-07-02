@@ -1,5 +1,7 @@
 package model
 
+import "github.com/stellar/go/xdr"
+
 // Amounts are divided by this value to float conversion
 const BalancePrecision = 10000000
 
@@ -43,10 +45,10 @@ type DataEntry struct {
 }
 
 type Signer struct {
-	ID        string `json:"id"`
-  AccountID string `json:"accountId" db:"accountid"`
-	Signer    string `json:"signer"    db:"publickey"`
-	Weight    int    `json:"weight"    db:"weight"`
+	ID        string    `json:"id"`
+  AccountID string    `json:"accountId" db:"accountid"`
+	Signer    string    `json:"signer"    db:"publickey"`
+	Weight    int       `json:"weight"    db:"weight"`
 }
 
 type Account struct {
@@ -85,4 +87,18 @@ type TrustLine struct {
 	RawAssetType   int    			`db:"assettype"`
 	RawAssetCode   string 			`db:"assetcode"`
 	RawAssetIssuer string 			`db:"issuer"`
+}
+
+type Transaction struct {
+  ID        string `db:"txid"`
+  LedgerSeq int    `db:"ledgerseq"`
+  Index     int    `db:"txindex"`
+
+  Body      xdr.TransactionEnvelope
+  Result    xdr.TransactionResult
+  Meta      xdr.TransactionMeta
+
+  RawBody   string `db:"txbody"`
+  RawResult string `db:"txresult"`
+  RawMeta   string `db:"txmeta"`
 }

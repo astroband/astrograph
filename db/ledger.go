@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/config"
 )
 
@@ -38,22 +39,40 @@ func LedgerExist(seq uint64) (bool, error) {
 
 // Returns account ids of accounts changed in this ledger
 func QueryLedgerUpdatedAccountID(seq uint64) ([]string, error) {
-  accountId, err := fetchUpdatedAccountId("accounts", seq)
+  accountId, err := fetchUpdatedAccountIDs("accounts", seq)
   if (err != nil) { return nil, err }
 
-  accountDataId, err := fetchUpdatedAccountId("accountdata", seq)
+  accountDataId, err := fetchUpdatedAccountIDs("accountdata", seq)
   if (err != nil) { return nil, err }
 
-  trustlineId, err := fetchUpdatedAccountId("trustlines", seq)
+  trustlineId, err := fetchUpdatedAccountIDs("trustlines", seq)
   if (err != nil) { return nil, err }
 
   id := append(accountId, trustlineId...)
   id = append(id, accountDataId...)
 
+	err = fetchLedgerTransactions(seq)
+
   return id, nil
 }
 
-func fetchUpdatedAccountId(tableName string, seq uint64) ([]string, error) {
+func fetchLedgerTransactions(seq uint64) error {
+	var tx []model.Transaction
+
+	q, args, err := b.Select("*").From("txhistory").Where(sq.Eq{"ledgerseq": seq}).OrderBy("txindex").ToSql()
+	if (err != nil) { return err }
+
+	err = config.DB.Select(&tx, q, args...)
+	if (err != nil) { return err }
+
+	for _, t := range tx {
+		t.DecodeRaw()
+	}
+
+	return nil
+}
+
+func fetchUpdatedAccountIDs(tableName string, seq uint64) ([]string, error) {
   var id []string
 
 	q, args, err := b.Select("accountid").From(tableName).Where(sq.Eq{"lastmodified": seq}).ToSql()

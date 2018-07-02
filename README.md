@@ -16,9 +16,9 @@ Stellar GraphQL interface.
 # TODO
 
 4. Monitor entity deletion.
+7. DecodeRaw err
 1. Fast rewind to last ledger - ?
 2. Send updates to all accounts on gap
 3. Filter updates by request (do not query accounts which are not currently observed and/or not passed to ctx)
 5. Proper error handling
 6. extract sqlhooks
-7. DecodeRaw err
