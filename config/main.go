@@ -22,7 +22,7 @@ var (
 	DatabaseUrl   = kingpin.Flag("database-url", "Stellar Core database URL").Required().URL()
 	IngestTimeout = kingpin.Flag("ingest-timeout", "Ingest frequency").Default("2").Int()
 	Debug         = kingpin.Flag("debug", "Log debug messages").Default("false").Bool()
-	StartLedger   = kingpin.Flag("start-ledger", "Start with ledger (debug)").Uint64()
+	DebugLedger   = kingpin.Flag("debug-ledger", "Start with ledger").Uint64()
 )
 
 func init() {

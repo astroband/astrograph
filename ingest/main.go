@@ -16,8 +16,8 @@ type Core struct {
 func NewCore() *Core {
 	c := new(Core)
 
-	if (*config.StartLedger != 0) {
-		c.LedgerSeq = *config.StartLedger
+	if (*config.DebugLedger != 0) {
+		c.LedgerSeq = *config.DebugLedger
 	} else {
 		seq, err := db.FetchMaxLedger()
 		if err != nil { log.Fatal(err) }
