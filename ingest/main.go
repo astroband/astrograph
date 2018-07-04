@@ -56,8 +56,8 @@ func (c *Core) loadAccounts(id []string) (r []*model.Account) {
 }
 
 // Loads updates from current ledger
-func (c *Core) Pull() (accounts []*model.Account) {
-	if !c.checkLedgerExist() { return nil }
+func (c *Core) Pull() (id []string, r []*model.Account) {
+	if !c.checkLedgerExist() { return }
 
 	log.WithFields(log.Fields{"LedgerSeq": c.LedgerSeq}).Info("Ingesting ledger")
 
@@ -67,9 +67,8 @@ func (c *Core) Pull() (accounts []*model.Account) {
 
 	log.WithFields(log.Fields{"id": id}).Info("Accounts updated")
 
-	r := c.loadAccounts(id)
-
+	r = c.loadAccounts(id)
 	c.LedgerSeq += 1
 
-	return r
+	return
 }

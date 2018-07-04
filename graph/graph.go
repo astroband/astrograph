@@ -86,19 +86,24 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 	return ch, nil
 }
 
-func (a *App) SendAccountUpdates(accounts []*model.Account) {
+func (a *App) SendAccountUpdates(id []string, accounts []*model.Account) {
 	a.mu.Lock()
-	for _, account := range accounts {
+	for n, _ := range id {
+		account := accounts[n]
 		if account == nil { continue }
-		
-		ch := a.AccountChannels[account.ID]
-		if ch == nil {
-			log.WithFields(log.Fields{"id": account.ID}).Debug("Subscription not found")
-			continue
-		}
-		log.WithFields(log.Fields{"id": account.ID}).Debug("Sending updates")
 
-		ch <- *account
+		a.sendUpdate(account)
 	}
 	a.mu.Unlock()
+}
+
+func (a *App) sendUpdate(account *model.Account) {
+	ch := a.AccountChannels[account.ID]
+	if ch == nil {
+		log.WithFields(log.Fields{"id": account.ID}).Debug("Subscription not found")
+		return
+	}
+	log.WithFields(log.Fields{"id": account.ID}).Debug("Sending updates")
+
+	ch <- *account
 }
