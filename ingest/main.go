@@ -49,10 +49,10 @@ func (c *Core) checkLedgerExist() bool {
 }
 
 // Loads accounts with given ids
-func (c *Core) loadAccounts(id []string) []*model.Account {
-	r, err := db.QueryAccounts(id)
+func (c *Core) loadAccounts(id []string) (r []*model.Account) {
+	r, err := db.QueryAccountsOrdered(id)
 	if err != nil { log.Fatal(err) }
-	return r
+	return
 }
 
 // Loads updates from current ledger

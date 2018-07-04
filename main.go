@@ -32,8 +32,7 @@ func startIngest() {
 
 	go func() {
 		for _ = range ticker.C {
-			accounts := core.Pull()
-			app.SendAccountUpdates(accounts)
+			app.SendAccountUpdates(core.Pull())
 		}
 	}()
 }
