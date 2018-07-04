@@ -9,12 +9,13 @@ func (tx *Transaction) DecodeRaw() {
   xdr.SafeUnmarshalBase64(tx.RawMeta, &tx.Meta)
 }
 
-// TODO: +destination
 func (tx Transaction) MergingAccountIDs() (id []string) {
   txB := tx.Body.Tx
 
   for _, op := range txB.Operations {
     if op.Body.Type == xdr.OperationTypeAccountMerge {
+      id = append(id, op.Body.Destination.Address())
+
       n := op.SourceAccount.Address()
       if n != "" {
         id = append(id, n)
@@ -24,8 +25,6 @@ func (tx Transaction) MergingAccountIDs() (id []string) {
           id = append(id, n)
         }
       }
-
-      fmt.Println(tx.ID)
     }
   }
 
