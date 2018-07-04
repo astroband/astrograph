@@ -33,7 +33,7 @@ func (a *App) Account_trustlines(ctx context.Context, obj *model.Account) ([]mod
 func (a *App) Account_signers(ctx context.Context, obj *model.Account) ([]model.Signer, error) {
 	loader := ctx.Value(dataloader.SignerLoaderKey).(*dataloader.SignerSliceLoader)
 	signers, error := loader.Load(obj.ID)
-	return signers, error	
+	return signers, error
 }
 
 func (a *App) Query_Account(ctx context.Context, id string) (*model.Account, error) {
@@ -41,14 +41,16 @@ func (a *App) Query_Account(ctx context.Context, id string) (*model.Account, err
 }
 
 func (a *App) Query_Accounts(ctx context.Context, id []string) ([]model.Account, error) {
-	sourceAccounts, err := db.QueryAccounts(id)
+	sourceAccounts, err := db.QueryAccountsOrdered(id)
 
 	if (err != nil) { return nil, err }
 
 	accounts := make([]model.Account, 0)
 
 	for _, account := range sourceAccounts {
-		accounts = append(accounts, *account)
+		if account != nil {
+			accounts = append(accounts, *account)
+		}
 	}
 
 	return accounts, nil

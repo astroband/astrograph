@@ -43,3 +43,20 @@ func QueryAccounts(id []string) (r []*model.Account, err error) {
 
 	return
 }
+
+func QueryAccountsOrdered(id []string) (r []*model.Account, err error) {
+	rs, err := QueryAccounts(id)
+	if err != nil { return }
+
+	r = make([]*model.Account, len(id))
+
+	for n, i := range id {
+		for _, a := range rs {
+			if a.ID == i {
+				r[n] = a
+			}
+		}
+	}
+
+	return
+}

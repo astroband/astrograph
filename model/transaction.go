@@ -1,7 +1,6 @@
 package model
 
 import "github.com/stellar/go/xdr"
-import "fmt"
 
 func (tx *Transaction) DecodeRaw() {
   xdr.SafeUnmarshalBase64(tx.RawBody, &tx.Body)
