@@ -88,22 +88,30 @@ func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-cha
 
 func (a *App) SendAccountUpdates(id []string, accounts []*model.Account) {
 	a.mu.Lock()
-	for n, _ := range id {
+	for n, i := range id {
 		account := accounts[n]
-		if account == nil { continue }
 
-		a.sendUpdate(account)
+		ch := a.AccountChannels[account.ID]
+		if ch == nil {
+			log.WithFields(log.Fields{"id": account.ID}).Debug("Subscription not found")
+			continue
+		}
+
+		if account == nil {
+			a.sendDelete(ch, i)
+		} else {
+			a.sendUpdate(ch, account)
+		}
 	}
 	a.mu.Unlock()
 }
 
-func (a *App) sendUpdate(account *model.Account) {
-	ch := a.AccountChannels[account.ID]
-	if ch == nil {
-		log.WithFields(log.Fields{"id": account.ID}).Debug("Subscription not found")
-		return
-	}
+func (a *App) sendUpdate(ch chan model.Account, account *model.Account) {
 	log.WithFields(log.Fields{"id": account.ID}).Debug("Sending updates")
 
 	ch <- *account
+}
+
+func (a *App) sendDelete(ch chan model.Account, id string) {
+	log.WithFields(log.Fields{"id": id}).Debug("Sending delete event")
 }
