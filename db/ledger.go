@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/mobius-network/astrograph/model"
@@ -39,22 +38,27 @@ func LedgerExist(seq uint64) (bool, error) {
 }
 
 // Returns account ids of accounts changed in this ledger
-func QueryLedgerUpdatedAccountID(seq uint64) ([]string, error) {
+func QueryLedgerUpdatedAccountID(seq uint64) (id []string, err error) {
   accountId, err := fetchUpdatedAccountIDs("accounts", seq)
-  if (err != nil) { return nil, err }
+  if (err != nil) { return }
 
   accountDataId, err := fetchUpdatedAccountIDs("accountdata", seq)
-  if (err != nil) { return nil, err }
+  if (err != nil) { return }
 
   trustlineId, err := fetchUpdatedAccountIDs("trustlines", seq)
-  if (err != nil) { return nil, err }
+  if (err != nil) { return }
 
-  id := append(accountId, trustlineId...)
+	id = make([]string, 0)
+
+	id = append(accountId, trustlineId...)
   id = append(id, accountDataId...)
 
 	tx, err := fetchLedgerTransactions(seq)
 	for _, t := range tx {
-		fmt.Println(t.MergingAccountIDs())
+		mergingAccountId := t.MergingAccountIDs()
+		if err != nil { return }
+
+		id = append(id, mergingAccountId...)
 	}
 
   return id, nil
