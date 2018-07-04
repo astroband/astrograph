@@ -45,5 +45,5 @@ COPY docker_entrypoint.sh /entrypoint.sh
 RUN chmod a+x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["sh", "-c", "/usr/local/bin/astrograph @/root/.astrograph"]
+CMD ["sh", "-c", "/usr/local/bin/astrograph @$ASTROGRAPH_CONFIG"]
 EXPOSE ${ASTROGRAPH_PORT}
