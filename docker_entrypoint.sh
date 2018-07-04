@@ -11,7 +11,4 @@ cat <<EOM >${ASTROGRAPH_CONFIG}
 EOM
 fi
 
-echo $@
-cat $ASTROGRAPH_CONFIG
-
 exec "$@"
