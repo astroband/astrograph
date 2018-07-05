@@ -7,7 +7,6 @@ import (
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"github.com/mobius-network/astrograph/graph"
-	"github.com/mobius-network/astrograph/model"
 	"github.com/mobius-network/astrograph/ingest"
 	"github.com/mobius-network/astrograph/config"
 	"github.com/mobius-network/astrograph/dataloader"
@@ -19,12 +18,8 @@ import (
 var app *graph.App
 var core *ingest.Core
 
-// TODO: Move initialisation to constructor
 func init() {
-	app = &graph.App{}
-	app.AccountChannels = make(map[string]chan model.AccountEvent)
-	app.AccountCounters = make(map[string]uint64)
-
+	app = graph.NewApp()
 	core = ingest.NewCore()
 }
 

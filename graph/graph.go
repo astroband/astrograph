@@ -17,6 +17,13 @@ type App struct {
 	mu              sync.Mutex
 }
 
+func NewApp() (a *App) {
+	return &App{
+		AccountChannels: make(map[string]chan model.AccountEvent),
+		AccountCounters: make(map[string]uint64),
+	}
+}
+
 func (a *App) Account_data(ctx context.Context, obj *model.Account) ([]model.DataEntry, error) {
 	loader := ctx.Value(dataloader.DataEntryLoaderKey).(*dataloader.DataEntrySliceLoader)
 	dataEntries, error := loader.Load(obj.ID)
