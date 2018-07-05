@@ -117,4 +117,9 @@ func (a *App) sendUpdate(ch chan model.AccountEvent, account *model.Account) {
 
 func (a *App) sendDelete(ch chan model.AccountEvent, id string) {
 	log.WithFields(log.Fields{"id": id}).Debug("Sending delete event")
+
+	ch <- model.AccountEvent {
+		Type: model.AccountEventTypeDelete,
+		Account: model.Account{ID: id},
+	}
 }

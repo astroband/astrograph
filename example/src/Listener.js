@@ -45,14 +45,29 @@ class Listener extends Component {
 const Subscription = gql`
     subscription AccountUpdated($id: AccountID!) {
         accountUpdated(id:$id) {
-            id
-            balance
-            sequenceNumber
-            numSubentries
-            inflationDest
-            trustlines {
-              limit
+            type
+            account {
+              id
               balance
+              sequenceNumber
+              numSubentries
+              inflationDest
+              flags {
+                authRequired
+                authRevokable
+                authImmutable
+              }
+              trustlines {
+                limit
+                balance
+              }
+              data {
+                name
+                value
+              }
+              signers {
+                signer
+              }
             }
         }
     }
