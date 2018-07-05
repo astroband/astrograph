@@ -102,3 +102,10 @@ type Transaction struct {
   RawResult string `db:"txresult"`
   RawMeta   string `db:"txmeta"`
 }
+
+type AccountEventType string
+
+type AccountEvent struct {
+	Type    AccountEventType `json:"type"`
+	Account Account          `json:"account"`
+}

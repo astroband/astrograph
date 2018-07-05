@@ -7,5 +7,7 @@
   "Signer": "github.com/mobius-network/astrograph/model.Signer",
   "Account": "github.com/mobius-network/astrograph/model.Account",
   "Trustline": "github.com/mobius-network/astrograph/model.TrustLine",
-  "TrustlineFlags": "github.com/mobius-network/astrograph/model.TrustLineFlags"
+  "TrustlineFlags": "github.com/mobius-network/astrograph/model.TrustLineFlags",
+  "AccountEventType": "github.com/mobius-network/astrograph/model.AccountEventType",
+  "AccountEvent": "github.com/mobius-network/astrograph/model.AccountEvent"
 }

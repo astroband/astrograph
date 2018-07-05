@@ -19,9 +19,10 @@ import (
 var app *graph.App
 var core *ingest.Core
 
+// TODO: Move initialisation to constructor
 func init() {
 	app = &graph.App{}
-	app.AccountChannels = make(map[string]chan model.Account)
+	app.AccountChannels = make(map[string]chan model.AccountEvent)
 	app.AccountCounters = make(map[string]uint64)
 
 	core = ingest.NewCore()

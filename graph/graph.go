@@ -12,7 +12,7 @@ import (
 )
 
 type App struct {
-	AccountChannels map[string]chan model.Account
+	AccountChannels map[string]chan model.AccountEvent
 	AccountCounters map[string]uint64
 	mu              sync.Mutex
 }
@@ -56,14 +56,14 @@ func (a *App) Query_Accounts(ctx context.Context, id []string) ([]model.Account,
 	return accounts, nil
 }
 
-func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-chan model.Account, error) {
+func (a *App) Subscription_accountUpdated(ctx context.Context, id string) (<-chan model.AccountEvent, error) {
 	a.mu.Lock()
 	ch := a.AccountChannels[id]
 
 	if ch == nil {
 		log.WithFields(log.Fields{"id": id}).Debug("Subscribed")
 
-		ch = make(chan model.Account, 1)
+		ch = make(chan model.AccountEvent, 1)
 		a.AccountCounters[id] = 1
 		a.AccountChannels[id] = ch
 	} else {
@@ -91,9 +91,9 @@ func (a *App) SendAccountUpdates(id []string, accounts []*model.Account) {
 	for n, i := range id {
 		account := accounts[n]
 
-		ch := a.AccountChannels[account.ID]
+		ch := a.AccountChannels[i]
 		if ch == nil {
-			log.WithFields(log.Fields{"id": account.ID}).Debug("Subscription not found")
+			log.WithFields(log.Fields{"id": i}).Debug("Subscription not found")
 			continue
 		}
 
@@ -106,12 +106,15 @@ func (a *App) SendAccountUpdates(id []string, accounts []*model.Account) {
 	a.mu.Unlock()
 }
 
-func (a *App) sendUpdate(ch chan model.Account, account *model.Account) {
+func (a *App) sendUpdate(ch chan model.AccountEvent, account *model.Account) {
 	log.WithFields(log.Fields{"id": account.ID}).Debug("Sending updates")
 
-	ch <- *account
+	ch <- model.AccountEvent {
+		Type: model.AccountEventTypeUpdate,
+		Account: *account,
+	}
 }
 
-func (a *App) sendDelete(ch chan model.Account, id string) {
+func (a *App) sendDelete(ch chan model.AccountEvent, id string) {
 	log.WithFields(log.Fields{"id": id}).Debug("Sending delete event")
 }

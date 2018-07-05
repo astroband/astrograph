@@ -74,8 +74,18 @@ type Trustline {
   lastModified: Int!
 }
 
+enum AccountEventType {
+  UPDATE,
+  DELETE
+}
+
+type AccountEvent {
+  type: AccountEventType!,
+  account: Account!
+}
+
 type Subscription {
-  accountUpdated(id: AccountID!): Account!
+  accountUpdated(id: AccountID!): AccountEvent!
 }
 
 type Query {

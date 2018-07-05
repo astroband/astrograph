@@ -26,7 +26,7 @@ type Resolvers interface {
 	Query_Account(ctx context.Context, id string) (*model.Account, error)
 	Query_Accounts(ctx context.Context, id []string) ([]model.Account, error)
 
-	Subscription_accountUpdated(ctx context.Context, id string) (<-chan model.Account, error)
+	Subscription_accountUpdated(ctx context.Context, id string) (<-chan model.AccountEvent, error)
 }
 
 type executableSchema struct {
@@ -356,6 +356,53 @@ func (ec *executionContext) _Account_signers(ctx context.Context, field graphql.
 		}
 		return arr1
 	})
+}
+
+var accountEventImplementors = []string{"AccountEvent"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _AccountEvent(ctx context.Context, sel []query.Selection, obj *model.AccountEvent) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, accountEventImplementors, ec.Variables)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AccountEvent")
+		case "type":
+			out.Values[i] = ec._AccountEvent_type(ctx, field, obj)
+		case "account":
+			out.Values[i] = ec._AccountEvent_account(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _AccountEvent_type(ctx context.Context, field graphql.CollectedField, obj *model.AccountEvent) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountEvent"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Type
+	return res
+}
+
+func (ec *executionContext) _AccountEvent_account(ctx context.Context, field graphql.CollectedField, obj *model.AccountEvent) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "AccountEvent"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Account
+	return ec._Account(ctx, field.Selections, &res)
 }
 
 var accountFlagsImplementors = []string{"AccountFlags"}
@@ -969,7 +1016,7 @@ func (ec *executionContext) _Subscription_accountUpdated(ctx context.Context, fi
 			return nil
 		}
 		var out graphql.OrderedMap
-		out.Add(field.Alias, func() graphql.Marshaler { return ec._Account(ctx, field.Selections, &res) }())
+		out.Add(field.Alias, func() graphql.Marshaler { return ec._AccountEvent(ctx, field.Selections, &res) }())
 		return &out
 	}
 }
@@ -1947,8 +1994,18 @@ type Trustline {
   lastModified: Int!
 }
 
+enum AccountEventType {
+  UPDATE,
+  DELETE
+}
+
+type AccountEvent {
+  type: AccountEventType!,
+  account: Account!
+}
+
 type Subscription {
-  accountUpdated(id: AccountID!): Account!
+  accountUpdated(id: AccountID!): AccountEvent!
 }
 
 type Query {
