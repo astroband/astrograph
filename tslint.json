@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "tslint:latest",
+    "tslint-config-prettier"
+  ],
+  "rulesDirectory": ["tslint-plugin-prettier"],
+  "rules": {
+    "prettier": true,
+    "object-literal-sort-keys": false,
+    "no-implicit-dependencies": true,
+    "no-namespace": [true, "allow-declarations"]
+  }
+}
