@@ -1,4 +1,4 @@
-import stellar from "stellar-base";
+// import stellar from "stellar-base";
 
 export default class Transaction {
   public ID: string;
@@ -8,12 +8,19 @@ export default class Transaction {
   public result: string;
   public meta: string;
 
-  constructor(data: { data: string }) {
+  constructor(data: {
+    txid: string;
+    ledgerseq: number;
+    txindex: number;
+    txbody: string;
+    txresult: string;
+    txmeta: string;
+  }) {
     this.ID = data.txid;
     this.ledgerSeq = data.ledgerseq;
-    this.index = data.txIndex;
-    this.body = data.txBody;
-    this.result = data.txResult;
-    this.meta = data.txMeta;
+    this.index = data.txindex;
+    this.body = data.txbody;
+    this.result = data.txresult;
+    this.meta = data.txmeta;
   }
 }

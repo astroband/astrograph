@@ -8,10 +8,12 @@ import pgPromise = require("pg-promise");
 import * as secrets from "./common/util/secrets";
 
 import LedgersRepository from "./ledger/ledger.repo";
+import TransactionsRepository from "./transaction/transaction.repo";
 
 // Database Interface Extensions:
 interface IExtensions {
   ledgers: LedgersRepository;
+  transactions: TransactionsRepository;
 }
 
 // pg-promise initialization options:
@@ -22,6 +24,7 @@ const initOptions: IOptions<IExtensions> = {
     // Do not use 'require()' here, because this event occurs for every task
     // and transaction being executed, which should be as fast as possible.
     obj.ledgers = new LedgersRepository(obj);
+    obj.transactions = new TransactionsRepository(obj);
   }
 };
 

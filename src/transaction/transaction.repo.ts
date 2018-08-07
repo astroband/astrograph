@@ -1,7 +1,7 @@
 import { IDatabase } from "pg-promise";
 import Transaction from "./transaction.model";
 
-export default class LedgersRepository {
+export default class TransactionsRepository {
   private db: IDatabase<any>;
 
   constructor(db: any) {
@@ -14,8 +14,8 @@ export default class LedgersRepository {
   }
 
   public findByLedgerSeq(ledgerSeq: number): Promise<Transaction[]> {
-    return this.db.any("SELECT * FROM txhistory WHERE ledgerseq = $1 ORDER BY txindex", ledgerSeq, res =>
-      res.map(t => new Transaction(t))
-    );
+    return this.db.any("SELECT * FROM txhistory WHERE ledgerseq = $1 ORDER BY txindex", ledgerSeq);
+    // res.map(t => new Transaction(t))
+    // );
   }
 }

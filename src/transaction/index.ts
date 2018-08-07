@@ -1,2 +1,2 @@
-export { txSchema } from "./tx.schema";
-export { txResolver } from "./tx.resolver";
+export { transactionSchema } from "./transaction.schema";
+export { transactionResolver } from "./transaction.resolver";
