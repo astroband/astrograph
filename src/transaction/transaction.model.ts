@@ -1,4 +1,4 @@
-// import stellar from "stellar-base";
+import stellar from "stellar-base";
 
 export default class Transaction {
   public ID: string;
@@ -22,5 +22,9 @@ export default class Transaction {
     this.body = data.txbody;
     this.result = data.txresult;
     this.meta = data.txmeta;
+  }
+
+  public metaFromXDR() {
+    return stellar.xdr.TransactionMeta.fromXDR(Buffer.from(this.meta, "base64"));
   }
 }
