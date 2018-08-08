@@ -7,7 +7,7 @@ const transactionResolver = {
     },
 
     transactionsByLedgerSeq(root: any, args: any, ctx: any, info: any) {
-      return db.transactions.findByLedgerSeq(args.ledgerSeq);
+      return db.transactions.findAllBySeq(args.ledgerSeq);
     }
   }
 };

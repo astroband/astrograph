@@ -1,5 +1,5 @@
 import { IDatabase } from "pg-promise";
-import Transaction from "./transaction_fee.model";
+import TransactionFee from "./transaction_fee.model";
 
 export default class TransactionFeesRepository {
   private db: IDatabase<any>;
@@ -8,8 +8,9 @@ export default class TransactionFeesRepository {
     this.db = db;
   }
 
-  // Tries to find a transaction by id;
-  public findByID(id: string): Promise<TransactionFee> {
-    return this.db.oneOrNone("SELECT * FROM txhistory WHERE txid = $1", id, res => new TransactionFee(res));
+  // Fetches all transactions by ledger seq;
+  public async findAllBySeq(seq: number): Promise<TransactionFee[]> {
+    const res = await this.db.manyOrNone("SELECT * FROM txfeehistory WHERE ledgerseq = $1 ORDER BY txindex", seq);
+    return res.map(t => new TransactionFee(t));
   }
 }

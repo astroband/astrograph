@@ -12,7 +12,19 @@ export default class Ingest {
     this.seq = seq || db.transaction_fees.findMaxSeq();
   }
 
-  public next(): Ledger {
+  public tick() {
+    const ledger = nextLedger();
+    if (ledger) {
+      this.fetchTransactions(ledger);
+    }
+  }
+
+  private fetchTransactions(ledger: Ledger) {
+    const fees = db.transaction_fees.findAllBySeq(ledger.ledgerSeq);
+    const txs = db.transactions.findAllBySeq(ledger.ledgerSeq);
+  }
+
+  private nextLedger(): Ledger {
     const ledger = db.ledgers.findBySeq(this.nextSeq());
 
     // If there is no next ledger
