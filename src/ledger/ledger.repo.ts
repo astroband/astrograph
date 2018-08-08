@@ -14,7 +14,7 @@ export default class LedgersRepository {
   }
 
   // Returns max ledger number
-  public fetchMaxLedgerSeq(): Promise<number> {
+  public findMaxSeq(): Promise<number> {
     return this.db.oneOrNone(
       "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1",
       null,

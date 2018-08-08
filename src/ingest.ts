@@ -1,11 +1,21 @@
 import { IDatabase } from "pg-promise";
+import Ledger from "./ledger/ledger.model";
 
 export default class Ingest {
   private db: IDatabase<any>;
-  private ledgerSeq: number;
+  private seq: number;
 
-  constructor(db: any, ledgerSeq: number) {
+  constructor(db: any, seq: number) {
     this.db = db;
-    this.ledgerSeq = ledgerSeq || db.transaction_fees.fetchMaxLedgerSeq();
+    this.seq = seq || db.transaction_fees.findMaxSeq();
+  }
+
+  public next(): Ledger {
+    const ledger = db.ledgers.findBySeq(this.ledgerSeq + 1);
+    if (ledger == null) {
+      return;
+    }
+    this.ledgerSeq += 1;
+    return ledger;
   }
 }

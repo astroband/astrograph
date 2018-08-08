@@ -14,8 +14,8 @@ export default class TransactionsRepository {
   }
 
   // Fetches all transactions by ledger seq;
-  public async findByLedgerSeq(ledgerSeq: number): Promise<Transaction[]> {
-    const res = await this.db.manyOrNone("SELECT * FROM txhistory WHERE ledgerseq = $1 ORDER BY txindex", ledgerSeq);
+  public async findBySeq(seq: number): Promise<Transaction[]> {
+    const res = await this.db.manyOrNone("SELECT * FROM txhistory WHERE ledgerseq = $1 ORDER BY txindex", seq);
     return res.map(t => new Transaction(t));
   }
 }
