@@ -9,7 +9,7 @@ import * as secrets from "./common/util/secrets";
 
 import LedgersRepository from "./ledger/ledger.repo";
 import TransactionsRepository from "./transaction/transaction.repo";
-import TransactionFeesRepository from "./transaction/transaction_fee.repo";
+import TransactionFeesRepository from "./transaction_fee/transaction_fee.repo";
 
 // Database Interface Extensions:
 interface IExtensions {

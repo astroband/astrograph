@@ -6,12 +6,7 @@ export default class TransactionFee {
   public index: number;
   public changes: string;
 
-  constructor(data: {
-    txid: string;
-    ledgerseq: number;
-    txindex: number;
-    txchanges: string;
-  }) {
+  constructor(data: { txid: string; ledgerseq: number; txindex: number; txchanges: string }) {
     this.transactionID = data.txid;
     this.ledgerSeq = data.ledgerseq;
     this.index = data.txindex;
