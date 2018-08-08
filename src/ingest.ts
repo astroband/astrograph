@@ -22,6 +22,12 @@ export default class Ingest {
   private fetchTransactions(ledger: Ledger) {
     const fees = db.transaction_fees.findAllBySeq(ledger.ledgerSeq);
     const txs = db.transactions.findAllBySeq(ledger.ledgerSeq);
+
+    // cosnt id = [];
+
+    // for (let fee of fees) {
+    //   // console.log(fee)
+    // }
   }
 
   private nextLedger(): Ledger {

@@ -1,7 +1,7 @@
 import stellar from "stellar-base";
 
 export default class Transaction {
-  public ID: string;
+  public id: string;
   public ledgerSeq: number;
   public index: number;
   public body: string;
@@ -16,7 +16,7 @@ export default class Transaction {
     txresult: string;
     txmeta: string;
   }) {
-    this.ID = data.txid;
+    this.id = data.txid;
     this.ledgerSeq = data.ledgerseq;
     this.index = data.txindex;
     this.body = data.txbody;
