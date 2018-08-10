@@ -1,6 +1,6 @@
 import { gql } from "apollo-server";
 
-const accountFlagsType = gql`
+const accountThresholdsType = gql`
   type AccountThresholds {
     id: ID!
     masterWeight: Int!

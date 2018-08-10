@@ -7,10 +7,10 @@ import pgPromise = require("pg-promise");
 
 import * as secrets from "./common/util/secrets";
 
+import AccountsRepository from "./account/account.repo";
 import LedgersRepository from "./ledger/ledger.repo";
 import TransactionsRepository from "./transaction/transaction.repo";
 import TransactionFeesRepository from "./transaction_fee/transaction_fee.repo";
-import AccountsRepository from "./account/account.repo";
 
 // Database Interface Extensions:
 interface IExtensions {
@@ -30,7 +30,7 @@ const initOptions: IOptions<IExtensions> = {
     obj.ledgers = new LedgersRepository(obj);
     obj.accounts = new AccountsRepository(obj);
     obj.transactions = new TransactionsRepository(obj);
-    obj.transaction_fees = new TransactionFeesRepository(obj);
+    obj.transactionFees = new TransactionFeesRepository(obj);
   }
 };
 

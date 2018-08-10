@@ -4,10 +4,10 @@ import AccountThresholds from "./account_thresholds.model";
 export default class Account {
   public id: string;
   public balance: number;
-  public seqNumber: number;
+  public sequenceNumber: number;
   public numSubentries: number;
-  public inflationDest: number;
-  public homeDomain: number;
+  public inflationDest: string;
+  public homeDomain: string;
   public thresholds: AccountThresholds;
   public flags: AccountFlags;
   public lastModified: number;
@@ -29,7 +29,7 @@ export default class Account {
   }) {
     this.id = data.accountid;
     this.balance = data.balance;
-    this.seqNumber = data.seqnum;
+    this.sequenceNumber = data.seqnum;
     this.numSubentries = data.numsubentries;
     this.inflationDest = data.inflationdest;
     this.homeDomain = data.homedomain;

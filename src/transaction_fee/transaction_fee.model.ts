@@ -10,7 +10,7 @@ export default class TransactionFee {
     this.transactionID = data.txid;
     this.ledgerSeq = data.ledgerseq;
     this.index = data.txindex;
-    this.changes = data.changes;
+    this.changes = data.txchanges;
   }
 
   public fromXDR() {

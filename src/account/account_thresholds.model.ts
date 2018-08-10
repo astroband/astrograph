@@ -1,7 +1,6 @@
 import stellar from "stellar-base";
 
 export default class AccountThresholds {
-  public id: string;
   public masterWeight: number;
   public low: number;
   public medium: number;
@@ -9,10 +8,11 @@ export default class AccountThresholds {
 
   constructor(value: string) {
     const t = Buffer.from(value, "base64");
+    const ti = stellar.xdr.ThresholdIndices;
 
-    this.masterWeight = t[stellar.xdr.ThresholdIndices.thresholdMasterWeight()];
-    this.low = t[stellar.xdr.ThresholdIndices.low()];
-    this.medium = t[stellar.xdr.ThresholdIndices.medium()];
-    this.high = t[stellar.xdr.ThresholdIndices.high()];
+    this.masterWeight = t[ti.thresholdMasterWeight().value];
+    this.low = t[ti.thresholdLow().value];
+    this.medium = t[ti.thresholdMed().value];
+    this.high = t[ti.thresholdHigh().value];
   }
 }
