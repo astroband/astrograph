@@ -17,9 +17,7 @@ export default class Account {
   public signers: AccountSigner[];
 
   // trustlines: [Trustline!]!
-  // data: [DataEntry!]
-  // signers: [Signer!]
-
+  
   constructor(data: {
     accountid: string;
     balance: number;

@@ -19,6 +19,7 @@
     "dotenv": "^6.0.0",
     "graphql": "^0.13.2",
     "graphql-relay": "^0.5.5",
+    "graphql-resolve-batch": "^1.0.2",
     "pg": "^7.4.1",
     "pg-monitor": "^1.0.0",
     "pg-promise": "^8.4.5",
