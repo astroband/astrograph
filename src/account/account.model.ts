@@ -1,8 +1,8 @@
 import AccountFlags from "./account_flags.model";
-import AccountSigner from "./account_signer.model";
 import AccountThresholds from "./account_thresholds.model";
 
 import DataEntry from "../data_entry/data_entry.model";
+import Signer from "../signer/signer.model";
 
 export default class Account {
   public id: string;
@@ -15,7 +15,7 @@ export default class Account {
   public flags: AccountFlags;
   public lastModified: number;
   public data: DataEntry[];
-  public signers: AccountSigner[];
+  public signers: Signer[];
 
   // trustlines: [Trustline!]!
 
@@ -42,6 +42,6 @@ export default class Account {
     this.flags = new AccountFlags(data.flags);
 
     this.data = new Array<DataEntry>();
-    this.signers = new Array<AccountSigner>();
+    this.signers = new Array<Signer>();
   }
 }

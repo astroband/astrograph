@@ -1,12 +1,11 @@
 import { gql } from "apollo-server";
 
-const accountSignerType = gql`
-  type AccountSigner {
-    id: ID!
+const signerType = gql`
+  type Signer {
     accountId: AccountID!
     signer: AccountID!
     weight: Int!
   }
 `;
 
-export { accountSignerType };
+export { signerType };

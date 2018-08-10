@@ -13,7 +13,7 @@ const accountType = gql`
     flags: AccountFlags!
     lastModified: Int!
     data: [DataEntry]
-    signers: [AccountSigner]
+    signers: [Signer]
   }
 `;
 

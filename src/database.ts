@@ -10,6 +10,7 @@ import * as secrets from "./common/util/secrets";
 import AccountsRepository from "./account/account.repo";
 import DataEntriesRepository from "./data_entry/data_entry.repo";
 import LedgersRepository from "./ledger/ledger.repo";
+import SignersRepository from "./signer/signer.repo";
 import TransactionsRepository from "./transaction/transaction.repo";
 import TransactionFeesRepository from "./transaction_fee/transaction_fee.repo";
 
@@ -18,6 +19,7 @@ interface IExtensions {
   accounts: AccountsRepository;
   dataEntries: DataEntriesRepository;
   ledgers: LedgersRepository;
+  signers: SignersRepository;
   transactions: TransactionsRepository;
   transactionFees: TransactionFeesRepository;
 }
@@ -29,9 +31,10 @@ const initOptions: IOptions<IExtensions> = {
   extend(obj: IExtensions) {
     // Do not use 'require()' here, because this event occurs for every task
     // and transaction being executed, which should be as fast as possible.
-    obj.ledgers = new LedgersRepository(obj);
     obj.accounts = new AccountsRepository(obj);
     obj.dataEntries = new DataEntriesRepository(obj);
+    obj.ledgers = new LedgersRepository(obj);
+    obj.signers = new SignersRepository(obj);
     obj.transactions = new TransactionsRepository(obj);
     obj.transactionFees = new TransactionFeesRepository(obj);
   }
