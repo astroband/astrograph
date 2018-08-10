@@ -2,7 +2,7 @@ import { gql } from "apollo-server";
 
 const signerType = gql`
   type Signer {
-    accountId: AccountID!
+    accountID: AccountID!
     signer: AccountID!
     weight: Int!
   }
