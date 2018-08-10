@@ -1,7 +1,8 @@
-import AccountDataEntry from "./account_data_entry.model";
 import AccountFlags from "./account_flags.model";
 import AccountSigner from "./account_signer.model";
 import AccountThresholds from "./account_thresholds.model";
+
+import DataEntry from "../data_entry/data_entry.model";
 
 export default class Account {
   public id: string;
@@ -13,11 +14,11 @@ export default class Account {
   public thresholds: AccountThresholds;
   public flags: AccountFlags;
   public lastModified: number;
-  public data: AccountDataEntry[];
+  public data: DataEntry[];
   public signers: AccountSigner[];
 
   // trustlines: [Trustline!]!
-  
+
   constructor(data: {
     accountid: string;
     balance: number;
@@ -40,7 +41,7 @@ export default class Account {
     this.thresholds = new AccountThresholds(data.thresholds);
     this.flags = new AccountFlags(data.flags);
 
-    this.data = new Array<AccountDataEntry>();
+    this.data = new Array<DataEntry>();
     this.signers = new Array<AccountSigner>();
   }
 }
