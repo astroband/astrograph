@@ -12,6 +12,8 @@ const accountType = gql`
     thresholds: AccountThresholds!
     flags: AccountFlags!
     lastModified: Int!
+    data: [AccountDataEntry]
+    signers: [AccountSigner]
   }
 `;
 
