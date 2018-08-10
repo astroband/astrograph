@@ -10,6 +10,8 @@ export default class DataEntriesRepository {
 
   public async findAllByAccountID(id: string): Promise<DataEntry[]> {
     const res = await this.db.oneOrNone("SELECT * FROM accountdata WHERE accountid = $1", id);
-    return res.map(t => new DataEntry(t));
+    console.log(res);
+    return res;
+    //return res.map(e => new DataEntry(e));
   }
 }

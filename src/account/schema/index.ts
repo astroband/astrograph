@@ -1,4 +1,3 @@
-export { accountDataEntryType } from "./account_data_entry.type";
 export { accountIDScalar } from "./account_id.scalar";
 export { accountFlagsType } from "./account_flags.type";
 export { accountSignerType } from "./account_signer.type";

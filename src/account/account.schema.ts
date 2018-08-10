@@ -1,7 +1,6 @@
 import { addMockFunctionsToSchema, makeExecutableSchema } from "apollo-server";
 import { GraphQLSchema } from "graphql";
 import {
-  accountDataEntryType,
   accountFlagsType,
   accountIDScalar,
   accountQuery,
@@ -10,16 +9,10 @@ import {
   accountType
 } from "./schema";
 
+//import { dataEntryType } from "../data_entry/schema";
+
 const accountSchema: GraphQLSchema = makeExecutableSchema({
-  typeDefs: [
-    accountDataEntryType,
-    accountIDScalar,
-    accountFlagsType,
-    accountSignerType,
-    accountThresholdsType,
-    accountType,
-    accountQuery
-  ]
+  typeDefs: [accountIDScalar, accountFlagsType, accountSignerType, accountThresholdsType, accountType, accountQuery]
 });
 addMockFunctionsToSchema({ schema: accountSchema });
 
