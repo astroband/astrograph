@@ -4,10 +4,10 @@ export default class DataEntry {
   public value: string;
   public lastModified: number;
 
-  constructor(data: { accountid: string; name: string; value: string; lastModified: number }) {
+  constructor(data: { accountid: string; dataname: string; datavalue: string; lastmodified: number }) {
     this.accountID = data.accountid;
-    this.name = data.name;
-    this.value = Buffer.from(data.value, "base64");
-    this.lastModified = data.lastModified;
+    this.name = data.dataname;
+    this.value = Buffer.from(data.datavalue, "base64").toString();
+    this.lastModified = data.lastmodified;
   }
 }

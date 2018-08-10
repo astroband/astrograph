@@ -1,4 +1,3 @@
-export { accountIDScalar } from "./account_id.scalar";
 export { accountFlagsType } from "./account_flags.type";
 export { accountSignerType } from "./account_signer.type";
 export { accountThresholdsType } from "./account_thresholds.type";
