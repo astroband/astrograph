@@ -15,19 +15,24 @@ export default class Account {
   // trustlines: [Trustline!]!
   // data: [DataEntry!]
   // signers: [Signer!]
-}
 
-// type Account {
-//   id: AccountID!
-//   balance: Float!
-//   sequenceNumber: Int!
-//   numSubentries: Int!
-//   inflationDest: AccountID
-//   homeDomain: String
-//   thresholds: AccountThresholds!
-//   flags: AccountFlags!
-//   lastModified: Int!
-//   trustlines: [Trustline!]!
-//   data: [DataEntry!]
-//   signers: [Signer!]
-// }
+  constructor(data: {
+    accountid: string;
+    balance: number;
+    seqnum: number;
+    numsubentries: number;
+    inflationdest: string;
+    homedomain: string;
+    thresholds: string;
+    flags: number;
+    lastmodified: number;
+  }) {
+    this.id = data.accountid;
+    this.balance = data.balance;
+    this.seqNumber = data.seqnum;
+    this.numSubentries = data.numsubentries;
+    this.inflationDest = data.inflationdest;
+    this.homeDomain = data.homedomain;
+    this.lastModified = data.lastmodified;
+  }
+}

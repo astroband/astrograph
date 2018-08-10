@@ -1,11 +1,3 @@
-// type AccountThresholds {
-//   id: ID!
-//   masterWeight: Int!
-//   low: Int!
-//   medium: Int!
-//   high: Int!
-// }
-
 export default class AccountThresholds {
   public id: string;
   public masterWeight: number;
