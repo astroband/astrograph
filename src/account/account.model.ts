@@ -34,5 +34,8 @@ export default class Account {
     this.inflationDest = data.inflationdest;
     this.homeDomain = data.homedomain;
     this.lastModified = data.lastmodified;
+
+    this.thresholds = new AccountThresholds(data.thresholds);
+    this.flags = new AccountFlags(data.flags);
   }
 }
