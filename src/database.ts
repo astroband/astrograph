@@ -10,10 +10,12 @@ import * as secrets from "./common/util/secrets";
 import LedgersRepository from "./ledger/ledger.repo";
 import TransactionsRepository from "./transaction/transaction.repo";
 import TransactionFeesRepository from "./transaction_fee/transaction_fee.repo";
+import AccountsRepository from "./account/account.repo";
 
 // Database Interface Extensions:
 interface IExtensions {
   ledgers: LedgersRepository;
+  accounts: AccountsRepository;
   transactions: TransactionsRepository;
   transactionFees: TransactionFeesRepository;
 }
@@ -26,7 +28,9 @@ const initOptions: IOptions<IExtensions> = {
     // Do not use 'require()' here, because this event occurs for every task
     // and transaction being executed, which should be as fast as possible.
     obj.ledgers = new LedgersRepository(obj);
+    obj.accounts = new AccountsRepository(obj);
     obj.transactions = new TransactionsRepository(obj);
+    obj.transaction_fees = new TransactionFeesRepository(obj);
   }
 };
 

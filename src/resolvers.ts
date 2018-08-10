@@ -1,5 +1,7 @@
 import { ledgerResolver } from "./ledger";
 import { transactionResolver } from "./transaction";
-const resolvers = [ledgerResolver, transactionResolver];
+import { accountResolver } from "./account";
+
+const resolvers = [ledgerResolver, transactionResolver, accountResolver];
 
 export default resolvers;
