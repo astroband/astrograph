@@ -79,9 +79,7 @@ const typeDefs = gql`
 
 `;
 
-const schema: GraphQLSchema = makeExecutableSchema({
-  typeDefs
-});
+const schema: GraphQLSchema = makeExecutableSchema({ typeDefs });
 addMockFunctionsToSchema({ schema });
 
 const schemas = [schema];
