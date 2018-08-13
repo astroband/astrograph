@@ -9,7 +9,7 @@ export default class DataEntriesRepo {
   }
 
   public async findAllByAccountID(id: string): Promise<DataEntry[]> {
-    const res = await this.db.manyOrNone("SELECT * FROM accountdata WHERE accountid = $1", id);
+    const res = await this.db.manyOrNone("SELECT * FROM accountdata WHERE accountid = $1 ORDER BY dataname", id);
     return res.map(e => new DataEntry(e));
   }
 }
