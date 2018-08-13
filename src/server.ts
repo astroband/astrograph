@@ -1,17 +1,8 @@
-import { ApolloServer, mergeSchemas } from "apollo-server";
-import { GraphQLSchema } from "graphql";
+import { ApolloServer } from "apollo-server";
 
 import logger from "./common/util/logger";
+import schema from "./schema";
 
-import resolvers from "./resolvers";
-import schemas from "./schema";
-
-const schema: GraphQLSchema = mergeSchemas({
-  schemas,
-  resolvers
-});
-
-// GraphQL
 const server = new ApolloServer({
   schema,
   tracing: true

@@ -1,5 +1,6 @@
-import { addMockFunctionsToSchema, gql, makeExecutableSchema } from "apollo-server";
+import { addMockFunctionsToSchema, gql, makeExecutableSchema, mergeSchemas } from "apollo-server";
 import { GraphQLSchema } from "graphql";
+import resolvers from "./resolvers";
 
 const typeDefs = gql`
   scalar AccountID
@@ -11,7 +12,6 @@ const typeDefs = gql`
   }
 
   type AccountThresholds {
-    id: ID!
     masterWeight: Int!
     low: Int!
     medium: Int!
@@ -79,9 +79,12 @@ const typeDefs = gql`
 
 `;
 
-const schema: GraphQLSchema = makeExecutableSchema({ typeDefs });
-addMockFunctionsToSchema({ schema });
+const baseSchema: GraphQLSchema = makeExecutableSchema({ typeDefs });
+addMockFunctionsToSchema({ schema: baseSchema });
 
-const schemas = [schema];
+const schema: GraphQLSchema = mergeSchemas({
+  schemas: [baseSchema],
+  resolvers
+});
 
-export default schemas;
+export default schema;
