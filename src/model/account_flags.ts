@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 
-export default class AccountFlags {
+export class AccountFlags {
   public authRequired: boolean;
   public authRevokable: boolean;
   public authImmutable: boolean;
