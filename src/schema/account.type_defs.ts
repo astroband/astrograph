@@ -1,6 +1,21 @@
-export const typeDefs = `
+import { gql } from "apollo-server";
+
+export const typeDefs = gql`
   scalar AccountID
-  
+
+  type AccountFlags {
+    authRequired: Boolean!
+    authRevokable: Boolean!
+    authImmutable: Boolean!
+  }
+
+  type AccountThresholds {
+    masterWeight: Int!
+    low: Int!
+    medium: Int!
+    high: Int!
+  }
+
   type Account {
     id: AccountID!
     balance: Float!

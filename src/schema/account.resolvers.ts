@@ -1,6 +1,8 @@
 import { Account, Signer } from "../model";
+import db from "../database";
+import { createBatchResolver } from "graphql-resolve-batch";
 
-export const resolver = {
+export const resolvers = {
   Account: {
     signers: createBatchResolver<Account, Signer[]>(async (source: any, args: any, context: any) => {
       //const id = (source as Account[]).map(s => s.id);
