@@ -13,7 +13,8 @@ export default class SignersRepo {
     return res.map(e => new Signer(e));
   }
 
-  // public async findAllByAllAccountIDs(id: string): Promise<Signer[][]> {
-  //   const res = await this.db.manyOrNone("SELECT * FROM signers WHERE accountid IN $1 ORDER BY publickey", id);
-  // }
+  public async findAllByAccountIDs(ids: string[]): Promise<Signer[][]> {
+    const res = await this.db.manyOrNone("SELECT * FROM signers WHERE accountid IN ($1) ORDER BY publickey", ids);
+    return ids.map(id => res.filter(r => r.accountid === id).map(s => new Signer(s)));
+  }
 }
