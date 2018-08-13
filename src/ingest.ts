@@ -9,7 +9,7 @@ export default class Ingest {
 
   constructor(db: any, seq: number) {
     this.db = db;
-    this.seq = seq || db.transaction_fees.findMaxSeq();
+    this.seq = seq || db.transactionFees.findMaxSeq();
   }
 
   public tick() {
@@ -20,7 +20,7 @@ export default class Ingest {
   }
 
   private fetchTransactions(ledger: Ledger) {
-    const fees = db.transaction_fees.findAllBySeq(ledger.ledgerSeq);
+    const fees = db.transactionFees.findAllBySeq(ledger.ledgerSeq);
     const txs = db.transactions.findAllBySeq(ledger.ledgerSeq);
 
     // cosnt id = [];
