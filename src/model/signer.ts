@@ -1,5 +1,5 @@
 // TODO: signer == load account
-export class Signer {
+export default class Signer {
   public accountID: string;
   public signer: string;
   public weight: number;

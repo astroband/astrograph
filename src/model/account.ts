@@ -1,9 +1,9 @@
-import { AccountFlags } from "./account_flags";
-import { AccountThresholds } from "./account_thresholds";
-import { DataEntry } from "./data_entry";
-import { Signer } from "./signer";
+import AccountFlags from "./account_flags";
+import AccountThresholds from "./account_thresholds";
+import DataEntry from "./data_entry";
+import Signer from "./signer";
 
-export class Account {
+export default class Account {
   public id: string;
   public balance: number;
   public sequenceNumber: number;

@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 
-export class Transaction {
+export default class Transaction {
   public id: string;
   public ledgerSeq: number;
   public index: number;

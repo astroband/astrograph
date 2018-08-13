@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 
-export class Ledger {
+export default class Ledger {
   public xdr: string;
   public ledgerSeq: number;
   public previousLedgerHash: string;

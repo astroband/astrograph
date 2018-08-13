@@ -1,4 +1,4 @@
-export class DataEntry {
+export default class DataEntry {
   public accountID: string;
   public name: string;
   public value: string;

@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 
-export class AccountThresholds {
+export default class AccountThresholds {
   public masterWeight: number;
   public low: number;
   public medium: number;
