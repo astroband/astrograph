@@ -1,7 +1,20 @@
 import { gql } from "apollo-server";
 
 export default gql`
+  scalar AssetCode
   scalar AccountID
+
+  enum AssetType {
+    NATIVE
+    ALPHANUM_4
+    ALPHANUM_12
+  }
+
+  type Asset {
+    type: AssetType!
+    issuer: AccountID
+    code: AssetCode
+  }
 
   type AccountFlags {
     authRequired: Boolean!

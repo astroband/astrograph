@@ -1,12 +1,11 @@
-import stellar from "stellar-base";
-import AssetType from "./asset_type.enum";
+// import stellar from "stellar-base";
+// import { AssetType } from "./asset_type";
 
-export default class Asset {
-  public id: string;
-  public type: AssetType;
-  public issuer: string;
-  public code: string;
-
+export class Asset {
+  // public id: string;
+  // public type: AssetType;
+  // public issuer: string;
+  // public code: string;
   // constructor(data: { txid: string; ledgerseq: number; txindex: number; txchanges: string }) {
   //   this.transactionID = data.txid;
   //   this.ledgerSeq = data.ledgerseq;
