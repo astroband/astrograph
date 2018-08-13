@@ -1,4 +1,4 @@
-# Apollo server 2.0 
+# Apollo server 2.0
 This project is a good starting point for all the people that want to have apollo-server 2.0 ready to use.
 It integrates:
 - queries
@@ -18,13 +18,13 @@ It integrates:
 ## Environment
 In the root folder is available a file called `.env`. It contains all the configuration environment for:
 1. mongo db
-2. google-sign-in as identity server for authentication and authorisation. More info available at http://www.dzurico.com/apollo-server-2-0-auth-with-google-signin/ 
+2. google-sign-in as identity server for authentication and authorisation. More info available at http://www.dzurico.com/apollo-server-2-0-auth-with-google-signin/
 
 ## available commands
-- test environment: `npm run dev` 
+- test environment: `npm run dev`
 (it will automatically rerun your code all the time you save and will check for tslint errors and formatting style errors.)
 - production environment: `npm run prod`
-### 
+###
 
 ### How to configure prettier on your editor:
 
@@ -78,7 +78,7 @@ subscription {
 
 5. fetch all the users (you need to be authenticated with google identity server):
 For more information how to setup: http://www.dzurico.com/apollo-server-2-0-auth-with-google-signin/
-```graphQL 
+```graphQL
 query{
   users {
     id
@@ -95,3 +95,6 @@ For a better explanation on how I setup this repro please refer to:
 
 
 
+TODO:
+1. Merge schema into single file.
+2. Batch loader for all entities.
