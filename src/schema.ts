@@ -1,6 +1,11 @@
 import { addMockFunctionsToSchema, gql, makeExecutableSchema, mergeSchemas } from "apollo-server";
 import { GraphQLSchema } from "graphql";
-import resolvers from "./resolvers";
+
+import { accountResolver } from "./account/account.resolver";
+import { dataEntryResolver } from "./data_entry/data_entry.resolver";
+import { ledgerResolver } from "./ledger/ledger.resolver";
+import { signerResolver } from "./signer/signer.resolver";
+import { transactionResolver } from "./transaction/transaction.resolver";
 
 const typeDefs = gql`
   scalar AccountID
@@ -79,12 +84,13 @@ const typeDefs = gql`
 
 `;
 
-const baseSchema: GraphQLSchema = makeExecutableSchema({ typeDefs });
-addMockFunctionsToSchema({ schema: baseSchema });
+const schema: GraphQLSchema = makeExecutableSchema({ typeDefs });
+addMockFunctionsToSchema({ schema });
 
-const schema: GraphQLSchema = mergeSchemas({
-  schemas: [baseSchema],
+const schemas = [schema];
+const resolvers = [ledgerResolver, transactionResolver, signerResolver, dataEntryResolver, accountResolver];
+
+export default mergeSchemas({
+  schemas,
   resolvers
 });
-
-export default schema;
