@@ -1,13 +1,6 @@
-import { addMockFunctionsToSchema, gql, makeExecutableSchema, mergeSchemas } from "apollo-server";
-import { GraphQLSchema } from "graphql";
+import { gql } from "apollo-server";
 
-import { accountResolver } from "./account/account.resolver";
-import { dataEntryResolver } from "./data_entry/data_entry.resolver";
-import { ledgerResolver } from "./ledger/ledger.resolver";
-import { signerResolver } from "./signer/signer.resolver";
-import { transactionResolver } from "./transaction/transaction.resolver";
-
-const typeDefs = gql`
+export default gql`
   scalar AccountID
 
   type AccountFlags {
@@ -50,6 +43,15 @@ const typeDefs = gql`
     signers: [Signer]
   }
 
+  type Transaction {
+    ID: String!
+    ledgerSeq: Int!
+    index: Int!
+    body: String!
+    result: String!
+    meta: String!
+  }
+
   type Ledger {
     ledgerSeq: Int!
     ledgerVersion: Int!
@@ -58,15 +60,6 @@ const typeDefs = gql`
     baseFee: Int!
     baseReserve: Int!
     maxTxSetSize: Int!
-  }
-
-  type Transaction {
-    ID: String!
-    ledgerSeq: Int!
-    index: Int!
-    body: String!
-    result: String!
-    meta: String!
   }
 
   type Query {
@@ -83,14 +76,3 @@ const typeDefs = gql`
   }
 
 `;
-
-const schema: GraphQLSchema = makeExecutableSchema({ typeDefs });
-addMockFunctionsToSchema({ schema });
-
-const schemas = [schema];
-const resolvers = [ledgerResolver, transactionResolver, signerResolver, dataEntryResolver, accountResolver];
-
-export default mergeSchemas({
-  schemas,
-  resolvers
-});

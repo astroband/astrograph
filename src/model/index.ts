@@ -1,5 +1,5 @@
 export { Account } from "./account";
-export { AccountFlag } from "./account_flags";
+export { AccountFlags } from "./account_flags";
 export { AccountThresholds } from "./account_thresholds";
 export { DataEntry } from "./data_entry";
 export { Signer } from "./signer";

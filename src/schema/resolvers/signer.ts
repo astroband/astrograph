@@ -1,11 +1,9 @@
-import db from "../database";
+import db from "../../database";
 
-const signerResolver = {
+export default {
   Query: {
     signers(root: any, args: any, ctx: any, info: any) {
       return db.signers.findAllByAccountID(args.id);
     }
   }
 };
-
-export { signerResolver };
