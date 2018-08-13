@@ -96,5 +96,7 @@ For a better explanation on how I setup this repro please refer to:
 
 
 TODO:
-1. Merge schema into single file.
-2. Batch loader for all entities.
+1. Make code more convinient to use.
+2. Trustline
+3. Batch loading for all subentities.
+4. Ingest.
