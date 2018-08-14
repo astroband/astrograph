@@ -13,6 +13,7 @@ import LedgersRepo from "./repo/ledgers";
 import SignersRepo from "./repo/signers";
 import TransactionFeesRepo from "./repo/transaction_fees";
 import TransactionsRepo from "./repo/transactions";
+import TrustLinesRepo from "./repo/trust_lines";
 
 // Database Interface Extensions:
 interface IExtensions {
@@ -22,6 +23,7 @@ interface IExtensions {
   signers: SignersRepo;
   transactions: TransactionsRepo;
   transactionFees: TransactionFeesRepo;
+  trustLines: TrustLinesRepo;
 }
 
 // pg-promise initialization options:
@@ -37,6 +39,7 @@ const initOptions: IOptions<IExtensions> = {
     obj.signers = new SignersRepo(obj);
     obj.transactions = new TransactionsRepo(obj);
     obj.transactionFees = new TransactionFeesRepo(obj);
+    obj.trustLines = new TrustLinesRepo(obj);
   }
 };
 

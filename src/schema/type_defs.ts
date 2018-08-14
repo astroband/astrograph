@@ -54,7 +54,7 @@ export default gql`
     lastModified: Int!
     data: [DataEntry]
     signers: [Signer]
-    trustlines: [Trustline]
+    trustLines: [Trustline]
   }
 
   type TrustlineFlags {
