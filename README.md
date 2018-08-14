@@ -96,7 +96,7 @@ For a better explanation on how I setup this repro please refer to:
 
 
 TODO:
-2. Trustline + typical queries
-3. Batch loading for all subentities.
+2. Typical queries
+3. Batch loading for all subentities (?)
 4. Ingest.
 5. balance & tlimit recalc

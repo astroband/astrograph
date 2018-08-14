@@ -54,19 +54,19 @@ export default gql`
     lastModified: Int!
     data: [DataEntry]
     signers: [Signer]
-    trustLines: [Trustline]
+    trustLines: [TrustLine]
   }
 
-  type TrustlineFlags {
+  type TrustLineFlags {
     authorized: Boolean!
   }
 
-  type Trustline {
-    accountId: AccountID!
+  type TrustLine {
+    account: Account!
     asset: Asset!
     limit: Float!
     balance: Float!
-    flags: TrustlineFlags
+    flags: TrustLineFlags
     lastModified: Int!
   }
 
