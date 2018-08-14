@@ -5,9 +5,9 @@ export default gql`
   scalar AccountID
 
   enum AssetType {
-    NATIVE
-    ALPHANUM_4
-    ALPHANUM_12
+    Native
+    AlphaNum4
+    AlphaNum12
   }
 
   type Asset {

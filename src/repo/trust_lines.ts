@@ -9,12 +9,12 @@ export default class TrustLinesRepo {
   }
 
   public async findAllByAccountID(id: string): Promise<TrustLine[]> {
-    const res = await this.db.manyOrNone("SELECT * FROM trustlines WHERE accountid = $1 ORDER BY publickey", id);
+    const res = await this.db.manyOrNone("SELECT * FROM trustlines WHERE accountid = $1 ORDER BY assettype, assetcode", id);
     return res.map(e => new TrustLine(e));
   }
 
   public async findAllByAccountIDs(ids: string[]): Promise<TrustLine[][]> {
-    const res = await this.db.manyOrNone("SELECT * FROM trustlines WHERE accountid IN ($1) ORDER BY publickey", ids);
+    const res = await this.db.manyOrNone("SELECT * FROM trustlines WHERE accountid IN ($1) ORDER BY assettype, assetcode", ids);
     return ids.map(id => res.filter(r => r.accountid === id).map(s => new TrustLine(s)));
   }
 }
