@@ -95,7 +95,6 @@ export default gql`
     signers(id: AccountID!): [Signer]
     ledger(seq: Int!): Ledger
     transaction(id: String!): Transaction
-    transactionsByLedgerSeq(ledgerSeq: Int!): [Transaction!]
   }
 
   type Subscription {
