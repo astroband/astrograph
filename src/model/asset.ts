@@ -1,8 +1,7 @@
 import { AssetType } from "./asset_type";
 
-// NOTE: Need to figure out enum relations
 export class Asset {
-  public type: string;
+  public type: string; // NOTE: Need to figure out how to work with enum relations
   public code: string;
   public issuer: string;
 
