@@ -8,3 +8,5 @@ export * from "./signer";
 export * from "./ledger";
 export * from "./transaction";
 export * from "./transaction_fee";
+export * from "./trust_line";
+export * from "./trust_line_flags";

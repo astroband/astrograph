@@ -96,7 +96,7 @@ For a better explanation on how I setup this repro please refer to:
 
 
 TODO:
-1. Make code more convinient to use.
-2. Trustline
+2. Trustline + typical queries
 3. Batch loading for all subentities.
 4. Ingest.
+5. balance & tlimit recalc

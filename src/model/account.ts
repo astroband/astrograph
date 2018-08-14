@@ -2,6 +2,7 @@ import { AccountFlags } from "./account_flags";
 import { AccountThresholds } from "./account_thresholds";
 import { DataEntry } from "./data_entry";
 import { Signer } from "./signer";
+import { TrustLine } from "./trust_line";
 
 export class Account {
   public id: string;
@@ -15,8 +16,7 @@ export class Account {
   public lastModified: number;
   public data: DataEntry[];
   public signers: Signer[];
-
-  // trustlines: [Trustline!]!
+  public trustLines: TrustLine[];
 
   constructor(data: {
     accountid: string;
@@ -42,5 +42,6 @@ export class Account {
 
     this.data = new Array<DataEntry>();
     this.signers = new Array<Signer>();
+    this.trustLines = new Array<TrustLine>();
   }
 }
