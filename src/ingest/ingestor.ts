@@ -1,6 +1,6 @@
 import logger from "../common/util/logger";
 import db from "../database";
-import LedgerEvent from "./ledger_event";
+import { LedgerChangesRepo } from "./ledger_changes_repo";
 
 import { Ledger } from "../model";
 // import { ACCOUNT_CREATED, ACCOUNT_UPDATED, ACCOUNT_DELETED, pubsub } from "./pubsub";
@@ -47,18 +47,21 @@ export class Ingestor {
 
     // cosnt id: string[] = [];
 
+    const repo = new LedgerChangesRepo();
+
     for (let fee of fees) {
       const changes = fee.changesFromXDR().changes();
-      //const id = fetchAccountIDFromLedgerEntry();
-
-      for (let change of changes) {
-        const c = LedgerEvent.build(change);
-        if (c !== null) {
-          console.log(c.subject);
-        }
-      }
+      repo.push(changes);
+      // //const id = fetchAccountIDFromLedgerEntry();
+      //
+      // for (let change of changes) {
+      //   const c = LedgerEvent.build(change);
+      //   if (c !== null) {
+      //     console.log(c.subject);
+      //   }
+      // }
     }
-
+    console.log(repo.accounts);
     // for (let tx of txs) {
     //   const xdr = tx.metaFromXDR();
     //
