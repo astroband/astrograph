@@ -1,0 +1,1 @@
+export { Ingestor } from "./ingestor";

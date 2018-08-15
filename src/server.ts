@@ -1,7 +1,7 @@
 import { ApolloServer } from "apollo-server";
 
 import logger from "./common/util/logger";
-import ingest from "./ingest";
+import { Ingestor } from "./ingest";
 import schema from "./schema";
 
 const server = new ApolloServer({
@@ -9,7 +9,7 @@ const server = new ApolloServer({
   tracing: true
 });
 
-ingest.start();
+Ingestor.start();
 
 server.listen().then(({ url }) => {
   logger.info(`🚀 Server ready at ${url}`);
