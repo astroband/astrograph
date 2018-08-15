@@ -1,14 +1,14 @@
 import stellar from "stellar-base";
+import { ofType, unique } from "../common/util/array";
 
-// Type, IType etc, short as possible, will be fixed by export.
-enum ChangeType {
+enum Type {
   Create = "CREATE",
   Update = "UPDATE",
   Remove = "REMOVE"
 }
 
 export interface IType {
-  type: ChangeType;
+  type: Type;
 }
 
 export interface IAccountID {
@@ -26,13 +26,15 @@ export type TrustLineChange = AccountChange & IAsset;
 export type Change = AccountChange | TrustLineChange;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
-export class LedgerChangesArray extends Array<Change> {
+export class Collection extends Array<Change> {
+  // Concats parsed stellar.xdr.DataEntryChange[] to array
   public concatXDR(xdr: any) {
     for (const change of xdr) {
       this.pushXDR(change);
     }
   }
 
+  // Pushes parsed stellar.xdr.DataEntryChange to current array
   public pushXDR(xdr: any) {
     const t = stellar.xdr.LedgerEntryChangeType;
 
@@ -51,12 +53,17 @@ export class LedgerChangesArray extends Array<Change> {
     }
   }
 
+  // Returns unique array of account ids involved
+  public accountIDs(): string[] {
+    return this.filter(ofType<IAccountID>()).map(c => (c as IAccountID).accountID).filter(unique);
+  }
+
   private fetchCreate(xdr: any) {
     const t = stellar.xdr.LedgerEntryType;
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(ChangeType.Create, xdr);
+        this.pushAccountEvent(Type.Create, xdr);
         break;
     }
   }
@@ -66,7 +73,7 @@ export class LedgerChangesArray extends Array<Change> {
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(ChangeType.Update, xdr);
+        this.pushAccountEvent(Type.Update, xdr);
         break;
     }
   }
@@ -76,7 +83,7 @@ export class LedgerChangesArray extends Array<Change> {
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(ChangeType.Remove, xdr);
+        this.pushAccountEvent(Type.Remove, xdr);
         break;
     }
   }
@@ -85,8 +92,22 @@ export class LedgerChangesArray extends Array<Change> {
     return stellar.StrKey.encodeEd25519PublicKey(value);
   }
 
-  private pushAccountEvent(type: ChangeType, xdr: any) {
-    const accountID = this.stringifyAccountID(xdr.account().accountId().value());
+  private pushAccountEvent(type: Type, xdr: any) {
+    const accountID = this.stringifyAccountID(
+      xdr
+        .account()
+        .accountId()
+        .value()
+    );
     this.push({ type, accountID });
   }
 }
+
+// Returns trustline complex keys involved
+// public trustLineKeys() {
+//
+// }
+//
+// public dataEntryKeys() {
+//
+// }

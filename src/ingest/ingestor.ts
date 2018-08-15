@@ -1,12 +1,29 @@
 import logger from "../common/util/logger";
 import db from "../database";
-import { LedgerChangesArray } from "./ledger_changes_array";
-//import { LedgerChangesSubjectRepo } from "./ledger_changes_subject_repo";
+import * as ledgerChanges from "./changes";
+// import { LedgerChangesSubjectRepo } from "./ledger_changes_subject_repo";
 
 import { Ledger } from "../model";
 // import { ACCOUNT_CREATED, ACCOUNT_UPDATED, ACCOUNT_DELETED, pubsub } from "./pubsub";
 
 export class Ingestor {
+  // Factory function
+  public static async build(seq: number | null = null) {
+    const n = seq || (await db.ledgers.findMaxSeq());
+    return new Ingestor(n);
+  }
+
+  // Starts ingest
+  public static async start() {
+    const seq = Number.parseInt(process.env.DEBUG_LEDGER || "", 10);
+    const interval = Number.parseInt(process.env.INGEST_INTERVAL || "", 10) || 2000;
+    const ingest = await Ingestor.build(seq);
+
+    logger.info(`Staring ingest every ${interval} ms.`);
+
+    setInterval(() => ingest.tick(), interval);
+  }
+
   private seq: number;
 
   constructor(seq: number) {
@@ -18,7 +35,7 @@ export class Ingestor {
 
     const ledger = await this.nextLedger();
     if (ledger !== null) {
-      this.fetchTransactions(ledger);
+      this.fetch(ledger);
     }
   }
 
@@ -42,22 +59,18 @@ export class Ingestor {
     return ledger;
   }
 
-  private async fetchTransactions(ledger: Ledger) {
-    const fees = await db.transactionFees.findAllBySeq(ledger.ledgerSeq);
+  private async fetch(ledger: Ledger) {
+    const changes = new ledgerChanges.Collection();
+
+    await this.fetchTransactionFees(ledger, changes);
+
+    console.log(changes.accountIDs());
+
+    // console.log(subjects);
+
     // const txs = await db.transactions.findAllBySeq(ledger.ledgerSeq);
 
     // cosnt id: string[] = [];
-
-    const ledgerChanges = new LedgerChangesArray();
-
-    for (let fee of fees) {
-      const changes = fee.changesFromXDR().changes();
-      ledgerChanges.concatXDR(changes);
-    }
-    //const subjects = new LedgerChangesSubjectRepo(repo.changes);
-    //subjects.load();
-    console.log(ledgerChanges);
-    //console.log(subjects);
 
     // for (let tx of txs) {
     //   const xdr = tx.metaFromXDR();
@@ -82,26 +95,20 @@ export class Ingestor {
     // }
   }
 
+  private async fetchTransactionFees(ledger: Ledger, collection: ledgerChanges.Collection) {
+    const fees = await db.transactionFees.findAllBySeq(ledger.ledgerSeq);
+
+    for (const fee of fees) {
+      const changes = fee.changesFromXDR().changes();
+      collection.concatXDR(changes);
+    }
+
+    return collection;
+  }
+
   // Increments current ledger number
   private incrementSeq() {
     this.seq += 1;
-  }
-
-  // Factory function
-  public static async build(seq: number | null = null) {
-    const n = seq || await db.ledgers.findMaxSeq();
-    return new Ingestor(n);
-  }
-
-  // Starts ingest
-  public static async start() {
-    const seq = Number.parseInt(process.env.DEBUG_LEDGER || "");
-    const interval = Number.parseInt(process.env.INGEST_INTERVAL || "") || 2000;
-    const ingest = await Ingestor.build(seq);
-
-    logger.info(`Staring ingest every ${interval} ms.`);
-
-    setInterval(() => ingest.tick(), interval);
   }
 }
 
