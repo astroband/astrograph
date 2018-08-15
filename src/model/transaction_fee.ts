@@ -13,7 +13,7 @@ export class TransactionFee {
     this.changes = data.txchanges;
   }
 
-  public fromXDR() {
+  public changesFromXDR() {
     return stellar.xdr.OperationMeta.fromXDR(Buffer.from(this.changes, "base64"));
   }
 }

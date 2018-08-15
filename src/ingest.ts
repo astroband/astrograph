@@ -1,5 +1,6 @@
 import logger from "./common/util/logger";
 import db from "./database";
+import stellar from "stellar-base";
 
 import { Ledger } from "./model";
 // import { ACCOUNT_CREATED, ACCOUNT_UPDATED, ACCOUNT_DELETED, pubsub } from "./pubsub";
@@ -16,12 +17,12 @@ export class Ingest {
 
     const ledger = await this.nextLedger();
     if (ledger !== null) {
-      logger.info("PumPumPum");
+      this.fetchTransactions(ledger);
     }
   }
 
   private async nextLedger(): Promise<Ledger | null> {
-    const ledger = await db.ledgers.findBySeq(this.nextSeq());
+    const ledger = await db.ledgers.findBySeq(this.seq);
 
     // If there is no next ledger
     if (ledger == null) {
@@ -40,21 +41,75 @@ export class Ingest {
     return ledger;
   }
 
-  // WIP
-  private fetchTransactions(ledger: Ledger) {
-    const fees = db.transactionFees.findAllBySeq(ledger.ledgerSeq);
-    const txs = db.transactions.findAllBySeq(ledger.ledgerSeq);
+  private async fetchTransactions(ledger: Ledger) {
+    const fees = await db.transactionFees.findAllBySeq(ledger.ledgerSeq);
+    // const txs = await db.transactions.findAllBySeq(ledger.ledgerSeq);
 
-    cosnt id = [];
+    // cosnt id: string[] = [];
 
     for (let fee of fees) {
-      // console.log(fee)
+      const changes = fee.changesFromXDR().changes();
+      //const id = fetchAccountIDFromLedgerEntry();
+
+      for (let change of changes) {
+        console.log(this.getAccountIDFromLedgerEntryChange(change));
+      }
     }
+
+    // for (let tx of txs) {
+    //   console.log(tx.metaFromXDR().changes().switch().name)
+    // }
   }
 
-  // Returns next sequence number
-  private nextSeq(): number {
-    return this.seq + 1;
+  private getAccountIDFromLedgerEntryChange(change: any): string | null {
+    const ct = stellar.xdr.LedgerEntryChangeType;
+    const et = stellar.xdr.LedgerEntryType;
+
+    let data = null;
+    let id = null;
+
+    switch (change.switch()) {
+      case ct.ledgerEntryCreated():
+        data = change.created().data();
+      break;
+
+      case ct.ledgerEntryUpdated():
+        data = change.updated().data();
+      break;
+
+      case ct.ledgerEntryRemoved():
+        data = change.removed();
+      break;
+    }
+
+    if (data === null) {
+      return null;
+    }
+
+    switch (data.switch()) {
+      case et.account():
+        id = data.account().accountId().value();
+      break;
+
+      case et.trustline():
+        id = data.trustLine().accountId().value();
+      break;
+
+      case et.data():
+        id = data.data().accountId().value();
+      break;
+
+      case et.offer():
+        id = data.offer().sellerId().value();
+      break;
+
+    }
+
+    if (id !== null) {
+      return stellar.StrKey.encodeEd25519PublicKey(id);
+    }
+
+    return null;
   }
 
   // Increments current ledger number
