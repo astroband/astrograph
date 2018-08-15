@@ -60,7 +60,25 @@ export class Ingestor {
     }
 
     // for (let tx of txs) {
-    //   console.log(tx.metaFromXDR().changes().switch().name)
+    //   const xdr = tx.metaFromXDR();
+    //
+    //   switch (xdr.switch()) {
+    //     case 0:
+    //       for (let op in xdr.operations()) {
+    //         console.log(op);
+    //       }
+    //       break;
+    //     case 1:
+    //       for (let change in xdr.v1().txChanges()) {
+    //         console.log(change);
+    //       }
+    //
+    //       for (let change in xdr.v1().operations()) {
+    //         console.log(change);
+    //       }
+    //
+    //       break;
+    //   }
     // }
   }
 

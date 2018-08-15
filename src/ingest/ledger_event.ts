@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 
-export enum LedgerEventType {
+enum LedgerEventType {
   Create,
   Update,
   Remove

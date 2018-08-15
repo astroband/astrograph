@@ -99,7 +99,20 @@ export default gql`
 
   type Subscription {
     ledgerCreated: Ledger
+
     accountCreated(id: AccountID): Account
+    accountUpdated(id: AccountID): Account
+    accountDeleted(id: AccountID): Account
+
+    trustLineCreated(id: AccountID, asset: Asset): TrustLine
+    trustLineUpdated(id: AccountID, asset: Asset): TrustLine
+    trustLineDeleted(id: AccountID, asset: Asset): TrustLine
+
+    dataEntryCreated(id: AccountID): DataEntry
+    dataEntryUpdated(id: AccountID): DataEntry
+    dataEntryDeleted(id: AccountID): DataEntry
+
+    transactionCreated(id: AccountID): Transaction
   }
 
 `;
