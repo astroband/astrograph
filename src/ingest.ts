@@ -1,7 +1,7 @@
+import logger from "./common/util/logger";
 import db from "./database";
-// import logger from "./common/util/logger";
 
-// import { Ledger } from "./model";
+import { Ledger } from "./model";
 // import { ACCOUNT_CREATED, ACCOUNT_UPDATED, ACCOUNT_DELETED, pubsub } from "./pubsub";
 
 export class Ingest {
@@ -12,61 +12,55 @@ export class Ingest {
   }
 
   public async tick() {
-    //console.log("TICK" + this.seq.toString());
-    // const ledger = await this.nextLedger()
-    // if (ledger !== null) {
-    //   this.fetchTransactions(ledger);
-    // }
+    logger.info(`Ingesting ${this.seq}`);
+
+    const ledger = await this.nextLedger();
+    if (ledger !== null) {
+      logger.info("PumPumPum");
+    }
   }
 
-  // private fetchTransactions(ledger: Ledger) {
-    // const fees = db.transactionFees.findAllBySeq(ledger.ledgerSeq);
-    // const txs = db.transactions.findAllBySeq(ledger.ledgerSeq);
+  private async nextLedger(): Promise<Ledger | null> {
+    const ledger = await db.ledgers.findBySeq(this.nextSeq());
 
-    // cosnt id = [];
+    // If there is no next ledger
+    if (ledger == null) {
+      const maxSeq = await db.ledgers.findMaxSeq();
 
-    // for (let fee of fees) {
-    //   // console.log(fee)
-    // }
-  // }
+      // And there is a ledger somewhere forward in history (it is the gap)
+      if (this.seq < maxSeq) {
+        this.seq = maxSeq; // Skip gap.
+      }
 
-  // private async nextLedger(): Promise<Ledger | null> {
-  //   const ledger = await db.ledgers.findBySeq(this.nextSeq());
-  //
-  //   // If there is no next ledger
-  //   if (ledger == null) {
-  //     // And there is a ledger somewhere forward in history (it is the gap)
-  //     if (this.gap()) {
-  //       // this.update() // Resend current states to all subscriptions
-  //       this.seq = await this.findMaxSeq(); // Start from last known ledger
-  //     }
-  //
-  //     return null;
-  //   }
-  //
-  //   this.incrementLedger();
-  //   return ledger;
-  // }
-  //
-  // // Current maximum sequence number
-  // private async findMaxSeq(): number {
-  //   return await db.ledgers.findMaxSeq();
-  // }
-  //
-  // // Returns next sequence number
-  // private nextSeq(): number {
-  //   return this.seq + 1;
-  // }
-  //
-  // // Increments current ledger number
-  // private incrementLedger() {
-  //   this.seq += 1;
-  // }
-  //
-  // // Returns true if next ledger is not the highest one
-  // private async gap(): boolean {
-  //   return this.nextSeq() < await this.findMaxSeq();
-  // }
+      return null;
+    }
+
+    this.incrementSeq();
+
+    return ledger;
+  }
+
+  // WIP
+  private fetchTransactions(ledger: Ledger) {
+    const fees = db.transactionFees.findAllBySeq(ledger.ledgerSeq);
+    const txs = db.transactions.findAllBySeq(ledger.ledgerSeq);
+
+    cosnt id = [];
+
+    for (let fee of fees) {
+      // console.log(fee)
+    }
+  }
+
+  // Returns next sequence number
+  private nextSeq(): number {
+    return this.seq + 1;
+  }
+
+  // Increments current ledger number
+  private incrementSeq() {
+    this.seq += 1;
+  }
 
   // Factory function
   public static async build(seq: number | null = null) {
@@ -76,9 +70,11 @@ export class Ingest {
 
   // Starts ingest
   public static async start() {
-    const seq = process.env.DEBUG_LEDGER == null ? null : Number.parseInt(process.env.DEBUG_LEDGER);
-    const interval = process.env.INGEST_INTERVAL == null ? 2000 : Number.parseInt(process.env.INGEST_INTERVAL);
+    const seq = Number.parseInt(process.env.DEBUG_LEDGER || "");
+    const interval = Number.parseInt(process.env.INGEST_INTERVAL || "") || 2000;
     const ingest = await Ingest.build(seq);
+
+    logger.info(`Staring ingest every ${interval} ms.`);
 
     setInterval(() => ingest.tick(), interval);
   }

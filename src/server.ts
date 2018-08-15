@@ -1,8 +1,8 @@
 import { ApolloServer } from "apollo-server";
 
 import logger from "./common/util/logger";
-import schema from "./schema";
 import ingest from "./ingest";
+import schema from "./schema";
 
 const server = new ApolloServer({
   schema,
