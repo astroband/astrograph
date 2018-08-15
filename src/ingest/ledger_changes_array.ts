@@ -1,5 +1,6 @@
 import stellar from "stellar-base";
 
+// Type, IType etc, short as possible, will be fixed by export.
 enum ChangeType {
   Create = "CREATE",
   Update = "UPDATE",
@@ -24,16 +25,15 @@ export type AccountChange = IType & IAccountID;
 export type TrustLineChange = AccountChange & IAsset;
 export type Change = AccountChange | TrustLineChange;
 
-// type TrustLineEvent = Operation & AccountID & Asset;
-
+// Collection of ledger changes loaded from transaction metas, contains data only from ledger.
 export class LedgerChangesArray extends Array<Change> {
-  public pushXDR(xdr: any) {
+  public concatXDR(xdr: any) {
     for (const change of xdr) {
-      this.fetch(change);
+      this.pushXDR(change);
     }
   }
 
-  private fetch(xdr: any) {
+  public pushXDR(xdr: any) {
     const t = stellar.xdr.LedgerEntryChangeType;
 
     switch (xdr.switch()) {

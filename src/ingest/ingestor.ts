@@ -52,7 +52,7 @@ export class Ingestor {
 
     for (let fee of fees) {
       const changes = fee.changesFromXDR().changes();
-      ledgerChanges.pushXDR(changes);
+      ledgerChanges.concatXDR(changes);
     }
     //const subjects = new LedgerChangesSubjectRepo(repo.changes);
     //subjects.load();
