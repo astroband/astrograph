@@ -99,6 +99,7 @@ export default gql`
 
   type Subscription {
     ledgerCreated: Ledger
+    accountCreated(id: AccountID): Account
   }
 
 `;

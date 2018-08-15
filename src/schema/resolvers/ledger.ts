@@ -1,5 +1,5 @@
 import db from "../../database";
-import pubsub from "../../pubsub";
+import { pubsub } from "../../pubsub";
 
 const LEDGER_CREATED = "LEDGER_CREATED";
 

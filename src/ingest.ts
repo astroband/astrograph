@@ -3,7 +3,7 @@ import logger from "./common/util/logger";
 import { IDatabase } from "pg-promise";
 import Ledger from "./ledger/ledger.model";
 
-export default class Ingest {
+export class Ingest {
   private db: IDatabase<any>;
   private seq: number;
 
