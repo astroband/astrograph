@@ -11,7 +11,7 @@ export function ofType<T>(): any {
     }
 
     return false;
-  }
+  };
 }
 
 // [].filter(unique)
