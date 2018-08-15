@@ -96,7 +96,6 @@ For a better explanation on how I setup this repro please refer to:
 
 
 TODO:
-2. Typical queries
-3. Batch loading for all subentities (?)
-4. Ingest.
-5. balance & tlimit recalc
+1. Balance & tlimit calculation.
+2. Deep loading account returned by subscription.
+3. ChangesArray extends Array<Change>

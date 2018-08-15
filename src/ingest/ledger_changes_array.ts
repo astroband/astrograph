@@ -1,36 +1,33 @@
 import stellar from "stellar-base";
 
-enum OperationType {
+enum ChangeType {
   Create = "CREATE",
   Update = "UPDATE",
   Remove = "REMOVE"
 }
 
-interface IAccountID {
+export interface IType {
+  type: ChangeType;
+}
+
+export interface IAccountID {
   accountID: string;
 }
 
-interface IOperation {
-  operation: OperationType;
+export interface IAsset {
+  type: number;
+  code: string;
+  issuer: string;
 }
 
-type AccountEvent = IOperation & IAccountID;
+export type AccountChange = IType & IAccountID;
+export type TrustLineChange = AccountChange & IAsset;
+export type Change = AccountChange | TrustLineChange;
 
-// interface Asset {
-//   type: number;
-//   code: string;
-//   issuer: string;
-// }
 // type TrustLineEvent = Operation & AccountID & Asset;
 
-export class LedgerChangesRepo {
-  public accounts: AccountEvent[];
-
-  public constructor() {
-    this.accounts = [];
-  }
-
-  public push(xdr: any) {
+export class LedgerChangesArray extends Array<Change> {
+  public pushXDR(xdr: any) {
     for (const change of xdr) {
       this.fetch(change);
     }
@@ -41,7 +38,6 @@ export class LedgerChangesRepo {
 
     switch (xdr.switch()) {
       case t.ledgerEntryCreated():
-        console.log("Created");
         this.fetchCreate(xdr.created().data());
         break;
 
@@ -60,7 +56,7 @@ export class LedgerChangesRepo {
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(OperationType.Create, xdr);
+        this.pushAccountEvent(ChangeType.Create, xdr);
         break;
     }
   }
@@ -70,7 +66,7 @@ export class LedgerChangesRepo {
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(OperationType.Update, xdr);
+        this.pushAccountEvent(ChangeType.Update, xdr);
         break;
     }
   }
@@ -80,7 +76,7 @@ export class LedgerChangesRepo {
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(OperationType.Remove, xdr);
+        this.pushAccountEvent(ChangeType.Remove, xdr);
         break;
     }
   }
@@ -89,8 +85,8 @@ export class LedgerChangesRepo {
     return stellar.StrKey.encodeEd25519PublicKey(value);
   }
 
-  private pushAccountEvent(operation: OperationType, xdr: any) {
+  private pushAccountEvent(type: ChangeType, xdr: any) {
     const accountID = this.stringifyAccountID(xdr.account().accountId().value());
-    this.accounts.push({ operation, accountID });
+    this.push({ type, accountID });
   }
 }
