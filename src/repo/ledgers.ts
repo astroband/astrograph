@@ -9,7 +9,7 @@ export default class LedgersRepo {
   }
 
   // Tries to find a ledger from id;
-  public findBySeq(seq: string): Promise<Ledger> {
+  public findBySeq(seq: string | number): Promise<Ledger> {
     return this.db.oneOrNone("SELECT * FROM ledgerheaders WHERE ledgerseq = $1", seq, res => new Ledger(res));
   }
 
