@@ -97,5 +97,3 @@ For a better explanation on how I setup this repro please refer to:
 
 TODO:
 1. Balance & tlimit calculation.
-2. Deep loading account returned by subscription.
-3. ChangesArray extends Array<Change>
