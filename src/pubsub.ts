@@ -6,4 +6,4 @@ export const pubsub = new PubSub();
 // TrustLines/DataEntries are not involved.
 export const ACCOUNT_CREATED = "ACCOUNT_CREATED";
 export const ACCOUNT_UPDATED = "ACCOUNT_UPDATED";
-export const ACCOUNT_DELETED = "ACCOUNT_DELETED";
+export const ACCOUNT_REMOVED = "ACCOUNT_REMOVED";

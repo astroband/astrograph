@@ -1,10 +1,9 @@
 import logger from "../common/util/logger";
 import db from "../database";
 import * as ledgerChanges from "./changes";
-// import { LedgerChangesSubjectRepo } from "./ledger_changes_subject_repo";
+import Publisher from "./publisher";
 
 import { Ledger } from "../model";
-// import { ACCOUNT_CREATED, ACCOUNT_UPDATED, ACCOUNT_DELETED, pubsub } from "./pubsub";
 
 export class Ingestor {
   // Factory function
@@ -64,8 +63,10 @@ export class Ingestor {
 
     await this.fetchTransactionFees(ledger, changes);
     // await this.fetchTransactions(ledger, changes);
-    const accounts = await db.accounts.findAllMapByIDs(changes.accountIDs());
+    // const accounts = await db.accounts.findAllMapByIDs(changes.accountIDs());
+    // console.log(accounts);
 
+    new Publisher(changes).publish();
     // console.log(subjects);
 
     // const txs = await db.transactions.findAllBySeq(ledger.ledgerSeq);

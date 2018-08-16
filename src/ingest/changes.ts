@@ -1,7 +1,7 @@
 import stellar from "stellar-base";
 import { ofType, unique } from "../common/util/array";
 
-enum Type {
+export enum Type {
   Create = "CREATE",
   Update = "UPDATE",
   Remove = "REMOVE"
