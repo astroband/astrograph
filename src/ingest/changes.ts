@@ -40,11 +40,11 @@ export class Collection extends Array<Change> {
 
     switch (xdr.switch()) {
       case t.ledgerEntryCreated():
-        this.fetchCreate(xdr.created().data());
+        this.fetchCreateUpdate(xdr.created().data(), Type.Create);
         break;
 
       case t.ledgerEntryUpdated():
-        this.fetchUpdate(xdr.updated().data());
+        this.fetchCreateUpdate(xdr.updated().data(), Type.Update);
         break;
 
       case t.ledgerEntryRemoved():
@@ -60,22 +60,12 @@ export class Collection extends Array<Change> {
       .filter(unique);
   }
 
-  private fetchCreate(xdr: any) {
+  private fetchCreateUpdate(xdr: any, type: Type) {
     const t = stellar.xdr.LedgerEntryType;
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(Type.Create, xdr);
-        break;
-    }
-  }
-
-  private fetchUpdate(xdr: any) {
-    const t = stellar.xdr.LedgerEntryType;
-
-    switch (xdr.switch()) {
-      case t.account():
-        this.pushAccountEvent(Type.Update, xdr);
+        this.pushAccountEvent(type, xdr);
         break;
     }
   }
