@@ -32,9 +32,18 @@ export default class AccountsRepo {
   }
 
   public async findAllMapByIDs(ids: string[]): Promise<Map<string, Account>> {
+    const map = new Map<string, Account>();
+
+    if (ids.length === 0) {
+      return map;
+    }
+
     const res = await this.findAllByIDs(ids);
     const resNonNull = res.filter(compact) as Account[];
-    const map = new Map<string, Account>();
+
+    if (resNonNull.length === 0) {
+      return map;
+    }
 
     for (const a of resNonNull) {
       map.set(a.id, a);
