@@ -16,7 +16,7 @@ export interface IAccountID {
 }
 
 export interface IAsset {
-  type: number;
+  assetType: number;
   code: string;
   issuer: string;
 }
