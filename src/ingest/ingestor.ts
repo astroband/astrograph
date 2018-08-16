@@ -66,7 +66,7 @@ export class Ingestor {
     // const accounts = await db.accounts.findAllMapByIDs(changes.accountIDs());
     // console.log(accounts);
 
-    new Publisher(changes).publish();
+    (await Publisher.build(changes)).publish();
     // console.log(subjects);
 
     // const txs = await db.transactions.findAllBySeq(ledger.ledgerSeq);

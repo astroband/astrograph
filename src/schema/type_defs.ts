@@ -102,7 +102,7 @@ export default gql`
 
     accountCreated(id: AccountID): Account
     accountUpdated(id: AccountID): Account
-    accountDeleted(id: AccountID): Account
+    accountRemoved(id: AccountID): Account
   }
 
 `;

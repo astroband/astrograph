@@ -4,7 +4,7 @@ import { createBatchResolver } from "graphql-resolve-batch";
 import { withFilter } from "graphql-subscriptions";
 
 import db from "../../database";
-import { ACCOUNT_CREATED, pubsub } from "../../pubsub";
+import { ACCOUNT_CREATED, ACCOUNT_REMOVED, ACCOUNT_UPDATED, pubsub } from "../../pubsub";
 
 const signersResolver = createBatchResolver<Account, Signer[]>(
   async (source: ReadonlyArray<Account>, args: any, context: any) => {
@@ -27,6 +27,21 @@ const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(
   }
 );
 
+const accountSubscription = (event: string) => {
+  return {
+    subscribe: withFilter(
+      () => pubsub.asyncIterator([event]),
+      (payload, variables) => {
+        return payload.id === variables.id;
+      }
+    ),
+
+    resolve(payload: any, args: any, ctx: any, info: any) {
+      return payload;
+    }
+  };
+};
+
 export default {
   Account: {
     signers: signersResolver,
@@ -39,17 +54,8 @@ export default {
     }
   },
   Subscription: {
-    accountCreated: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator([ACCOUNT_CREATED]),
-        (payload, variables) => {
-          return payload.id === variables.id;
-        }
-      ),
-
-      resolve(payload: any, args: any, ctx: any, info: any) {
-        return payload;
-      }
-    }
+    accountCreated: accountSubscription(ACCOUNT_CREATED),
+    accountUpdated: accountSubscription(ACCOUNT_UPDATED),
+    accountRemoved: accountSubscription(ACCOUNT_REMOVED)
   }
 };
