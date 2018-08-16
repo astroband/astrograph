@@ -63,8 +63,7 @@ export class Ingestor {
     const changes = new ledgerChanges.Collection();
 
     await this.fetchTransactionFees(ledger, changes);
-
-    console.log(changes.accountIDs());
+    // await this.fetchTransactions(ledger, changes);
 
     // console.log(subjects);
 
@@ -105,6 +104,10 @@ export class Ingestor {
 
     return collection;
   }
+
+  // private async fetchTransactions(ledger: Ledger, collection: ledgerChanges.Collection) {
+  //   const fees = await db.transactions.findAllBySeq(ledger.ledgerSeq);
+  // }
 
   // Increments current ledger number
   private incrementSeq() {
