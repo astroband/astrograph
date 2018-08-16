@@ -62,38 +62,9 @@ export class Ingestor {
     const changes = new ledgerChanges.Collection();
 
     await this.fetchTransactionFees(ledger, changes);
-    // await this.fetchTransactions(ledger, changes);
-    // const accounts = await db.accounts.findAllMapByIDs(changes.accountIDs());
-    // console.log(accounts);
+    await this.fetchTransactions(ledger, changes);
 
     (await Publisher.build(changes)).publish();
-    // console.log(subjects);
-
-    // const txs = await db.transactions.findAllBySeq(ledger.ledgerSeq);
-
-    // cosnt id: string[] = [];
-
-    // for (let tx of txs) {
-    //   const xdr = tx.metaFromXDR();
-    //
-    //   switch (xdr.switch()) {
-    //     case 0:
-    //       for (let op in xdr.operations()) {
-    //         console.log(op);
-    //       }
-    //       break;
-    //     case 1:
-    //       for (let change in xdr.v1().txChanges()) {
-    //         console.log(change);
-    //       }
-    //
-    //       for (let change in xdr.v1().operations()) {
-    //         console.log(change);
-    //       }
-    //
-    //       break;
-    //   }
-    // }
   }
 
   private async fetchTransactionFees(ledger: Ledger, collection: ledgerChanges.Collection) {
@@ -107,9 +78,29 @@ export class Ingestor {
     return collection;
   }
 
-  // private async fetchTransactions(ledger: Ledger, collection: ledgerChanges.Collection) {
-  //   const fees = await db.transactions.findAllBySeq(ledger.ledgerSeq);
-  // }
+  private async fetchTransactions(ledger: Ledger, collection: ledgerChanges.Collection) {
+    const txs = await db.transactions.findAllBySeq(ledger.ledgerSeq);
+
+    for (const tx of txs) {
+      const xdr = tx.metaFromXDR();
+
+      switch (xdr.switch()) {
+        case 0:
+          for (const op of xdr.operations()) {
+            collection.concatXDR(op.changes());
+          }
+          break;
+        case 1:
+          collection.concatXDR(xdr.v1().txChanges());
+
+          for (const op of xdr.v1().operations()) {
+            collection.concatXDR(op.changes());
+          }
+
+          break;
+      }
+    }
+  }
 
   // Increments current ledger number
   private incrementSeq() {
