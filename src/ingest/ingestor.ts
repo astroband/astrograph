@@ -64,6 +64,7 @@ export class Ingestor {
 
     await this.fetchTransactionFees(ledger, changes);
     // await this.fetchTransactions(ledger, changes);
+    const accounts = await db.accounts.findAllMapByIDs(changes.accountIDs());
 
     // console.log(subjects);
 

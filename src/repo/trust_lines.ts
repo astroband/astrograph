@@ -18,8 +18,8 @@ export default class TrustLinesRepo {
 
   public async findAllByAccountIDs(ids: string[]): Promise<TrustLine[][]> {
     const res = await this.db.manyOrNone(
-      "SELECT * FROM trustlines WHERE accountid IN ($1) ORDER BY assettype, assetcode",
-      ids
+      "SELECT * FROM trustlines WHERE accountid IN ($1:csv) ORDER BY assettype, assetcode",
+      [ids]
     );
     return ids.map(id => res.filter(r => r.accountid === id).map(s => new TrustLine(s)));
   }

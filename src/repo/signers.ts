@@ -14,7 +14,7 @@ export default class SignersRepo {
   }
 
   public async findAllByAccountIDs(ids: string[]): Promise<Signer[][]> {
-    const res = await this.db.manyOrNone("SELECT * FROM signers WHERE accountid IN ($1) ORDER BY publickey", ids);
+    const res = await this.db.manyOrNone("SELECT * FROM signers WHERE accountid IN ($1:csv) ORDER BY publickey", [ids]);
     return ids.map(id => res.filter(r => r.accountid === id).map(s => new Signer(s)));
   }
 }

@@ -16,7 +16,9 @@ export default class AccountsRepo {
   }
 
   public async findAllByIDs(ids: string[]): Promise<Array<Account | null>> {
-    const res = await this.db.manyOrNone("SELECT * FROM accounts WHERE accountid IN ($1) ORDER BY accountid", ids);
+    const res = await this.db.manyOrNone("SELECT * FROM accounts WHERE accountid IN ($1:csv) ORDER BY accountid", [
+      ids
+    ]);
 
     const rearrange = (id: string) => {
       const a = res.find(r => r.accountid === id);
