@@ -12,7 +12,7 @@ export default {
   Subscription: {
     ledgerCreated: {
       resolve(payload: any, args: any, ctx: any, info: any) {
-        return db.ledgers.findBySeq(payload.ledgerCreated);
+        return payload;
       },
       subscribe() {
         return pubsub.asyncIterator([LEDGER_CREATED]);

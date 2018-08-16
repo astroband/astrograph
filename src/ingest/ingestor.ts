@@ -64,7 +64,7 @@ export class Ingestor {
     await this.fetchTransactionFees(ledger, changes);
     await this.fetchTransactions(ledger, changes);
 
-    (await Publisher.build(changes)).publish();
+    (await Publisher.build(ledger, changes)).publish();
   }
 
   private async fetchTransactionFees(ledger: Ledger, collection: ledgerChanges.Collection) {
