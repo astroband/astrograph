@@ -1,3 +1,5 @@
+import { compact } from "../common/util/array";
+
 import { IDatabase } from "pg-promise";
 import { Account } from "../model";
 
@@ -25,5 +27,17 @@ export default class AccountsRepo {
     };
 
     return ids.map(rearrange);
+  }
+
+  public async findAllMapByIDs(ids: string[]): Promise<Map<string, Account>> {
+    const res = await this.findAllByIDs(ids);
+    const resNonNull = res.filter(compact) as Account[];
+    const map = new Map<string, Account>();
+
+    for (const a of resNonNull) {
+      map.set(a.id, a);
+    }
+
+    return map;
   }
 }
