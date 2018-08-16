@@ -4,9 +4,9 @@ export function compact(value: any): boolean {
 }
 
 // [].filter(ofType<Account>())
-export function ofType<T>(): any {
+export function ofType<T>(field: string): any {
   return (value: any): boolean => {
-    if (value as T) {
+    if ((value as T)[field]) {
       return true;
     }
 

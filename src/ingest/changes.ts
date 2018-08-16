@@ -55,7 +55,7 @@ export class Collection extends Array<Change> {
 
   // Returns unique array of account ids involved
   public accountIDs(): string[] {
-    return this.filter(ofType<IAccountID>())
+    return this.filter(ofType<IAccountID>("accountID"))
       .map(c => (c as IAccountID).accountID)
       .filter(unique);
   }
