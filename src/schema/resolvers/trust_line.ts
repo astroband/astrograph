@@ -23,7 +23,7 @@ const trustLineSubscription = (event: string) => {
     ),
 
     resolve(payload: any, args: any, ctx: any, info: any) {
-      return payload;
+      return payload.trustLines;
     }
   };
 };

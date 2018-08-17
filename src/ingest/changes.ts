@@ -61,7 +61,7 @@ export class Collection extends Array<Change> {
   }
 
   // Returns unique array of trustline params
-  public trustLineChanges(): string[] {
+  public trustLineAccountIDs(): string[] {
     return this.filter(kindOf("TrustLine"))
       .filter(unique)
       .map(v => v.accountID);

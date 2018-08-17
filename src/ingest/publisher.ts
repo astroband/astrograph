@@ -1,11 +1,14 @@
 import db from "../database";
 
-import { Account, Ledger } from "../model";
+import { Account, Ledger, TrustLine } from "../model";
 
 import {
   ACCOUNT_CREATED,
   ACCOUNT_REMOVED,
   ACCOUNT_UPDATED,
+  TRUST_LINE_CREATED,
+  TRUST_LINE_REMOVED,
+  TRUST_LINE_UPDATED,
   LEDGER_CREATED,
   pubsub
 } from "../pubsub";
@@ -15,17 +18,25 @@ import { AccountChange, Collection, Type as ChangeType, TrustLineChange } from "
 export default class Publisher {
   public static async build(ledger: Ledger, collection: Collection): Promise<Publisher> {
     const accounts = await db.accounts.findAllMapByIDs(collection.accountIDs());
-    return new Publisher(collection, ledger, accounts);
+    const trustLines = await db.trustLines.findAllMapByAccountIDs(collection.trustLineAccountIDs());
+    return new Publisher(collection, ledger, accounts, trustLines);
   }
 
   private collection: Collection;
   private accounts: Map<string, Account>;
+  private trustLines: Map<string, TrustLine[]>;
   private ledger: Ledger;
 
-  constructor(collection: Collection, ledger: Ledger, accounts: Map<string, Account>) {
+  constructor(
+    collection: Collection,
+    ledger: Ledger,
+    accounts: Map<string, Account>,
+    trustLines: Map<string, TrustLine[]>
+  ) {
     this.collection = collection;
     this.ledger = ledger;
     this.accounts = accounts;
+    this.trustLines = trustLines;
   }
 
   public async publish() {
@@ -33,27 +44,48 @@ export default class Publisher {
 
     for (const change of this.collection) {
       // Here type checking order is important as AccountChange fits every other type
-      if (change as TrustLineChange) {
-
-      } else if (change as AccountChange) {
+      if (change.kind === "Account") {
         switch (change.type) {
           case ChangeType.Create:
-            this.publishAccountEvent(ACCOUNT_CREATED, change);
+            this.publishAccountChange(ACCOUNT_CREATED, change);
             break;
 
           case ChangeType.Update:
-            this.publishAccountEvent(ACCOUNT_UPDATED, change);
+            this.publishAccountChange(ACCOUNT_UPDATED, change);
             break;
 
           case ChangeType.Remove:
-            this.publishAccountEvent(ACCOUNT_REMOVED, change);
+            this.publishAccountChange(ACCOUNT_REMOVED, change);
             break;
         }
-      } // else if
+      }
+
+      if (change.kind === "TrustLine") {
+        switch (change.type) {
+          case ChangeType.Create:
+            this.publishTrustLineChange(TRUST_LINE_CREATED, change);
+            break;
+
+          case ChangeType.Update:
+            this.publishTrustLineChange(TRUST_LINE_UPDATED, change);
+            break;
+
+          case ChangeType.Remove:
+            this.publishTrustLineChange(TRUST_LINE_REMOVED, change);
+            break;
+        }
+      }
     }
   }
 
-  private publishAccountEvent(event: string, change: AccountChange) {
+  private publishAccountChange(event: string, change: AccountChange) {
     pubsub.publish(event, this.accounts.get(change.accountID));
+  }
+
+  private publishTrustLineChange(event: string, change: TrustLineChange) {
+    pubsub.publish(event, {
+      accountID: change.accountID,
+      trustLines: this.trustLines.get(change.accountID)
+    });
   }
 }
