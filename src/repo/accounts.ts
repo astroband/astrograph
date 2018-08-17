@@ -1,5 +1,3 @@
-import { compact } from "../common/util/array";
-
 import { IDatabase } from "pg-promise";
 import { Account } from "../model";
 
@@ -39,15 +37,13 @@ export default class AccountsRepo {
     }
 
     const res = await this.findAllByIDs(ids);
-    const resNonNull = res.filter(compact) as Account[];
 
-    if (resNonNull.length === 0) {
-      return map;
-    }
-
-    for (const a of resNonNull) {
-      map.set(a.id, a);
-    }
+    // TODO: DRY
+    ids.forEach((id, n) => {
+      if (res[n]) {
+        map.set(id, res[n] as Account);
+      }
+    });
 
     return map;
   }
