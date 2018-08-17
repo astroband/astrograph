@@ -55,16 +55,14 @@ export class Collection extends Array<Change> {
 
   // Returns unique array of account ids involved
   public accountIDs(): string[] {
-    return this
-      .filter(kindOf("Account"))
+    return this.filter(kindOf("Account"))
       .filter(unique)
       .map(v => (v as AccountChange).accountID);
   }
 
   // Returns unique array of trustline params
   public trustLineChanges(): TrustLineChange[] {
-    return this
-      .filter(kindOf("TrustLine"))
+    return this.filter(kindOf("TrustLine"))
       .filter(unique)
       .map(asType<TrustLineChange>());
   }
@@ -100,10 +98,6 @@ export class Collection extends Array<Change> {
     return stellar.StrKey.encodeEd25519PublicKey(value);
   }
 
-  private stringifyAccountIDFromXDR(xdr: any): string {
-    return this.stringifyPublicKey(xdr.accountId().value());
-  }
-
   private pushAccountEvent(type: Type, xdr: any) {
     const kind = "Account";
     const accountID = this.stringifyAccountIDFromXDR(xdr);
@@ -111,13 +105,24 @@ export class Collection extends Array<Change> {
   }
 
   private pushTrustLineEvent(type: Type, xdr: any) {
-    const t = stellar.xdr.AssetType;
     const kind = "TrustLine";
+
+    const accountID = this.stringifyAccountIDFromXDR(xdr);
+    const { assetType, code, issuer } = this.assetFromXDR(xdr);
+
+    this.push({ type, accountID, kind, assetType, code, issuer });
+  }
+
+  private stringifyAccountIDFromXDR(xdr: any): string {
+    return this.stringifyPublicKey(xdr.accountId().value());
+  }
+
+  private assetFromXDR(xdr: any): IAsset {
+    const t = stellar.xdr.AssetType;
 
     let code: string = "";
     let issuer: string = "";
 
-    const accountID = this.stringifyAccountIDFromXDR(xdr);
     const asset = xdr.asset();
     const assetType = asset.switch().value;
 
@@ -128,7 +133,7 @@ export class Collection extends Array<Change> {
       issuer = this.stringifyPublicKey(data.issuer().value());
     }
 
-    this.push({ type, accountID, assetType, code, issuer, kind });
+    return { assetType, code, issuer };
   }
 }
 

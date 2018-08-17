@@ -5,14 +5,14 @@ export function compact(value: any): boolean {
 
 // [].filter(ofType<Account>())
 export function kindOf(key: string): any {
-  return (value: any) => value.kind === key
+  return (value: any) => value.kind === key;
 }
 
 // [].filter(asType<Account>())
 export function asType<T>(): any {
   return (value: any): T => {
     return value as T;
-  }
+  };
 }
 
 // [].filter(unique)
