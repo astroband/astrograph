@@ -6,6 +6,7 @@ import { withFilter } from "graphql-subscriptions";
 import db from "../../database";
 import { ACCOUNT_CREATED, ACCOUNT_REMOVED, ACCOUNT_UPDATED, pubsub } from "../../pubsub";
 
+// TODO: DRY
 const signersResolver = createBatchResolver<Account, Signer[]>(
   async (source: ReadonlyArray<Account>, args: any, context: any) => {
     const res = await db.signers.findAllByAccountIDs(source.map(r => r.id));

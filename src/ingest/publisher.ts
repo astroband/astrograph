@@ -3,7 +3,7 @@ import db from "../database";
 import { Account, Ledger } from "../model";
 
 import { ACCOUNT_CREATED, ACCOUNT_REMOVED, ACCOUNT_UPDATED, LEDGER_CREATED, pubsub } from "../pubsub";
-import { AccountChange, Collection, Type as ChangeType } from "./changes";
+import { AccountChange, Collection, Type as ChangeType, TrustLineChange } from "./changes";
 
 export default class Publisher {
   public static async build(ledger: Ledger, collection: Collection): Promise<Publisher> {
@@ -26,7 +26,9 @@ export default class Publisher {
 
     for (const change of this.collection) {
       // Here type checking order is important as AccountChange fits every other type
-      if (change as AccountChange) {
+      if (change as TrustLineChange) {
+
+      } else if (change as AccountChange) {
         switch (change.type) {
           case ChangeType.Create:
             this.publishAccountEvent(ACCOUNT_CREATED, change);

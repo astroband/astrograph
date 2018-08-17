@@ -65,33 +65,59 @@ export class Collection extends Array<Change> {
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(type, xdr);
+        this.pushAccountEvent(type, xdr.account());
+        break;
+      case t.trustline():
+        this.pushTrustLineEvent(type, xdr.trustLine());
         break;
     }
   }
 
   private fetchRemove(xdr: any) {
     const t = stellar.xdr.LedgerEntryType;
+    const type = Type.Remove;
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(Type.Remove, xdr);
+        this.pushAccountEvent(type, xdr.account());
+        break;
+      case t.trustline():
+        this.pushTrustLineEvent(type, xdr.trustLine());
         break;
     }
   }
 
-  private stringifyAccountID(value: Buffer): string {
+  private stringifyPublicKey(value: Buffer): string {
     return stellar.StrKey.encodeEd25519PublicKey(value);
   }
 
+  private stringifyAccountIDFromXDR(xdr: any): string {
+    return this.stringifyPublicKey(xdr.accountId().value());
+  }
+
   private pushAccountEvent(type: Type, xdr: any) {
-    const accountID = this.stringifyAccountID(
-      xdr
-        .account()
-        .accountId()
-        .value()
-    );
+    const accountID = this.stringifyAccountIDFromXDR(xdr);
     this.push({ type, accountID });
+  }
+
+  private pushTrustLineEvent(type: Type, xdr: any) {
+    const t = stellar.xdr.AssetType;
+
+    let code: string = "";
+    let issuer: string = "";
+
+    const accountID = this.stringifyAccountIDFromXDR(xdr);
+    const asset = xdr.asset();
+    const assetType = asset.switch().value;
+
+    if (assetType !== t.assetTypeNative()) {
+      const method = assetType === t.assetTypeCreditAlphanum4() ? "alphaNum4" : "alphaNum12";
+      const data = asset[method]();
+      code = data.assetCode().toString("utf8");
+      issuer = this.stringifyPublicKey(data.issuer().value());
+    }
+
+    this.push({ type, accountID, code, issuer });
   }
 }
 
