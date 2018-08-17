@@ -12,8 +12,8 @@ export default gql`
 
   type Asset {
     type: AssetType!
-    issuer: AccountID
-    code: AssetCode
+    issuer: AccountID!
+    code: AssetCode!
   }
 
   type AccountFlags {
@@ -103,10 +103,13 @@ export default gql`
     accountCreated(id: AccountID): Account
     accountUpdated(id: AccountID): Account
     accountRemoved(id: AccountID): Account
+
+    trustLineCreated(id: AccountID): TrustLine
+    trustLineUpdated(id: AccountID): TrustLine
+    trustLineRemoved(id: AccountID): TrustLine
   }
 
 `;
-
 // trustLineCreated(id: AccountID, asset: Asset): TrustLine
 // trustLineUpdated(id: AccountID, asset: Asset): TrustLine
 // trustLineDeleted(id: AccountID, asset: Asset): TrustLine

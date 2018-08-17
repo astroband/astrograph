@@ -2,7 +2,7 @@ import { Asset } from "./asset";
 import { TrustLineFlags } from "./trust_line_flags";
 
 export class TrustLine {
-  public accountid: string;
+  public accountID: string;
   public asset: Asset;
   public limit: number;
   public balance: number;
@@ -19,7 +19,7 @@ export class TrustLine {
     flags: number;
     lastmodified: number;
   }) {
-    this.accountid = data.accountid;
+    this.accountID = data.accountid;
     this.limit = data.tlimit;
     this.balance = data.balance;
     this.lastModified = data.lastmodified;
