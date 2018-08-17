@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { asType, kindOf, unique } from "../common/util/array";
+import { kindOf, unique } from "../common/util/array";
 
 export enum Type {
   Create = "CREATE",
@@ -57,14 +57,14 @@ export class Collection extends Array<Change> {
   public accountIDs(): string[] {
     return this.filter(kindOf("Account"))
       .filter(unique)
-      .map(v => (v as AccountChange).accountID);
+      .map(v => v.accountID);
   }
 
   // Returns unique array of trustline params
-  public trustLineChanges(): TrustLineChange[] {
+  public trustLineChanges(): string[] {
     return this.filter(kindOf("TrustLine"))
       .filter(unique)
-      .map(asType<TrustLineChange>());
+      .map(v => v.accountID);
   }
 
   private fetchCreateUpdate(xdr: any, type: Type) {
@@ -136,12 +136,6 @@ export class Collection extends Array<Change> {
     return { assetType, code, issuer };
   }
 }
-
-// Returns trustline complex keys involved
-// public trustLineKeys() {
-//
-// }
-//
 // public dataEntryKeys() {
 //
 // }

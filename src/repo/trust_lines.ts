@@ -23,4 +23,22 @@ export default class TrustLinesRepo {
     );
     return ids.map(id => res.filter(r => r.accountid === id).map(s => new TrustLine(s)));
   }
+
+  public async findAllMapByAccountIDs(ids: string[]): Promise<Map<string, TrustLine[]>> {
+    const map = new Map<string, TrustLine[]>();
+
+    if (ids.length === 0) {
+      return map;
+    }
+
+    const res = await this.findAllByAccountIDs(ids);
+
+    ids.forEach((id, n) => {
+      if (res[n]) {
+        map.set(id, res[n]);
+      }
+    });
+
+    return map;
+  }
 }
