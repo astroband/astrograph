@@ -4,14 +4,8 @@ export function compact(value: any): boolean {
 }
 
 // [].filter(ofType<Account>())
-export function ofType<T>(field: string): any {
-  return (value: any): boolean => {
-    if ((value as T)[field]) {
-      return true;
-    }
-
-    return false;
-  };
+export function kindOf(key: string): any {
+  return (value: any) => value.kind === key
 }
 
 // [].filter(unique)

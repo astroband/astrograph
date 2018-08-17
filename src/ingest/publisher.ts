@@ -2,7 +2,14 @@ import db from "../database";
 
 import { Account, Ledger } from "../model";
 
-import { ACCOUNT_CREATED, ACCOUNT_REMOVED, ACCOUNT_UPDATED, LEDGER_CREATED, pubsub } from "../pubsub";
+import {
+  ACCOUNT_CREATED,
+  ACCOUNT_REMOVED,
+  ACCOUNT_UPDATED,
+  LEDGER_CREATED,
+  pubsub
+} from "../pubsub";
+
 import { AccountChange, Collection, Type as ChangeType, TrustLineChange } from "./changes";
 
 export default class Publisher {

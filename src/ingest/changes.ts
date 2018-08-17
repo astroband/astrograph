@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { ofType, unique } from "../common/util/array";
+import { kindOf, unique } from "../common/util/array";
 
 export enum Type {
   Create = "CREATE",
@@ -21,8 +21,8 @@ export interface IAsset {
   issuer: string;
 }
 
-export type AccountChange = IType & IAccountID;
-export type TrustLineChange = AccountChange & IAsset;
+export type AccountChange = IType & IAccountID & { kind: "Account" };
+export type TrustLineChange = IType & IAccountID & IAsset & { kind: "TrustLine" };
 export type Change = AccountChange | TrustLineChange;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
@@ -55,7 +55,7 @@ export class Collection extends Array<Change> {
 
   // Returns unique array of account ids involved
   public accountIDs(): string[] {
-    return this.filter(ofType<IAccountID>("accountID"))
+    return this.filter(kindOf("Account"))
       .map(c => (c as IAccountID).accountID)
       .filter(unique);
   }
@@ -96,12 +96,14 @@ export class Collection extends Array<Change> {
   }
 
   private pushAccountEvent(type: Type, xdr: any) {
+    const kind = "Account";
     const accountID = this.stringifyAccountIDFromXDR(xdr);
-    this.push({ type, accountID });
+    this.push({ type, accountID, kind });
   }
 
   private pushTrustLineEvent(type: Type, xdr: any) {
     const t = stellar.xdr.AssetType;
+    const kind = "TrustLine";
 
     let code: string = "";
     let issuer: string = "";
@@ -117,7 +119,7 @@ export class Collection extends Array<Change> {
       issuer = this.stringifyPublicKey(data.issuer().value());
     }
 
-    this.push({ type, accountID, code, issuer });
+    this.push({ type, accountID, assetType, code, issuer, kind });
   }
 }
 
