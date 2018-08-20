@@ -1,14 +1,7 @@
 import stellar from "stellar-base";
-// , , IEntryType
 import { AccountEntry, AccountEntryKey, EntryType, TrustLineEntry } from "../model";
 // import { kindOf, unique } from "../common/util/array";
-//
-// export interface IAsset {
-//   assetType: number;
-//   code: string;
-//   issuer: string;
-// }
-//
+
 // class AccountEntry extends Account implements IType {
 //   public type: Type;
 //
