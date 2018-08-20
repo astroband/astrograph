@@ -69,7 +69,7 @@ export default gql`
     trustLines: [TrustLine]
   }
 
-  type AccountUpdate implements IAccount {
+  type AccountEntry implements IAccount {
     id: AccountID!
     balance: Float!
     sequenceNumber: Float!
@@ -81,7 +81,7 @@ export default gql`
     lastModified: Int!
   }
 
-  type AccountRemoval {
+  type AccountKey {
     id: AccountID!
   }
 
@@ -106,7 +106,7 @@ export default gql`
     lastModified: Int!
   }
 
-  type TrustLineUpdate implements ITrustLine {
+  type TrustLineEntry implements ITrustLine {
     accountID: AccountID!
     asset: Asset!
     limit: Float!
@@ -115,7 +115,7 @@ export default gql`
     lastModified: Int!
   }
 
-  type TrustLineRemoval {
+  type TrustLineKey {
     accountID: AccountID!
     asset: Asset!
   }
@@ -150,9 +150,9 @@ export default gql`
   type Subscription {
     ledgerCreated: Ledger
 
-    accountCreated(id: AccountID): AccountUpdate
-    accountUpdated(id: AccountID): AccountUpdate
-    accountRemoved(id: AccountID): AccountRemoval
+    accountCreated(id: AccountID): AccountEntry
+    accountUpdated(id: AccountID): AccountEntry
+    accountRemoved(id: AccountID): AccountKey
 
     trustLineCreated(id: AccountID): [TrustLine]
     trustLineUpdated(id: AccountID): [TrustLine]

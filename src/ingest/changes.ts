@@ -1,4 +1,5 @@
 import stellar from "stellar-base";
+import { Account, AccountEntry, EntryType, IEntryType } from "../model";
 import { kindOf, unique } from "../common/util/array";
 
 export enum Type {
@@ -19,6 +20,25 @@ export interface IAsset {
   assetType: number;
   code: string;
   issuer: string;
+}
+
+class AccountEntry extends Account implements IType {
+  public type: Type;
+
+  constructor(type: Type, data: any) {
+    super(data)
+    this.type = type;
+  }
+}
+
+class AccountKey implements IType {
+  public type: Type;
+  public id: string;
+
+  constructor(type: Type, id: string) {
+    this.type = type;
+    this.id = id;
+  }
 }
 
 export type AccountChange = IType & IAccountID & { kind: "Account" };
