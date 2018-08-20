@@ -8,7 +8,7 @@ import { Ledger } from "../model";
 export class Ingestor {
   // Factory function
   public static async build(seq: number | null = null) {
-    const n = seq || (await db.ledgers.findMaxSeq());
+    const n = seq || (await db.ledgers.findMaxSeq() + 1);
     return new Ingestor(n);
   }
 
