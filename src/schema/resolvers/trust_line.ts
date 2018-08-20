@@ -1,17 +1,19 @@
 import { Account, TrustLine } from "../../model";
+import { createBatchResolver } from "./util";
 
-import { createBatchResolver } from "graphql-resolve-batch";
 import { withFilter } from "graphql-subscriptions";
 
 import db from "../../database";
 import { pubsub, TRUST_LINE_CREATED, TRUST_LINE_REMOVED, TRUST_LINE_UPDATED } from "../../pubsub";
 
-const accountResolver = createBatchResolver<TrustLine, Account | null>(
-  async (source: ReadonlyArray<TrustLine>, args: any, context: any) => {
-    const res = await db.accounts.findAllByIDs(source.map(r => r.accountID));
-    return res;
-  }
+const accountResolver = createBatchResolver<TrustLine, Account | null>((source: ReadonlyArray<TrustLine>) =>
+  db.accounts.findAllByIDs(source.map(r => r.accountID))
 );
+//   async (source: ReadonlyArray<TrustLine>, args: any, context: any) => {
+//     const res = await db.accounts.findAllByIDs(source.map(r => r.accountID));
+//     return res;
+//   }
+// );
 
 const trustLineSubscription = (event: string) => {
   return {

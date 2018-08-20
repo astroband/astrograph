@@ -126,8 +126,8 @@ export class Collection extends Array<Change> {
     const asset = xdr.asset();
     const assetType = asset.switch().value;
 
-    if (assetType !== t.assetTypeNative()) {
-      const method = assetType === t.assetTypeCreditAlphanum4() ? "alphaNum4" : "alphaNum12";
+    if (asset.switch() !== t.assetTypeNative()) {
+      const method = asset.switch() === t.assetTypeCreditAlphanum4() ? "alphaNum4" : "alphaNum12";
       const data = asset[method]();
       code = data.assetCode().toString("utf8");
       issuer = this.stringifyPublicKey(data.issuer().value());
