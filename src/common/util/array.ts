@@ -25,23 +25,3 @@ export function joinToMap<K, T>(keys: K[], values: Array<T | null>): Map<K, T> {
 
   return map;
 }
-
-
-// // rearrangeFlat<string, Account>(ids, res, Account, (id: string, v: any) => v.accountid === id);
-// export function rearrangeFlat<K, T>(
-//   keys: K[],
-//   values: T[],
-//   findFn: any
-// ): Array<T | null> {
-//   return
-//   return keys.map(key => values.find(v => findFn(key, v) || null);
-// }
-// const rearrange = (id: string) => {
-//   const a = res.find(r => r.accountid === id);
-//   if (a) {
-//     return new Account(a);
-//   }
-//   return null;
-// };
-//
-// return ids.map(rearrange);
