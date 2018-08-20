@@ -1,5 +1,6 @@
 import { IDatabase } from "pg-promise";
 import { Account } from "../model";
+import { joinToMap } from "../common/util/array";
 
 export default class AccountsRepo {
   private db: IDatabase<any>;
@@ -30,21 +31,12 @@ export default class AccountsRepo {
   }
 
   public async findAllMapByIDs(ids: string[]): Promise<Map<string, Account>> {
-    const map = new Map<string, Account>();
-
     if (ids.length === 0) {
-      return map;
+      return new Map<string, Account>();
     }
 
     const res = await this.findAllByIDs(ids);
 
-    // TODO: DRY
-    ids.forEach((id, n) => {
-      if (res[n]) {
-        map.set(id, res[n] as Account);
-      }
-    });
-
-    return map;
+    return joinToMap<string, Account>(ids, res);
   }
 }
