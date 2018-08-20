@@ -51,7 +51,7 @@ export default gql`
     homeDomain: String
     thresholds: AccountThresholds!
     flags: AccountFlags!
-    lastModified: Int!
+    signers: [Signer]
   }
 
   type Account implements IAccount {
@@ -64,8 +64,8 @@ export default gql`
     thresholds: AccountThresholds!
     flags: AccountFlags!
     lastModified: Int!
-    data: [DataEntry]
     signers: [Signer]
+    data: [DataEntry]
     trustLines: [TrustLine]
   }
 
@@ -78,7 +78,7 @@ export default gql`
     homeDomain: String
     thresholds: AccountThresholds!
     flags: AccountFlags!
-    lastModified: Int!
+    signers: [Signer]
   }
 
   type AccountKey {

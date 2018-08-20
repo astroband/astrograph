@@ -1,7 +1,7 @@
 import logger from "../common/util/logger";
 import db from "../database";
 import * as ledgerChanges from "./changes";
-import Publisher from "./publisher";
+// import Publisher from "./publisher";
 
 import { Ledger } from "../model";
 
@@ -64,7 +64,7 @@ export class Ingestor {
     await this.fetchTransactionFees(ledger, changes);
     await this.fetchTransactions(ledger, changes);
 
-    (await Publisher.build(ledger, changes)).publish();
+    // (await Publisher.build(ledger, changes)).publish();
   }
 
   private async fetchTransactionFees(ledger: Ledger, collection: ledgerChanges.Collection) {

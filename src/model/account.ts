@@ -1,9 +1,10 @@
 import { AccountFlags } from "./account_flags";
 import { AccountThresholds } from "./account_thresholds";
 
+// TODO: longs
 export class Account {
   public id: string;
-  public balance: number;
+  public balance: string;
   public sequenceNumber: number;
   public numSubentries: number;
   public inflationDest: string;
@@ -14,7 +15,7 @@ export class Account {
 
   constructor(data: {
     accountid: string;
-    balance: number;
+    balance: string;
     seqnum: number;
     numsubentries: number;
     inflationdest: string;

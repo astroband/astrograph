@@ -1,52 +1,39 @@
 import stellar from "stellar-base";
-import { Account, AccountEntry, EntryType, IEntryType } from "../model";
-import { kindOf, unique } from "../common/util/array";
-
-export enum Type {
-  Create = "CREATE",
-  Update = "UPDATE",
-  Remove = "REMOVE"
-}
-
-export interface IType {
-  type: Type;
-}
-
-export interface IAccountID {
-  accountID: string;
-}
-
-export interface IAsset {
-  assetType: number;
-  code: string;
-  issuer: string;
-}
-
-class AccountEntry extends Account implements IType {
-  public type: Type;
-
-  constructor(type: Type, data: any) {
-    super(data)
-    this.type = type;
-  }
-}
-
-class AccountKey implements IType {
-  public type: Type;
-  public id: string;
-
-  constructor(type: Type, id: string) {
-    this.type = type;
-    this.id = id;
-  }
-}
-
-export type AccountChange = IType & IAccountID & { kind: "Account" };
-export type TrustLineChange = IType & IAccountID & IAsset & { kind: "TrustLine" };
-export type Change = AccountChange | TrustLineChange;
+// , , IEntryType
+import { AccountEntry, AccountEntryKey, EntryType } from "../model";
+// import { kindOf, unique } from "../common/util/array";
+//
+// export interface IAsset {
+//   assetType: number;
+//   code: string;
+//   issuer: string;
+// }
+//
+// class AccountEntry extends Account implements IType {
+//   public type: Type;
+//
+//   constructor(type: Type, data: any) {
+//     super(data)
+//     this.type = type;
+//   }
+// }
+//
+// class AccountKey implements IType {
+//   public type: Type;
+//   public id: string;
+//
+//   constructor(type: Type, id: string) {
+//     this.type = type;
+//     this.id = id;
+//   }
+// }
+//
+// export type AccountChange = IType & IAccountID & { kind: "Account" };
+// export type TrustLineChange = IType & IAccountID & IAsset & { kind: "TrustLine" };
+export type Entry = AccountEntry | AccountEntryKey; // | TrustLineEntry;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
-export class Collection extends Array<Change> {
+export class Collection extends Array<Entry> {
   // Concats parsed stellar.xdr.DataEntryChange[] to array
   public concatXDR(xdr: any) {
     for (const change of xdr) {
@@ -60,11 +47,11 @@ export class Collection extends Array<Change> {
 
     switch (xdr.switch()) {
       case t.ledgerEntryCreated():
-        this.fetchCreateUpdate(xdr.created().data(), Type.Create);
+        this.fetchCreateUpdate(xdr.created().data(), EntryType.Create);
         break;
 
       case t.ledgerEntryUpdated():
-        this.fetchCreateUpdate(xdr.updated().data(), Type.Update);
+        this.fetchCreateUpdate(xdr.updated().data(), EntryType.Update);
         break;
 
       case t.ledgerEntryRemoved():
@@ -75,86 +62,82 @@ export class Collection extends Array<Change> {
 
   // Returns unique array of account ids involved
   public accountIDs(): string[] {
-    return this.filter(kindOf("Account"))
-      .filter(unique)
-      .map(v => v.accountID);
+    return [];
+    // return this.filter(kindOf("Account"))
+    //   .filter(unique)
+    //   .map(v => v.accountID);
   }
 
   // Returns unique array of trustline params
   public trustLineAccountIDs(): string[] {
-    return this.filter(kindOf("TrustLine"))
-      .filter(unique)
-      .map(v => v.accountID);
+    return [];
+    // return this.filter(kindOf("TrustLine"))
+    //   .filter(unique)
+    //   .map(v => v.accountID);
   }
 
-  private fetchCreateUpdate(xdr: any, type: Type) {
+  private fetchCreateUpdate(xdr: any, entryType: EntryType) {
     const t = stellar.xdr.LedgerEntryType;
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(type, xdr.account());
+        this.pushAccountEntry(entryType, xdr.account());
         break;
       case t.trustline():
-        this.pushTrustLineEvent(type, xdr.trustLine());
+        // this.pushTrustLineEvent(entryType, xdr.trustLine());
         break;
     }
   }
 
   private fetchRemove(xdr: any) {
     const t = stellar.xdr.LedgerEntryType;
-    const type = Type.Remove;
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEvent(type, xdr.account());
+        this.pushAccountEntryKey(xdr.account());
         break;
       case t.trustline():
-        this.pushTrustLineEvent(type, xdr.trustLine());
+        // this.pushTrustLineEvent(type, xdr.trustLine());
         break;
     }
   }
 
-  private stringifyPublicKey(value: Buffer): string {
-    return stellar.StrKey.encodeEd25519PublicKey(value);
+  private pushAccountEntry(entryType: EntryType, xdr: any) {
+    this.push(AccountEntry.buildFromXDR(entryType, xdr));
   }
 
-  private pushAccountEvent(type: Type, xdr: any) {
-    const kind = "Account";
-    const accountID = this.stringifyAccountIDFromXDR(xdr);
-    this.push({ type, accountID, kind });
+  private pushAccountEntryKey(xdr: any) {
+    this.push(AccountEntryKey.buildFromXDR(EntryType.Remove, xdr));
   }
 
-  private pushTrustLineEvent(type: Type, xdr: any) {
-    const kind = "TrustLine";
+  // private pushTrustLineEvent(type: Type, xdr: any) {
+  //   const kind = "TrustLine";
+  //
+  //   const accountID = this.stringifyAccountIDFromXDR(xdr);
+  //   const { assetType, code, issuer } = this.assetFromXDR(xdr);
+  //
+  //   this.push({ type, accountID, kind, assetType, code, issuer });
+  // }
 
-    const accountID = this.stringifyAccountIDFromXDR(xdr);
-    const { assetType, code, issuer } = this.assetFromXDR(xdr);
 
-    this.push({ type, accountID, kind, assetType, code, issuer });
-  }
-
-  private stringifyAccountIDFromXDR(xdr: any): string {
-    return this.stringifyPublicKey(xdr.accountId().value());
-  }
-
-  private assetFromXDR(xdr: any): IAsset {
-    const t = stellar.xdr.AssetType;
-
-    let code: string = "";
-    let issuer: string = "";
-
-    const asset = xdr.asset();
-    const assetType = asset.switch().value;
-
-    if (asset.switch() !== t.assetTypeNative()) {
-      const method = asset.switch() === t.assetTypeCreditAlphanum4() ? "alphaNum4" : "alphaNum12";
-      const data = asset[method]();
-      code = data.assetCode().toString("utf8");
-      issuer = this.stringifyPublicKey(data.issuer().value());
-    }
-
-    return { assetType, code, issuer };
-  }
+  // private assetFromXDR(xdr: any): IAsset {
+  //   const t = stellar.xdr.AssetType;
+  //
+  //   let code: string = "";
+  //   let issuer: string = "";
+  //
+  //   const asset = xdr.asset();
+  //   const assetType = asset.switch().value;
+  //
+  //   if (asset.switch() !== t.assetTypeNative()) {
+  //     const method = asset.switch() === t.assetTypeCreditAlphanum4() ? "alphaNum4" : "alphaNum12";
+  //     const data = asset[method]();
+  //     code = data.assetCode().toString("utf8");
+  //     issuer = this.stringifyPublicKey(data.issuer().value());
+  //   }
+  //
+  //   return { assetType, code, issuer };
+  // }
 }
 // public dataEntryKeys() {
 //
