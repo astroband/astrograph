@@ -15,6 +15,10 @@ export default class AccountsRepo {
   }
 
   public async findAllByIDs(ids: string[]): Promise<Array<Account | null>> {
+    if (ids.length == 0) {
+      return new Array<Account | null>();
+    }
+
     const res = await this.db.manyOrNone("SELECT * FROM accounts WHERE accountid IN ($1:csv) ORDER BY accountid", [
       ids
     ]);
@@ -31,12 +35,7 @@ export default class AccountsRepo {
   }
 
   public async findAllMapByIDs(ids: string[]): Promise<Map<string, Account>> {
-    // if (ids.length === 0) {
-    //   return new Map<string, Account>();
-    // }
-
     const res = await this.findAllByIDs(ids);
-
     return joinToMap<string, Account>(ids, res);
   }
 }
