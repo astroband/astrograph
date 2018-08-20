@@ -6,14 +6,14 @@ import {
   ACCOUNT_CREATED,
   ACCOUNT_REMOVED,
   ACCOUNT_UPDATED,
+  LEDGER_CREATED,
+  pubsub,
   TRUST_LINE_CREATED,
   TRUST_LINE_REMOVED,
-  TRUST_LINE_UPDATED,
-  LEDGER_CREATED,
-  pubsub
+  TRUST_LINE_UPDATED
 } from "../pubsub";
 
-import { AccountChange, Collection, Type as ChangeType, TrustLineChange } from "./changes";
+import { AccountChange, Collection, TrustLineChange, Type as ChangeType } from "./changes";
 
 export default class Publisher {
   public static async build(ledger: Ledger, collection: Collection): Promise<Publisher> {

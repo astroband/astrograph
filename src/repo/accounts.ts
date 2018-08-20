@@ -15,23 +15,16 @@ export default class AccountsRepo {
   }
 
   public async findAllByIDs(ids: string[]): Promise<Array<Account | null>> {
-    if (ids.length == 0) {
+    if (ids.length === 0) {
       return new Array<Account | null>();
     }
 
     const res = await this.db.manyOrNone("SELECT * FROM accounts WHERE accountid IN ($1:csv) ORDER BY accountid", [
       ids
     ]);
-
-    const rearrange = (id: string) => {
-      const a = res.find(r => r.accountid === id);
-      if (a) {
-        return new Account(a);
-      }
-      return null;
-    };
-
-    return ids.map(rearrange);
+    const accounts = res.map(v => new Account(v));
+    
+    return ids.map<Account | null>(id => (accounts.find(a => a.id == id) || null));
   }
 
   public async findAllMapByIDs(ids: string[]): Promise<Map<string, Account>> {
