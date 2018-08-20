@@ -1,5 +1,11 @@
 import { IDatabase } from "pg-promise";
+import { joinToMap } from "../common/util/array";
 import { TrustLine } from "../model";
+
+const sql = {
+  selectTrustLines: "SELECT * FROM trustlines WHERE accountid = $1 ORDER BY assettype, assetcode",
+  selectTrustLinesIn: "SELECT * FROM trustlines WHERE accountid IN ($1:csv) ORDER BY assettype, assetcode"
+};
 
 export default class TrustLinesRepo {
   private db: IDatabase<any>;
@@ -9,36 +15,21 @@ export default class TrustLinesRepo {
   }
 
   public async findAllByAccountID(id: string): Promise<TrustLine[]> {
-    const res = await this.db.manyOrNone(
-      "SELECT * FROM trustlines WHERE accountid = $1 ORDER BY assettype, assetcode",
-      id
-    );
+    const res = await this.db.manyOrNone(sql.selectTrustLines, id);
     return res.map(e => new TrustLine(e));
   }
 
   public async findAllByAccountIDs(ids: string[]): Promise<TrustLine[][]> {
-    const res = await this.db.manyOrNone(
-      "SELECT * FROM trustlines WHERE accountid IN ($1:csv) ORDER BY assettype, assetcode",
-      [ids]
-    );
+    const res = await this.db.manyOrNone(sql.selectTrustLinesIn, [ids]);
     return ids.map(id => res.filter(r => r.accountid === id).map(s => new TrustLine(s)));
   }
 
   public async findAllMapByAccountIDs(ids: string[]): Promise<Map<string, TrustLine[]>> {
-    const map = new Map<string, TrustLine[]>();
-
     if (ids.length === 0) {
-      return map;
+      return new Map<string, TrustLine[]>();
     }
 
     const res = await this.findAllByAccountIDs(ids);
-
-    ids.forEach((id, n) => {
-      if (res[n]) {
-        map.set(id, res[n]);
-      }
-    });
-
-    return map;
+    return joinToMap<string, TrustLine[]>(ids, res);
   }
 }
