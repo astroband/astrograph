@@ -9,11 +9,6 @@ import { pubsub, TRUST_LINE_CREATED, TRUST_LINE_REMOVED, TRUST_LINE_UPDATED } fr
 const accountResolver = createBatchResolver<TrustLine, Account | null>((source: ReadonlyArray<TrustLine>) =>
   db.accounts.findAllByIDs(source.map(r => r.accountID))
 );
-//   async (source: ReadonlyArray<TrustLine>, args: any, context: any) => {
-//     const res = await db.accounts.findAllByIDs(source.map(r => r.accountID));
-//     return res;
-//   }
-// );
 
 const trustLineSubscription = (event: string) => {
   return {
