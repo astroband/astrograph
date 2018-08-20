@@ -1,6 +1,7 @@
 export * from "./account";
 export * from "./account_entry";
 export * from "./account_flags";
+export * from "./account_key";
 export * from "./account_thresholds";
 export * from "./asset";
 export * from "./asset_type";
