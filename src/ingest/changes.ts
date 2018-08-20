@@ -2,27 +2,6 @@ import stellar from "stellar-base";
 import { AccountEntry, AccountEntryKey, EntryType, TrustLineEntry, TrustLineEntryKey } from "../model";
 // import { kindOf, unique } from "../common/util/array";
 
-// class AccountEntry extends Account implements IType {
-//   public type: Type;
-//
-//   constructor(type: Type, data: any) {
-//     super(data)
-//     this.type = type;
-//   }
-// }
-//
-// class AccountKey implements IType {
-//   public type: Type;
-//   public id: string;
-//
-//   constructor(type: Type, id: string) {
-//     this.type = type;
-//     this.id = id;
-//   }
-// }
-//
-// export type AccountChange = IType & IAccountID & { kind: "Account" };
-// export type TrustLineChange = IType & IAccountID & IAsset & { kind: "TrustLine" };
 export type Entry = AccountEntry | AccountEntryKey | TrustLineEntry | TrustLineEntryKey;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
@@ -108,16 +87,6 @@ export class Collection extends Array<Entry> {
   }
 
   private pushTrustLineEntryKey(xdr: any) {
-    console.log(TrustLineEntryKey.buildFromXDR(EntryType.Remove, xdr));
     this.push(TrustLineEntryKey.buildFromXDR(EntryType.Remove, xdr));
   }
-
-  // private pushTrustLineEvent(type: Type, xdr: any) {
-  //   const kind = "TrustLine";
-  //
-  //   const accountID = this.stringifyAccountIDFromXDR(xdr);
-  //   const { assetType, code, issuer } = this.assetFromXDR(xdr);
-  //
-  //   this.push({ type, accountID, kind, assetType, code, issuer });
-  // }
 }
