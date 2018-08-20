@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { AccountEntry, AccountEntryKey, EntryType, TrustLineEntry } from "../model";
+import { AccountEntry, AccountEntryKey, EntryType, TrustLineEntry, TrustLineEntryKey } from "../model";
 // import { kindOf, unique } from "../common/util/array";
 
 // class AccountEntry extends Account implements IType {
@@ -23,7 +23,7 @@ import { AccountEntry, AccountEntryKey, EntryType, TrustLineEntry } from "../mod
 //
 // export type AccountChange = IType & IAccountID & { kind: "Account" };
 // export type TrustLineChange = IType & IAccountID & IAsset & { kind: "TrustLine" };
-export type Entry = AccountEntry | AccountEntryKey | TrustLineEntry;
+export type Entry = AccountEntry | AccountEntryKey | TrustLineEntry | TrustLineEntryKey;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
 export class Collection extends Array<Entry> {
@@ -90,7 +90,7 @@ export class Collection extends Array<Entry> {
         this.pushAccountEntryKey(xdr.account());
         break;
       case t.trustline():
-        // this.pushTrustLineEvent(type, xdr.trustLine());
+        this.pushTrustLineEntryKey(xdr.trustLine());
         break;
     }
   }
@@ -105,6 +105,11 @@ export class Collection extends Array<Entry> {
 
   private pushTrustLineEntry(entryType: EntryType, xdr: any) {
     this.push(TrustLineEntry.buildFromXDR(entryType, xdr));
+  }
+
+  private pushTrustLineEntryKey(xdr: any) {
+    console.log(TrustLineEntryKey.buildFromXDR(EntryType.Remove, xdr));
+    this.push(TrustLineEntryKey.buildFromXDR(EntryType.Remove, xdr));
   }
 
   // private pushTrustLineEvent(type: Type, xdr: any) {
