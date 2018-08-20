@@ -42,7 +42,19 @@ export default gql`
     weight: Int!
   }
 
-  type Account {
+  interface IAccount {
+    id: AccountID!
+    balance: Float!
+    sequenceNumber: Float!
+    numSubentries: Int!
+    inflationDest: AccountID
+    homeDomain: String
+    thresholds: AccountThresholds!
+    flags: AccountFlags!
+    lastModified: Int!
+  }
+
+  type Account implements IAccount {
     id: AccountID!
     balance: Float!
     sequenceNumber: Float!
@@ -57,17 +69,55 @@ export default gql`
     trustLines: [TrustLine]
   }
 
+  type AccountUpdate implements IAccount {
+    id: AccountID!
+    balance: Float!
+    sequenceNumber: Float!
+    numSubentries: Int!
+    inflationDest: AccountID
+    homeDomain: String
+    thresholds: AccountThresholds!
+    flags: AccountFlags!
+    lastModified: Int!
+  }
+
+  type AccountRemoval {
+    id: AccountID!
+  }
+
   type TrustLineFlags {
     authorized: Boolean!
   }
 
-  type TrustLine {
+  interface ITrustLine {
+    asset: Asset!
+    limit: Float!
+    balance: Float!
+    flags: TrustLineFlags
+    lastModified: Int!
+  }
+
+  type TrustLine implements ITrustLine {
     account: Account!
     asset: Asset!
     limit: Float!
     balance: Float!
     flags: TrustLineFlags
     lastModified: Int!
+  }
+
+  type TrustLineUpdate implements ITrustLine {
+    accountID: AccountID!
+    asset: Asset!
+    limit: Float!
+    balance: Float!
+    flags: TrustLineFlags
+    lastModified: Int!
+  }
+
+  type TrustLineRemoval {
+    accountID: AccountID!
+    asset: Asset!
   }
 
   type Transaction {
@@ -100,9 +150,9 @@ export default gql`
   type Subscription {
     ledgerCreated: Ledger
 
-    accountCreated(id: AccountID): Account
-    accountUpdated(id: AccountID): Account
-    accountRemoved(id: AccountID): Account
+    accountCreated(id: AccountID): AccountUpdate
+    accountUpdated(id: AccountID): AccountUpdate
+    accountRemoved(id: AccountID): AccountRemoval
 
     trustLineCreated(id: AccountID): [TrustLine]
     trustLineUpdated(id: AccountID): [TrustLine]

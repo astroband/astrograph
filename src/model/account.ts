@@ -1,8 +1,5 @@
 import { AccountFlags } from "./account_flags";
 import { AccountThresholds } from "./account_thresholds";
-import { DataEntry } from "./data_entry";
-import { Signer } from "./signer";
-import { TrustLine } from "./trust_line";
 
 export class Account {
   public id: string;
@@ -14,9 +11,6 @@ export class Account {
   public thresholds: AccountThresholds;
   public flags: AccountFlags;
   public lastModified: number;
-  public data: DataEntry[];
-  public signers: Signer[];
-  public trustLines: TrustLine[];
 
   constructor(data: {
     accountid: string;
@@ -39,9 +33,5 @@ export class Account {
 
     this.thresholds = new AccountThresholds(data.thresholds);
     this.flags = new AccountFlags(data.flags);
-
-    this.data = new Array<DataEntry>();
-    this.signers = new Array<Signer>();
-    this.trustLines = new Array<TrustLine>();
   }
 }
