@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 // , , IEntryType
-import { AccountEntry, AccountEntryKey, EntryType } from "../model";
+import { AccountEntry, AccountEntryKey, EntryType, TrustLineEntry } from "../model";
 // import { kindOf, unique } from "../common/util/array";
 //
 // export interface IAsset {
@@ -30,7 +30,7 @@ import { AccountEntry, AccountEntryKey, EntryType } from "../model";
 //
 // export type AccountChange = IType & IAccountID & { kind: "Account" };
 // export type TrustLineChange = IType & IAccountID & IAsset & { kind: "TrustLine" };
-export type Entry = AccountEntry | AccountEntryKey; // | TrustLineEntry;
+export type Entry = AccountEntry | AccountEntryKey | TrustLineEntry;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
 export class Collection extends Array<Entry> {
@@ -84,7 +84,7 @@ export class Collection extends Array<Entry> {
         this.pushAccountEntry(entryType, xdr.account());
         break;
       case t.trustline():
-        // this.pushTrustLineEvent(entryType, xdr.trustLine());
+        this.pushTrustLineEntry(entryType, xdr.trustLine());
         break;
     }
   }
@@ -110,6 +110,10 @@ export class Collection extends Array<Entry> {
     this.push(AccountEntryKey.buildFromXDR(EntryType.Remove, xdr));
   }
 
+  private pushTrustLineEntry(entryType: EntryType, xdr: any) {
+    this.push(TrustLineEntry.buildFromXDR(entryType, xdr));
+  }
+
   // private pushTrustLineEvent(type: Type, xdr: any) {
   //   const kind = "TrustLine";
   //
@@ -118,27 +122,4 @@ export class Collection extends Array<Entry> {
   //
   //   this.push({ type, accountID, kind, assetType, code, issuer });
   // }
-
-
-  // private assetFromXDR(xdr: any): IAsset {
-  //   const t = stellar.xdr.AssetType;
-  //
-  //   let code: string = "";
-  //   let issuer: string = "";
-  //
-  //   const asset = xdr.asset();
-  //   const assetType = asset.switch().value;
-  //
-  //   if (asset.switch() !== t.assetTypeNative()) {
-  //     const method = asset.switch() === t.assetTypeCreditAlphanum4() ? "alphaNum4" : "alphaNum12";
-  //     const data = asset[method]();
-  //     code = data.assetCode().toString("utf8");
-  //     issuer = this.stringifyPublicKey(data.issuer().value());
-  //   }
-  //
-  //   return { assetType, code, issuer };
-  // }
 }
-// public dataEntryKeys() {
-//
-// }

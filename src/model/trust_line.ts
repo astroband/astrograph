@@ -4,8 +4,8 @@ import { TrustLineFlags } from "./trust_line_flags";
 export class TrustLine {
   public accountID: string;
   public asset: Asset;
-  public limit: number;
-  public balance: number;
+  public limit: string;
+  public balance: string;
   public flags: TrustLineFlags;
   public lastModified: number;
 
@@ -14,8 +14,8 @@ export class TrustLine {
     assettype: number;
     issuer: string;
     assetcode: string;
-    tlimit: number;
-    balance: number;
+    tlimit: string;
+    balance: string;
     flags: number;
     lastmodified: number;
   }) {
