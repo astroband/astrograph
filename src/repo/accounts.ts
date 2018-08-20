@@ -31,9 +31,9 @@ export default class AccountsRepo {
   }
 
   public async findAllMapByIDs(ids: string[]): Promise<Map<string, Account>> {
-    if (ids.length === 0) {
-      return new Map<string, Account>();
-    }
+    // if (ids.length === 0) {
+    //   return new Map<string, Account>();
+    // }
 
     const res = await this.findAllByIDs(ids);
 
