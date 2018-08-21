@@ -1,7 +1,7 @@
 import logger from "../common/util/logger";
 import db from "../database";
-import * as ledgerChanges from "./changes";
-// import Publisher from "./publisher";
+import { Collection } from "./collection";
+import { Publisher } from "./publisher";
 
 import { Ledger } from "../model";
 
@@ -59,15 +59,15 @@ export class Ingestor {
   }
 
   private async fetch(ledger: Ledger) {
-    const changes = new ledgerChanges.Collection();
+    const changes = new Collection();
 
     await this.fetchTransactionFees(ledger, changes);
     await this.fetchTransactions(ledger, changes);
 
-    // (await Publisher.build(ledger, changes)).publish();
+    new Publisher(ledger, changes).publish();
   }
 
-  private async fetchTransactionFees(ledger: Ledger, collection: ledgerChanges.Collection) {
+  private async fetchTransactionFees(ledger: Ledger, collection: Collection) {
     const fees = await db.transactionFees.findAllBySeq(ledger.ledgerSeq);
 
     for (const fee of fees) {
@@ -78,7 +78,7 @@ export class Ingestor {
     return collection;
   }
 
-  private async fetchTransactions(ledger: Ledger, collection: ledgerChanges.Collection) {
+  private async fetchTransactions(ledger: Ledger, collection: Collection) {
     const txs = await db.transactions.findAllBySeq(ledger.ledgerSeq);
 
     for (const tx of txs) {
