@@ -6,10 +6,12 @@ import { publicKeyFromXDR } from "../common/xdr";
 
 export class AccountEntry extends Account implements IEntryType {
   public static buildFromXDR(entryType: EntryType, xdr: any): AccountEntry {
+    const accountid = publicKeyFromXDR(xdr);
+
     return new AccountEntry(
       entryType,
       {
-        accountid: publicKeyFromXDR(xdr),
+        accountid: accountid,
         balance: xdr.balance().toString(),
         seqnum: xdr.seqNum().toString(),
         numsubentries: xdr.numSubEntries(),
@@ -18,7 +20,7 @@ export class AccountEntry extends Account implements IEntryType {
         thresholds: xdr.thresholds(),
         flags: xdr.flags()
       },
-      xdr.signers()
+      xdr.signers().map((s: any) => Signer.buildFromXDR(s, accountid))
     );
   }
 
