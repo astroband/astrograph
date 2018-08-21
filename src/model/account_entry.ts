@@ -5,12 +5,10 @@ import { Signer } from "./signer";
 import { publicKeyFromXDR } from "../common/xdr";
 
 export class AccountEntry extends Account implements IEntryType {
-  public entryType: EntryType;
-  public signers: Signer[];
-
   public static buildFromXDR(entryType: EntryType, xdr: any): AccountEntry {
     return new AccountEntry(
-      entryType, {
+      entryType,
+      {
         accountid: publicKeyFromXDR(xdr),
         balance: xdr.balance().toString(),
         seqnum: xdr.seqNum().toString(),
@@ -23,6 +21,9 @@ export class AccountEntry extends Account implements IEntryType {
       xdr.signers()
     );
   }
+
+  public entryType: EntryType;
+  public signers: Signer[];
 
   constructor(entryType: EntryType, data: any, signers: any[]) {
     super(data);

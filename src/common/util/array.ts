@@ -3,11 +3,6 @@ export function compact(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-// [].kindOf(ofType<Account>())
-export function kindOf(kind: string): any {
-  return (value: any) => value.kind === kind;
-}
-
 // [].filter(unique)
 export function unique(value: any, index: number, self: any): boolean {
   return self.indexOf(value) === index;

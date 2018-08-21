@@ -154,9 +154,9 @@ export default gql`
     accountUpdated(id: AccountID): AccountEntry
     accountRemoved(id: AccountID): AccountKey
 
-    trustLineCreated(id: AccountID): [TrustLine]
-    trustLineUpdated(id: AccountID): [TrustLine]
-    trustLineRemoved(id: AccountID): [TrustLine]
+    trustLineCreated(id: AccountID): TrustLine
+    trustLineUpdated(id: AccountID): TrustLine
+    trustLineRemoved(id: AccountID): TrustLine
   }
 
 `;

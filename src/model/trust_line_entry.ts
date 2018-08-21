@@ -1,7 +1,7 @@
 import { EntryType, IEntryType } from "./entry_type";
 import { TrustLine } from "./trust_line";
 
-import { publicKeyFromXDR, assetFromXDR } from "../common/xdr";
+import { assetFromXDR, publicKeyFromXDR } from "../common/xdr";
 
 export class TrustLineEntry extends TrustLine implements IEntryType {
   public static buildFromXDR(entryType: EntryType, xdr: any): TrustLineEntry {

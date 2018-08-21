@@ -1,6 +1,5 @@
 import stellar from "stellar-base";
 import { AccountEntry, AccountEntryKey, EntryType, TrustLineEntry, TrustLineEntryKey } from "../model";
-// import { kindOf, unique } from "../common/util/array";
 
 export type Entry = AccountEntry | AccountEntryKey | TrustLineEntry | TrustLineEntryKey;
 
@@ -30,22 +29,6 @@ export class Collection extends Array<Entry> {
         this.fetchRemove(xdr.removed());
         break;
     }
-  }
-
-  // Returns unique array of account ids involved
-  public accountIDs(): string[] {
-    return [];
-    // return this.filter(kindOf("Account"))
-    //   .filter(unique)
-    //   .map(v => v.accountID);
-  }
-
-  // Returns unique array of trustline params
-  public trustLineAccountIDs(): string[] {
-    return [];
-    // return this.filter(kindOf("TrustLine"))
-    //   .filter(unique)
-    //   .map(v => v.accountID);
   }
 
   private fetchCreateUpdate(xdr: any, entryType: EntryType) {
