@@ -94,7 +94,6 @@ export default gql`
     limit: Float!
     balance: Float!
     flags: TrustLineFlags
-    lastModified: Int!
   }
 
   type TrustLine implements ITrustLine {
@@ -112,10 +111,9 @@ export default gql`
     limit: Float!
     balance: Float!
     flags: TrustLineFlags
-    lastModified: Int!
   }
 
-  type TrustLineKey {
+  type TrustLineEntryKey {
     accountID: AccountID!
     asset: Asset!
   }
@@ -154,9 +152,9 @@ export default gql`
     accountUpdated(id: AccountID): AccountEntry
     accountRemoved(id: AccountID): AccountKey
 
-    trustLineCreated(id: AccountID): TrustLine
-    trustLineUpdated(id: AccountID): TrustLine
-    trustLineRemoved(id: AccountID): TrustLine
+    trustLineCreated(id: AccountID): TrustLineEntry
+    trustLineUpdated(id: AccountID): TrustLineEntry
+    trustLineRemoved(id: AccountID): TrustLineEntryKey
   }
 
 `;
