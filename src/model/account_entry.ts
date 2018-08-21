@@ -11,7 +11,7 @@ export class AccountEntry extends Account implements IEntryType {
     return new AccountEntry(
       entryType,
       {
-        accountid: accountid,
+        accountid,
         balance: xdr.balance().toString(),
         seqnum: xdr.seqNum().toString(),
         numsubentries: xdr.numSubEntries(),

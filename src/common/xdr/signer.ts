@@ -1,7 +1,7 @@
 import stellar from "stellar-base";
 
 export function signerKeyFromXDR(xdr: any) {
-  switch(xdr.switch()) {
+  switch (xdr.switch()) {
     case stellar.xdr.SignerKeyType.signerKeyTypeEd25519():
       return stellar.StrKey.encodeEd25519PublicKey(xdr.ed25519());
 

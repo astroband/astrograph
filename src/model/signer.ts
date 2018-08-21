@@ -6,7 +6,7 @@ export class Signer {
       accountid: accountID,
       publickey: signerKeyFromXDR(xdr.key()),
       weight: xdr.weight()
-    }
+    };
 
     return new Signer(data);
   }
