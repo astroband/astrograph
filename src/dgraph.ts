@@ -1,5 +1,8 @@
-import { DgraphClientStub, DgraphClient, Operation } from "dgraph-js";
+import { DgraphClientStub, DgraphClient, Operation, Mutation } from "dgraph-js";
+import { Ledger } from "./model";
+import { Collection, Ingestor } from "./ingest";
 import grpc from "grpc";
+import logger from "./common/util/logger";
 
 const clientStub = new DgraphClientStub("localhost:9080", grpc.credentials.createInsecure());
 const client = new DgraphClient(clientStub);
@@ -12,19 +15,63 @@ const dropAll = async () => {
 
 const setSchema = async () => {
   const schema = `
-      id: string @index(exact) .
-      accountID: string @index(exact) .
-      hash: string .
+    type: string @index(exact) .
+    seq: int @index(int) .
   `;
   const op = new Operation();
   op.setSchema(schema);
   await client.alter(op);
 }
 
-export default async function initDGraph() {
+const init = async () => {
   await dropAll();
   await setSchema();
+
+  const ingest = await Ingestor.build(9218694, (ledger: Ledger, collection: Collection) => {
+    new Builder(ledger, collection).publish();
+  });
+
+  const interval = 500;
+  logger.info(`Staring dgraph ingest every ${interval} ms.`);
+
+  setInterval(() => ingest.tick(), interval);
 }
+
+class Builder {
+  private ledger: Ledger;
+  private collection: Collection;
+
+  constructor(ledger: Ledger, collection: Collection) {
+    this.ledger = ledger;
+    this.collection = collection;
+  }
+
+  public async publish() {
+    const txn = client.newTxn();
+    try {
+      const nquads = `
+        _:ledger <type> "ledger" .
+        _:ledger <seq> "${this.ledger.ledgerSeq}" .
+        _:ledger <version> "${this.ledger.ledgerVersion}" .
+      `;
+
+      const mu = new Mutation();
+      mu.setSetNquads(nquads);
+      await txn.mutate(mu);
+      await txn.commit();
+
+      // console.log("All created nodes (map from blank node names to uids):");
+      // assigned.getUidsMap().forEach((uid: string, key: string) => console.log(`${key} => ${uid}`));
+      // console.log();
+    } finally {
+      await txn.discard();
+    }
+
+    console.log(this.collection.length);
+  }
+}
+
+export default { init, Builder };
 
 // // Create data using JSON.
 // async function createData(dgraphClient) {
