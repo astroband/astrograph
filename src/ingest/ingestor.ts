@@ -7,16 +7,18 @@ import { Ledger } from "../model";
 
 export class Ingestor {
   // Factory function
-  public static async build(seq: number | null = null) {
+  public static async build(seq: number | null = null, tickFn: any) {
     const n = seq || (await db.ledgers.findMaxSeq()) + 1;
-    return new Ingestor(n);
+    return new Ingestor(n, tickFn);
   }
 
   // Starts ingest
   public static async start() {
     const seq = Number.parseInt(process.env.DEBUG_LEDGER || "", 10);
     const interval = Number.parseInt(process.env.INGEST_INTERVAL || "", 10) || 2000;
-    const ingest = await Ingestor.build(seq);
+    const ingest = await Ingestor.build(seq, (ledger: Ledger, collection: Collection) => {
+      new Publisher(ledger, collection).publish();
+    });
 
     logger.info(`Staring ingest every ${interval} ms.`);
 
@@ -24,9 +26,11 @@ export class Ingestor {
   }
 
   private seq: number;
+  private tickFn: any;
 
-  constructor(seq: number) {
+  constructor(seq: number, tickFn: any) {
     this.seq = seq;
+    this.tickFn = tickFn;
   }
 
   public async tick() {
@@ -64,7 +68,7 @@ export class Ingestor {
     await this.fetchTransactionFees(ledger, changes);
     await this.fetchTransactions(ledger, changes);
 
-    new Publisher(ledger, changes).publish();
+    this.tickFn(ledger, changes);
   }
 
   private async fetchTransactionFees(ledger: Ledger, collection: Collection) {

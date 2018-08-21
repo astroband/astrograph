@@ -1,7 +1,7 @@
 {
   "name": "astrograph",
   "version": "0.1.0",
-  "main": "src/server.ts",
+  "main": "src/graphql.ts",
   "description": "GraphQL server for Stellar network",
   "author": "Mobius Team",
   "repository": {
@@ -45,8 +45,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "nodemon ./src/server.ts",
-    "start-prod": "nodemon ./dist/server.js",
+    "start": "nodemon ./src/graphql.ts",
+    "start-prod": "nodemon ./dist/graphql.js",
     "dev": "nodemon --watch src && tslint-check",
     "prod": "yarn build  && yarn tslint && yarn start-prod",
     "tslint": "tslint -c tslint.json -p tsconfig.json --fix",
