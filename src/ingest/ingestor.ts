@@ -1,28 +1,13 @@
 import logger from "../common/util/logger";
 import db from "../database";
-import { Collection } from "./collection";
-import { Publisher } from "./publisher";
-
 import { Ledger } from "../model";
+import { Collection } from "./collection";
 
 export class Ingestor {
   // Factory function
   public static async build(seq: number | null = null, tickFn: any) {
     const n = seq || (await db.ledgers.findMaxSeq()) + 1;
     return new Ingestor(n, tickFn);
-  }
-
-  // Starts ingest
-  public static async start() {
-    const seq = Number.parseInt(process.env.DEBUG_LEDGER || "", 10);
-    const interval = Number.parseInt(process.env.INGEST_INTERVAL || "", 10) || 2000;
-    const ingest = await Ingestor.build(seq, (ledger: Ledger, collection: Collection) => {
-      new Publisher(ledger, collection).publish();
-    });
-
-    logger.info(`Staring ingest every ${interval} ms.`);
-
-    setInterval(() => ingest.tick(), interval);
   }
 
   private seq: number;
