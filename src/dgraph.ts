@@ -1,5 +1,5 @@
 import { DgraphClientStub, DgraphClient, Operation, Mutation } from "dgraph-js";
-import { Ledger } from "./model";
+import { AccountEntry, Ledger, EntryType } from "./model";
 import { Collection, Ingestor } from "./ingest";
 import grpc from "grpc";
 import logger from "./common/util/logger";
@@ -17,6 +17,7 @@ const setSchema = async () => {
   const schema = `
     type: string @index(exact) .
     seq: int @index(int) .
+    id: string @index(exact) .
   `;
   const op = new Operation();
   op.setSchema(schema);
@@ -45,45 +46,73 @@ class Builder {
   private ledger: Ledger;
   private collection: Collection;
   private cache: Cache;
+  private prevLedgerUID: string | null;
 
   constructor(ledger: Ledger, collection: Collection, cache: Cache) {
     this.ledger = ledger;
     this.collection = collection;
     this.cache = cache;
+    this.prevLedgerUID = this.cache.get("ledger");
   }
 
-  public publish() {
-    this.publishLedger();
-    this.publishAccounts();
+  public async publish() {
+    await this.publishLedger();
+    await this.publishAccounts();
   }
 
   public async publishAccounts() {
-    
+    for (const entry of this.collection) {
+      const payloadClassName = entry.constructor.name;
+
+      if (payloadClassName === "AccountEntry") {
+        if (entry.entryType === EntryType.Create) {
+          const e:AccountEntry = entry as AccountEntry;
+          const ledger:string = this.cache.get("ledger");
+
+          const nquads = `
+            _:account <type> "account" .
+            _:account <seq> "${this.ledger.ledgerSeq}" .
+            _:account <ledger> <${ledger}> .
+            _:account <id> "${e.id}" .
+            _:account <balance> "${e.balance}" .
+            <${ledger}> <account> _:account .
+          `;
+
+          await this.push(nquads);
+        }
+      }
+    }
   }
 
   public async publishLedger() {
+    let nquads = `
+      _:ledger <type> "ledger" .
+      _:ledger <seq> "${this.ledger.ledgerSeq}" .
+      _:ledger <version> "${this.ledger.ledgerVersion}" .
+    `;
+
+    if (this.prevLedgerUID) {
+      nquads = nquads.concat(`
+        _:ledger <prev> <${this.prevLedgerUID}> .
+        <${this.prevLedgerUID}> <next> _:ledger .
+      `);
+    }
+
+    const result = await this.push(nquads);
+    this.cache.set("ledger", result.getUidsMap().get("ledger"));
+  }
+
+  private async push(nquads: string): Promise<any> {
     const txn = client.newTxn();
     try {
-      let nquads = `
-        _:ledger <type> "ledger" .
-        _:ledger <seq> "${this.ledger.ledgerSeq}" .
-        _:ledger <version> "${this.ledger.ledgerVersion}" .
-      `;
-
-      const prevLedgerUID = this.cache.get("ledger");
-      if (prevLedgerUID) {
-        nquads = nquads.concat(`
-          _:ledger <prev> <${prevLedgerUID}> .
-          <${prevLedgerUID}> <next> _:ledger .
-        `);
-      }
-
       const mu = new Mutation();
       mu.setSetNquads(nquads);
       const assigned = await txn.mutate(mu);
       await txn.commit();
 
-      this.cache.set("ledger", assigned.getUidsMap().get("ledger"));
+      return assigned;
+    } catch(e) {
+      console.log(`ERROR: ${e}`);
     } finally {
       await txn.discard();
     }
