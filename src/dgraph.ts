@@ -23,12 +23,16 @@ const setSchema = async () => {
   await client.alter(op);
 }
 
+type Cache = Map<string, any>;
+
 const init = async () => {
   await dropAll();
   await setSchema();
 
+  const cache: Cache = new Map<string, any>();
+
   const ingest = await Ingestor.build(9218694, (ledger: Ledger, collection: Collection) => {
-    new Builder(ledger, collection).publish();
+    new Builder(ledger, collection, cache).publish();
   });
 
   const interval = 500;
@@ -40,29 +44,40 @@ const init = async () => {
 class Builder {
   private ledger: Ledger;
   private collection: Collection;
+  private cache: Cache;
 
-  constructor(ledger: Ledger, collection: Collection) {
+  constructor(ledger: Ledger, collection: Collection, cache: Cache) {
     this.ledger = ledger;
     this.collection = collection;
+    this.cache = cache;
   }
 
   public async publish() {
     const txn = client.newTxn();
     try {
-      const nquads = `
+      let nquads = `
         _:ledger <type> "ledger" .
         _:ledger <seq> "${this.ledger.ledgerSeq}" .
         _:ledger <version> "${this.ledger.ledgerVersion}" .
       `;
 
+      const prevLedgerUID = this.cache.get("ledger");
+      if (prevLedgerUID) {
+        nquads = nquads.concat(`
+          _:ledger <prev> <${prevLedgerUID}> .
+          <${prevLedgerUID}> <next> _:ledger .
+        `);
+      }
+
       const mu = new Mutation();
       mu.setSetNquads(nquads);
-      await txn.mutate(mu);
+      const assigned = await txn.mutate(mu);
       await txn.commit();
 
       // console.log("All created nodes (map from blank node names to uids):");
       // assigned.getUidsMap().forEach((uid: string, key: string) => console.log(`${key} => ${uid}`));
       // console.log();
+      this.cache.set("ledger", assigned.getUidsMap().get("ledger"));
     } finally {
       await txn.discard();
     }
