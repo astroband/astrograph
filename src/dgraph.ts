@@ -52,12 +52,14 @@ class Builder {
     this.ledger = ledger;
     this.collection = collection;
     this.cache = cache;
+
     this.prevLedgerUID = this.cache.get("ledger");
   }
 
   public async publish() {
     await this.publishLedger();
     await this.publishAccounts();
+    await this.pushLedgerLinks();
   }
 
   public async publishAccounts() {
@@ -65,8 +67,9 @@ class Builder {
       const payloadClassName = entry.constructor.name;
 
       if (payloadClassName === "AccountEntry") {
-        if (entry.entryType === EntryType.Create) {
-          const e:AccountEntry = entry as AccountEntry;
+        const e:AccountEntry = entry as AccountEntry;
+
+        if ((entry.entryType === EntryType.Create) || (entry.entryType === EntryType.Update)) {
           const ledger:string = this.cache.get("ledger");
 
           const nquads = `
@@ -75,12 +78,35 @@ class Builder {
             _:account <ledger> <${ledger}> .
             _:account <id> "${e.id}" .
             _:account <balance> "${e.balance}" .
-            <${ledger}> <account> _:account .
           `;
 
-          await this.push(nquads);
+          const result = await this.push(nquads);
+          const uid = result.getUidsMap().get("account");
+
+          this.cache.set(e.id, uid);
+        }
+
+        if (entry.entryType == EntryType.Remove) {
+          this.cache.delete(e.id);
         }
       }
+    }
+  }
+
+  public async pushLedgerLinks() {
+    let nquads = "";
+    const ledger = this.cache.get("ledger");
+
+    this.cache.forEach((v: any, k: string) => {
+      if (k !== "ledger") {
+        nquads = nquads.concat(`
+          <${ledger}> <account> <${v}> .
+        `);
+      }
+    });
+
+    if (nquads !== "") {
+      await this.push(nquads);
     }
   }
 
