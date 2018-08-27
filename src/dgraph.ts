@@ -3,6 +3,7 @@ import { AccountEntry, Ledger, EntryType } from "./model";
 import { Collection, Ingestor } from "./ingest";
 import grpc from "grpc";
 import logger from "./common/util/logger";
+import { DEBUG_LEDGER } from "./common/util/secrets";
 
 const clientStub = new DgraphClientStub("localhost:9080", grpc.credentials.createInsecure());
 const client = new DgraphClient(clientStub);
@@ -32,11 +33,11 @@ const init = async () => {
 
   const cache: Cache = new Map<string, any>();
 
-  const ingest = await Ingestor.build(9218694, (ledger: Ledger, collection: Collection) => {
+  const ingest = await Ingestor.build(DEBUG_LEDGER, (ledger: Ledger, collection: Collection) => {
     new Builder(ledger, collection, cache).publish();
   });
 
-  const interval = 500;
+  const interval = 100;
   logger.info(`Staring dgraph ingest every ${interval} ms.`);
 
   setInterval(() => ingest.tick(), interval);
@@ -71,14 +72,22 @@ class Builder {
 
         if ((entry.entryType === EntryType.Create) || (entry.entryType === EntryType.Update)) {
           const ledger:string = this.cache.get("ledger");
+          const prevAccountUID:string | null = this.cache.get(e.id);
 
-          const nquads = `
+          let nquads = `
             _:account <type> "account" .
             _:account <seq> "${this.ledger.ledgerSeq}" .
             _:account <ledger> <${ledger}> .
             _:account <id> "${e.id}" .
             _:account <balance> "${e.balance}" .
           `;
+
+          if (prevAccountUID) {
+            nquads = nquads.concat(`
+              _:account <prev> <${prevAccountUID}> .
+              <${prevAccountUID}> <next> _:account .
+            `);
+          }
 
           const result = await this.push(nquads);
           const uid = result.getUidsMap().get("account");
