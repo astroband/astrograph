@@ -52,7 +52,16 @@ class Builder {
     this.cache = cache;
   }
 
-  public async publish() {
+  public publish() {
+    this.publishLedger();
+    this.publishAccounts();
+  }
+
+  public async publishAccounts() {
+    
+  }
+
+  public async publishLedger() {
     const txn = client.newTxn();
     try {
       let nquads = `
@@ -74,15 +83,10 @@ class Builder {
       const assigned = await txn.mutate(mu);
       await txn.commit();
 
-      // console.log("All created nodes (map from blank node names to uids):");
-      // assigned.getUidsMap().forEach((uid: string, key: string) => console.log(`${key} => ${uid}`));
-      // console.log();
       this.cache.set("ledger", assigned.getUidsMap().get("ledger"));
     } finally {
       await txn.discard();
     }
-
-    console.log(this.collection.length);
   }
 }
 
