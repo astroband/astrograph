@@ -1,7 +1,7 @@
 {
   "name": "astrograph",
   "version": "0.1.0",
-  "main": "src/server.ts",
+  "main": "src/graphql.ts",
   "description": "GraphQL server for Stellar network",
   "author": "Mobius Team",
   "repository": {
@@ -13,12 +13,15 @@
     "url": "https://github.com/mobius-network/astrograph/issues"
   },
   "dependencies": {
+    "@types/graphql-resolve-batch": "^1.1.1",
     "@udia/graphql-postgres-subscriptions": "^1.0.9",
     "apollo-server": "^2.0.0-rc.8",
     "bluebird": "^3.5.1",
     "dotenv": "^6.0.0",
     "graphql": "^0.13.2",
     "graphql-relay": "^0.5.5",
+    "graphql-resolve-batch": "^1.0.2",
+    "graphql-subscriptions": "^0.5.8",
     "pg": "^7.4.1",
     "pg-monitor": "^1.0.0",
     "pg-promise": "^8.4.5",
@@ -42,8 +45,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "nodemon ./src/server.ts",
-    "start-prod": "nodemon ./dist/server.js",
+    "start": "nodemon ./src/graphql.ts",
+    "start-prod": "nodemon ./dist/graphql.js",
     "dev": "nodemon --watch src && tslint-check",
     "prod": "yarn build  && yarn tslint && yarn start-prod",
     "tslint": "tslint -c tslint.json -p tsconfig.json --fix",

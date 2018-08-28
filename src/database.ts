@@ -7,11 +7,23 @@ import pgPromise = require("pg-promise");
 
 import * as secrets from "./common/util/secrets";
 
-import LedgersRepository from "./ledger/ledger.repo";
+import AccountsRepo from "./repo/accounts";
+import DataEntriesRepo from "./repo/data_entries";
+import LedgersRepo from "./repo/ledgers";
+import SignersRepo from "./repo/signers";
+import TransactionFeesRepo from "./repo/transaction_fees";
+import TransactionsRepo from "./repo/transactions";
+import TrustLinesRepo from "./repo/trust_lines";
 
 // Database Interface Extensions:
 interface IExtensions {
-  ledgers: LedgersRepository;
+  accounts: AccountsRepo;
+  dataEntries: DataEntriesRepo;
+  ledgers: LedgersRepo;
+  signers: SignersRepo;
+  transactions: TransactionsRepo;
+  transactionFees: TransactionFeesRepo;
+  trustLines: TrustLinesRepo;
 }
 
 // pg-promise initialization options:
@@ -21,7 +33,13 @@ const initOptions: IOptions<IExtensions> = {
   extend(obj: IExtensions) {
     // Do not use 'require()' here, because this event occurs for every task
     // and transaction being executed, which should be as fast as possible.
-    obj.ledgers = new LedgersRepository(obj);
+    obj.accounts = new AccountsRepo(obj);
+    obj.dataEntries = new DataEntriesRepo(obj);
+    obj.ledgers = new LedgersRepo(obj);
+    obj.signers = new SignersRepo(obj);
+    obj.transactions = new TransactionsRepo(obj);
+    obj.transactionFees = new TransactionFeesRepo(obj);
+    obj.trustLines = new TrustLinesRepo(obj);
   }
 };
 

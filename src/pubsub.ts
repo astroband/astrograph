@@ -1,15 +1,15 @@
-import PostgresPubSub from "@udia/graphql-postgres-subscriptions";
-import { Client } from "pg";
+import { PubSub } from "graphql-subscriptions";
 
-import logger from "./common/util/logger";
-import db from "./database";
+export const pubsub = new PubSub();
 
-const pgClient = new Client(db.$cn);
-const pubSub = new PostgresPubSub(pgClient);
+export const LEDGER_CREATED = "LEDGER_CREATED";
 
-pgClient
-  .connect()
-  .then(() => logger.debug("Connected to PG pubsub"))
-  .catch(err => logger.error(`Error connecting to PG pubsub: ${err}`));
+// Account events concern all operations happened with account itself and it's signers.
+// TrustLines/DataEntries are not involved.
+export const ACCOUNT_CREATED = "ACCOUNT_CREATED";
+export const ACCOUNT_UPDATED = "ACCOUNT_UPDATED";
+export const ACCOUNT_REMOVED = "ACCOUNT_REMOVED";
 
-export default pubSub;
+export const TRUST_LINE_CREATED = "TRUST_LINE_CREATED";
+export const TRUST_LINE_UPDATED = "TRUST_LINE_UPDATED";
+export const TRUST_LINE_REMOVED = "TRUST_LINE_REMOVED";
