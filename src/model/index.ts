@@ -9,7 +9,7 @@ export * from "./data_entry";
 export * from "./entry_type";
 export * from "./signer";
 export * from "./ledger";
-export { LedgerLink } from "./ledger_link"; // For unknown reason export * not here works, will resolve later
+export { LedgerLink } from "./ledger_link"; // For unknown reason export * not works here, will resolve later
 export * from "./transaction";
 export * from "./transaction_fee";
 export * from "./trust_line";
