@@ -37,8 +37,8 @@ export default gql`
   }
 
   type Signer {
-    accountID: AccountID!
-    signer: AccountID!
+    account: Account!
+    signer: Account!
     weight: Int!
   }
 
