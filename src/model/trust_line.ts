@@ -1,12 +1,12 @@
+import stellar from "stellar-base";
 import { Asset } from "./asset";
-import { TrustLineFlags } from "./trust_line_flags";
 
 export class TrustLine {
   public accountID: string;
   public asset: Asset;
   public limit: string;
   public balance: string;
-  public flags: TrustLineFlags;
+  public authorized: boolean;
   public lastModified: number;
 
   constructor(data: {
@@ -23,8 +23,8 @@ export class TrustLine {
     this.limit = data.tlimit;
     this.balance = data.balance;
     this.lastModified = data.lastmodified;
+    this.authorized = (data.flags & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0;
 
-    this.flags = new TrustLineFlags(data.flags);
     this.asset = new Asset(data.assettype, data.assetcode, data.issuer);
   }
 }

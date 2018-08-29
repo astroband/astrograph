@@ -85,15 +85,11 @@ export default gql`
     id: AccountID!
   }
 
-  type TrustLineFlags {
-    authorized: Boolean!
-  }
-
   interface ITrustLine {
     asset: Asset!
     limit: Float!
     balance: Float!
-    flags: TrustLineFlags
+    authorized: Boolean!
   }
 
   type TrustLine implements ITrustLine {
@@ -101,7 +97,7 @@ export default gql`
     asset: Asset!
     limit: Float!
     balance: Float!
-    flags: TrustLineFlags
+    authorized: Boolean!
     lastModified: Int!
   }
 
@@ -110,7 +106,7 @@ export default gql`
     asset: Asset!
     limit: Float!
     balance: Float!
-    flags: TrustLineFlags
+    authorized: Boolean!
   }
 
   type TrustLineEntryKey {
@@ -141,6 +137,7 @@ export default gql`
     account(id: AccountID!): Account!
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
+    trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger
     transaction(id: String!): Transaction
   }
