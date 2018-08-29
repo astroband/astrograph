@@ -1,5 +1,5 @@
 import { IDatabase } from "pg-promise";
-import { joinToMap } from "../common/util/array";
+import { joinToMap, unique } from "../common/util/array";
 import { Account } from "../model";
 
 const sql = {
@@ -24,7 +24,7 @@ export default class AccountsRepo {
       return new Array<Account | null>();
     }
 
-    const res = await this.db.manyOrNone(sql.selectAccountsIn, [ids]);
+    const res = await this.db.manyOrNone(sql.selectAccountsIn, [ids.filter(unique)]);
     const accounts = res.map(v => new Account(v));
 
     return ids.map<Account | null>(id => accounts.find(a => a.id === id) || null);

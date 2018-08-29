@@ -1,4 +1,5 @@
 import { IDatabase } from "pg-promise";
+import { unique } from "../common/util/array";
 import { DataEntry } from "../model";
 
 const sql = {
@@ -19,7 +20,7 @@ export default class DataEntriesRepo {
   }
 
   public async findAllByAccountIDs(ids: string[]): Promise<DataEntry[][]> {
-    const res = await this.db.manyOrNone(sql.selectAccountsDataIn, [ids]);
+    const res = await this.db.manyOrNone(sql.selectAccountsDataIn, [ids.filter(unique)]);
     return ids.map(id => res.filter(r => r.accountid === id).map(s => new DataEntry(s)));
   }
 }

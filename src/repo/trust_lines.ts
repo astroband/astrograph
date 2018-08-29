@@ -1,5 +1,5 @@
 import { IDatabase } from "pg-promise";
-import { joinToMap } from "../common/util/array";
+import { joinToMap, unique } from "../common/util/array";
 import { TrustLine } from "../model";
 
 const sql = {
@@ -20,7 +20,7 @@ export default class TrustLinesRepo {
   }
 
   public async findAllByAccountIDs(ids: string[]): Promise<TrustLine[][]> {
-    const res = await this.db.manyOrNone(sql.selectTrustLinesIn, [ids]);
+    const res = await this.db.manyOrNone(sql.selectTrustLinesIn, [ids.filter(unique)]);
     return ids.map(id => res.filter(r => r.accountid === id).map(s => new TrustLine(s)));
   }
 
