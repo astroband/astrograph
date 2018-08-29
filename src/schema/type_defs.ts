@@ -30,7 +30,7 @@ export default gql`
   }
 
   type DataEntry {
-    accountID: AccountID!
+    account: Account!
     name: String!
     value: String!
     lastModified: Int!
