@@ -4,14 +4,8 @@ export default gql`
   scalar AssetCode
   scalar AccountID
 
-  enum AssetType {
-    Native
-    AlphaNum4
-    AlphaNum12
-  }
-
   type Asset {
-    type: AssetType!
+    native: Boolean!
     issuer: AccountID!
     code: AssetCode!
   }
