@@ -14,4 +14,3 @@ export * from "./transaction_fee";
 export * from "./trust_line";
 export * from "./trust_line_entry";
 export * from "./trust_line_entry_key";
-export * from "./trust_line_flags";
