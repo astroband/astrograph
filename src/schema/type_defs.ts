@@ -115,7 +115,7 @@ export default gql`
   }
 
   type Transaction {
-    ID: String!
+    id: String!
     ledgerSeq: Int!
     index: Int!
     body: String!
@@ -142,6 +142,7 @@ export default gql`
     ledger(seq: Int!): Ledger
     ledgers(seq: [Int!]): [Ledger]
     transaction(id: String!): Transaction
+    transactions(id: [String!]): [Transaction]
   }
 
   type Subscription {
