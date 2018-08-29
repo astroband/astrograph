@@ -137,6 +137,7 @@ export default gql`
     account(id: AccountID!): Account!
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
+    trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger
     transaction(id: String!): Transaction
   }

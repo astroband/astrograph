@@ -33,5 +33,10 @@ export default {
     trustLineCreated: trustLineSubscription(TRUST_LINE_CREATED),
     trustLineUpdated: trustLineSubscription(TRUST_LINE_UPDATED),
     trustLineRemoved: trustLineSubscription(TRUST_LINE_REMOVED)
+  },
+  Query: {
+    trustLines(root: any, args: any, ctx: any, info: any) {
+      return db.trustLines.findAllByAccountID(args.id);
+    }
   }
 };
