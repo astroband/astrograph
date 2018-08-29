@@ -131,7 +131,7 @@ export default gql`
 
   type Transaction {
     ID: String!
-    ledgerSeq: Int!
+    ledger: LedgerLink!
     index: Int!
     body: String!
     result: String!
