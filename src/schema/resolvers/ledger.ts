@@ -7,6 +7,9 @@ export default {
   Query: {
     ledger(root: any, args: any, ctx: any, info: any) {
       return db.ledgers.findBySeq(args.seq);
+    },
+    ledgers(root: any, args: any, ctx: any, info: any) {
+      return db.ledgers.findAllBySeq(args.seq);
     }
   },
   Subscription: {
