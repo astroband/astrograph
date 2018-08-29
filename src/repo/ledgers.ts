@@ -16,11 +16,11 @@ export default class LedgersRepo {
   }
 
   // Tries to find a ledger from id;
-  public findBySeq(seq: string | number): Promise<Ledger | null> {
+  public findBySeq(seq: number): Promise<Ledger | null> {
     return this.db.oneOrNone(sql.selectLedger, seq, res => (res === null ? null : new Ledger(res)));
   }
 
-  public async findAllBySeq(seqs: Array<string | number>): Promise<Array<Ledger | null>> {
+  public async findAllBySeq(seqs: number[]): Promise<Array<Ledger | null>> {
     if (seqs.length === 0) {
       return new Array<Ledger | null>();
     }
