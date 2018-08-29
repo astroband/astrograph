@@ -1,4 +1,5 @@
 import { IDatabase } from "pg-promise";
+import { unique } from "../common/util/array";
 import { Signer } from "../model";
 
 const sql = {
@@ -19,7 +20,7 @@ export default class SignersRepo {
   }
 
   public async findAllByAccountIDs(ids: string[]): Promise<Signer[][]> {
-    const res = await this.db.manyOrNone(sql.selectSignersIn, [ids]);
+    const res = await this.db.manyOrNone(sql.selectSignersIn, [ids.filter(unique)]);
     return ids.map(id => res.filter(r => r.accountid === id).map(s => new Signer(s)));
   }
 }

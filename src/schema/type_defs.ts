@@ -30,15 +30,15 @@ export default gql`
   }
 
   type DataEntry {
-    accountID: AccountID!
+    account: Account!
     name: String!
     value: String!
     lastModified: Int!
   }
 
   type Signer {
-    accountID: AccountID!
-    signer: AccountID!
+    account: Account!
+    signer: Account!
     weight: Int!
   }
 
