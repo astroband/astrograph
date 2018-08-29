@@ -1,6 +1,6 @@
 import db from "../../database";
 import { Account, DataEntry } from "../../model";
-import { createBatchResolver } from "./util";
+import { createBatchResolver, ledgerLinkResolver } from "./util";
 
 const accountResolver = createBatchResolver<DataEntry, Account>((source: any) =>
   db.accounts.findAllByIDs(source.map((r: DataEntry) => r.accountID))
@@ -8,7 +8,8 @@ const accountResolver = createBatchResolver<DataEntry, Account>((source: any) =>
 
 export default {
   DataEntry: {
-    account: accountResolver
+    account: accountResolver,
+    ledger: ledgerLinkResolver
   },
   Query: {
     dataEntries(root: any, args: any, ctx: any, info: any) {
