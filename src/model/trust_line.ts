@@ -25,6 +25,12 @@ export class TrustLine {
     this.lastModified = data.lastmodified;
     this.authorized = (data.flags & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0;
 
-    this.asset = new Asset(data.assettype, data.assetcode, data.issuer);
+    this.asset = new Asset(
+      // we want to handle native balance
+      // like a trustline too, for consistency
+      data.assettype === stellar.xdr.AssetType.assetTypeNative().value,
+      data.assetcode,
+      data.issuer
+    );
   }
 }

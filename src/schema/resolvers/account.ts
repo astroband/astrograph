@@ -45,6 +45,9 @@ export default {
   Query: {
     account(root: any, args: any, ctx: any, info: any) {
       return db.accounts.findByID(args.id);
+    },
+    accounts(root: any, args: any, ctx: any, info: any) {
+      return db.accounts.findAllByIDs(args.id);
     }
   },
   Subscription: {

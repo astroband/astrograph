@@ -4,12 +4,6 @@ export default gql`
   scalar AssetCode
   scalar AccountID
 
-  enum AssetType {
-    Native
-    AlphaNum4
-    AlphaNum12
-  }
-
   type LedgerHeader {
     ledgerVersion: Int!
     previousLedgerHash: String!
@@ -25,7 +19,7 @@ export default gql`
   }
 
   type Asset {
-    type: AssetType!
+    native: Boolean!
     issuer: AccountID!
     code: AssetCode!
   }
@@ -129,7 +123,7 @@ export default gql`
   }
 
   type Transaction {
-    ID: String!
+    id: String!
     ledger: Ledger!
     index: Int!
     body: String!
@@ -139,11 +133,14 @@ export default gql`
 
   type Query {
     account(id: AccountID!): Account!
+    accounts(id: [AccountID!]): [Account]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
     trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger
+    ledgers(seq: [Int!]): [Ledger]
     transaction(id: String!): Transaction
+    transactions(id: [String!]): [Transaction]
   }
 
   type Subscription {

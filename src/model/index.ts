@@ -4,7 +4,6 @@ export * from "./account_entry_key";
 export * from "./account_flags";
 export * from "./account_thresholds";
 export * from "./asset";
-export * from "./asset_type";
 export * from "./data_entry";
 export * from "./entry_type";
 export * from "./signer";

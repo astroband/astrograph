@@ -1,6 +1,6 @@
 import db from "../../database";
-import { pubsub } from "../../pubsub";
 import { Ledger, LedgerHeader } from "../../model";
+import { pubsub } from "../../pubsub";
 import { createBatchResolver } from "./util";
 
 const LEDGER_CREATED = "LEDGER_CREATED";
@@ -16,6 +16,9 @@ export default {
   Query: {
     ledger(root: any, args: any, ctx: any, info: any) {
       return db.ledgerHeaders.findBySeq(args.seq);
+    },
+    ledgers(root: any, args: any, ctx: any, info: any) {
+      return db.ledgerHeaders.findAllBySeq(args.seq);
     }
   },
   Subscription: {
