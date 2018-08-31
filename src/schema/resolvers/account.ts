@@ -4,6 +4,8 @@ import { withFilter } from "graphql-subscriptions";
 import { createBatchResolver, ledgerResolver } from "./util";
 
 import db from "../../database";
+import { joinToMap } from "../../common/util/array";
+
 import { ACCOUNT_CREATED, ACCOUNT_REMOVED, ACCOUNT_UPDATED, pubsub } from "../../pubsub";
 
 const fetchIDs = (r: any) => r.id;
@@ -17,13 +19,13 @@ const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: a
 );
 
 const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: any) => {
-  const trustLines = await db.trustLines.findAllByAccountIDs(source.map(fetchIDs));
+  const accountIDs = source.map(fetchIDs);
+  const trustLines = await db.trustLines.findAllByAccountIDs(accountIDs);
 
-  for (const accountTrustLines of trustLines) {
-    if (accountTrustLines.length === 0) {
-      continue;
-    }
-    const account = source.find((acc: Account) => acc.id === accountTrustLines[0].accountID);
+  const map = joinToMap(accountIDs, trustLines);
+
+  for (const [accountID, accountTrustLines] of map) {
+    const account = source.find((acc: Account) => acc.id === accountID);
     accountTrustLines.unshift(TrustLine.buildFakeNative(account));
   }
 
