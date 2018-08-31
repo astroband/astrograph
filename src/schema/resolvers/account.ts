@@ -16,9 +16,19 @@ const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: a
   db.dataEntries.findAllByAccountIDs(source.map(fetchIDs))
 );
 
-const trustLinesResolver = createBatchResolver<Account, TrustLine[]>((source: any) =>
-  db.trustLines.findAllByAccountIDs(source.map(fetchIDs))
-);
+const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: any) => {
+  const trustLines = await db.trustLines.findAllByAccountIDs(source.map(fetchIDs));
+
+  for (const accountTrustLines of trustLines) {
+    if (accountTrustLines.length === 0) {
+      continue;
+    }
+    const account = source.filter((acc: Account) => acc.id === accountTrustLines[0].accountID);
+    accountTrustLines.unshift(TrustLine.buildFakeNative(account));
+  }
+
+  return trustLines;
+});
 
 const accountSubscription = (event: string) => {
   return {

@@ -36,8 +36,11 @@ export default {
     trustLineRemoved: trustLineSubscription(TRUST_LINE_REMOVED)
   },
   Query: {
-    trustLines(root: any, args: any, ctx: any, info: any) {
-      return db.trustLines.findAllByAccountID(args.id);
+    async trustLines(root: any, args: any, ctx: any, info: any) {
+      const trustLines = await db.trustLines.findAllByAccountID(args.id);
+      trustLines.unshift(TrustLine.buildFakeNative(args));
+
+      return trustLines;
     }
   }
 };

@@ -11,6 +11,7 @@ import AccountsRepo from "./repo/accounts";
 import DataEntriesRepo from "./repo/data_entries";
 import LedgerHeadersRepo from "./repo/ledger_headers";
 import SignersRepo from "./repo/signers";
+import StoreStateRepo from "./repo/store_state";
 import TransactionFeesRepo from "./repo/transaction_fees";
 import TransactionsRepo from "./repo/transactions";
 import TrustLinesRepo from "./repo/trust_lines";
@@ -24,6 +25,7 @@ interface IExtensions {
   transactions: TransactionsRepo;
   transactionFees: TransactionFeesRepo;
   trustLines: TrustLinesRepo;
+  storeState: StoreStateRepo;
 }
 
 // pg-promise initialization options:
@@ -40,6 +42,7 @@ const initOptions: IOptions<IExtensions> = {
     obj.transactions = new TransactionsRepo(obj);
     obj.transactionFees = new TransactionFeesRepo(obj);
     obj.trustLines = new TrustLinesRepo(obj);
+    obj.storeState = new StoreStateRepo(obj);
   }
 };
 

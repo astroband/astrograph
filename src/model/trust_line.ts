@@ -1,7 +1,24 @@
 import stellar from "stellar-base";
+import { Account } from "./account";
 import { Asset } from "./asset";
+import { MAX_INT64 } from "../common";
 
 export class TrustLine {
+  public static buildFakeNative(account: Account) {
+    const data = {
+      accountid: account.id,
+      assettype: stellar.xdr.AssetType.assetTypeNative().value,
+      assetcode: "XLM",
+      issuer: stellar.Keypair.master().publicKey(),
+      lastmodified: account.lastModified,
+      tlimit: MAX_INT64,
+      flags: 1,
+      balance: account.balance
+    };
+
+    return new TrustLine(data);
+  }
+
   public accountID: string;
   public asset: Asset;
   public limit: string;
