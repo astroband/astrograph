@@ -11,7 +11,7 @@ const server = new ApolloServer({
   tracing: true
 });
 
-db.one("SELECT state FROM storestate WHERE statename = 'networkpassphrase'").then(({ state: networkPassphrase }) => {
+db.storeState.getStellarNetworkPassphrase().then((networkPassphrase: string) => {
   logger.info(`Using ${networkPassphrase}`);
   Network.use(new Network(networkPassphrase));
 });
