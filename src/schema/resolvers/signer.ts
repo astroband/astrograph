@@ -17,7 +17,22 @@ export default {
   },
   Query: {
     signers(root: any, args: any, ctx: any, info: any) {
-      return db.signers.findAllByAccountID(args.id);
+      const accountPromise = db.accounts.findByID(args.id);
+      const signersPromise = db.signers.findAllByAccountID(args.id);
+
+      return Promise.all([accountPromise, signersPromise]).then(values => {
+        const [account, signers] = values;
+
+        signers.unshift(
+          new Signer({
+            accountid: account.id,
+            publickey: account.id,
+            weight: account.thresholds.masterWeight
+          })
+        );
+
+        return signers;
+      });
     }
   }
 };

@@ -10,9 +10,25 @@ import { ACCOUNT_CREATED, ACCOUNT_REMOVED, ACCOUNT_UPDATED, pubsub } from "../..
 
 const fetchIDs = (r: any) => r.id;
 
-const signersResolver = createBatchResolver<Account, Signer[]>((source: any) =>
-  db.signers.findAllByAccountIDs(source.map(fetchIDs))
-);
+const signersResolver = createBatchResolver<Account, Signer[]>(async (source: any) => {
+  const accountIDs = source.map(fetchIDs);
+  const signers = await db.signers.findAllByAccountIDs(accountIDs);
+
+  const map = joinToMap(accountIDs, signers);
+
+  for (const [accountID, accountSigners] of map) {
+    const account = source.find((acc: Account) => acc.id === accountID);
+    accountSigners.unshift(
+      new Signer({
+        accountid: account.id,
+        publickey: account.id,
+        weight: account.thresholds.masterWeight
+      })
+    );
+  }
+
+  return signers;
+});
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(source.map(fetchIDs))
