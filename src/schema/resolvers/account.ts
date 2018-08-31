@@ -23,7 +23,7 @@ const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (sour
     if (accountTrustLines.length === 0) {
       continue;
     }
-    const account = source.filter((acc: Account) => acc.id === accountTrustLines[0].accountID);
+    const account = source.find((acc: Account) => acc.id === accountTrustLines[0].accountID);
     accountTrustLines.unshift(TrustLine.buildFakeNative(account));
   }
 
