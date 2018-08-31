@@ -1,6 +1,7 @@
 import stellar from "stellar-base";
 import { Account } from "./account";
 import { Asset } from "./asset";
+import { MAX_INT64 } from "../common";
 
 export class TrustLine {
   public static buildFakeNative(account: Account) {
@@ -10,7 +11,7 @@ export class TrustLine {
       assetcode: "XLM",
       issuer: stellar.Keypair.master().publicKey(),
       lastmodified: account.lastModified,
-      tlimit: "9223372036854776000",
+      tlimit: MAX_INT64,
       flags: 1,
       balance: account.balance
     };
