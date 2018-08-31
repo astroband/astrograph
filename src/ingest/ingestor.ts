@@ -6,7 +6,7 @@ import { Collection } from "./collection";
 export class Ingestor {
   // Factory function
   public static async build(seq: number | null = null, tickFn: any) {
-    const n = seq || (await db.ledgers.findMaxSeq()) + 1;
+    const n = seq || (await db.ledgerHeaders.findMaxSeq()) + 1;
     return new Ingestor(n, tickFn);
   }
 
@@ -28,11 +28,11 @@ export class Ingestor {
   }
 
   private async nextLedger(): Promise<Ledger | null> {
-    const ledger = await db.ledgers.findBySeq(this.seq);
+    const ledgerHeader = await db.ledgerHeaders.findBySeq(this.seq);
 
     // If there is no next ledger
-    if (ledger == null) {
-      const maxSeq = await db.ledgers.findMaxSeq();
+    if (ledgerHeader == null) {
+      const maxSeq = await db.ledgerHeaders.findMaxSeq();
 
       // And there is a ledger somewhere forward in history (it is the gap)
       if (this.seq < maxSeq) {
@@ -44,7 +44,7 @@ export class Ingestor {
 
     this.incrementSeq();
 
-    return ledger;
+    return new Ledger(this.seq);
   }
 
   private async fetch(ledger: Ledger) {
@@ -57,7 +57,7 @@ export class Ingestor {
   }
 
   private async fetchTransactionFees(ledger: Ledger, collection: Collection) {
-    const fees = await db.transactionFees.findAllBySeq(ledger.ledgerSeq);
+    const fees = await db.transactionFees.findAllBySeq(ledger.seq);
 
     for (const fee of fees) {
       const changes = fee.changesFromXDR().changes();
@@ -68,7 +68,7 @@ export class Ingestor {
   }
 
   private async fetchTransactions(ledger: Ledger, collection: Collection) {
-    const txs = await db.transactions.findAllBySeq(ledger.ledgerSeq);
+    const txs = await db.transactions.findAllBySeq(ledger.seq);
 
     for (const tx of txs) {
       const xdr = tx.metaFromXDR();

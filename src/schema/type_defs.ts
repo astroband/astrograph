@@ -4,6 +4,20 @@ export default gql`
   scalar AssetCode
   scalar AccountID
 
+  type LedgerHeader {
+    ledgerVersion: Int!
+    previousLedgerHash: String!
+    txSetResultHash: String!
+    baseFee: Int!
+    baseReserve: Int!
+    maxTxSetSize: Int!
+  }
+
+  type Ledger {
+    seq: Int!
+    header: LedgerHeader
+  }
+
   type Asset {
     native: Boolean!
     issuer: AccountID!
@@ -27,7 +41,7 @@ export default gql`
     account: Account!
     name: String!
     value: String!
-    lastModified: Int!
+    ledger: Ledger!
   }
 
   type Signer {
@@ -57,7 +71,7 @@ export default gql`
     homeDomain: String
     thresholds: AccountThresholds!
     flags: AccountFlags!
-    lastModified: Int!
+    ledger: Ledger!
     signers: [Signer]
     data: [DataEntry]
     trustLines: [TrustLine]
@@ -92,7 +106,7 @@ export default gql`
     limit: Float!
     balance: Float!
     authorized: Boolean!
-    lastModified: Int!
+    ledger: Ledger!
   }
 
   type TrustLineEntry implements ITrustLine {
@@ -110,21 +124,11 @@ export default gql`
 
   type Transaction {
     id: String!
-    ledgerSeq: Int!
+    ledger: Ledger!
     index: Int!
     body: String!
     result: String!
     meta: String!
-  }
-
-  type Ledger {
-    ledgerSeq: Int!
-    ledgerVersion: Int!
-    previousLedgerHash: String!
-    txSetResultHash: String!
-    baseFee: Int!
-    baseReserve: Int!
-    maxTxSetSize: Int!
   }
 
   type Query {

@@ -1,7 +1,7 @@
 import { Account, DataEntry, Signer, TrustLine } from "../../model";
 
 import { withFilter } from "graphql-subscriptions";
-import { createBatchResolver } from "./util";
+import { createBatchResolver, ledgerResolver } from "./util";
 
 import db from "../../database";
 import { ACCOUNT_CREATED, ACCOUNT_REMOVED, ACCOUNT_UPDATED, pubsub } from "../../pubsub";
@@ -39,7 +39,8 @@ export default {
   Account: {
     signers: signersResolver,
     data: dataEntriesResolver,
-    trustLines: trustLinesResolver
+    trustLines: trustLinesResolver,
+    ledger: ledgerResolver
   },
   Query: {
     account(root: any, args: any, ctx: any, info: any) {
