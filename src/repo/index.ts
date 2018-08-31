@@ -1,6 +1,6 @@
 export * from "./accounts";
 export * from "./data_entries";
-export * from "./ledgers";
+export * from "./ledger_headers";
 export * from "./signers";
 export * from "./transactions";
 export * from "./transaction_fees";

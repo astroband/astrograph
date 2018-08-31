@@ -1,9 +1,9 @@
 import db from "../../database";
-import { ledgerLinkResolver } from "./util";
+import { ledgerResolver } from "./util";
 
 export default {
   Transaction: {
-    ledger: ledgerLinkResolver
+    ledger: ledgerResolver
   },
   Query: {
     transaction(root: any, args: any, ctx: any, info: any) {
