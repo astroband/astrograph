@@ -38,7 +38,6 @@ export default gql`
 
   interface IAccount {
     id: AccountID!
-    balance: Float!
     sequenceNumber: Float!
     numSubentries: Int!
     inflationDest: AccountID
@@ -50,7 +49,6 @@ export default gql`
 
   type Account implements IAccount {
     id: AccountID!
-    balance: Float!
     sequenceNumber: Float!
     numSubentries: Int!
     inflationDest: AccountID
@@ -65,7 +63,6 @@ export default gql`
 
   type AccountEntry implements IAccount {
     id: AccountID!
-    balance: Float!
     sequenceNumber: Float!
     numSubentries: Int!
     inflationDest: AccountID
