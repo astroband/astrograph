@@ -1,7 +1,6 @@
 import { AccountFlags } from "./account_flags";
 import { AccountThresholds } from "./account_thresholds";
 
-// TODO: longs
 export class Account {
   public id: string;
   public balance: string;

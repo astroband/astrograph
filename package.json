@@ -13,9 +13,11 @@
     "url": "https://github.com/mobius-network/astrograph/issues"
   },
   "dependencies": {
+    "@types/big.js": "^4.0.5",
     "@types/graphql-resolve-batch": "^1.1.1",
     "@udia/graphql-postgres-subscriptions": "^1.0.9",
     "apollo-server": "^2.0.0-rc.8",
+    "big.js": "^5.1.2",
     "bluebird": "^3.5.1",
     "dotenv": "^6.0.0",
     "graphql": "^0.13.2",

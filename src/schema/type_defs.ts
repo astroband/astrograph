@@ -92,16 +92,16 @@ export default gql`
 
   interface ITrustLine {
     asset: Asset!
-    limit: Float!
-    balance: Float!
+    limit: String!
+    balance: String!
     authorized: Boolean!
   }
 
   type TrustLine implements ITrustLine {
     account: Account!
     asset: Asset!
-    limit: Float!
-    balance: Float!
+    limit: String!
+    balance: String!
     authorized: Boolean!
     ledger: Ledger!
   }
@@ -109,8 +109,8 @@ export default gql`
   type TrustLineEntry implements ITrustLine {
     accountID: AccountID!
     asset: Asset!
-    limit: Float!
-    balance: Float!
+    limit: String!
+    balance: String!
     authorized: Boolean!
   }
 
