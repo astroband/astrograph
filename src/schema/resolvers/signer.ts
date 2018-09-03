@@ -16,23 +16,19 @@ export default {
     signer: signerResolver
   },
   Query: {
-    signers(root: any, args: any, ctx: any, info: any) {
-      const accountPromise = db.accounts.findByID(args.id);
-      const signersPromise = db.signers.findAllByAccountID(args.id);
+    async signers(root: any, args: any, ctx: any, info: any) {
+      const account = await db.accounts.findByID(args.id);
+      const signers = await db.signers.findAllByAccountID(args.id);
 
-      return Promise.all([accountPromise, signersPromise]).then(values => {
-        const [account, signers] = values;
+      signers.unshift(
+        new Signer({
+          accountid: account.id,
+          publickey: account.id,
+          weight: account.thresholds.masterWeight
+        })
+      );
 
-        signers.unshift(
-          new Signer({
-            accountid: account.id,
-            publickey: account.id,
-            weight: account.thresholds.masterWeight
-          })
-        );
-
-        return signers;
-      });
+      return signers;
     }
   }
 };

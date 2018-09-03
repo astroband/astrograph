@@ -37,15 +37,12 @@ export default {
   },
   Query: {
     async trustLines(root: any, args: any, ctx: any, info: any) {
-      const accountPromise = db.accounts.findByID(args.id);
-      const trustLinesPromise = db.trustLines.findAllByAccountID(args.id);
+      const account = await db.accounts.findByID(args.id);
+      const trustLines = await db.trustLines.findAllByAccountID(args.id);
 
-      return Promise.all([accountPromise, trustLinesPromise]).then(values => {
-        const [account, trustLines] = values;
-        trustLines.unshift(TrustLine.buildFakeNative(account));
+      trustLines.unshift(TrustLine.buildFakeNative(account));
 
-        return trustLines;
-      });
+      return trustLines;
     }
   }
 };
