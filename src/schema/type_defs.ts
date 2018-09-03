@@ -129,7 +129,7 @@ export default gql`
   }
 
   type Query {
-    account(id: AccountID!): Account!
+    account(id: AccountID!): Account
     accounts(id: [AccountID!]): [Account]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]

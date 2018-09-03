@@ -15,8 +15,8 @@ export default class AccountsRepo {
   }
 
   // Tries to find a transaction by id;
-  public findByID(id: string): Promise<Account> {
-    return this.db.oneOrNone(sql.selectAccount, id, res => new Account(res));
+  public findByID(id: string): Promise<Account | null> {
+    return this.db.oneOrNone(sql.selectAccount, id, res => (res ? new Account(res) : null));
   }
 
   public async findAllByIDs(ids: string[]): Promise<Array<Account | null>> {
