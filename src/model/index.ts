@@ -5,6 +5,8 @@ export * from "./account_flags";
 export * from "./account_thresholds";
 export * from "./asset";
 export * from "./data_entry";
+export * from "./data_entry_event_payload";
+export * from "./data_entry_event_remove_payload";
 export * from "./payload_type";
 export * from "./signer";
 export * from "./ledger";
