@@ -140,9 +140,9 @@ export default gql`
     transactions(id: [String!]): [Transaction]
   }
 
-  type EventInput {
-    id_eq: [AccountID!]
-    id_in: String
+  input EventInput {
+    idEq: AccountID
+    idIn: [AccountID!]
   }
 
   type Subscription {

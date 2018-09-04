@@ -1,7 +1,7 @@
 import { Account, DataEntry, Signer, TrustLine } from "../../model";
 
 import { withFilter } from "graphql-subscriptions";
-import { createBatchResolver, ledgerResolver } from "./util";
+import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 import { joinToMap } from "../../common/util/array";
 import db from "../../database";
@@ -53,7 +53,7 @@ const accountSubscription = (event: string) => {
     subscribe: withFilter(
       () => pubsub.asyncIterator([event]),
       (payload, variables) => {
-        return payload.id === variables.id;
+        return eventMatches(variables.args, payload.id);
       }
     ),
 

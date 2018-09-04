@@ -42,7 +42,7 @@ export class Collection extends Array<Payload> {
   }
 
   private fetchCreateUpdate(xdr: any, payloadType: PayloadType) {
-    const t = stellar.xdr.LedgerPayloadType;
+    const t = stellar.xdr.LedgerEntryType;
 
     switch (xdr.switch()) {
       case t.account():
@@ -55,7 +55,7 @@ export class Collection extends Array<Payload> {
   }
 
   private fetchRemove(xdr: any) {
-    const t = stellar.xdr.LedgerPayloadType;
+    const t = stellar.xdr.LedgerEntryType;
 
     switch (xdr.switch()) {
       case t.account():
