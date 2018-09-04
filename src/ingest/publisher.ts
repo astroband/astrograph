@@ -11,16 +11,16 @@ import {
   TRUST_LINE_UPDATED
 } from "../pubsub";
 
-import { EntryType, Ledger } from "../model";
+import { Ledger, PayloadType } from "../model";
 
 export class Publisher {
   private static eventMap = [
-    { entryType: EntryType.Create, payloadClassName: "AccountEntry", event: ACCOUNT_CREATED },
-    { entryType: EntryType.Update, payloadClassName: "AccountEntry", event: ACCOUNT_UPDATED },
-    { entryType: EntryType.Remove, payloadClassName: "AccountEntryKey", event: ACCOUNT_REMOVED },
-    { entryType: EntryType.Create, payloadClassName: "TrustLineEntry", event: TRUST_LINE_CREATED },
-    { entryType: EntryType.Update, payloadClassName: "TrustLineEntry", event: TRUST_LINE_UPDATED },
-    { entryType: EntryType.Remove, payloadClassName: "TrustLineEntryKey", event: TRUST_LINE_REMOVED }
+    { payloadType: PayloadType.Create, payloadClassName: "AccountEventPayload", event: ACCOUNT_CREATED },
+    { payloadType: PayloadType.Update, payloadClassName: "AccountEventPayload", event: ACCOUNT_UPDATED },
+    { payloadType: PayloadType.Remove, payloadClassName: "AccountEventRemovePayload", event: ACCOUNT_REMOVED },
+    { payloadType: PayloadType.Create, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_CREATED },
+    { payloadType: PayloadType.Update, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_UPDATED },
+    { payloadType: PayloadType.Remove, payloadClassName: "TrustLineEventRemovePayload", event: TRUST_LINE_REMOVED }
   ];
 
   private ledger: Ledger;
@@ -38,7 +38,7 @@ export class Publisher {
       const payloadClassName = entry.constructor.name;
 
       for (const m of Publisher.eventMap) {
-        if (m.entryType === entry.entryType && m.payloadClassName === payloadClassName) {
+        if (m.payloadType === entry.payloadType && m.payloadClassName === payloadClassName) {
           pubsub.publish(m.event, entry);
         }
       }

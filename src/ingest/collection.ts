@@ -1,10 +1,20 @@
 import stellar from "stellar-base";
-import { AccountEntry, AccountEntryKey, EntryType, TrustLineEntry, TrustLineEntryKey } from "../model";
+import {
+  AccountEventPayload,
+  AccountEventRemovePayload,
+  PayloadType,
+  TrustLineEventPayload,
+  TrustLineEventRemovePayload
+} from "../model";
 
-export type Entry = AccountEntry | AccountEntryKey | TrustLineEntry | TrustLineEntryKey;
+export type Payload =
+  | AccountEventPayload
+  | AccountEventRemovePayload
+  | TrustLineEventPayload
+  | TrustLineEventRemovePayload;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
-export class Collection extends Array<Entry> {
+export class Collection extends Array<Payload> {
   // Concats parsed stellar.xdr.DataEntryChange[] to array
   public concatXDR(xdr: any) {
     for (const change of xdr) {
@@ -18,11 +28,11 @@ export class Collection extends Array<Entry> {
 
     switch (xdr.switch()) {
       case t.ledgerEntryCreated():
-        this.fetchCreateUpdate(xdr.created().data(), EntryType.Create);
+        this.fetchCreateUpdate(xdr.created().data(), PayloadType.Create);
         break;
 
       case t.ledgerEntryUpdated():
-        this.fetchCreateUpdate(xdr.updated().data(), EntryType.Update);
+        this.fetchCreateUpdate(xdr.updated().data(), PayloadType.Update);
         break;
 
       case t.ledgerEntryRemoved():
@@ -31,45 +41,45 @@ export class Collection extends Array<Entry> {
     }
   }
 
-  private fetchCreateUpdate(xdr: any, entryType: EntryType) {
-    const t = stellar.xdr.LedgerEntryType;
+  private fetchCreateUpdate(xdr: any, payloadType: PayloadType) {
+    const t = stellar.xdr.LedgerPayloadType;
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEntry(entryType, xdr.account());
+        this.pushAccountEventPayload(payloadType, xdr.account());
         break;
       case t.trustline():
-        this.pushTrustLineEntry(entryType, xdr.trustLine());
+        this.pushTrustLineEventPayload(payloadType, xdr.trustLine());
         break;
     }
   }
 
   private fetchRemove(xdr: any) {
-    const t = stellar.xdr.LedgerEntryType;
+    const t = stellar.xdr.LedgerPayloadType;
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEntryKey(xdr.account());
+        this.pushAccountEventRemovePayload(xdr.account());
         break;
       case t.trustline():
-        this.pushTrustLineEntryKey(xdr.trustLine());
+        this.pushTrustLineEventRemovePayload(xdr.trustLine());
         break;
     }
   }
 
-  private pushAccountEntry(entryType: EntryType, xdr: any) {
-    this.push(AccountEntry.buildFromXDR(entryType, xdr));
+  private pushAccountEventPayload(payloadType: PayloadType, xdr: any) {
+    this.push(AccountEventPayload.buildFromXDR(payloadType, xdr));
   }
 
-  private pushAccountEntryKey(xdr: any) {
-    this.push(AccountEntryKey.buildFromXDR(EntryType.Remove, xdr));
+  private pushAccountEventRemovePayload(xdr: any) {
+    this.push(AccountEventRemovePayload.buildFromXDR(PayloadType.Remove, xdr));
   }
 
-  private pushTrustLineEntry(entryType: EntryType, xdr: any) {
-    this.push(TrustLineEntry.buildFromXDR(entryType, xdr));
+  private pushTrustLineEventPayload(payloadType: PayloadType, xdr: any) {
+    this.push(TrustLineEventPayload.buildFromXDR(payloadType, xdr));
   }
 
-  private pushTrustLineEntryKey(xdr: any) {
-    this.push(TrustLineEntryKey.buildFromXDR(EntryType.Remove, xdr));
+  private pushTrustLineEventRemovePayload(xdr: any) {
+    this.push(TrustLineEventRemovePayload.buildFromXDR(PayloadType.Remove, xdr));
   }
 }
