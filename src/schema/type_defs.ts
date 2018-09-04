@@ -75,7 +75,7 @@ export default gql`
     trustLines: [TrustLine]
   }
 
-  type AccountEntry implements IAccount {
+  type AccountEventPayload implements IAccount {
     id: AccountID!
     sequenceNumber: Float!
     numSubentries: Int!
@@ -86,7 +86,7 @@ export default gql`
     signers: [Signer]
   }
 
-  type AccountKey {
+  type AccountRemoveEventPayload {
     id: AccountID!
   }
 
@@ -106,7 +106,7 @@ export default gql`
     ledger: Ledger!
   }
 
-  type TrustLineEntry implements ITrustLine {
+  type TrustLineEventPayload implements ITrustLine {
     accountID: AccountID!
     asset: Asset!
     limit: Float!
@@ -114,7 +114,7 @@ export default gql`
     authorized: Boolean!
   }
 
-  type TrustLineEntryKey {
+  type TrustLineRemoveEventPayload {
     accountID: AccountID!
     asset: Asset!
   }
@@ -143,13 +143,13 @@ export default gql`
   type Subscription {
     ledgerCreated: Ledger
 
-    accountCreated(id: AccountID): AccountEntry
-    accountUpdated(id: AccountID): AccountEntry
-    accountRemoved(id: AccountID): AccountKey
+    accountCreated(id: AccountID): AccountEventPayload
+    accountUpdated(id: AccountID): AccountEventPayload
+    accountRemoved(id: AccountID): AccountRemoveEventPayload
 
-    trustLineCreated(id: AccountID): TrustLineEntry
-    trustLineUpdated(id: AccountID): TrustLineEntry
-    trustLineRemoved(id: AccountID): TrustLineEntryKey
+    trustLineCreated(id: AccountID): TrustLineEventPayload
+    trustLineUpdated(id: AccountID): TrustLineEventPayload
+    trustLineRemoved(id: AccountID): TrustLineRemoveEventPayload
   }
 
 `;

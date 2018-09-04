@@ -1,7 +1,7 @@
 import stellar from "stellar-base";
+import { MAX_INT64 } from "../common";
 import { Account } from "./account";
 import { Asset } from "./asset";
-import { MAX_INT64 } from "../common";
 
 export class TrustLine {
   public static buildFakeNative(account: Account) {

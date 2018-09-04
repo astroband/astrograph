@@ -3,8 +3,8 @@ import { Account, DataEntry, Signer, TrustLine } from "../../model";
 import { withFilter } from "graphql-subscriptions";
 import { createBatchResolver, ledgerResolver } from "./util";
 
-import db from "../../database";
 import { joinToMap } from "../../common/util/array";
+import db from "../../database";
 
 import { ACCOUNT_CREATED, ACCOUNT_REMOVED, ACCOUNT_UPDATED, pubsub } from "../../pubsub";
 
