@@ -1,5 +1,5 @@
 import { Account, TrustLine } from "../../model";
-import { createBatchResolver, ledgerResolver } from "./util";
+import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 import { withFilter } from "graphql-subscriptions";
 
@@ -15,7 +15,7 @@ const trustLineSubscription = (event: string) => {
     subscribe: withFilter(
       () => pubsub.asyncIterator([event]),
       (payload, variables) => {
-        return payload.accountID === variables.id;
+        return eventMatches(variables.args, payload.accountID);
       }
     ),
 
