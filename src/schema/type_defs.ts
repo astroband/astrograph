@@ -37,11 +37,29 @@ export default gql`
     high: Int!
   }
 
-  type DataEntry {
+  interface IDataEntry {
+    name: String!
+    value: String!
+    ledger: Ledger!
+  }
+
+  type DataEntry implements IDataEntry {
     account: Account!
     name: String!
     value: String!
     ledger: Ledger!
+  }
+
+  type DataEntryEventPayload implements IDataEntry {
+    accountID: AccountID!
+    name: String!
+    value: String!
+    ledger: Ledger!
+  }
+
+  type DataEntryRemoveEventPayload {
+    accountID: AccountID!
+    name: String!
   }
 
   type Signer {
@@ -155,11 +173,12 @@ export default gql`
     trustLineCreated(args: EventInput): TrustLineEventPayload
     trustLineUpdated(args: EventInput): TrustLineEventPayload
     trustLineRemoved(args: EventInput): TrustLineRemoveEventPayload
+
+    dataEntryCreated(args: EventInput): DataEntryEventPayload
+    dataEntryUpdated(args: EventInput): DataEntryEventPayload
+    dataEntryRemoved(args: EventInput): DataEntryRemoveEventPayload
   }
 
 `;
-// dataEntryCreated(id: AccountID): DataEntry
-// dataEntryUpdated(id: AccountID): DataEntry
-// dataEntryDeleted(id: AccountID): DataEntry
 //
 // transactionCreated(id: AccountID): Transaction

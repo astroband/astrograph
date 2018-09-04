@@ -4,6 +4,9 @@ import {
   ACCOUNT_CREATED,
   ACCOUNT_REMOVED,
   ACCOUNT_UPDATED,
+  DATA_ENTRY_CREATED,
+  DATA_ENTRY_REMOVED,
+  DATA_ENTRY_UPDATED,
   LEDGER_CREATED,
   pubsub,
   TRUST_LINE_CREATED,
@@ -20,7 +23,10 @@ export class Publisher {
     { payloadType: PayloadType.Remove, payloadClassName: "AccountEventRemovePayload", event: ACCOUNT_REMOVED },
     { payloadType: PayloadType.Create, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_CREATED },
     { payloadType: PayloadType.Update, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_UPDATED },
-    { payloadType: PayloadType.Remove, payloadClassName: "TrustLineEventRemovePayload", event: TRUST_LINE_REMOVED }
+    { payloadType: PayloadType.Remove, payloadClassName: "TrustLineEventRemovePayload", event: TRUST_LINE_REMOVED },
+    { payloadType: PayloadType.Create, payloadClassName: "DataEntryEventPayload", event: DATA_ENTRY_CREATED },
+    { payloadType: PayloadType.Update, payloadClassName: "DataEntryEventPayload", event: DATA_ENTRY_UPDATED },
+    { payloadType: PayloadType.Remove, payloadClassName: "DataEntryEventRemovePayload", event: DATA_ENTRY_REMOVED }
   ];
 
   private ledger: Ledger;

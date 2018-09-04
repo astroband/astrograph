@@ -2,6 +2,8 @@ import stellar from "stellar-base";
 import {
   AccountEventPayload,
   AccountEventRemovePayload,
+  DataEntryEventPayload,
+  DataEntryEventRemovePayload,
   PayloadType,
   TrustLineEventPayload,
   TrustLineEventRemovePayload
@@ -51,6 +53,9 @@ export class Collection extends Array<Payload> {
       case t.trustline():
         this.pushTrustLineEventPayload(payloadType, xdr.trustLine());
         break;
+      case t.datum():
+        this.pushDataEntryEventPayload(payloadType, xdr.data());
+        break;
     }
   }
 
@@ -63,6 +68,9 @@ export class Collection extends Array<Payload> {
         break;
       case t.trustline():
         this.pushTrustLineEventRemovePayload(xdr.trustLine());
+        break;
+      case t.datum():
+        this.pushDataEntryEventRemovePayload(xdr.data());
         break;
     }
   }
@@ -81,5 +89,13 @@ export class Collection extends Array<Payload> {
 
   private pushTrustLineEventRemovePayload(xdr: any) {
     this.push(TrustLineEventRemovePayload.buildFromXDR(PayloadType.Remove, xdr));
+  }
+
+  private pushDataEntryEventPayload(payloadType: PayloadType, xdr: any) {
+    this.push(DataEntryEventPayload.buildFromXDR(payloadType, xdr));
+  }
+
+  private pushDataEntryEventRemovePayload(xdr: any) {
+    this.push(DataEntryEventRemovePayload.buildFromXDR(PayloadType.Remove, xdr));
   }
 }
