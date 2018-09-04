@@ -7,15 +7,24 @@ Stellar GraphQL Server
 
 # Running
 
-`yarn run dev`
+`yarn run dev` or `yarn run prod`
+
+# Usage
+
+Open `http://localhost:4000` or use any GraphQL client. Schema is available in [type_defs.ts](src/schema/type_defs.ts).
 
 # Env vars
+
+Stellar Core Database:
 
 * `DB`
 * `DBPORT`
 * `DBHOST`
 * `DBUSER`
 * `DBPASSWORD`
+
+Settings:
+
 * `DEBUG_LEDGER` - start ingest from specific ledger (debug purposes).
 * `INGEST_INTERVAL` - poll db every ms (2000 by default), useful while debugging.
 
