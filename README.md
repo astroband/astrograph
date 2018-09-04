@@ -13,6 +13,12 @@ Stellar GraphQL Server
 
 Open `http://localhost:4000` or use any GraphQL client. Schema is available in [type_defs.ts](src/schema/type_defs.ts).
 
+Queries and subscriptions are available for:
+
+* Accounts and signers.
+* Trust lines.
+* Data entries.
+
 # Env vars
 
 Stellar Core Database:
