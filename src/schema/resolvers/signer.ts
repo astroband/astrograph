@@ -18,17 +18,21 @@ export default {
   Query: {
     async signers(root: any, args: any, ctx: any, info: any) {
       const account = await db.accounts.findByID(args.id);
-      const signers = await db.signers.findAllByAccountID(args.id);
 
-      signers.unshift(
-        new Signer({
-          accountid: account.id,
-          publickey: account.id,
-          weight: account.thresholds.masterWeight
-        })
-      );
+      if (account !== null) {
+        const signers = await db.signers.findAllByAccountID(args.id);
 
-      return signers;
+        signers.unshift(
+          new Signer({
+            accountid: account.id,
+            publickey: account.id,
+            weight: account.thresholds.masterWeight
+          })
+        );
+        return signers;
+      }
+
+      return [];
     }
   }
 };

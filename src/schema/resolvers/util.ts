@@ -9,3 +9,15 @@ export function ledgerResolver(obj: any) {
   const seq = obj.lastModified || obj.ledgerSeq;
   return new Ledger(seq);
 }
+
+export function eventMatches(args: any, id: string): boolean {
+  if (args.idEq) {
+    return id === args.idEq;
+  }
+
+  if (args.idIn) {
+    return args.idIn.includes(id);
+  }
+
+  return true;
+}
