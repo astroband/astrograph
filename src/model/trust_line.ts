@@ -2,6 +2,7 @@ import stellar from "stellar-base";
 import { Account } from "./account";
 import { Asset } from "./asset";
 import { MAX_INT64 } from "../common";
+import { toFloatAmountString } from "../common/util/stellar";
 
 export class TrustLine {
   public static buildFakeNative(account: Account) {
@@ -37,8 +38,8 @@ export class TrustLine {
     lastmodified: number;
   }) {
     this.accountID = data.accountid;
-    this.limit = data.tlimit;
-    this.balance = data.balance;
+    this.limit = toFloatAmountString(data.tlimit);
+    this.balance = toFloatAmountString(data.balance);
     this.lastModified = data.lastmodified;
     this.authorized = (data.flags & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0;
 
