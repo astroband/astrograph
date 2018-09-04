@@ -38,6 +38,11 @@ export default {
   Query: {
     async trustLines(root: any, args: any, ctx: any, info: any) {
       const account = await db.accounts.findByID(args.id);
+
+      if (account === null) {
+        return null;
+      }
+
       const trustLines = await db.trustLines.findAllByAccountID(args.id);
 
       trustLines.unshift(TrustLine.buildFakeNative(account));
