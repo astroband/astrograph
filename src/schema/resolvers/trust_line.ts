@@ -40,7 +40,9 @@ export default {
       const account = await db.accounts.findByID(args.id);
       const trustLines = await db.trustLines.findAllByAccountID(args.id);
 
-      trustLines.unshift(TrustLine.buildFakeNative(account));
+      if (account !== null) {
+        trustLines.unshift(TrustLine.buildFakeNative(account));
+      }
 
       return trustLines;
     }

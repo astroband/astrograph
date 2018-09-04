@@ -20,13 +20,15 @@ export default {
       const account = await db.accounts.findByID(args.id);
       const signers = await db.signers.findAllByAccountID(args.id);
 
-      signers.unshift(
-        new Signer({
-          accountid: account.id,
-          publickey: account.id,
-          weight: account.thresholds.masterWeight
-        })
-      );
+      if (account !== null) {
+        signers.unshift(
+          new Signer({
+            accountid: account.id,
+            publickey: account.id,
+            weight: account.thresholds.masterWeight
+          })
+        );
+      }
 
       return signers;
     }

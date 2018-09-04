@@ -140,16 +140,21 @@ export default gql`
     transactions(id: [String!]): [Transaction]
   }
 
+  type EventInput {
+    id_eq: [AccountID!]
+    id_in: String
+  }
+
   type Subscription {
     ledgerCreated: Ledger
 
-    accountCreated(id: AccountID): AccountEventPayload
-    accountUpdated(id: AccountID): AccountEventPayload
-    accountRemoved(id: AccountID): AccountRemoveEventPayload
+    accountCreated(args: EventInput): AccountEventPayload
+    accountUpdated(args: EventInput): AccountEventPayload
+    accountRemoved(args: EventInput): AccountRemoveEventPayload
 
-    trustLineCreated(id: AccountID): TrustLineEventPayload
-    trustLineUpdated(id: AccountID): TrustLineEventPayload
-    trustLineRemoved(id: AccountID): TrustLineRemoveEventPayload
+    trustLineCreated(args: EventInput): TrustLineEventPayload
+    trustLineUpdated(args: EventInput): TrustLineEventPayload
+    trustLineRemoved(args: EventInput): TrustLineRemoveEventPayload
   }
 
 `;
