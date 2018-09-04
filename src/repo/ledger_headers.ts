@@ -8,7 +8,7 @@ const sql = {
   selectMaxLedger: "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1"
 };
 
-export default class LedgerHeadesRepo {
+export default class LedgerHeadersRepo {
   private db: IDatabase<any>;
 
   constructor(db: any) {
