@@ -4,6 +4,12 @@ export default gql`
   scalar AssetCode
   scalar AccountID
 
+  enum MutationType {
+    Create
+    Update
+    Remove
+  }
+
   type LedgerHeader {
     ledgerVersion: Int!
     previousLedgerHash: String!
@@ -50,16 +56,18 @@ export default gql`
     ledger: Ledger!
   }
 
-  type DataEntryEventPayload implements IDataEntry {
+  type DataEntryValues implements IDataEntry {
     accountID: AccountID!
     name: String!
     value: String!
     ledger: Ledger!
   }
 
-  type DataEntryRemoveEventPayload {
+  type DataEntrySubscriptionPayload {
     accountID: AccountID!
     name: String!
+    mutation: MutationType!
+    node: DataEntryValues
   }
 
   type Signer {
@@ -174,9 +182,9 @@ export default gql`
     trustLineUpdated(args: EventInput): TrustLineEventPayload
     trustLineRemoved(args: EventInput): TrustLineRemoveEventPayload
 
-    dataEntryCreated(args: EventInput): DataEntryEventPayload
-    dataEntryUpdated(args: EventInput): DataEntryEventPayload
-    dataEntryRemoved(args: EventInput): DataEntryRemoveEventPayload
+    dataEntryCreated(args: EventInput): DataEntrySubscriptionPayload
+    dataEntryUpdated(args: EventInput): DataEntrySubscriptionPayload
+    dataEntryRemoved(args: EventInput): DataEntrySubscriptionPayload
   }
 
 `;

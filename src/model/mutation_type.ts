@@ -1,10 +1,10 @@
 // Internal type, it is not reflected in schema directly.
-export enum PayloadType {
+export enum MutationType {
   Create = "CREATE",
   Update = "UPDATE",
   Remove = "REMOVE"
 }
 
-export interface IPayloadType {
-  payloadType: PayloadType;
+export interface IMutationType {
+  mutationType: IMutationType;
 }

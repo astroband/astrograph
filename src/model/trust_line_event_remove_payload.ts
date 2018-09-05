@@ -1,23 +1,23 @@
 import { Asset } from "./asset";
-import { IPayloadType, PayloadType } from "./payload_type";
+import { IMutationType, MutationType } from "./payload_type";
 
 import { assetFromXDR, publicKeyFromXDR } from "../common/xdr";
 
-export class TrustLineEventRemovePayload implements IPayloadType {
-  public static buildFromXDR(payloadType: PayloadType, xdr: any): TrustLineEventRemovePayload {
+export class TrustLineEventRemovePayload implements IMutationType {
+  public static buildFromXDR(mutationType: MutationType, xdr: any): TrustLineEventRemovePayload {
     const { assettype, assetcode, issuer } = assetFromXDR(xdr);
     const asset = new Asset(assettype, assetcode, issuer);
 
-    return new TrustLineEventRemovePayload(payloadType, asset, publicKeyFromXDR(xdr));
+    return new TrustLineEventRemovePayload(mutationType, asset, publicKeyFromXDR(xdr));
   }
 
   public accountID: string;
   public asset: Asset;
-  public payloadType: PayloadType;
+  public mutationType: MutationType;
 
-  constructor(payloadType: PayloadType, asset: Asset, id: string) {
+  constructor(mutationType: MutationType, asset: Asset, id: string) {
     this.accountID = id;
-    this.payloadType = payloadType;
+    this.mutationType = mutationType;
     this.asset = asset;
   }
 }

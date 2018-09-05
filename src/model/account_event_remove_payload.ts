@@ -1,17 +1,17 @@
-import { IPayloadType, PayloadType } from "./payload_type";
+import { IMutationType, MutationType } from "./payload_type";
 
 import { publicKeyFromXDR } from "../common/xdr";
 
-export class AccountEventRemovePayload implements IPayloadType {
-  public static buildFromXDR(payloadType: PayloadType, xdr: any): AccountEventRemovePayload {
-    return new AccountEventRemovePayload(payloadType, publicKeyFromXDR(xdr));
+export class AccountEventRemovePayload implements IMutationType {
+  public static buildFromXDR(mutationType: MutationType, xdr: any): AccountEventRemovePayload {
+    return new AccountEventRemovePayload(mutationType, publicKeyFromXDR(xdr));
   }
 
   public accountID: string;
-  public payloadType: PayloadType;
+  public mutationType: MutationType;
 
-  constructor(payloadType: PayloadType, id: string) {
+  constructor(mutationType: MutationType, id: string) {
     this.accountID = id;
-    this.payloadType = payloadType;
+    this.mutationType = mutationType;
   }
 }

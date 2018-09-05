@@ -4,7 +4,7 @@ import {
   AccountEventRemovePayload,
   DataEntryEventPayload,
   DataEntryEventRemovePayload,
-  PayloadType,
+  MutationType,
   TrustLineEventPayload,
   TrustLineEventRemovePayload
 } from "../model";
@@ -30,11 +30,11 @@ export class Collection extends Array<Payload> {
 
     switch (xdr.switch()) {
       case t.ledgerEntryCreated():
-        this.fetchCreateUpdate(xdr.created().data(), PayloadType.Create);
+        this.fetchCreateUpdate(xdr.created().data(), MutationType.Create);
         break;
 
       case t.ledgerEntryUpdated():
-        this.fetchCreateUpdate(xdr.updated().data(), PayloadType.Update);
+        this.fetchCreateUpdate(xdr.updated().data(), MutationType.Update);
         break;
 
       case t.ledgerEntryRemoved():
@@ -43,18 +43,18 @@ export class Collection extends Array<Payload> {
     }
   }
 
-  private fetchCreateUpdate(xdr: any, payloadType: PayloadType) {
+  private fetchCreateUpdate(xdr: any, mutationType: MutationType) {
     const t = stellar.xdr.LedgerEntryType;
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEventPayload(payloadType, xdr.account());
+        this.pushAccountEventPayload(mutationType, xdr.account());
         break;
       case t.trustline():
-        this.pushTrustLineEventPayload(payloadType, xdr.trustLine());
+        this.pushTrustLineEventPayload(mutationType, xdr.trustLine());
         break;
       case t.datum():
-        this.pushDataEntryEventPayload(payloadType, xdr.data());
+        this.pushDataEntryEventPayload(mutationType, xdr.data());
         break;
     }
   }
@@ -75,27 +75,27 @@ export class Collection extends Array<Payload> {
     }
   }
 
-  private pushAccountEventPayload(payloadType: PayloadType, xdr: any) {
-    this.push(AccountEventPayload.buildFromXDR(payloadType, xdr));
+  private pushAccountEventPayload(mutationType: MutationType, xdr: any) {
+    this.push(AccountEventPayload.buildFromXDR(mutationType, xdr));
   }
 
   private pushAccountEventRemovePayload(xdr: any) {
-    this.push(AccountEventRemovePayload.buildFromXDR(PayloadType.Remove, xdr));
+    this.push(AccountEventRemovePayload.buildFromXDR(MutationType.Remove, xdr));
   }
 
-  private pushTrustLineEventPayload(payloadType: PayloadType, xdr: any) {
-    this.push(TrustLineEventPayload.buildFromXDR(payloadType, xdr));
+  private pushTrustLineEventPayload(mutationType: MutationType, xdr: any) {
+    this.push(TrustLineEventPayload.buildFromXDR(mutationType, xdr));
   }
 
   private pushTrustLineEventRemovePayload(xdr: any) {
-    this.push(TrustLineEventRemovePayload.buildFromXDR(PayloadType.Remove, xdr));
+    this.push(TrustLineEventRemovePayload.buildFromXDR(MutationType.Remove, xdr));
   }
 
-  private pushDataEntryEventPayload(payloadType: PayloadType, xdr: any) {
-    this.push(DataEntryEventPayload.buildFromXDR(payloadType, xdr));
+  private pushDataEntryEventPayload(mutationType: MutationType, xdr: any) {
+    this.push(DataEntryEventPayload.buildFromXDR(mutationType, xdr));
   }
 
   private pushDataEntryEventRemovePayload(xdr: any) {
-    this.push(DataEntryEventRemovePayload.buildFromXDR(PayloadType.Remove, xdr));
+    this.push(DataEntryEventRemovePayload.buildFromXDR(MutationType.Remove, xdr));
   }
 }

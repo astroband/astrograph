@@ -14,19 +14,19 @@ import {
   TRUST_LINE_UPDATED
 } from "../pubsub";
 
-import { Ledger, PayloadType } from "../model";
+import { Ledger, MutationType } from "../model";
 
 export class Publisher {
   private static eventMap = [
-    { payloadType: PayloadType.Create, payloadClassName: "AccountEventPayload", event: ACCOUNT_CREATED },
-    { payloadType: PayloadType.Update, payloadClassName: "AccountEventPayload", event: ACCOUNT_UPDATED },
-    { payloadType: PayloadType.Remove, payloadClassName: "AccountEventRemovePayload", event: ACCOUNT_REMOVED },
-    { payloadType: PayloadType.Create, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_CREATED },
-    { payloadType: PayloadType.Update, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_UPDATED },
-    { payloadType: PayloadType.Remove, payloadClassName: "TrustLineEventRemovePayload", event: TRUST_LINE_REMOVED },
-    { payloadType: PayloadType.Create, payloadClassName: "DataEntryEventPayload", event: DATA_ENTRY_CREATED },
-    { payloadType: PayloadType.Update, payloadClassName: "DataEntryEventPayload", event: DATA_ENTRY_UPDATED },
-    { payloadType: PayloadType.Remove, payloadClassName: "DataEntryEventRemovePayload", event: DATA_ENTRY_REMOVED }
+    { mutationType: MutationType.Create, payloadClassName: "AccountEventPayload", event: ACCOUNT_CREATED },
+    { mutationType: MutationType.Update, payloadClassName: "AccountEventPayload", event: ACCOUNT_UPDATED },
+    { mutationType: MutationType.Remove, payloadClassName: "AccountEventRemovePayload", event: ACCOUNT_REMOVED },
+    { mutationType: MutationType.Create, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_CREATED },
+    { mutationType: MutationType.Update, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_UPDATED },
+    { mutationType: MutationType.Remove, payloadClassName: "TrustLineEventRemovePayload", event: TRUST_LINE_REMOVED },
+    { mutationType: MutationType.Create, payloadClassName: "DataEntryEventPayload", event: DATA_ENTRY_CREATED },
+    { mutationType: MutationType.Update, payloadClassName: "DataEntryEventPayload", event: DATA_ENTRY_UPDATED },
+    { mutationType: MutationType.Remove, payloadClassName: "DataEntryEventRemovePayload", event: DATA_ENTRY_REMOVED }
   ];
 
   private ledger: Ledger;
@@ -44,7 +44,7 @@ export class Publisher {
       const payloadClassName = entry.constructor.name;
 
       for (const m of Publisher.eventMap) {
-        if (m.payloadType === entry.payloadType && m.payloadClassName === payloadClassName) {
+        if (m.mutationType === entry.mutationType && m.payloadClassName === payloadClassName) {
           pubsub.publish(m.event, entry);
         }
       }
