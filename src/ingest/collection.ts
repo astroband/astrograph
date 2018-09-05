@@ -12,7 +12,8 @@ export type Payload =
   | AccountEventPayload
   | AccountEventRemovePayload
   | TrustLineEventPayload
-  | TrustLineEventRemovePayload;
+  | TrustLineEventRemovePayload
+  | DataEntrySubscriptionPayload;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
 export class Collection extends Array<Payload> {

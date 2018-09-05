@@ -5,9 +5,9 @@ export default gql`
   scalar AccountID
 
   enum MutationType {
-    Create
-    Update
-    Remove
+    CREATE
+    UPDATE
+    REMOVE
   }
 
   type LedgerHeader {
@@ -66,7 +66,7 @@ export default gql`
   type DataEntrySubscriptionPayload {
     accountID: AccountID!
     name: String!
-    mutation: MutationType!
+    mutationType: MutationType!
     values: DataEntryValues
   }
 
