@@ -15,10 +15,10 @@ export default {
   },
   Query: {
     ledger(root: any, args: any, ctx: any, info: any) {
-      return db.ledgerHeaders.findBySeq(args.seq);
+      return new Ledger(args.seq);
     },
     ledgers(root: any, args: any, ctx: any, info: any) {
-      return db.ledgerHeaders.findAllBySeq(args.seq);
+      return args.seq.map((seq: number) => new Ledger(seq));
     }
   },
   Subscription: {
