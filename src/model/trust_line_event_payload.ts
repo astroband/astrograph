@@ -1,4 +1,4 @@
-import { IMutationType, MutationType } from "./payload_type";
+import { IMutationType, MutationType } from "./mutation_type";
 import { TrustLine } from "./trust_line";
 
 import { assetFromXDR, publicKeyFromXDR } from "../common/xdr";

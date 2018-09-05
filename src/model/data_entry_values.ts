@@ -1,26 +1,16 @@
 import { DataEntry } from "./data_entry";
-import { IMutationType, MutationType } from "./payload_type";
 
 import { publicKeyFromXDR } from "../common/xdr";
 
-export class DataEntryEventPayload extends DataEntry implements IMutationType {
-  public static buildFromXDR(mutationType: MutationType, xdr: any): DataEntryEventPayload {
+export class DataEntryValues extends DataEntry {
+  public static buildFromXDR(xdr: any): DataEntryValues {
     const accountid = publicKeyFromXDR(xdr);
 
-    return new DataEntryEventPayload(
-      mutationType,
-      {
-        accountid,
-        dataname: xdr.dataName().toString(),
-        datavalue: xdr.dataValue()
-      }
-    );
-  }
-
-  public mutationType: MutationType;
-
-  constructor(mutationType: MutationType, data: any) {
-    super(data);
-    this.mutationType = mutationType;
+    return new DataEntryValues({
+      accountid,
+      dataname: xdr.dataName().toString(),
+      datavalue: xdr.dataValue(),
+      lastmodified: -1 // Just placeholder, will not be projected down to payload
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { Asset } from "./asset";
-import { IMutationType, MutationType } from "./payload_type";
+import { IMutationType, MutationType } from "./mutation_type";
 
 import { assetFromXDR, publicKeyFromXDR } from "../common/xdr";
 

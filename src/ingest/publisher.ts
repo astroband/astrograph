@@ -24,9 +24,9 @@ export class Publisher {
     { mutationType: MutationType.Create, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_CREATED },
     { mutationType: MutationType.Update, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_UPDATED },
     { mutationType: MutationType.Remove, payloadClassName: "TrustLineEventRemovePayload", event: TRUST_LINE_REMOVED },
-    { mutationType: MutationType.Create, payloadClassName: "DataEntryEventPayload", event: DATA_ENTRY_CREATED },
-    { mutationType: MutationType.Update, payloadClassName: "DataEntryEventPayload", event: DATA_ENTRY_UPDATED },
-    { mutationType: MutationType.Remove, payloadClassName: "DataEntryEventRemovePayload", event: DATA_ENTRY_REMOVED }
+    { mutationType: MutationType.Create, payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY_CREATED },
+    { mutationType: MutationType.Update, payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY_UPDATED },
+    { mutationType: MutationType.Remove, payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY_REMOVED }
   ];
 
   private ledger: Ledger;
@@ -45,6 +45,7 @@ export class Publisher {
 
       for (const m of Publisher.eventMap) {
         if (m.mutationType === entry.mutationType && m.payloadClassName === payloadClassName) {
+          console.log(payloadClassName);
           pubsub.publish(m.event, entry);
         }
       }

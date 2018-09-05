@@ -1,5 +1,5 @@
 import { Account } from "./account";
-import { IMutationType, MutationType } from "./payload_type";
+import { IMutationType, MutationType } from "./mutation_type";
 import { Signer } from "./signer";
 
 import { publicKeyFromXDR } from "../common/xdr";

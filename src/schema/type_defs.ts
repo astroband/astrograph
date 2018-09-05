@@ -67,7 +67,7 @@ export default gql`
     accountID: AccountID!
     name: String!
     mutation: MutationType!
-    node: DataEntryValues
+    values: DataEntryValues
   }
 
   type Signer {

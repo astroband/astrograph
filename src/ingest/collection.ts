@@ -2,8 +2,7 @@ import stellar from "stellar-base";
 import {
   AccountEventPayload,
   AccountEventRemovePayload,
-  DataEntryEventPayload,
-  DataEntryEventRemovePayload,
+  DataEntrySubscriptionPayload,
   MutationType,
   TrustLineEventPayload,
   TrustLineEventRemovePayload
@@ -54,7 +53,7 @@ export class Collection extends Array<Payload> {
         this.pushTrustLineEventPayload(mutationType, xdr.trustLine());
         break;
       case t.datum():
-        this.pushDataEntryEventPayload(mutationType, xdr.data());
+        this.pushDataEntryPayload(mutationType, xdr.data());
         break;
     }
   }
@@ -70,7 +69,7 @@ export class Collection extends Array<Payload> {
         this.pushTrustLineEventRemovePayload(xdr.trustLine());
         break;
       case t.datum():
-        this.pushDataEntryEventRemovePayload(xdr.data());
+        this.pushDataEntryRemovePayload(xdr.data());
         break;
     }
   }
@@ -91,11 +90,11 @@ export class Collection extends Array<Payload> {
     this.push(TrustLineEventRemovePayload.buildFromXDR(MutationType.Remove, xdr));
   }
 
-  private pushDataEntryEventPayload(mutationType: MutationType, xdr: any) {
-    this.push(DataEntryEventPayload.buildFromXDR(mutationType, xdr));
+  private pushDataEntryPayload(mutationType: MutationType, xdr: any) {
+    this.push(new DataEntrySubscriptionPayload(mutationType, xdr));
   }
 
-  private pushDataEntryEventRemovePayload(xdr: any) {
-    this.push(DataEntryEventRemovePayload.buildFromXDR(MutationType.Remove, xdr));
+  private pushDataEntryRemovePayload(xdr: any) {
+    this.push(new DataEntrySubscriptionPayload(MutationType.Remove, xdr));
   }
 }

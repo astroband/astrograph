@@ -1,4 +1,4 @@
-import { IMutationType, MutationType } from "./payload_type";
+import { IMutationType, MutationType } from "./mutation_type";
 
 import { publicKeyFromXDR } from "../common/xdr";
 

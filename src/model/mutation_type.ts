@@ -6,5 +6,5 @@ export enum MutationType {
 }
 
 export interface IMutationType {
-  mutationType: IMutationType;
+  mutationType: MutationType;
 }
