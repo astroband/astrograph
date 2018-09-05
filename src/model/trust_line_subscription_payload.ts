@@ -1,6 +1,6 @@
 import { Asset } from "./asset";
-import { TrustLineValues } from "./trust_line_values";
 import { IMutationType, MutationType } from "./mutation_type";
+import { TrustLineValues } from "./trust_line_values";
 
 import { assetFromXDR, publicKeyFromXDR } from "../common/xdr";
 
@@ -19,7 +19,7 @@ export class TrustLineSubscriptionPayload implements IMutationType {
     const asset = new Asset(assettype, assetcode, issuer);
     this.asset = asset;
 
-    if (this.mutationType != MutationType.Remove) {
+    if (this.mutationType !== MutationType.Remove) {
       this.values = TrustLineValues.buildFromXDR(xdr);
     }
   }

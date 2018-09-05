@@ -45,7 +45,6 @@ export class Publisher {
 
       for (const m of Publisher.eventMap) {
         if (m.mutationType === entry.mutationType && m.payloadClassName === payloadClassName) {
-          console.log(payloadClassName);
           pubsub.publish(m.event, entry);
         }
       }

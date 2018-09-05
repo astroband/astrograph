@@ -1,6 +1,6 @@
+import { publicKeyFromXDR } from "../common/xdr";
 import { AccountValues } from "./account_values";
 import { IMutationType, MutationType } from "./mutation_type";
-import { publicKeyFromXDR } from "../common/xdr";
 
 export class AccountSubscriptionPayload implements IMutationType {
   public id: string;

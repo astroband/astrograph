@@ -7,7 +7,8 @@ export class AccountValues extends Account {
   public static buildFromXDR(xdr: any): AccountValues {
     const accountid = publicKeyFromXDR(xdr);
 
-    return new AccountValues({
+    return new AccountValues(
+      {
         accountid,
         balance: xdr.balance().toString(),
         seqnum: xdr.seqNum().toString(),
@@ -24,7 +25,8 @@ export class AccountValues extends Account {
 
   public signers: Signer[];
 
-  constructor(data: {
+  constructor(
+    data: {
       accountid: string;
       balance: string;
       seqnum: string;
