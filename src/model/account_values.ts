@@ -1,15 +1,13 @@
 import { Account } from "./account";
-import { IPayloadType, PayloadType } from "./payload_type";
 import { Signer } from "./signer";
 
 import { publicKeyFromXDR } from "../common/xdr";
 
-export class AccountEventPayload extends Account implements IPayloadType {
-  public static buildFromXDR(payloadType: PayloadType, xdr: any): AccountEventPayload {
+export class AccountValues extends Account {
+  public static buildFromXDR(xdr: any): AccountValues {
     const accountid = publicKeyFromXDR(xdr);
 
-    return new AccountEventPayload(
-      payloadType,
+    return new AccountValues(
       {
         accountid,
         balance: xdr.balance().toString(),
@@ -18,18 +16,30 @@ export class AccountEventPayload extends Account implements IPayloadType {
         inflationdest: xdr.inflationDest() || null,
         homedomain: xdr.homeDomain(),
         thresholds: xdr.thresholds(),
-        flags: xdr.flags()
+        flags: xdr.flags(),
+        lastmodified: -1
       },
       xdr.signers().map((s: any) => Signer.buildFromXDR(s, accountid))
     );
   }
 
-  public payloadType: PayloadType;
   public signers: Signer[];
 
-  constructor(payloadType: PayloadType, data: any, signers: any[]) {
+  constructor(
+    data: {
+      accountid: string;
+      balance: string;
+      seqnum: string;
+      numsubentries: number;
+      inflationdest: string;
+      homedomain: string;
+      thresholds: string;
+      flags: number;
+      lastmodified: number;
+    },
+    signers: any[]
+  ) {
     super(data);
-    this.payloadType = payloadType;
     this.signers = signers;
   }
 }
