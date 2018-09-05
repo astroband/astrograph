@@ -4,7 +4,7 @@ import { AccountThresholds } from "./account_thresholds";
 export class Account {
   public id: string;
   public balance: string;
-  public sequenceNumber: number;
+  public sequenceNumber: string;
   public numSubentries: number;
   public inflationDest: string;
   public homeDomain: string;
@@ -15,7 +15,7 @@ export class Account {
   constructor(data: {
     accountid: string;
     balance: string;
-    seqnum: number;
+    seqnum: string;
     numsubentries: number;
     inflationdest: string;
     homedomain: string;
