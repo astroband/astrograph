@@ -1,6 +1,6 @@
 export * from "./account";
-export * from "./account_event_payload";
-export * from "./account_event_remove_payload";
+export * from "./account_values";
+export * from "./account_subscription_payload";
 export * from "./account_flags";
 export * from "./account_thresholds";
 export * from "./asset";
@@ -14,5 +14,5 @@ export * from "./mutation_type";
 export * from "./transaction";
 export * from "./transaction_fee";
 export * from "./trust_line";
-export * from "./trust_line_event_payload";
-export * from "./trust_line_event_remove_payload";
+export * from "./trust_line_subscription_payload";
+export * from "./trust_line_values";

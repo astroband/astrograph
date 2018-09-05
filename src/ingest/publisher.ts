@@ -18,12 +18,12 @@ import { Ledger, MutationType } from "../model";
 
 export class Publisher {
   private static eventMap = [
-    { mutationType: MutationType.Create, payloadClassName: "AccountEventPayload", event: ACCOUNT_CREATED },
-    { mutationType: MutationType.Update, payloadClassName: "AccountEventPayload", event: ACCOUNT_UPDATED },
-    { mutationType: MutationType.Remove, payloadClassName: "AccountEventRemovePayload", event: ACCOUNT_REMOVED },
-    { mutationType: MutationType.Create, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_CREATED },
-    { mutationType: MutationType.Update, payloadClassName: "TrustLineEventPayload", event: TRUST_LINE_UPDATED },
-    { mutationType: MutationType.Remove, payloadClassName: "TrustLineEventRemovePayload", event: TRUST_LINE_REMOVED },
+    { mutationType: MutationType.Create, payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT_CREATED },
+    { mutationType: MutationType.Update, payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT_UPDATED },
+    { mutationType: MutationType.Remove, payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT_REMOVED },
+    { mutationType: MutationType.Create, payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE_CREATED },
+    { mutationType: MutationType.Update, payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE_UPDATED },
+    { mutationType: MutationType.Remove, payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE_REMOVED },
     { mutationType: MutationType.Create, payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY_CREATED },
     { mutationType: MutationType.Update, payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY_UPDATED },
     { mutationType: MutationType.Remove, payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY_REMOVED }

@@ -101,7 +101,7 @@ export default gql`
     trustLines: [TrustLine]
   }
 
-  type AccountEventPayload implements IAccount {
+  type AccountValues implements IAccount {
     id: AccountID!
     sequenceNumber: String!
     numSubentries: Int!
@@ -112,8 +112,10 @@ export default gql`
     signers: [Signer]
   }
 
-  type AccountRemoveEventPayload {
+  type AccountSubscriptionPayload {
     id: AccountID!
+    mutationType: MutationType!
+    values: AccountValues
   }
 
   interface ITrustLine {
@@ -132,7 +134,7 @@ export default gql`
     ledger: Ledger!
   }
 
-  type TrustLineEventPayload implements ITrustLine {
+  type TrustLineValues implements ITrustLine {
     accountID: AccountID!
     asset: Asset!
     limit: String!
@@ -140,9 +142,11 @@ export default gql`
     authorized: Boolean!
   }
 
-  type TrustLineRemoveEventPayload {
+  type TrustLineSubscriptionPayload {
     accountID: AccountID!
     asset: Asset!
+    mutationType: MutationType!
+    values: TrustLineValues
   }
 
   type Transaction {
@@ -174,13 +178,13 @@ export default gql`
   type Subscription {
     ledgerCreated: Ledger
 
-    accountCreated(args: EventInput): AccountEventPayload
-    accountUpdated(args: EventInput): AccountEventPayload
-    accountRemoved(args: EventInput): AccountRemoveEventPayload
+    accountCreated(args: EventInput): AccountSubscriptionPayload
+    accountUpdated(args: EventInput): AccountSubscriptionPayload
+    accountRemoved(args: EventInput): AccountSubscriptionPayload
 
-    trustLineCreated(args: EventInput): TrustLineEventPayload
-    trustLineUpdated(args: EventInput): TrustLineEventPayload
-    trustLineRemoved(args: EventInput): TrustLineRemoveEventPayload
+    trustLineCreated(args: EventInput): TrustLineSubscriptionPayload
+    trustLineUpdated(args: EventInput): TrustLineSubscriptionPayload
+    trustLineRemoved(args: EventInput): TrustLineSubscriptionPayload
 
     dataEntryCreated(args: EventInput): DataEntrySubscriptionPayload
     dataEntryUpdated(args: EventInput): DataEntrySubscriptionPayload
