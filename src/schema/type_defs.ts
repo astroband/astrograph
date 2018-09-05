@@ -70,7 +70,7 @@ export default gql`
 
   interface IAccount {
     id: AccountID!
-    sequenceNumber: Float!
+    sequenceNumber: String!
     numSubentries: Int!
     inflationDest: AccountID
     homeDomain: String
@@ -81,7 +81,7 @@ export default gql`
 
   type Account implements IAccount {
     id: AccountID!
-    sequenceNumber: Float!
+    sequenceNumber: String!
     numSubentries: Int!
     inflationDest: AccountID
     homeDomain: String
@@ -95,7 +95,7 @@ export default gql`
 
   type AccountEventPayload implements IAccount {
     id: AccountID!
-    sequenceNumber: Float!
+    sequenceNumber: String!
     numSubentries: Int!
     inflationDest: AccountID
     homeDomain: String
