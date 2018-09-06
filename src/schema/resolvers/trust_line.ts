@@ -4,7 +4,7 @@ import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
 import { withFilter } from "graphql-subscriptions";
 
 import db from "../../database";
-import { pubsub, TRUST_LINE_CREATED, TRUST_LINE_REMOVED, TRUST_LINE_UPDATED } from "../../pubsub";
+import { pubsub, TRUST_LINE } from "../../pubsub";
 
 const accountResolver = createBatchResolver<TrustLine, Account | null>((source: ReadonlyArray<TrustLine>) =>
   db.accounts.findAllByIDs(source.map(r => r.accountID))
@@ -15,7 +15,7 @@ const trustLineSubscription = (event: string) => {
     subscribe: withFilter(
       () => pubsub.asyncIterator([event]),
       (payload, variables) => {
-        return eventMatches(variables.args, payload.accountID);
+        return eventMatches(variables.args, payload.accountID, payload.mutationType);
       }
     ),
 
@@ -31,9 +31,7 @@ export default {
     ledger: ledgerResolver
   },
   Subscription: {
-    trustLineCreated: trustLineSubscription(TRUST_LINE_CREATED),
-    trustLineUpdated: trustLineSubscription(TRUST_LINE_UPDATED),
-    trustLineRemoved: trustLineSubscription(TRUST_LINE_REMOVED)
+    trustLine: trustLineSubscription(TRUST_LINE)
   },
   Query: {
     async trustLines(root: any, args: any, ctx: any, info: any) {

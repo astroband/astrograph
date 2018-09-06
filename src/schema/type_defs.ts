@@ -171,6 +171,7 @@ export default gql`
   }
 
   input EventInput {
+    mutationTypeEq: [MutationType!]
     idEq: AccountID
     idIn: [AccountID!]
   }
@@ -178,17 +179,9 @@ export default gql`
   type Subscription {
     ledgerCreated: Ledger
 
-    accountCreated(args: EventInput): AccountSubscriptionPayload
-    accountUpdated(args: EventInput): AccountSubscriptionPayload
-    accountRemoved(args: EventInput): AccountSubscriptionPayload
-
-    trustLineCreated(args: EventInput): TrustLineSubscriptionPayload
-    trustLineUpdated(args: EventInput): TrustLineSubscriptionPayload
-    trustLineRemoved(args: EventInput): TrustLineSubscriptionPayload
-
-    dataEntryCreated(args: EventInput): DataEntrySubscriptionPayload
-    dataEntryUpdated(args: EventInput): DataEntrySubscriptionPayload
-    dataEntryRemoved(args: EventInput): DataEntrySubscriptionPayload
+    account(args: EventInput): AccountSubscriptionPayload
+    trustLine(args: EventInput): TrustLineSubscriptionPayload
+    dataEntry(args: EventInput): DataEntrySubscriptionPayload
   }
 
 `;

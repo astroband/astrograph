@@ -6,7 +6,7 @@ import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
 import { joinToMap } from "../../common/util/array";
 import db from "../../database";
 
-import { ACCOUNT_CREATED, ACCOUNT_REMOVED, ACCOUNT_UPDATED, pubsub } from "../../pubsub";
+import { ACCOUNT, pubsub } from "../../pubsub";
 
 const fetchIDs = (r: any) => r.id;
 
@@ -53,7 +53,7 @@ const accountSubscription = (event: string) => {
     subscribe: withFilter(
       () => pubsub.asyncIterator([event]),
       (payload, variables) => {
-        return eventMatches(variables.args, payload.id);
+        return eventMatches(variables.args, payload.id, payload.mutationType);
       }
     ),
 
@@ -79,8 +79,6 @@ export default {
     }
   },
   Subscription: {
-    accountCreated: accountSubscription(ACCOUNT_CREATED),
-    accountUpdated: accountSubscription(ACCOUNT_UPDATED),
-    accountRemoved: accountSubscription(ACCOUNT_REMOVED)
+    account: accountSubscription(ACCOUNT)
   }
 };
