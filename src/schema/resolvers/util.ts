@@ -15,7 +15,7 @@ export function eventMatches(args: any, id: string, mutationType: MutationType):
   const idIn: boolean | null = args.idIn ? args.idIn.includes(id) : null;
   const mutationTypeEq: boolean | null = args.mutationTypeEq ? args.mutationTypeEq.includes(mutationType) : null;
 
-  const conditions = [idEq, idIn, mutationTypeEq];
+  const conditions = [idEq, idIn, mutationTypeEq].filter(c => c !== null);
 
-  return !conditions.some(e => e === false);
+  return conditions.every(c => c === true);
 }
