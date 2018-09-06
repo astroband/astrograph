@@ -11,17 +11,11 @@ export function ledgerResolver(obj: any) {
 }
 
 export function eventMatches(args: any, id: string, mutationType: MutationType): boolean {
-  if (args.idEq) {
-    return id === args.idEq;
-  }
+  const idEq: boolean | null = args.idEq ? id === args.idEq : null;
+  const idIn: boolean | null = args.idIn ? args.idIn.includes(id) : null;
+  const mutationTypeEq: boolean | null = args.mutationTypeEq ? args.mutationTypeEq.includes(mutationType) : null;
 
-  if (args.idIn) {
-    return args.idIn.includes(id);
-  }
+  const conditions = [idEq, idIn, mutationTypeEq];
 
-  if (args.mutationTypeEq) {
-    return args.mutationType === mutationType;
-  }
-
-  return true;
+  return !conditions.some(e => e === false);
 }
