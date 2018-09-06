@@ -42,9 +42,10 @@ export class Ingestor {
       return null;
     }
 
+    const ledger = new Ledger(this.seq);
     this.incrementSeq();
 
-    return new Ledger(this.seq);
+    return ledger;
   }
 
   private async fetch(ledger: Ledger) {
