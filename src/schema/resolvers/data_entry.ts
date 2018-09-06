@@ -5,7 +5,7 @@ import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 import db from "../../database";
 
-import { DATA_ENTRY_CREATED, DATA_ENTRY_REMOVED, DATA_ENTRY_UPDATED, pubsub } from "../../pubsub";
+import { DATA_ENTRY, pubsub } from "../../pubsub";
 
 const accountResolver = createBatchResolver<DataEntry, Account>((source: any) =>
   db.accounts.findAllByIDs(source.map((r: DataEntry) => r.accountID))
@@ -16,7 +16,7 @@ const dataEntrySubscription = (event: string) => {
     subscribe: withFilter(
       () => pubsub.asyncIterator([event]),
       (payload, variables) => {
-        return eventMatches(variables.args, payload.accountID);
+        return eventMatches(variables.args, payload.accountID, payload.mutationType);
       }
     ),
 
@@ -32,9 +32,7 @@ export default {
     ledger: ledgerResolver
   },
   Subscription: {
-    dataEntryCreated: dataEntrySubscription(DATA_ENTRY_CREATED),
-    dataEntryUpdated: dataEntrySubscription(DATA_ENTRY_UPDATED),
-    dataEntryRemoved: dataEntrySubscription(DATA_ENTRY_REMOVED)
+    dataEntry: dataEntrySubscription(DATA_ENTRY)
   },
   Query: {
     dataEntries(root: any, args: any, ctx: any, info: any) {

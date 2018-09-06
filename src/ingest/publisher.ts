@@ -1,32 +1,14 @@
 import { Collection } from "./collection";
 
-import {
-  ACCOUNT_CREATED,
-  ACCOUNT_REMOVED,
-  ACCOUNT_UPDATED,
-  DATA_ENTRY_CREATED,
-  DATA_ENTRY_REMOVED,
-  DATA_ENTRY_UPDATED,
-  LEDGER_CREATED,
-  pubsub,
-  TRUST_LINE_CREATED,
-  TRUST_LINE_REMOVED,
-  TRUST_LINE_UPDATED
-} from "../pubsub";
+import { ACCOUNT, DATA_ENTRY, LEDGER_CREATED, pubsub, TRUST_LINE } from "../pubsub";
 
-import { Ledger, MutationType } from "../model";
+import { Ledger } from "../model";
 
 export class Publisher {
   private static eventMap = [
-    { mutationType: MutationType.Create, payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT_CREATED },
-    { mutationType: MutationType.Update, payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT_UPDATED },
-    { mutationType: MutationType.Remove, payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT_REMOVED },
-    { mutationType: MutationType.Create, payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE_CREATED },
-    { mutationType: MutationType.Update, payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE_UPDATED },
-    { mutationType: MutationType.Remove, payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE_REMOVED },
-    { mutationType: MutationType.Create, payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY_CREATED },
-    { mutationType: MutationType.Update, payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY_UPDATED },
-    { mutationType: MutationType.Remove, payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY_REMOVED }
+    { payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT },
+    { payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE },
+    { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY }
   ];
 
   private ledger: Ledger;
@@ -44,7 +26,7 @@ export class Publisher {
       const payloadClassName = entry.constructor.name;
 
       for (const m of Publisher.eventMap) {
-        if (m.mutationType === entry.mutationType && m.payloadClassName === payloadClassName) {
+        if (m.payloadClassName === payloadClassName) {
           pubsub.publish(m.event, entry);
         }
       }
