@@ -3,6 +3,7 @@ import {
   AccountSubscriptionPayload,
   DataEntrySubscriptionPayload,
   MutationType,
+  TrustLine,
   TrustLineSubscriptionPayload
 } from "../model";
 
@@ -10,11 +11,48 @@ export type Payload = AccountSubscriptionPayload | TrustLineSubscriptionPayload 
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
 export class Collection extends Array<Payload> {
-  // Concats parsed stellar.xdr.DataEntryChange[] to array
-  public concatXDR(xdr: any) {
-    for (const change of xdr) {
-      this.pushXDR(change);
-    }
+  public ingest(xdrArray: any) {
+    const t = stellar.xdr.LedgerEntryChangeType;
+
+    xdrArray.forEach((xdr: any, i: number) => {
+      if (xdr.switch() !== t.ledgerEntryState()) {
+        this.pushXDR(xdr);
+        return;
+      }
+
+      const update = xdrArray[i + 1];
+
+      if (!update || update.switch() !== t.ledgerEntryUpdated()) {
+        this.pushXDR(xdr);
+        return;
+      }
+
+      const oldBalance = xdr
+        .state()
+        .data()
+        .account()
+        .balance()
+        .toString();
+      const newBalance = update
+        .updated()
+        .data()
+        .account()
+        .balance()
+        .toString();
+
+      if (oldBalance !== newBalance) {
+        const payload = new TrustLineSubscriptionPayload(
+          MutationType.Update,
+          TrustLine.buildFakeNativeDataFromXDR(
+            update
+              .updated()
+              .data()
+              .account()
+          )
+        );
+        this.push(payload);
+      }
+    });
   }
 
   // Pushes parsed stellar.xdr.DataEntryChange to current array
@@ -22,6 +60,10 @@ export class Collection extends Array<Payload> {
     const t = stellar.xdr.LedgerEntryChangeType;
 
     switch (xdr.switch()) {
+      case t.ledgerEntryState():
+        this.fetch(xdr.state().data(), MutationType.State);
+        break;
+
       case t.ledgerEntryCreated():
         this.fetch(xdr.created().data(), MutationType.Create);
         break;
@@ -57,7 +99,7 @@ export class Collection extends Array<Payload> {
   }
 
   private pushTrustLinePayload(mutationType: MutationType, xdr: any) {
-    this.push(new TrustLineSubscriptionPayload(mutationType, xdr));
+    this.push(TrustLineSubscriptionPayload.buildFromXDR(mutationType, xdr));
   }
 
   private pushDataEntryPayload(mutationType: MutationType, xdr: any) {

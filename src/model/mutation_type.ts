@@ -2,7 +2,8 @@
 export enum MutationType {
   Create = "CREATE",
   Update = "UPDATE",
-  Remove = "REMOVE"
+  Remove = "REMOVE",
+  State = "STATE"
 }
 
 export interface IMutationType {
