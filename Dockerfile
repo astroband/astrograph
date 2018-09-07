@@ -24,8 +24,10 @@ RUN curl -fSLO --compressed "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$
     && ln -snf /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg \
     && rm yarn-v$YARN_VERSION.tar.gz
 
-# App dir
+# App dir & entrypoint
 RUN mkdir -p /opt/app
+ADD scripts/entrypoint.sh /entrypoint.sh
+ADD scripts/healthcheck.sh /healthcheck.sh
 
 # Packages
 WORKDIR /opt
@@ -38,8 +40,8 @@ ENV PATH /opt/node_modules/.bin:$PATH
 WORKDIR /opt/app
 COPY . /opt/app
 
-# HEALTHCHECK --interval=30s CMD node healthcheck.js
+HEALTHCHECK --interval=30s CMD /healthcheck.sh
 
 EXPOSE $PORT
 
-CMD [ "yarn", "run", "prod" ]
+ENTRYPOINT [ "/entrypoint.sh" ]
