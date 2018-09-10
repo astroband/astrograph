@@ -29,6 +29,7 @@ export default {
             weight: account.thresholds.masterWeight
           })
         );
+        
         return signers;
       }
 

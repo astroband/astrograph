@@ -41,6 +41,8 @@ export default {
         const trustLines = await db.trustLines.findAllByAccountID(args.id);
 
         trustLines.unshift(TrustLine.buildFakeNative(account));
+
+        return trustLines;
       }
 
       return [];
