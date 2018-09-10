@@ -30,20 +30,20 @@ const SUBSCRIPTION = gql`
     }
   }`;
 
-client.onError((error) => console.log("Error!", error.target));
+client.onError((error) => console.log("An error occured!", error.target));
 
-const observable = apolloClient.subscribe({
-  fetchPolicy: "network-only",
-  query: SUBSCRIPTION,
-  variables: {
-    args: {}
-  }
-}).subscribe({
-  next (data: any) {
-    console.log(data);
-  }
-});
-
-console.log(observable);
+for (let n = 0; n < 10000; n++) {
+  apolloClient.subscribe({
+    fetchPolicy: "network-only",
+    query: SUBSCRIPTION,
+    variables: {
+      args: {}
+    }
+  }).subscribe({
+    next (data: any) {
+      console.log(data.data.account.id);
+    }
+  });
+}
 
 setTimeout(() => { console.log("Finished."); }, 20000);
