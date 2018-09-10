@@ -7,16 +7,7 @@ import { gql } from "apollo-server";
 
 const GRAPHQL_ENDPOINT = "localhost:4000";
 
-const client = new SubscriptionClient(
-  `http://${GRAPHQL_ENDPOINT}`,
-  {
-    reconnect: true,
-    connectionCallback: (error) => {
-      console.error("Connection error:", error);
-    }
-  },
-  ws
-);
+const client = new SubscriptionClient(`ws://${GRAPHQL_ENDPOINT}`, { reconnect: true }, ws);
 
 const link = new WebSocketLink(client);
 const cache = new InMemoryCache();
@@ -39,7 +30,7 @@ const SUBSCRIPTION = gql`
     }
   }`;
 
-client.onError((error) => console.log("Error!", error));
+client.onError((error) => console.log("Error!", error.target));
 
 const observable = apolloClient.subscribe({
   fetchPolicy: "network-only",
