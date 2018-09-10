@@ -134,7 +134,7 @@ Typical event returns:
 
 * `mutationType` describing the specific event.
 * `values` holding new values for changed entity. Null for REMOVE-type events.
-* Key fields: account id for account, account id + asset for trust line, etc.
+* Key fields: `id` for account, `accountID` + `asset` for trust line, etc.
 
 ## Awaiting for missing account to be created
 
