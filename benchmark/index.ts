@@ -5,7 +5,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import { gql } from "apollo-server";
 
-const GRAPHQL_ENDPOINT = "localhost:4000";
+const GRAPHQL_ENDPOINT = "localhost:4000/graphql";
 
 const client = new SubscriptionClient(`ws://${GRAPHQL_ENDPOINT}`, { reconnect: true }, ws);
 
