@@ -7,7 +7,9 @@ import schema from "./schema";
 
 const server = new ApolloServer({
   schema,
-  tracing: true
+  tracing: true,
+  debug: true,
+  cors: true
 });
 
 setStellarNetwork().then((network: string) => {
