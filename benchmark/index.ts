@@ -5,7 +5,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import { gql } from "apollo-server";
 
-const GRAPHQL_ENDPOINT = "ws://localhost:4000/graphql";
+const GRAPHQL_ENDPOINT = "ws://localhost:4000";
 
 const client = new SubscriptionClient(`http://${GRAPHQL_ENDPOINT}`, undefined, ws);
 const link = new WebSocketLink(client);
