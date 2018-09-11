@@ -1,3 +1,4 @@
+// Live monitoring of specified account.
 // Run: yarn exec ts-node examples/balance-monitor-cli.ts <ACCOUNT ID> [<ASTROGRAPH URL>]
 
 import { InMemoryCache } from "apollo-cache-inmemory";
@@ -20,8 +21,8 @@ console.log("Account ID:", ACCOUNT_ID);
 
 const SUBSCRIPTION = gql`
   subscription trustLine($args: EventInput!) {
-    account(args: $args) {
-      id
+    trustLine(args: $args) {
+      accountID
       values {
         asset {
           code
@@ -49,13 +50,13 @@ apolloClient
   })
   .subscribe({
     next(data: any) {
-      const values = data.values;
+      const values = data.data.trustLine.values;
       console.log(
         "New balance for",
         values.asset.code,
         "is now",
         values.balance,
-        "with limit ",
+        "with limit",
         values.limit,
         values.authorized ? "and authorization" : "without authorization"
       );

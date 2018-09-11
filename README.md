@@ -30,7 +30,7 @@ We also have [Dockerfile](Dockerfile).
 
 # Development
 
-During local development, you will need to obtain Stellar Core database. The easiest way is to run Stellar Core node in Docker (check [docker-stellar-core](https://github.com/mobius-network/docker-stellar-core)). After you will have non-empty database, you may use `DEBUG_LEDGER` argument. Using this argument, you can ask Astrograph to emit events from specific point in the past. So, you may test your application agains the same known events multiple times.
+In order to develop locally, you will need to obtain Stellar Core database. The easiest way is to run Stellar Core node in Docker (check [docker-stellar-core](https://github.com/mobius-network/docker-stellar-core)) and ingest some ledgers. After you will have non-empty database, you may use `DEBUG_LEDGER` argument. Using this argument, you can ask Astrograph to emit events from specific point in the past. So, you may test your application agains the same known events multiple times.
 
 # Usage
 
@@ -198,6 +198,8 @@ subscription {
 
 Check `examples` folder.
 
+## Console
+
 To show all account trust lines:
 
 ```
@@ -207,7 +209,7 @@ yarn run examples/balance-cli.ts GAAAADNFT4FLC7M52WQIOU5MZOTYHDH34P4TZTGRC4IMHZK
 To monitor account trust line changes:
 
 ```
-yarn run examples/balance-monitor-cli.ts GAAAADNFT4FLC7M52WQIOU5MZOTYHDH34P4TZTGRC4IMHZKHDKKVPOMB
+yarn run examples/balance-monitor-cli.ts GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH
 ```
 
 All examples assuming that Astrograph is running on localhost:4000. You can pass URL as secondary param.
