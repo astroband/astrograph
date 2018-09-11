@@ -13,9 +13,9 @@ export function ledgerResolver(obj: any) {
 export function eventMatches(args: any, id: string, mutationType: MutationType): boolean {
   const idEq: boolean | null = args.idEq ? id === args.idEq : null;
   const idIn: boolean | null = args.idIn ? args.idIn.includes(id) : null;
-  const mutationTypeEq: boolean | null = args.mutationTypeEq ? args.mutationTypeEq.includes(mutationType) : null;
+  const mutationTypeIn: boolean | null = args.mutationTypeIn ? args.mutationTypeIn.includes(mutationType) : null;
 
-  const conditions = [idEq, idIn, mutationTypeEq].filter(c => c !== null);
+  const conditions = [idEq, idIn, mutationTypeIn].filter(c => c !== null);
 
   return conditions.every(c => c === true);
 }

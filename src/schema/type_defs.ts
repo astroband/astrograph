@@ -171,7 +171,7 @@ export default gql`
   }
 
   input EventInput {
-    mutationTypeEq: [MutationType!]
+    mutationTypeIn: [MutationType!]
     idEq: AccountID
     idIn: [AccountID!]
   }

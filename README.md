@@ -163,7 +163,7 @@ Typical event returns:
 
 ```graphql
 subscription {
-  account(args: { idEq: "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH", mutationTypeEq: [CREATE] }) {
+  account(args: { idEq: "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH", mutationTypeIn: [CREATE] }) {
    	id
     mutationType
     values {
@@ -183,7 +183,7 @@ subscription {
 
 ```graphql
 subscription {
-  trustLine(args: { mutationTypeEq: [UPDATE], idEq: "GBILND6UWKZCYUE7YRZHS5DBEYM6U4R4SWO73PODLYZVXNKHS4NVSE5X" }) {
+  trustLine(args: { mutationTypeIn: [UPDATE], idEq: "GBILND6UWKZCYUE7YRZHS5DBEYM6U4R4SWO73PODLYZVXNKHS4NVSE5X" }) {
     mutationType
     accountID
     values {
