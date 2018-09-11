@@ -16,6 +16,7 @@ const cache = new InMemoryCache();
 const apolloClient = new ApolloClient({ link, cache });
 
 console.log("Connecting to GraphQL...");
+console.log("Account ID:", ACCOUNT_ID);
 
 const SUBSCRIPTION = gql`
   subscription trustLine($args: EventInput!) {
