@@ -196,7 +196,7 @@ subscription {
 
 # Examples
 
-Check `examples` folder.
+Check [examples](examples) folder.
 
 ## Console
 
