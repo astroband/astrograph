@@ -7,6 +7,8 @@ import {
   TrustLineSubscriptionPayload
 } from "../model";
 
+import { arePublicKeysEqual } from "../common/xdr";
+
 export type Payload = AccountSubscriptionPayload | TrustLineSubscriptionPayload | DataEntrySubscriptionPayload;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
@@ -20,37 +22,53 @@ export class Collection extends Array<Payload> {
         return;
       }
 
-      const update = xdrArray[i + 1];
+      try {
+        const stateAccount = xdr
+          .state()
+          .data()
+          .account();
 
-      if (!update || update.switch() !== t.ledgerEntryUpdated()) {
-        this.pushXDR(xdr);
+        const update = xdrArray
+          .filter((x: any) => {
+            if (x.switch() !== t.ledgerEntryUpdated()) {
+              return false;
+            }
+
+            try {
+              const account = x
+                .updated()
+                .data()
+                .account();
+
+              return arePublicKeysEqual(stateAccount, account);
+            } catch(e) {
+              return false;
+            }
+          })
+          .pop();
+
+        if (!update) {
+          this.pushXDR(xdr);
+          return;
+        }
+
+        const updateAccount = update
+          .updated()
+          .data()
+          .account();
+
+        const oldBalance = stateAccount.balance().toString();
+        const newBalance = updateAccount.balance().toString();
+
+        if (oldBalance !== newBalance) {
+          const payload = new TrustLineSubscriptionPayload(
+            MutationType.Update,
+            TrustLine.buildFakeNativeDataFromXDR(updateAccount)
+          );
+          this.push(payload);
+        }
+      } catch(e) {
         return;
-      }
-
-      const oldBalance = xdr
-        .state()
-        .data()
-        .account()
-        .balance()
-        .toString();
-      const newBalance = update
-        .updated()
-        .data()
-        .account()
-        .balance()
-        .toString();
-
-      if (oldBalance !== newBalance) {
-        const payload = new TrustLineSubscriptionPayload(
-          MutationType.Update,
-          TrustLine.buildFakeNativeDataFromXDR(
-            update
-              .updated()
-              .data()
-              .account()
-          )
-        );
-        this.push(payload);
       }
     });
   }
