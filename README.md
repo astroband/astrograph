@@ -188,7 +188,7 @@ Settings:
 
 # Benchmark
 
-We have not done full stress test yet. Besides that, it looks like server run on MBP mid 14 with 16GB RAM survives approx 7k concurrent connections with no losses. Check [benchmark script](benchmark/index.ts) for details.
+We have not done full stress test yet. Besides that, it looks like server on MBP mid 14 with 16GB RAM survives approx 7k concurrent connections with no losses. Check [benchmark script](benchmark/index.ts) for details. To implement fully functional test, we need to implement dedicated stress test mode.
 
 # Contributing
 
