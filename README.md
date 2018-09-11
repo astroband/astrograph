@@ -5,9 +5,30 @@ Stellar GraphQL Server
 
 `git clone https://github.com/mobius-network/astrograph && cd astrograph && yarn`
 
+# Configuration
+
+You need to have access to Stellar Core database:
+
+* `DB`
+* `DBPORT`
+* `DBHOST`
+* `DBUSER`
+* `DBPASSWORD`
+
+Settings:
+
+* `DEBUG_LEDGER` - start ingest from specific ledger (debug purposes).
+* `INGEST_INTERVAL` - poll db every ms (2000 by default), useful while debugging.
+
 # Running
 
-`yarn run dev` or `yarn run prod`
+`yarn run dev` or `yarn run prod`.
+
+We also have [Dockerfile](Dockerfile).
+
+# Development
+
+During local development, you will need to obtain Stellar Core database. The easiest way is to run Stellar Core node in Docker (check [docker-stellar-core](https://github.com/mobius-network/docker-stellar-core)). After you will have non-empty database, you may use `DEBUG_LEDGER` argument. Using this argument, you can ask Astrograph to emit events from specific point in the past.
 
 # Usage
 
@@ -189,20 +210,7 @@ yarn run examples/balance-monitor-cli.ts GAAAADNFT4FLC7M52WQIOU5MZOTYHDH34P4TZTG
 
 All examples assuming that Astrograph is running on localhost:4000. You can pass URL as secondary param.
 
-# Env vars
 
-Stellar Core Database:
-
-* `DB`
-* `DBPORT`
-* `DBHOST`
-* `DBUSER`
-* `DBPASSWORD`
-
-Settings:
-
-* `DEBUG_LEDGER` - start ingest from specific ledger (debug purposes).
-* `INGEST_INTERVAL` - poll db every ms (2000 by default), useful while debugging.
 
 # Benchmark
 
