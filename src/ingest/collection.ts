@@ -41,10 +41,10 @@ export class Collection extends Array<Payload> {
 
     switch (xdr.switch()) {
       case t.account():
-        this.pushAccountEventPayload(mutationType, xdr.account());
+        this.pushAccountPayload(mutationType, xdr.account());
         break;
       case t.trustline():
-        this.pushTrustLineEventPayload(mutationType, xdr.trustLine());
+        this.pushTrustLinePayload(mutationType, xdr.trustLine());
         break;
       case t.datum():
         this.pushDataEntryPayload(mutationType, xdr.data());
@@ -52,11 +52,11 @@ export class Collection extends Array<Payload> {
     }
   }
 
-  private pushAccountEventPayload(mutationType: MutationType, xdr: any) {
+  private pushAccountPayload(mutationType: MutationType, xdr: any) {
     this.push(new AccountSubscriptionPayload(mutationType, xdr));
   }
 
-  private pushTrustLineEventPayload(mutationType: MutationType, xdr: any) {
+  private pushTrustLinePayload(mutationType: MutationType, xdr: any) {
     this.push(new TrustLineSubscriptionPayload(mutationType, xdr));
   }
 
