@@ -7,74 +7,44 @@ import {
   TrustLineSubscriptionPayload
 } from "../model";
 
-import { arePublicKeysEqual } from "../common/xdr";
+import { publicKeyFromXDR } from "../common/xdr";
 
 export type Payload = AccountSubscriptionPayload | TrustLineSubscriptionPayload | DataEntrySubscriptionPayload;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
 export class Collection extends Array<Payload> {
-  public ingest(xdrArray: any) {
+  public concatXDR(xdrArray: any) {
     const t = stellar.xdr.LedgerEntryChangeType;
 
     xdrArray.forEach((xdr: any, i: number) => {
-      if (xdr.switch() !== t.ledgerEntryState()) {
+      if (xdr.switch() !== t.ledgerEntryUpdated()) {
         this.pushXDR(xdr);
         return;
       }
 
       try {
-        const stateAccount = xdr
-          .state()
-          .data()
-          .account();
-
-        const update = xdrArray
-          .filter((x: any) => {
-            if (x.switch() !== t.ledgerEntryUpdated()) {
-              return false;
-            }
-
-            try {
-              const account = x
-                .updated()
-                .data()
-                .account();
-
-              return arePublicKeysEqual(stateAccount, account);
-            } catch(e) {
-              return false;
-            }
-          })
-          .pop();
-
-        if (!update) {
-          this.pushXDR(xdr);
-          return;
-        }
-
-        const updateAccount = update
+        const account = xdr
           .updated()
           .data()
           .account();
 
-        const oldBalance = stateAccount.balance().toString();
-        const newBalance = updateAccount.balance().toString();
+        const prevChanges = xdrArray.slice(0, i);
 
-        if (oldBalance !== newBalance) {
-          const payload = new TrustLineSubscriptionPayload(
-            MutationType.Update,
-            TrustLine.buildFakeNativeDataFromXDR(updateAccount)
-          );
-          this.push(payload);
+        if (this.nativeBalanceChanged(account, prevChanges)) {
+          this.pushNativeBalanceChangePayload(account);
+        } else {
+          this.pushXDR(xdr);
         }
       } catch(e) {
-        return;
+        console.log(e);
+        console.log(xdr);
+        console.log(xdr.toXDR("base64"));
       }
     });
   }
 
   // Pushes parsed stellar.xdr.DataEntryChange to current array
-  public pushXDR(xdr: any) {
+  private pushXDR(xdr: any) {
     const t = stellar.xdr.LedgerEntryChangeType;
 
     switch (xdr.switch()) {
@@ -122,5 +92,47 @@ export class Collection extends Array<Payload> {
 
   private pushDataEntryPayload(mutationType: MutationType, xdr: any) {
     this.push(new DataEntrySubscriptionPayload(mutationType, xdr));
+  }
+
+  private nativeBalanceChanged(account: any, xdrArray: any[]): boolean {
+    const updateAccount = this.findUpdateOrState(xdrArray, publicKeyFromXDR(account));
+
+    if (!updateAccount) {
+      return false;
+    }
+
+    const oldBalance = account.balance().toString();
+    const newBalance = updateAccount.balance().toString();
+
+    return oldBalance !== newBalance;
+  }
+
+  private pushNativeBalanceChangePayload(account: any) {
+    const payload = new TrustLineSubscriptionPayload(
+      MutationType.Update,
+      TrustLine.buildFakeNativeDataFromXDR(account)
+    );
+
+    this.push(payload);
+  }
+
+  private findUpdateOrState(xdrArray: any[], accountId: string): any {
+    const t = stellar.xdr.LedgerEntryChangeType;
+
+    return xdrArray
+      .reverse()
+      .reduce((accumulator: any[], x: any) => {
+        switch (x.switch()) {
+          case t.ledgerEntryUpdated():
+            accumulator.push(x.updated().data().account());
+            break;
+          case t.ledgerEntryState():
+            accumulator.push(x.state().data().account());
+            break;
+        }
+
+        return accumulator;
+      }, [])
+      .find((account: any) => { return publicKeyFromXDR(account) === accountId });
   }
 }

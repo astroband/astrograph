@@ -54,7 +54,8 @@ export class Ingestor {
     const fees = await this.fetchTransactionFees(ledger);
     const txChanges = await this.fetchTransactions(ledger);
 
-    changes.ingest(fees.concat(txChanges));
+    changes.concatXDR(fees);
+    changes.concatXDR(txChanges);
 
     this.tickFn(ledger, changes);
   }
