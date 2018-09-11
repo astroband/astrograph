@@ -1,3 +1,4 @@
+// Prints account balances for all assets.
 // Run: yarn exec ts-node examples/balance-cli.ts <ACCOUNT ID> [<ASTROGRAPH URL>]
 
 import { createHttpLink } from "apollo-link-http";
