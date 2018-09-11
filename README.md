@@ -20,6 +20,8 @@ Settings:
 * `DEBUG_LEDGER` - start ingest from specific ledger (debug purposes).
 * `INGEST_INTERVAL` - poll db every ms (2000 by default), useful while debugging.
 
+# How it works?
+
 # Running
 
 `yarn run dev` or `yarn run prod`.
