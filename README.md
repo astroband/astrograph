@@ -171,6 +171,24 @@ subscription {
 }
 ```
 
+# Examples
+
+Check `examples` folder.
+
+To show all account trust lines:
+
+```
+yarn run examples/balance-cli.ts GAAAADNFT4FLC7M52WQIOU5MZOTYHDH34P4TZTGRC4IMHZKHDKKVPOMB
+```
+
+To monitor account trust line changes:
+
+```
+yarn run examples/balance-monitor-cli.ts GAAAADNFT4FLC7M52WQIOU5MZOTYHDH34P4TZTGRC4IMHZKHDKKVPOMB
+```
+
+All examples assuming that Astrograph is running on localhost:4000. You can pass URL as secondary param.
+
 # Env vars
 
 Stellar Core Database:
