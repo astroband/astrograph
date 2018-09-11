@@ -41,6 +41,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "examples/**/*.ts",
     "types/**/*.d.ts"
   ],
   "exclude": [
