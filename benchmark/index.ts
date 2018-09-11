@@ -1,3 +1,5 @@
+// Run with: yarn bench
+
 import ws from "ws";
 import { WebSocketLink } from "apollo-link-ws";
 import { SubscriptionClient } from "subscriptions-transport-ws";
@@ -32,7 +34,9 @@ const SUBSCRIPTION = gql`
 
 client.onError((error) => console.log("An error occured!", error.target));
 
-for (let n = 0; n < 10000; n++) {
+let eventCount = 0;
+
+for (let n = 0; n < 7000; n++) {
   apolloClient.subscribe({
     fetchPolicy: "network-only",
     query: SUBSCRIPTION,
@@ -41,9 +45,9 @@ for (let n = 0; n < 10000; n++) {
     }
   }).subscribe({
     next (data: any) {
-      console.log(data.data.account.id);
+      eventCount += 1;
     }
   });
 }
 
-setTimeout(() => { console.log("Finished."); }, 20000);
+setTimeout(() => { console.log("Finished.", eventCount, "events received."); }, 10000);

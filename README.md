@@ -186,6 +186,10 @@ Settings:
 * `DEBUG_LEDGER` - start ingest from specific ledger (debug purposes).
 * `INGEST_INTERVAL` - poll db every ms (2000 by default), useful while debugging.
 
+# Benchmark
+
+We have not done full stress test yet. Besides that, it looks like server run on MBP mid 14 with 16GB RAM survives approx 7k concurrent connections with no losses. Check [benchmark script](benchmark/index.ts) for details.
+
 # Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/mobius-network/astrograph. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
