@@ -30,7 +30,7 @@ We also have [Dockerfile](Dockerfile).
 
 # Development
 
-In order to develop locally, you will need to obtain Stellar Core database. The easiest way is to run Stellar Core node in Docker (check [docker-stellar-core](https://github.com/mobius-network/docker-stellar-core)) and ingest some ledgers. After you will have non-empty database, you may use `DEBUG_LEDGER` argument. Using this argument, you can ask Astrograph to emit events from specific point in the past. So, you may test your application agains the same known events multiple times.
+In order to develop locally, you will need to obtain Stellar Core database. The easiest way to get it is to run Stellar Core node in Docker (check [docker-stellar-core](https://github.com/mobius-network/docker-stellar-core)) and ingest some ledgers. After you will have non-empty database, you may use `DEBUG_LEDGER` argument. Using this argument, you can ask Astrograph to emit events from specific point in the past. So, you may test your application agains the same known events multiple times.
 
 # Usage
 
