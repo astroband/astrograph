@@ -148,7 +148,7 @@ You can query DataEntries, Ledgers, Transactions (by hash) and account Signers t
 
 # Subscriptions
 
-Generally, you can subscribe to three types of events: `CREATE`, `UPDATE` and `REMOVE`. Most of events has two major arguments:
+Generally, you can subscribe to three types of events: `CREATE`, `UPDATE` and `REMOVE`. Most of the events has two major arguments:
 
 * `mutationType[]` for event type(s) to fire on.
 * `idEq` and `idIn[]` for account ID.
