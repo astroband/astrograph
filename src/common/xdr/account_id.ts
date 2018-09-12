@@ -8,6 +8,34 @@ export function publicKeyFromXDR(xdr: any): string {
   return publicKeyFromBuffer(xdr.accountId().value());
 }
 
-export function arePublicKeysEqual(xdr1: any, xdr2: any): boolean {
-  return publicKeyFromXDR(xdr1) === publicKeyFromXDR(xdr2);
+// TODO: compare signers too
+export function diffAccountsXDR(xdr1: any, xdr2: any): string[] {
+  const changedAttrs: string[] = [];
+
+  const easyToCompareAttrs = [
+    "numSubEntries",
+    "inflationDest",
+    "flags",
+    "homeDomain"
+  ];
+
+  for (const attr of easyToCompareAttrs) {
+    if (xdr1[attr]() !== xdr2[attr]()) {
+      changedAttrs.push(attr);
+    }
+  }
+
+  if (xdr1.balance().toString() !== xdr2.balance().toString()) {
+    changedAttrs.push("balance");
+  }
+
+  if (xdr1.seqNum().toString() !== xdr2.seqNum().toString()) {
+    changedAttrs.push("seqNum");
+  }
+
+  if (!xdr1.thresholds().equals(xdr2.thresholds())) {
+    changedAttrs.push("thresholds");
+  }
+
+  return changedAttrs;
 }

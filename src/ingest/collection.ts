@@ -7,7 +7,7 @@ import {
   TrustLineSubscriptionPayload
 } from "../model";
 
-import { publicKeyFromXDR } from "../common/xdr";
+import { publicKeyFromXDR, diffAccountsXDR } from "../common/xdr";
 
 export type Payload = AccountSubscriptionPayload | TrustLineSubscriptionPayload | DataEntrySubscriptionPayload;
 
@@ -31,11 +31,18 @@ export class Collection extends Array<Payload> {
       }
 
       const account = data.account();
+      // TODO: it's memory inefficient, I guess, need to fix in the future
       const prevChanges = xdrArray.slice(0, i);
+      const accountChanges = this.accountChanges(account, prevChanges);
 
-      if (this.nativeBalanceChanged(account, prevChanges)) {
+      if (accountChanges.includes("balance")) {
         this.pushNativeBalanceChangePayload(account);
-      } else {
+      }
+
+      // if there are some changes besides balance
+      const otherChanges = accountChanges.find(c => { return c !== "balance" });
+
+      if (otherChanges) {
         this.pushXDR(xdr);
       }
     });
@@ -88,17 +95,14 @@ export class Collection extends Array<Payload> {
     this.push(new DataEntrySubscriptionPayload(mutationType, xdr));
   }
 
-  private nativeBalanceChanged(account: any, xdrArray: any[]): boolean {
+  private accountChanges(account: any, xdrArray: any[]): string[] {
     const updateAccount = this.findUpdateOrState(xdrArray, publicKeyFromXDR(account));
 
     if (!updateAccount) {
-      return false;
+      return [];
     }
 
-    const oldBalance = account.balance().toString();
-    const newBalance = updateAccount.balance().toString();
-
-    return oldBalance !== newBalance;
+    return diffAccountsXDR(account, updateAccount);
   }
 
   private pushNativeBalanceChangePayload(account: any) {
