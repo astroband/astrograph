@@ -22,6 +22,8 @@ Settings:
 
 # How it works?
 
+The server polls Stellar Core database for new ledgers every 2 seconds. After new ledger is found, it fetches all changes from that specified ledger, goes through every change and publishes that change as GraphQL subscription event. You can set starting ledger via `DEBUG_LEDGER` for debug purposes.
+
 # Running
 
 `yarn run dev` or `yarn run prod`.
