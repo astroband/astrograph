@@ -15,4 +15,8 @@ export class AccountSubscriptionPayload implements IMutationType {
       this.values = AccountValues.buildFromXDR(xdr);
     }
   }
+
+  get accountID(): string {
+    return this.id;
+  }
 }

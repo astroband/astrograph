@@ -15,4 +15,13 @@ export class AccountThresholds {
     this.medium = t[ti.thresholdMed().value];
     this.high = t[ti.thresholdHigh().value];
   }
+
+  public equals(other: AccountThresholds): boolean {
+    return (
+      this.low === other.low &&
+      this.medium === other.medium &&
+      this.high === other.high &&
+      this.masterWeight === other.masterWeight
+    );
+  }
 }

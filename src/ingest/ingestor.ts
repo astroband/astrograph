@@ -51,25 +51,29 @@ export class Ingestor {
   private async fetch(ledger: Ledger) {
     const changes = new Collection();
 
-    await this.fetchTransactionFees(ledger, changes);
-    await this.fetchTransactions(ledger, changes);
+    const fees = await this.fetchTransactionFees(ledger);
+    const txChanges = await this.fetchTransactions(ledger);
+
+    changes.concatXDR(fees);
+    changes.concatXDR(txChanges);
 
     this.tickFn(ledger, changes);
   }
 
-  private async fetchTransactionFees(ledger: Ledger, collection: Collection) {
+  private async fetchTransactionFees(ledger: Ledger): Promise<any[]> {
     const fees = await db.transactionFees.findAllBySeq(ledger.seq);
+    const result: any[] = [];
 
     for (const fee of fees) {
-      const changes = fee.changesFromXDR().changes();
-      collection.concatXDR(changes);
+      result.push(...fee.changesFromXDR().changes());
     }
 
-    return collection;
+    return result;
   }
 
-  private async fetchTransactions(ledger: Ledger, collection: Collection) {
+  private async fetchTransactions(ledger: Ledger): Promise<any[]> {
     const txs = await db.transactions.findAllBySeq(ledger.seq);
+    const result: any[] = [];
 
     for (const tx of txs) {
       const xdr = tx.metaFromXDR();
@@ -77,19 +81,19 @@ export class Ingestor {
       switch (xdr.switch()) {
         case 0:
           for (const op of xdr.operations()) {
-            collection.concatXDR(op.changes());
+            result.push(...op.changes());
           }
           break;
         case 1:
-          collection.concatXDR(xdr.v1().txChanges());
-
+          result.push(...xdr.v1().txChanges());
           for (const op of xdr.v1().operations()) {
-            collection.concatXDR(op.changes());
+            result.push(...op.changes());
           }
-
           break;
       }
     }
+
+    return result;
   }
 
   // Increments current ledger number

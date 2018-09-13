@@ -12,4 +12,12 @@ export class AccountFlags {
     this.authRevokable = (value & fl.authRevocableFlag().value) > 0;
     this.authImmutable = (value & fl.authImmutableFlag().value) > 0;
   }
+
+  public equals(other: AccountFlags): boolean {
+    return (
+      this.authRequired === other.authRequired &&
+      this.authRevokable === other.authRevokable &&
+      this.authImmutable === other.authImmutable
+    );
+  }
 }

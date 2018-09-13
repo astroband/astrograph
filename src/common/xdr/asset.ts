@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 
-import { publicKeyFromBuffer } from "./account_id";
+import { publicKeyFromBuffer } from "./account";
 
 export function assetFromXDR(xdr: any): any {
   const t = stellar.xdr.AssetType;

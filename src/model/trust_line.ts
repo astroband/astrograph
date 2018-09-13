@@ -1,23 +1,42 @@
 import stellar from "stellar-base";
-import { MAX_INT64 } from "../common";
-import { toFloatAmountString } from "../common/util/stellar";
+
 import { Account } from "./account";
 import { Asset } from "./asset";
 
+import { MAX_INT64 } from "../common";
+import { NATIVE_ASSET_CODE, toFloatAmountString } from "../common/util/stellar";
+import { publicKeyFromXDR } from "../common/xdr";
+
 export class TrustLine {
-  public static buildFakeNative(account: Account) {
-    const data = {
+  // TODO: make it consistent with buildFakeNativeData
+  public static buildFakeNativeDataFromXDR(xdr: any) {
+    return {
+      accountid: publicKeyFromXDR(xdr),
+      assettype: stellar.xdr.AssetType.assetTypeNative().value,
+      assetcode: NATIVE_ASSET_CODE,
+      issuer: stellar.Keypair.master().publicKey(),
+      lastmodified: -1,
+      tlimit: MAX_INT64,
+      flags: 1,
+      balance: xdr.balance().toString()
+    };
+  }
+
+  public static buildFakeNativeData(account: Account) {
+    return {
       accountid: account.id,
       assettype: stellar.xdr.AssetType.assetTypeNative().value,
-      assetcode: "XLM",
+      assetcode: NATIVE_ASSET_CODE,
       issuer: stellar.Keypair.master().publicKey(),
       lastmodified: account.lastModified,
       tlimit: MAX_INT64,
       flags: 1,
       balance: account.balance
     };
+  }
 
-    return new TrustLine(data);
+  public static buildFakeNative(account: Account) {
+    return new TrustLine(this.buildFakeNativeData(account));
   }
 
   public accountID: string;
