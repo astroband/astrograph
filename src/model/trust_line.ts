@@ -4,7 +4,7 @@ import { Account } from "./account";
 import { Asset } from "./asset";
 
 import { MAX_INT64 } from "../common";
-import { NativeAssetCode, toFloatAmountString } from "../common/util/stellar";
+import { NATIVE_ASSET_CODE, toFloatAmountString } from "../common/util/stellar";
 import { publicKeyFromXDR } from "../common/xdr";
 
 export class TrustLine {
@@ -13,7 +13,7 @@ export class TrustLine {
     return {
       accountid: publicKeyFromXDR(xdr),
       assettype: stellar.xdr.AssetType.assetTypeNative().value,
-      assetcode: NativeAssetCode,
+      assetcode: NATIVE_ASSET_CODE,
       issuer: stellar.Keypair.master().publicKey(),
       lastmodified: -1,
       tlimit: MAX_INT64,
@@ -26,7 +26,7 @@ export class TrustLine {
     return {
       accountid: account.id,
       assettype: stellar.xdr.AssetType.assetTypeNative().value,
-      assetcode: NativeAssetCode,
+      assetcode: NATIVE_ASSET_CODE,
       issuer: stellar.Keypair.master().publicKey(),
       lastmodified: account.lastModified,
       tlimit: MAX_INT64,

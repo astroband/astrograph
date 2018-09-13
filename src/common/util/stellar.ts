@@ -4,7 +4,7 @@ import db from "../../database";
 
 const StellarAmountPrecision = 7;
 
-export const NativeAssetCode = "XLM";
+export const NATIVE_ASSET_CODE = "XLM";
 
 export async function setNetwork(): Promise<string> {
   const promise = db.storeState.getStellarNetworkPassphrase().then((networkPassphrase: string) => {
