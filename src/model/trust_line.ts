@@ -4,7 +4,7 @@ import { Account } from "./account";
 import { Asset } from "./asset";
 
 import { MAX_INT64 } from "../common";
-import { toFloatAmountString, NativeAssetCode } from "../common/util/stellar";
+import { NativeAssetCode, toFloatAmountString } from "../common/util/stellar";
 import { publicKeyFromXDR } from "../common/xdr";
 
 export class TrustLine {

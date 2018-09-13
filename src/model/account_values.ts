@@ -69,12 +69,16 @@ export class AccountValues extends Account {
 
     const changedAttrs: string[] = [];
 
-    const easyToCompareAttrs = ["balance", "seqNum", "numSubEntries", "inflationDest", "flags", "homeDomain"];
+    const easyToCompareAttrs = ["balance", "seqNum", "numSubEntries", "inflationDest", "homeDomain"];
 
     for (const attr of easyToCompareAttrs) {
       if (this[attr] !== other[attr]) {
         changedAttrs.push(attr);
       }
+    }
+
+    if (!this.flags.equals(other.flags)) {
+      changedAttrs.push("flags");
     }
 
     if (!this.thresholds.equals(other.thresholds)) {
