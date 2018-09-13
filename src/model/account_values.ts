@@ -51,6 +51,48 @@ export class AccountValues extends Account {
     signers: any[]
   ) {
     super(data);
-    this.signers = signers;
+    this.signers = signers.sort((s1, s2) => {
+      if (s1.signer < s2.signer) {
+        return -1;
+      } else if (s1.signer === s2.signer) {
+        return 0;
+      } else {
+        return 1;
+      }
+    });
+  }
+
+  public diffAttrs(other: AccountValues): string[] {
+    if (this.id !== other.id) {
+      throw new Error("Cannot compare AccountValues for different accounts");
+    }
+
+    const changedAttrs: string[] = [];
+
+    const easyToCompareAttrs = ["balance", "seqNum", "numSubEntries", "inflationDest", "flags", "homeDomain"];
+
+    for (const attr of easyToCompareAttrs) {
+      if (this[attr] !== other[attr]) {
+        changedAttrs.push(attr);
+      }
+    }
+
+    if (!this.thresholds.equals(other.thresholds)) {
+      changedAttrs.push("thresholds");
+    }
+
+    if (this.signers.length !== other.signers.length) {
+      changedAttrs.push("signers");
+    } else {
+      const allSignersAreEqual = this.signers.every((s: Signer, i: number) => {
+        return s.signer === other.signers[i].signer && s.weight === other.signers[i].weight;
+      });
+
+      if (!allSignersAreEqual) {
+        changedAttrs.push("signers");
+      }
+    }
+
+    return changedAttrs;
   }
 }

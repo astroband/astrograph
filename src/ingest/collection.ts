@@ -1,4 +1,5 @@
 import stellar from "stellar-base";
+import { diffAccountsXDR, publicKeyFromXDR } from "../common/xdr";
 import {
   AccountSubscriptionPayload,
   DataEntrySubscriptionPayload,
@@ -6,8 +7,6 @@ import {
   TrustLine,
   TrustLineSubscriptionPayload
 } from "../model";
-
-import { publicKeyFromXDR, diffAccountsXDR } from "../common/xdr";
 
 export type Payload = AccountSubscriptionPayload | TrustLineSubscriptionPayload | DataEntrySubscriptionPayload;
 
@@ -40,9 +39,7 @@ export class Collection extends Array<Payload> {
       }
 
       // if there are some changes besides balance
-      const otherChanges = accountChanges.find(c => { return c !== "balance" });
-
-      if (otherChanges) {
+      if (accountChanges.some(c => c !== "balance")) {
         this.pushXDR(xdr);
       }
     });
@@ -51,10 +48,6 @@ export class Collection extends Array<Payload> {
   // Pushes parsed stellar.xdr.DataEntryChange to current array
   private pushXDR(xdr: any) {
     switch (xdr.switch()) {
-      case changeType.ledgerEntryState():
-        this.fetch(xdr.state().data(), MutationType.State);
-        break;
-
       case changeType.ledgerEntryCreated():
         this.fetch(xdr.created().data(), MutationType.Create);
         break;
@@ -135,6 +128,6 @@ export class Collection extends Array<Payload> {
 
         return accumulator;
       }, [])
-      .find((account: any) => { return publicKeyFromXDR(account) === accountId });
+      .find((account: any) => publicKeyFromXDR(account) === accountId);
   }
 }
