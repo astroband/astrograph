@@ -17,18 +17,15 @@ const ledgerEntryType = stellar.xdr.LedgerEntryType;
 export class Collection extends Array<Payload> {
   public concatXDR(xdrArray: any) {
     xdrArray.forEach((xdr: any, i: number) => {
-      if (xdr.switch() !== changeType.ledgerEntryUpdated()) {
+      if (
+        xdr.switch() !== changeType.ledgerEntryUpdated() ||
+        xdr.updated().data().switch() !== ledgerEntryType.account()
+      ) {
         this.pushXDR(xdr);
         return;
       }
 
       const data = xdr.updated().data();
-
-      if (data.switch() !== ledgerEntryType.account()) {
-        this.pushXDR(xdr);
-        return;
-      }
-
       const account = data.account();
       // TODO: it's memory inefficient, I guess, need to fix in the future
       const prevChanges = xdrArray.slice(0, i);
