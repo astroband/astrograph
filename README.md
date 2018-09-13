@@ -214,9 +214,7 @@ To monitor account trust line changes:
 yarn run examples/balance-monitor-cli.ts GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH
 ```
 
-All examples assuming that Astrograph is running on localhost:4000. You can pass URL as secondary param.
-
-
+All examples are assuming that Astrograph is running on localhost:4000. You can pass URL as secondary param.
 
 # Benchmark
 
