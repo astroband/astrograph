@@ -1,3 +1,5 @@
+import axios from "axios";
+import { HORIZON_URL } from "../../common/util/secrets";
 import db from "../../database";
 import { ledgerResolver } from "./util";
 
@@ -11,6 +13,15 @@ export default {
     },
     transactions(root: any, args: any, ctx: any, info: any) {
       return db.transactions.findAllByID(args.id);
+    }
+  },
+  Mutation: {
+    sendTransaction(xdr: string): any {
+      return axios.post(`${HORIZON_URL}/transactions`, {
+        params: {
+          tx: xdr
+        }
+      });
     }
   }
 };

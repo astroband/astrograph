@@ -158,6 +158,14 @@ export default gql`
     meta: String!
   }
 
+  type SendTransactionResponse {
+    hash: String!
+    seq: Int!
+    envelopeXdr: String!
+    resultXdr: String!
+    resultMetaXdr: String!
+  }
+
   type Query {
     account(id: AccountID!): Account
     accounts(id: [AccountID!]): [Account]
@@ -182,6 +190,10 @@ export default gql`
     account(args: EventInput): AccountSubscriptionPayload
     trustLine(args: EventInput): TrustLineSubscriptionPayload
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
+  }
+
+  type Mutation {
+    sendTransaction(xdr: String!): SendTransactionResponse!
   }
 
 `;

@@ -17,6 +17,7 @@
     "@types/graphql-resolve-batch": "^1.1.1",
     "@udia/graphql-postgres-subscriptions": "^1.0.9",
     "apollo-server": "^2.0.0-rc.8",
+    "axios": "^0.18.0",
     "big.js": "^5.1.2",
     "bluebird": "^3.5.1",
     "dotenv": "^6.0.0",
