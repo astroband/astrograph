@@ -36,9 +36,10 @@ export default class AccountsRepo {
     return joinToMap<string, Account>(ids, res);
   }
 
-  public async findAllBySigner(id: string, limit: number): Promise<Array<Account | null>> {
+  public async findAllBySigner(id: string, limit: number): Promise<Account[]> {
     const accountIds = await this.db.manyOrNone(sql.selectSignedAccountIds, [id, limit]);
-    const accounts = this.findAllByIDs(accountIds.map((r: any) => r.accountid));
-    return accounts;
+    const accounts = await this.findAllByIDs(accountIds.map((r: any) => r.accountid));
+
+    return accounts.filter(a => a !== null) as Account[];
   }
 }
