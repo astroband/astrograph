@@ -1,5 +1,5 @@
 import axios from "axios";
-import { HORIZON_URL } from "../../common/util/secrets";
+import { CORE_URL } from "../../common/util/secrets";
 import db from "../../database";
 import { ledgerResolver } from "./util";
 
@@ -17,9 +17,9 @@ export default {
   },
   Mutation: {
     sendTransaction(xdr: string): any {
-      return axios.post(`${HORIZON_URL}/transactions`, {
+      return axios.post(`${CORE_URL}/tx`, {
         params: {
-          tx: xdr
+          blob: xdr
         }
       });
     }
