@@ -99,6 +99,7 @@ export default gql`
     signers: [Signer]
     data: [DataEntry]
     trustLines: [TrustLine]
+    signedBy(first: Int!): [Account!]
   }
 
   type AccountValues implements IAccount {

@@ -4,7 +4,8 @@ import { Account } from "../model";
 
 const sql = {
   selectAccount: "SELECT * FROM accounts WHERE accountid = $1",
-  selectAccountsIn: "SELECT * FROM accounts WHERE accountid IN ($1:csv) ORDER BY accountid"
+  selectAccountsIn: "SELECT * FROM accounts WHERE accountid IN ($1:csv) ORDER BY accountid",
+  selectSignedAccountIds: "SELECT accountid FROM signers WHERE publickey = $1 ORDER BY accountid LIMIT $2"
 };
 
 export default class AccountsRepo {
@@ -33,5 +34,11 @@ export default class AccountsRepo {
   public async findAllMapByIDs(ids: string[]): Promise<Map<string, Account>> {
     const res = await this.findAllByIDs(ids);
     return joinToMap<string, Account>(ids, res);
+  }
+
+  public async findAllBySigner(id: string, limit: number): Promise<Array<Account | null>> {
+    const accountIds = await this.db.manyOrNone(sql.selectSignedAccountIds, [id, limit]);
+    const accounts = this.findAllByIDs(accountIds.map((r: any) => r.accountid));
+    return accounts;
   }
 }

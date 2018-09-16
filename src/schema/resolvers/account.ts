@@ -63,12 +63,18 @@ const accountSubscription = (event: string) => {
   };
 };
 
+const signedByResolver = async (subject: Account, args: { first: number }) => {
+  const accounts = db.accounts.findAllBySigner(subject.id, args.first);
+  return [subject].concat(await accounts);
+};
+
 export default {
   Account: {
     signers: signersResolver,
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
-    ledger: ledgerResolver
+    ledger: ledgerResolver,
+    signedBy: signedByResolver
   },
   Query: {
     account(root: any, args: any, ctx: any, info: any) {
