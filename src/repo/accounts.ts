@@ -5,7 +5,8 @@ import { Account } from "../model";
 const sql = {
   selectAccount: "SELECT * FROM accounts WHERE accountid = $1",
   selectAccountsIn: "SELECT * FROM accounts WHERE accountid IN ($1:csv) ORDER BY accountid",
-  selectSignedAccountIds: "SELECT accountid FROM signers WHERE publickey = $1 ORDER BY accountid LIMIT $2"
+  selectSignedAccountIds:
+    "SELECT * FROM accounts WHERE accountid IN (SELECT accountid FROM signers WHERE publickey = $1 ORDER BY accountid LIMIT $2)"
 };
 
 export default class AccountsRepo {
@@ -37,9 +38,7 @@ export default class AccountsRepo {
   }
 
   public async findAllBySigner(id: string, limit: number): Promise<Account[]> {
-    const accountIds = await this.db.manyOrNone(sql.selectSignedAccountIds, [id, limit]);
-    const accounts = await this.findAllByIDs(accountIds.map((r: any) => r.accountid));
-
-    return accounts.filter(a => a !== null) as Account[];
+    const res = await this.db.manyOrNone(sql.selectSignedAccountIds, [id, limit]);
+    return res.map(v => new Account(v));
   }
 }
