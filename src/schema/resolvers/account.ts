@@ -82,6 +82,10 @@ export default {
     },
     accounts(root: any, args: any, ctx: any, info: any) {
       return db.accounts.findAllByIDs(args.id);
+    },
+    async accountsSignedBy(root: any, args: any, ctx: any, info: any) {
+      const account = await db.accounts.findByID(args.id);
+      return [account].concat(await db.accounts.findAllBySigner(args.id, args.first));
     }
   },
   Subscription: {
