@@ -1,4 +1,4 @@
 export { Collection } from "./collection";
-export * from "./cursor";
-export * from "./fetcher";
+export { Cursor } from "./cursor";
+export { Fetcher } from "./fetcher";
 export { Publisher } from "./publisher";

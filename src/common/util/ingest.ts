@@ -20,5 +20,5 @@ export default async function startIngest() {
     }
   };
 
-  setInterval(() => tick, INGEST_INTERVAL);
+  setInterval(tick, INGEST_INTERVAL);
 }
