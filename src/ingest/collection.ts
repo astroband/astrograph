@@ -1,75 +1,130 @@
 import stellar from "stellar-base";
-import { AccountEntry, AccountEntryKey, EntryType, TrustLineEntry, TrustLineEntryKey } from "../model";
+import { diffAccountsXDR, publicKeyFromXDR } from "../common/xdr";
+import {
+  AccountSubscriptionPayload,
+  DataEntrySubscriptionPayload,
+  MutationType,
+  TrustLine,
+  TrustLineSubscriptionPayload
+} from "../model";
 
-export type Entry = AccountEntry | AccountEntryKey | TrustLineEntry | TrustLineEntryKey;
+export type Payload = AccountSubscriptionPayload | TrustLineSubscriptionPayload | DataEntrySubscriptionPayload;
+
+const changeType = stellar.xdr.LedgerEntryChangeType;
+const ledgerEntryType = stellar.xdr.LedgerEntryType;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
-export class Collection extends Array<Entry> {
-  // Concats parsed stellar.xdr.DataEntryChange[] to array
-  public concatXDR(xdr: any) {
-    for (const change of xdr) {
-      this.pushXDR(change);
-    }
+export class Collection extends Array<Payload> {
+  public concatXDR(xdrArray: any) {
+    xdrArray.forEach((xdr: any, i: number) => {
+      if (
+        xdr.switch() !== changeType.ledgerEntryUpdated() ||
+        xdr.updated().data().switch() !== ledgerEntryType.account()
+      ) {
+        this.pushXDR(xdr);
+        return;
+      }
+
+      const data = xdr.updated().data();
+      const account = data.account();
+      // TODO: it's memory inefficient, I guess, need to fix in the future
+      const prevChanges = xdrArray.slice(0, i);
+      const accountChanges = this.accountChanges(account, prevChanges);
+
+      if (accountChanges.includes("balance")) {
+        this.pushNativeBalanceChangePayload(account);
+      }
+
+      // if there are some changes besides balance
+      if (accountChanges.some(c => c !== "balance")) {
+        this.pushXDR(xdr);
+      }
+    });
   }
 
   // Pushes parsed stellar.xdr.DataEntryChange to current array
-  public pushXDR(xdr: any) {
-    const t = stellar.xdr.LedgerEntryChangeType;
-
+  private pushXDR(xdr: any) {
     switch (xdr.switch()) {
-      case t.ledgerEntryCreated():
-        this.fetchCreateUpdate(xdr.created().data(), EntryType.Create);
+      case changeType.ledgerEntryCreated():
+        this.fetch(xdr.created().data(), MutationType.Create);
         break;
 
-      case t.ledgerEntryUpdated():
-        this.fetchCreateUpdate(xdr.updated().data(), EntryType.Update);
+      case changeType.ledgerEntryUpdated():
+        this.fetch(xdr.updated().data(), MutationType.Update);
         break;
 
-      case t.ledgerEntryRemoved():
-        this.fetchRemove(xdr.removed());
+      case changeType.ledgerEntryRemoved():
+        this.fetch(xdr.removed(), MutationType.Remove);
         break;
     }
   }
 
-  private fetchCreateUpdate(xdr: any, entryType: EntryType) {
-    const t = stellar.xdr.LedgerEntryType;
-
+  private fetch(xdr: any, mutationType: MutationType) {
     switch (xdr.switch()) {
-      case t.account():
-        this.pushAccountEntry(entryType, xdr.account());
+      case ledgerEntryType.account():
+        this.pushAccountPayload(mutationType, xdr.account());
         break;
-      case t.trustline():
-        this.pushTrustLineEntry(entryType, xdr.trustLine());
+      case ledgerEntryType.trustline():
+        this.pushTrustLinePayload(mutationType, xdr.trustLine());
+        break;
+      case ledgerEntryType.datum():
+        this.pushDataEntryPayload(mutationType, xdr.data());
         break;
     }
   }
 
-  private fetchRemove(xdr: any) {
-    const t = stellar.xdr.LedgerEntryType;
+  private pushAccountPayload(mutationType: MutationType, xdr: any) {
+    this.push(new AccountSubscriptionPayload(mutationType, xdr));
+  }
 
-    switch (xdr.switch()) {
-      case t.account():
-        this.pushAccountEntryKey(xdr.account());
-        break;
-      case t.trustline():
-        this.pushTrustLineEntryKey(xdr.trustLine());
-        break;
+  private pushTrustLinePayload(mutationType: MutationType, xdr: any) {
+    this.push(TrustLineSubscriptionPayload.buildFromXDR(mutationType, xdr));
+  }
+
+  private pushDataEntryPayload(mutationType: MutationType, xdr: any) {
+    this.push(new DataEntrySubscriptionPayload(mutationType, xdr));
+  }
+
+  private accountChanges(account: any, xdrArray: any[]): string[] {
+    const updateAccount = this.findUpdateOrState(xdrArray, publicKeyFromXDR(account));
+
+    if (!updateAccount) {
+      return [];
     }
+
+    return diffAccountsXDR(account, updateAccount);
   }
 
-  private pushAccountEntry(entryType: EntryType, xdr: any) {
-    this.push(AccountEntry.buildFromXDR(entryType, xdr));
+  private pushNativeBalanceChangePayload(account: any) {
+    const payload = new TrustLineSubscriptionPayload(
+      MutationType.Update,
+      TrustLine.buildFakeNativeDataFromXDR(account)
+    );
+
+    this.push(payload);
   }
 
-  private pushAccountEntryKey(xdr: any) {
-    this.push(AccountEntryKey.buildFromXDR(EntryType.Remove, xdr));
-  }
+  private findUpdateOrState(xdrArray: any[], accountId: string): any {
+    return xdrArray
+      .reverse()
+      .reduce((accumulator: any[], x: any) => {
+        let data: any;
 
-  private pushTrustLineEntry(entryType: EntryType, xdr: any) {
-    this.push(TrustLineEntry.buildFromXDR(entryType, xdr));
-  }
+        switch (x.switch()) {
+          case changeType.ledgerEntryUpdated():
+            data = x.updated().data();
+            break;
+          case changeType.ledgerEntryState():
+            data = x.state().data();
+            break;
+        }
 
-  private pushTrustLineEntryKey(xdr: any) {
-    this.push(TrustLineEntryKey.buildFromXDR(EntryType.Remove, xdr));
+        if (data && data.switch() === ledgerEntryType.account()) {
+          accumulator.push(data.account());
+        }
+
+        return accumulator;
+      }, [])
+      .find((account: any) => publicKeyFromXDR(account) === accountId);
   }
 }

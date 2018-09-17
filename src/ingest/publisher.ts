@@ -1,26 +1,14 @@
 import { Collection } from "./collection";
 
-import {
-  ACCOUNT_CREATED,
-  ACCOUNT_REMOVED,
-  ACCOUNT_UPDATED,
-  LEDGER_CREATED,
-  pubsub,
-  TRUST_LINE_CREATED,
-  TRUST_LINE_REMOVED,
-  TRUST_LINE_UPDATED
-} from "../pubsub";
+import { ACCOUNT, DATA_ENTRY, LEDGER_CREATED, pubsub, TRUST_LINE } from "../pubsub";
 
-import { EntryType, Ledger } from "../model";
+import { Ledger } from "../model";
 
 export class Publisher {
   private static eventMap = [
-    { entryType: EntryType.Create, payloadClassName: "AccountEntry", event: ACCOUNT_CREATED },
-    { entryType: EntryType.Update, payloadClassName: "AccountEntry", event: ACCOUNT_UPDATED },
-    { entryType: EntryType.Remove, payloadClassName: "AccountEntryKey", event: ACCOUNT_REMOVED },
-    { entryType: EntryType.Create, payloadClassName: "TrustLineEntry", event: TRUST_LINE_CREATED },
-    { entryType: EntryType.Update, payloadClassName: "TrustLineEntry", event: TRUST_LINE_UPDATED },
-    { entryType: EntryType.Remove, payloadClassName: "TrustLineEntryKey", event: TRUST_LINE_REMOVED }
+    { payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT },
+    { payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE },
+    { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY }
   ];
 
   private ledger: Ledger;
@@ -38,7 +26,7 @@ export class Publisher {
       const payloadClassName = entry.constructor.name;
 
       for (const m of Publisher.eventMap) {
-        if (m.entryType === entry.entryType && m.payloadClassName === payloadClassName) {
+        if (m.payloadClassName === payloadClassName) {
           pubsub.publish(m.event, entry);
         }
       }

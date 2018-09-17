@@ -4,14 +4,28 @@ export default gql`
   scalar AssetCode
   scalar AccountID
 
-  enum AssetType {
-    Native
-    AlphaNum4
-    AlphaNum12
+  enum MutationType {
+    CREATE
+    UPDATE
+    REMOVE
+  }
+
+  type LedgerHeader {
+    ledgerVersion: Int!
+    previousLedgerHash: String!
+    txSetResultHash: String!
+    baseFee: Int!
+    baseReserve: Int!
+    maxTxSetSize: Int!
+  }
+
+  type Ledger {
+    seq: Int!
+    header: LedgerHeader
   }
 
   type Asset {
-    type: AssetType!
+    native: Boolean!
     issuer: AccountID!
     code: AssetCode!
   }
@@ -29,23 +43,42 @@ export default gql`
     high: Int!
   }
 
-  type DataEntry {
+  interface IDataEntry {
+    name: String!
+    value: String!
+    ledger: Ledger!
+  }
+
+  type DataEntry implements IDataEntry {
+    account: Account!
+    name: String!
+    value: String!
+    ledger: Ledger!
+  }
+
+  type DataEntryValues implements IDataEntry {
     accountID: AccountID!
     name: String!
     value: String!
-    lastModified: Int!
+    ledger: Ledger!
+  }
+
+  type DataEntrySubscriptionPayload {
+    accountID: AccountID!
+    name: String!
+    mutationType: MutationType!
+    values: DataEntryValues
   }
 
   type Signer {
-    accountID: AccountID!
-    signer: AccountID!
+    account: Account!
+    signer: Account!
     weight: Int!
   }
 
   interface IAccount {
     id: AccountID!
-    balance: Float!
-    sequenceNumber: Float!
+    sequenceNumber: String!
     numSubentries: Int!
     inflationDest: AccountID
     homeDomain: String
@@ -56,23 +89,22 @@ export default gql`
 
   type Account implements IAccount {
     id: AccountID!
-    balance: Float!
-    sequenceNumber: Float!
+    sequenceNumber: String!
     numSubentries: Int!
     inflationDest: AccountID
     homeDomain: String
     thresholds: AccountThresholds!
     flags: AccountFlags!
-    lastModified: Int!
+    ledger: Ledger!
     signers: [Signer]
     data: [DataEntry]
     trustLines: [TrustLine]
+    signerFor(first: Int!): [Account!]
   }
 
-  type AccountEntry implements IAccount {
+  type AccountValues implements IAccount {
     id: AccountID!
-    balance: Float!
-    sequenceNumber: Float!
+    sequenceNumber: String!
     numSubentries: Int!
     inflationDest: AccountID
     homeDomain: String
@@ -81,85 +113,79 @@ export default gql`
     signers: [Signer]
   }
 
-  type AccountKey {
+  type AccountSubscriptionPayload {
     id: AccountID!
-  }
-
-  type TrustLineFlags {
-    authorized: Boolean!
+    mutationType: MutationType!
+    values: AccountValues
   }
 
   interface ITrustLine {
     asset: Asset!
-    limit: Float!
-    balance: Float!
-    flags: TrustLineFlags
+    limit: String!
+    balance: String!
+    authorized: Boolean!
   }
 
   type TrustLine implements ITrustLine {
     account: Account!
     asset: Asset!
-    limit: Float!
-    balance: Float!
-    flags: TrustLineFlags
-    lastModified: Int!
+    limit: String!
+    balance: String!
+    authorized: Boolean!
+    ledger: Ledger!
   }
 
-  type TrustLineEntry implements ITrustLine {
+  type TrustLineValues implements ITrustLine {
     accountID: AccountID!
     asset: Asset!
-    limit: Float!
-    balance: Float!
-    flags: TrustLineFlags
+    limit: String!
+    balance: String!
+    authorized: Boolean!
   }
 
-  type TrustLineEntryKey {
+  type TrustLineSubscriptionPayload {
     accountID: AccountID!
     asset: Asset!
+    mutationType: MutationType!
+    values: TrustLineValues
   }
 
   type Transaction {
-    ID: String!
-    ledgerSeq: Int!
+    id: String!
+    ledger: Ledger!
     index: Int!
     body: String!
     result: String!
     meta: String!
   }
 
-  type Ledger {
-    ledgerSeq: Int!
-    ledgerVersion: Int!
-    previousLedgerHash: String!
-    txSetResultHash: String!
-    baseFee: Int!
-    baseReserve: Int!
-    maxTxSetSize: Int!
-  }
-
   type Query {
-    account(id: AccountID!): Account!
+    account(id: AccountID!): Account
+    accounts(id: [AccountID!]): [Account]
+    accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
-    ledger(seq: Int!): Ledger
+    trustLines(id: AccountID!): [TrustLine]
+    ledger(seq: Int!): Ledger!
+    ledgers(seq: [Int!]): [Ledger]!
     transaction(id: String!): Transaction
+    transactions(id: [String!]): [Transaction]
+  }
+
+  input EventInput {
+    mutationTypeIn: [MutationType!]
+    idEq: AccountID
+    idIn: [AccountID!]
   }
 
   type Subscription {
     ledgerCreated: Ledger
 
-    accountCreated(id: AccountID): AccountEntry
-    accountUpdated(id: AccountID): AccountEntry
-    accountRemoved(id: AccountID): AccountKey
-
-    trustLineCreated(id: AccountID): TrustLineEntry
-    trustLineUpdated(id: AccountID): TrustLineEntry
-    trustLineRemoved(id: AccountID): TrustLineEntryKey
+    account(args: EventInput): AccountSubscriptionPayload
+    trustLine(args: EventInput): TrustLineSubscriptionPayload
+    dataEntry(args: EventInput): DataEntrySubscriptionPayload
   }
 
 `;
-// dataEntryCreated(id: AccountID): DataEntry
-// dataEntryUpdated(id: AccountID): DataEntry
-// dataEntryDeleted(id: AccountID): DataEntry
 //
 // transactionCreated(id: AccountID): Transaction

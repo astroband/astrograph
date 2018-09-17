@@ -6,7 +6,7 @@ import { Collection } from "./collection";
 export class Ingestor {
   // Factory function
   public static async build(seq: number | null = null, tickFn: any) {
-    const n = seq || (await db.ledgers.findMaxSeq()) + 1;
+    const n = seq || (await db.ledgerHeaders.findMaxSeq()) + 1;
     return new Ingestor(n, tickFn);
   }
 
@@ -28,11 +28,11 @@ export class Ingestor {
   }
 
   private async nextLedger(): Promise<Ledger | null> {
-    const ledger = await db.ledgers.findBySeq(this.seq);
+    const ledgerHeader = await db.ledgerHeaders.findBySeq(this.seq);
 
     // If there is no next ledger
-    if (ledger == null) {
-      const maxSeq = await db.ledgers.findMaxSeq();
+    if (ledgerHeader == null) {
+      const maxSeq = await db.ledgerHeaders.findMaxSeq();
 
       // And there is a ledger somewhere forward in history (it is the gap)
       if (this.seq < maxSeq) {
@@ -42,6 +42,7 @@ export class Ingestor {
       return null;
     }
 
+    const ledger = new Ledger(this.seq);
     this.incrementSeq();
 
     return ledger;
@@ -50,25 +51,29 @@ export class Ingestor {
   private async fetch(ledger: Ledger) {
     const changes = new Collection();
 
-    await this.fetchTransactionFees(ledger, changes);
-    await this.fetchTransactions(ledger, changes);
+    const fees = await this.fetchTransactionFees(ledger);
+    const txChanges = await this.fetchTransactions(ledger);
+
+    changes.concatXDR(fees);
+    changes.concatXDR(txChanges);
 
     this.tickFn(ledger, changes);
   }
 
-  private async fetchTransactionFees(ledger: Ledger, collection: Collection) {
-    const fees = await db.transactionFees.findAllBySeq(ledger.ledgerSeq);
+  private async fetchTransactionFees(ledger: Ledger): Promise<any[]> {
+    const fees = await db.transactionFees.findAllBySeq(ledger.seq);
+    const result: any[] = [];
 
     for (const fee of fees) {
-      const changes = fee.changesFromXDR().changes();
-      collection.concatXDR(changes);
+      result.push(...fee.changesFromXDR().changes());
     }
 
-    return collection;
+    return result;
   }
 
-  private async fetchTransactions(ledger: Ledger, collection: Collection) {
-    const txs = await db.transactions.findAllBySeq(ledger.ledgerSeq);
+  private async fetchTransactions(ledger: Ledger): Promise<any[]> {
+    const txs = await db.transactions.findAllBySeq(ledger.seq);
+    const result: any[] = [];
 
     for (const tx of txs) {
       const xdr = tx.metaFromXDR();
@@ -76,19 +81,19 @@ export class Ingestor {
       switch (xdr.switch()) {
         case 0:
           for (const op of xdr.operations()) {
-            collection.concatXDR(op.changes());
+            result.push(...op.changes());
           }
           break;
         case 1:
-          collection.concatXDR(xdr.v1().txChanges());
-
+          result.push(...xdr.v1().txChanges());
           for (const op of xdr.v1().operations()) {
-            collection.concatXDR(op.changes());
+            result.push(...op.changes());
           }
-
           break;
       }
     }
+
+    return result;
   }
 
   // Increments current ledger number
