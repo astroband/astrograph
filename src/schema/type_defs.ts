@@ -99,6 +99,7 @@ export default gql`
     signers: [Signer]
     data: [DataEntry]
     trustLines: [TrustLine]
+    signerFor(first: Int!): [Account!]
   }
 
   type AccountValues implements IAccount {
@@ -161,6 +162,7 @@ export default gql`
   type Query {
     account(id: AccountID!): Account
     accounts(id: [AccountID!]): [Account]
+    accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
     trustLines(id: AccountID!): [TrustLine]

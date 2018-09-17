@@ -63,12 +63,18 @@ const accountSubscription = (event: string) => {
   };
 };
 
+const signerForResolver = async (subject: Account, args: { first: number }) => {
+  const accounts = db.accounts.findAllBySigner(subject.id, args.first);
+  return [subject].concat(await accounts);
+};
+
 export default {
   Account: {
     signers: signersResolver,
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
-    ledger: ledgerResolver
+    ledger: ledgerResolver,
+    signerFor: signerForResolver
   },
   Query: {
     account(root: any, args: any, ctx: any, info: any) {
@@ -76,6 +82,10 @@ export default {
     },
     accounts(root: any, args: any, ctx: any, info: any) {
       return db.accounts.findAllByIDs(args.id);
+    },
+    async accountsSignedBy(root: any, args: any, ctx: any, info: any) {
+      const account = await db.accounts.findByID(args.id);
+      return [account].concat(await db.accounts.findAllBySigner(args.id, args.first));
     }
   },
   Subscription: {
