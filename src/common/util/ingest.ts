@@ -1,4 +1,5 @@
-import { Cursor, Fetcher, Publisher } from "../../ingest";
+import { Cursor, Fetcher } from "../../ingest";
+import { Publisher } from "../../pubsub";
 import logger from "./logger";
 import { DEBUG_LEDGER, INGEST_INTERVAL } from "./secrets";
 
