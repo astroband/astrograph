@@ -1,6 +1,6 @@
 import logger from "../common/util/logger";
 import db from "../database";
-import { Ledger } from "../model";
+import { LedgerHeader } from "../model";
 import { Collection } from "./collection";
 
 export class Ingestor {
@@ -21,13 +21,13 @@ export class Ingestor {
   public async tick() {
     logger.info(`Ingesting ${this.seq}`);
 
-    const ledger = await this.nextLedger();
-    if (ledger !== null) {
-      this.fetch(ledger);
+    const ledgerHeader = await this.nextLedger();
+    if (ledgerHeader !== null) {
+      this.fetch(ledgerHeader);
     }
   }
 
-  private async nextLedger(): Promise<Ledger | null> {
+  private async nextLedger(): Promise<LedgerHeader | null> {
     const ledgerHeader = await db.ledgerHeaders.findBySeq(this.seq);
 
     // If there is no next ledger
@@ -42,26 +42,25 @@ export class Ingestor {
       return null;
     }
 
-    const ledger = new Ledger(this.seq);
     this.incrementSeq();
 
-    return ledger;
+    return ledgerHeader;
   }
 
-  private async fetch(ledger: Ledger) {
+  private async fetch(ledgerHeader: LedgerHeader) {
     const changes = new Collection();
 
-    const fees = await this.fetchTransactionFees(ledger);
-    const txChanges = await this.fetchTransactions(ledger);
+    const fees = await this.fetchTransactionFees(ledgerHeader.ledgerSeq);
+    const txChanges = await this.fetchTransactions(ledgerHeader.ledgerSeq);
 
     changes.concatXDR(fees);
     changes.concatXDR(txChanges);
 
-    this.tickFn(ledger, changes);
+    this.tickFn(ledgerHeader, changes);
   }
 
-  private async fetchTransactionFees(ledger: Ledger): Promise<any[]> {
-    const fees = await db.transactionFees.findAllBySeq(ledger.seq);
+  private async fetchTransactionFees(ledgerSeq: number): Promise<any[]> {
+    const fees = await db.transactionFees.findAllBySeq(ledgerSeq);
     const result: any[] = [];
 
     for (const fee of fees) {
@@ -71,8 +70,8 @@ export class Ingestor {
     return result;
   }
 
-  private async fetchTransactions(ledger: Ledger): Promise<any[]> {
-    const txs = await db.transactions.findAllBySeq(ledger.seq);
+  private async fetchTransactions(ledgerSeq: number): Promise<any[]> {
+    const txs = await db.transactions.findAllBySeq(ledgerSeq);
     const result: any[] = [];
 
     for (const tx of txs) {

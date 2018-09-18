@@ -1,5 +1,6 @@
 import { DgraphClientStub, DgraphClient, Operation, Mutation } from "dgraph-js";
-import { AccountEntry, Ledger, EntryType } from "./model";
+import { AccountSubscriptionPayload, LedgerHeader } from "./model";
+import { MutationType } from "./model/mutation_type";
 import { Collection, Ingestor } from "./ingest";
 import grpc from "grpc";
 import logger from "./common/util/logger";
@@ -33,24 +34,24 @@ const init = async () => {
 
   const cache: Cache = new Map<string, any>();
 
-  const ingest = await Ingestor.build(DEBUG_LEDGER, (ledger: Ledger, collection: Collection) => {
-    new Builder(ledger, collection, cache).publish();
+  const ingest = await Ingestor.build(DEBUG_LEDGER, (ledgerHeader: LedgerHeader, collection: Collection) => {
+    new Builder(ledgerHeader, collection, cache).publish();
   });
 
-  const interval = 100;
-  logger.info(`Staring dgraph ingest every ${interval} ms.`);
+  const interval = 2000;
+  logger.info(`Starting dgraph ingest every ${interval} ms.`);
 
   setInterval(() => ingest.tick(), interval);
 }
 
 class Builder {
-  private ledger: Ledger;
+  private ledgerHeader: LedgerHeader;
   private collection: Collection;
   private cache: Cache;
   private prevLedgerUID: string | null;
 
-  constructor(ledger: Ledger, collection: Collection, cache: Cache) {
-    this.ledger = ledger;
+  constructor(ledgerHeader: LedgerHeader, collection: Collection, cache: Cache) {
+    this.ledgerHeader = ledgerHeader;
     this.collection = collection;
     this.cache = cache;
 
@@ -67,19 +68,19 @@ class Builder {
     for (const entry of this.collection) {
       const payloadClassName = entry.constructor.name;
 
-      if (payloadClassName === "AccountEntry") {
-        const e:AccountEntry = entry as AccountEntry;
+      if (payloadClassName === "AccountSubscriptionPayload") {
+        const e:AccountSubscriptionPayload = entry as AccountSubscriptionPayload;
 
-        if ((entry.entryType === EntryType.Create) || (entry.entryType === EntryType.Update)) {
+        if ((entry.mutationType === MutationType.Create) || (entry.mutationType === MutationType.Update)) {
           const ledger:string = this.cache.get("ledger");
           const prevAccountUID:string | null = this.cache.get(e.id);
 
           let nquads = `
             _:account <type> "account" .
-            _:account <seq> "${this.ledger.ledgerSeq}" .
+            _:account <seq> "${this.ledgerHeader.ledgerSeq}" .
             _:account <ledger> <${ledger}> .
             _:account <id> "${e.id}" .
-            _:account <balance> "${e.balance}" .
+            _:account <balance> "${e.values!.balance}" .
           `;
 
           if (prevAccountUID) {
@@ -95,7 +96,7 @@ class Builder {
           this.cache.set(e.id, uid);
         }
 
-        if (entry.entryType == EntryType.Remove) {
+        if (entry.mutationType == MutationType.Remove) {
           this.cache.delete(e.id);
         }
       }
@@ -122,8 +123,8 @@ class Builder {
   public async publishLedger() {
     let nquads = `
       _:ledger <type> "ledger" .
-      _:ledger <seq> "${this.ledger.ledgerSeq}" .
-      _:ledger <version> "${this.ledger.ledgerVersion}" .
+      _:ledger <seq> "${this.ledgerHeader.ledgerSeq}" .
+      _:ledger <version> "${this.ledgerHeader.ledgerVersion}" .
     `;
 
     if (this.prevLedgerUID) {
