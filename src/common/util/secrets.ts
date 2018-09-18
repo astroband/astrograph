@@ -15,5 +15,8 @@ export const DBHOST = process.env.DBHOST;
 export const DBUSER = process.env.DBUSER || "stellar";
 export const DBPASSWORD = process.env.DBPASSWORD || "";
 
+export const PORT = Number.parseInt(process.env.PORT || "4000", 10);
+export const BIND_ADDRESS = process.env.BIND_ADDRESS || "0.0.0.0";
+
 export const DEBUG_LEDGER = Number.parseInt(process.env.DEBUG_LEDGER || "", 10);
 export const INGEST_INTERVAL = Number.parseInt(process.env.INGEST_INTERVAL || "", 10) || 2000;

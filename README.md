@@ -18,8 +18,10 @@ Here is the list of available settings:
 * `DBHOST` – database host to connect to
 * `DBUSER` – database user to connect with ("stellar" by default)
 * `DBPASSWORD` – password to access the database (no password by default)
+* `PORT` - port (4000 by default)
+* `BIND_ADDRESS` - address to bind ("0.0.0.0" by default)
 * `INGEST_INTERVAL` – database polling interval in milliseconds (2000 by default)
-* `DEBUG_LEDGER` – when this is set, Astrograph will start ingesting ledgers, starting from that. It's useful for debugging
+* `DEBUG_LEDGER` – when set, Astrograph will start ingesting ledgers, starting from that. It's useful for debugging
 
 You can set them all using environmental variables, or you can create the `.env` file in the root of the project, and set them there:
 

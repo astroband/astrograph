@@ -1,6 +1,6 @@
+import { PubSub } from "graphql-subscriptions";
 import { Collection } from "./ingest/collection";
 import { Ledger } from "./model";
-import { PubSub } from "graphql-subscriptions";
 
 export const pubsub = new PubSub();
 
