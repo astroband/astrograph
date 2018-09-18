@@ -63,7 +63,7 @@ const accountSubscription = (event: string) => {
   };
 };
 
-const signerForResolver = async (subject: Account, args: { first: number }) => {
+const signerForResolver = async (subject: Account, args: any) => {
   const accounts = db.accounts.findAllBySigner(subject.id, args.first);
   return [subject].concat(await accounts);
 };
