@@ -5,6 +5,7 @@ LABEL maintainer="Mobius Operations Team <ops@mobius.network>"
 # Env vars
 ENV NODE_ENV="production"
 ENV PORT 4000
+ENV BIND_ADDRESS "0.0.0.0"
 ENV DB "core"
 ENV DBPORT "5432"
 ENV DBHOST "docker.for.mac.localhost"
