@@ -1,3 +1,3 @@
 export { Collection } from "./collection";
-export { Ingestor } from "./ingestor";
-export { Publisher } from "./publisher";
+export { Cursor } from "./cursor";
+export { Fetcher } from "./fetcher";

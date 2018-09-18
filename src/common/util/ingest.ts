@@ -1,14 +1,25 @@
-import { Collection, Ingestor, Publisher } from "../../ingest";
-import { Ledger } from "../../model";
+import { Cursor, Fetcher } from "../../ingest";
+import { Publisher } from "../../pubsub";
 import logger from "./logger";
 import { DEBUG_LEDGER, INGEST_INTERVAL } from "./secrets";
 
 export default async function startIngest() {
-  const ingest = await Ingestor.build(DEBUG_LEDGER, (ledger: Ledger, collection: Collection) => {
-    new Publisher(ledger, collection).publish();
-  });
+  logger.info(`Staring ingest every ${INGEST_INTERVAL} ms. from ${DEBUG_LEDGER || "lastest ledger"}`);
 
-  logger.info(`Staring ingest every ${INGEST_INTERVAL} ms.`);
+  const cursor = await Cursor.build(DEBUG_LEDGER);
 
-  setInterval(() => ingest.tick(), INGEST_INTERVAL);
+  const tick = async () => {
+    const ledger = await cursor.nextLedger();
+
+    if (ledger) {
+      logger.info(`Ingesting ledger ${ledger.seq}`);
+
+      const fetcher = new Fetcher(ledger);
+      const collection = await fetcher.fetch();
+
+      new Publisher(ledger, collection).publish();
+    }
+  };
+
+  setInterval(tick, INGEST_INTERVAL);
 }
