@@ -9,7 +9,8 @@ import schema from "./schema";
 const server = new ApolloServer({
   schema,
   tracing: true,
-  debug: true,
+  mocks: true,
+  debug: process.env.NODE_ENV == "development",
   cors: true
 });
 

@@ -5,8 +5,6 @@ import logger from "./logger";
 if (fs.existsSync(".env")) {
   logger.log("info", "Using .env file to supply config environment variables");
   dotenv.config({ path: ".env" });
-} else {
-  logger.emerg("NO ENV DEFINED");
 }
 
 export const DB = process.env.DB || "stellar";
