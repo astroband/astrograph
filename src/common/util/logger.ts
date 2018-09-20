@@ -8,7 +8,7 @@ enum LoggerLevel {
   debug = "debug",
   silly = "silly"
 }
-const PROD_LOG_LEVEL = LoggerLevel.info;
+const PROD_LOG_LEVEL = LoggerLevel.error;
 const DEV_LOG_LEVEL = LoggerLevel.debug;
 const LOG_FILE = LoggerLevel.error;
 
