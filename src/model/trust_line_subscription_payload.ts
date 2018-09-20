@@ -10,15 +10,25 @@ export class TrustLineSubscriptionPayload implements IMutationType {
   public static buildFromXDR(mutationType: MutationType, xdr: any) {
     const { assettype, assetcode, issuer } = assetFromXDR(xdr);
 
+    let tlimit = "";
+    let flags = -1;
+    let balance = "";
+
+    if (mutationType !== MutationType.Remove) {
+      tlimit = xdr.limit().toString();
+      flags = xdr.flags();
+      balance = xdr.balance().toString();
+    }
+
     return new TrustLineSubscriptionPayload(mutationType, {
       accountid: publicKeyFromXDR(xdr),
       assettype,
       assetcode,
       issuer,
-      lastmodified: -1,
-      tlimit: xdr.limit().toString(),
-      flags: xdr.flags(),
-      balance: xdr.balance().toString()
+      tlimit,
+      flags,
+      balance,
+      lastmodified: -1
     });
   }
 
