@@ -11,6 +11,7 @@ const server = new ApolloServer({
   tracing: true,
   mocks: true,
   introspection: true,
+  playground: true,
   debug: process.env.NODE_ENV === "development",
   cors: true
 });
