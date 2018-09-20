@@ -85,6 +85,11 @@ export default {
     },
     async accountsSignedBy(root: any, args: any, ctx: any, info: any) {
       const account = await db.accounts.findByID(args.id);
+
+      if (!account) {
+        return [];
+      }
+
       return [account].concat(await db.accounts.findAllBySigner(args.id, args.first));
     }
   },
