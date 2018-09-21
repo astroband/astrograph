@@ -16,6 +16,7 @@ export class Publisher {
   private static eventMap = [
     { payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT },
     { payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE },
+    { payloadClassName: "NativeTrustLineSubscriptionPayload", event: TRUST_LINE },
     { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY }
   ];
 

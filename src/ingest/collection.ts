@@ -4,11 +4,15 @@ import {
   AccountSubscriptionPayload,
   DataEntrySubscriptionPayload,
   MutationType,
-  TrustLine,
+  NativeTrustLineSubscriptionPayload,
   TrustLineSubscriptionPayload
 } from "../model";
 
-export type Payload = AccountSubscriptionPayload | TrustLineSubscriptionPayload | DataEntrySubscriptionPayload;
+export type Payload =
+  | AccountSubscriptionPayload
+  | TrustLineSubscriptionPayload
+  | NativeTrustLineSubscriptionPayload
+  | DataEntrySubscriptionPayload;
 
 const changeType = stellar.xdr.LedgerEntryChangeType;
 const ledgerEntryType = stellar.xdr.LedgerEntryType;
@@ -78,7 +82,7 @@ export class Collection extends Array<Payload> {
   }
 
   private pushTrustLinePayload(mutationType: MutationType, xdr: any) {
-    this.push(TrustLineSubscriptionPayload.buildFromXDR(mutationType, xdr));
+    this.push(new TrustLineSubscriptionPayload(mutationType, xdr));
   }
 
   private pushDataEntryPayload(mutationType: MutationType, xdr: any) {
@@ -96,10 +100,7 @@ export class Collection extends Array<Payload> {
   }
 
   private pushNativeBalanceChangePayload(account: any) {
-    const payload = new TrustLineSubscriptionPayload(
-      MutationType.Update,
-      TrustLine.buildFakeNativeDataFromXDR(account)
-    );
+    const payload = new NativeTrustLineSubscriptionPayload(MutationType.Update, account);
 
     this.push(payload);
   }
