@@ -6,13 +6,15 @@ import { BIND_ADDRESS, PORT } from "./common/util/secrets";
 import { setNetwork as setStellarNetwork } from "./common/util/stellar";
 import schema from "./schema";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const server = new ApolloServer({
   schema,
   tracing: true,
-  mocks: true,
   introspection: true,
   playground: true,
-  debug: process.env.NODE_ENV === "development",
+  mocks: isDev,
+  debug: isDev,
   cors: true
 });
 
