@@ -1,6 +1,6 @@
+import { PubSub } from "graphql-subscriptions";
 import { Collection } from "./ingest/collection";
 import { Ledger } from "./model";
-import { PubSub } from "graphql-subscriptions";
 
 export const pubsub = new PubSub();
 
@@ -16,6 +16,7 @@ export class Publisher {
   private static eventMap = [
     { payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT },
     { payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE },
+    { payloadClassName: "NativeTrustLineSubscriptionPayload", event: TRUST_LINE },
     { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY }
   ];
 

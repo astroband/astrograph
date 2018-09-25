@@ -52,7 +52,7 @@
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.14.0",
     "tslint-plugin-prettier": "^1.3.0",
-    "typescript": "^2.9.2",
+    "typescript": "^3.0.3",
     "ws": "^6.0.0"
   },
   "scripts": {
@@ -61,7 +61,7 @@
     "start-prod": "nodemon ./dist/graphql.js",
     "dev": "nodemon --watch src && tslint-check",
     "bench": "ts-node ./benchmark/index.ts",
-    "prod": "yarn build  && yarn tslint && yarn start-prod",
+    "prod": "yarn build && yarn tslint && yarn start-prod",
     "tslint": "tslint -c tslint.json -p tsconfig.json --fix",
     "tslint-check": "tslint-config-prettier-check ./tslint.json"
   },

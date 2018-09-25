@@ -5,23 +5,8 @@ import { Asset } from "./asset";
 
 import { MAX_INT64 } from "../common";
 import { NATIVE_ASSET_CODE, toFloatAmountString } from "../common/util/stellar";
-import { publicKeyFromXDR } from "../common/xdr";
 
 export class TrustLine {
-  // TODO: make it consistent with buildFakeNativeData
-  public static buildFakeNativeDataFromXDR(xdr: any) {
-    return {
-      accountid: publicKeyFromXDR(xdr),
-      assettype: stellar.xdr.AssetType.assetTypeNative().value,
-      assetcode: NATIVE_ASSET_CODE,
-      issuer: stellar.Keypair.master().publicKey(),
-      lastmodified: -1,
-      tlimit: MAX_INT64,
-      flags: 1,
-      balance: xdr.balance().toString()
-    };
-  }
-
   public static buildFakeNativeData(account: Account) {
     return {
       accountid: account.id,

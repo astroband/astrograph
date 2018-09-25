@@ -1,8 +1,35 @@
+# ====================================================================================================
+
+FROM node:alpine AS build
+
+ENV YARN_VERSION 1.9.4
+ENV NODE_ENV="production"
+
+# Packages
+RUN apk add --no-cache libc6-compat curl python g++ make postgresql-dev
+
+# Yarn
+RUN curl -fSLO --compressed "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz" \
+    && tar -xzf yarn-v$YARN_VERSION.tar.gz -C /opt/ \
+    && ln -snf /opt/yarn-v$YARN_VERSION/bin/yarn /usr/local/bin/yarn \
+    && ln -snf /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg \
+    && rm yarn-v$YARN_VERSION.tar.gz
+
+WORKDIR /root
+
+COPY src ./src
+COPY types ./types
+COPY tsconfig.json .
+COPY package.json .
+COPY yarn.lock .
+
+RUN yarn install --production=false
+RUN yarn build
+
+# ====================================================================================================
+
 FROM node:alpine
 
-LABEL maintainer="Mobius Operations Team <ops@mobius.network>"
-
-# Env vars
 ENV NODE_ENV="production"
 ENV PORT 4000
 ENV DB "core"
@@ -12,36 +39,16 @@ ENV DBUSER "postgres"
 ENV DBPASSWORD ""
 ENV INGEST_INTERVAL 2000
 
-# Packages
-RUN apk add --no-cache libc6-compat curl
+WORKDIR /root
 
-# Yarn
-ENV YARN_VERSION 1.9.4
+COPY --from=build /root/node_modules ./node_modules
+COPY --from=build /root/dist ./dist
+COPY --from=build /root/yarn.lock .
+COPY --from=build /root/package.json .
 
-RUN curl -fSLO --compressed "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz" \
-    && tar -xzf yarn-v$YARN_VERSION.tar.gz -C /opt/ \
-    && ln -snf /opt/yarn-v$YARN_VERSION/bin/yarn /usr/local/bin/yarn \
-    && ln -snf /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg \
-    && rm yarn-v$YARN_VERSION.tar.gz
-
-# App dir & entrypoint
-RUN mkdir -p /opt/app
-ADD scripts/entrypoint.sh /entrypoint.sh
 ADD scripts/healthcheck.sh /healthcheck.sh
-
-# Packages
-WORKDIR /opt
-COPY package.json package-lock.json* ./
-RUN yarn install
-
-ENV PATH /opt/node_modules/.bin:$PATH
-
-# Application
-WORKDIR /opt/app
-COPY . /opt/app
-
 HEALTHCHECK --interval=30s CMD /healthcheck.sh
 
 EXPOSE $PORT
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+CMD ["node", "dist/graphql.js"]
