@@ -2,9 +2,11 @@ import dotenv from "dotenv";
 import fs from "fs";
 import logger from "./logger";
 
-if (fs.existsSync(".env")) {
-  logger.log("info", "Using .env file to supply config environment variables");
-  dotenv.config({ path: ".env" });
+const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env";
+
+if (fs.existsSync(envFile)) {
+  logger.log("info", `Using ${envFile} file to supply config environment variables`);
+  dotenv.config({ path: envFile });
 }
 
 export const DB = process.env.DB || "stellar";

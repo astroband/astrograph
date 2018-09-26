@@ -1,0 +1,23 @@
+{
+  accountsSignedBy(
+    id:"GCHJ4TAGDGF4NQZARUZMJGRMMKJVYKYNR672NZFE6SAPZOMGKVNWUCF6", 
+    first: 20
+  ) {
+    id
+    signers {
+      weight
+      account {
+        id
+      }
+    }
+    trustLines {
+      asset {
+        code
+      }
+      authorized
+    }
+    ledger {
+      seq
+    }
+  }
+}

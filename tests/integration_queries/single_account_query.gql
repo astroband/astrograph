@@ -1,0 +1,51 @@
+{
+  account(id: "GBDQLZ7UYKZLLEBYFZIHW6ARJJS6GHZXSGD62A3MNGAEX5OOQMFD5GZT") {
+    flags {
+      authRequired
+      authRevokable
+      authImmutable
+    }
+    thresholds {
+      masterWeight
+      low
+      medium
+      high
+    }
+    id
+    inflationDest
+    sequenceNumber
+    data {
+      name
+      value
+    }
+    signers {
+      signer { id }
+    }
+    trustLines {
+      account {
+        id
+      }
+      asset {
+        code
+        native
+        issuer
+      }
+    }
+    ledger {
+      seq
+      header {
+        ledgerVersion
+      }
+    }
+    signerFor(first: 100) {
+      id
+      trustLines {
+      	asset {
+          code
+          native
+          issuer
+        }
+      }
+    }
+  }
+}

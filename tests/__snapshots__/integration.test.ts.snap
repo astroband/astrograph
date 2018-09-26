@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Single account query 1`] = `
+Object {
+  "account": Object {
+    "data": Array [],
+    "flags": Object {
+      "authImmutable": false,
+      "authRequired": false,
+      "authRevokable": false,
+    },
+    "id": "GBDQLZ7UYKZLLEBYFZIHW6ARJJS6GHZXSGD62A3MNGAEX5OOQMFD5GZT",
+    "inflationDest": null,
+    "ledger": Object {
+      "header": Object {
+        "ledgerVersion": 10,
+      },
+      "seq": 11216547,
+    },
+    "sequenceNumber": "48174702539046912",
+    "signerFor": Array [
+      Object {
+        "id": "GBDQLZ7UYKZLLEBYFZIHW6ARJJS6GHZXSGD62A3MNGAEX5OOQMFD5GZT",
+        "trustLines": Array [
+          Object {
+            "asset": Object {
+              "code": "XLM",
+              "issuer": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+              "native": true,
+            },
+          },
+        ],
+      },
+    ],
+    "signers": Array [
+      Object {
+        "signer": Object {
+          "id": "GBDQLZ7UYKZLLEBYFZIHW6ARJJS6GHZXSGD62A3MNGAEX5OOQMFD5GZT",
+        },
+      },
+    ],
+    "thresholds": Object {
+      "high": 0,
+      "low": 0,
+      "masterWeight": 1,
+      "medium": 0,
+    },
+    "trustLines": Array [
+      Object {
+        "account": Object {
+          "id": "GBDQLZ7UYKZLLEBYFZIHW6ARJJS6GHZXSGD62A3MNGAEX5OOQMFD5GZT",
+        },
+        "asset": Object {
+          "code": "XLM",
+          "issuer": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+          "native": true,
+        },
+      },
+    ],
+  },
+}
+`;
