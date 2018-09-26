@@ -41,3 +41,6 @@ dist/
 .env
 
 .DS_Store
+
+# tmp, stellar-archivist
+.archives
