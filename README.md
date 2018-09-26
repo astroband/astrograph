@@ -243,6 +243,12 @@ We haven't done full stress test yet. Despite that, it looks like the server on 
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/mobius-network/astrograph. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
+## Contributors
+
+Victor Sokolov (@gzigzigzeo)
+Timur Ramazanov (@charlie-wasp)
+Sergey Nebolsin (@nebolsin)
+
 ## License
 
 The project is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT)
