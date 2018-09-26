@@ -9,6 +9,10 @@ Astrograph works directly with the [stellar-core](https://github.com/stellar/ste
 * to publish events to subscribers, it polls stellar-core database for new ledgers once in a while. After new ledger is found, Astrograph fetches all changes from that and publish them
 * you need stellar-core instance up and running to launch your Astrograph server
 
+## WARNING
+
+This is not final release. Schema might (and, most likely, *will* change in next releases).
+
 ## Configure
 
 Here is the list of available settings:
