@@ -30,4 +30,8 @@ export class Transaction {
   public metaFromXDR() {
     return stellar.xdr.TransactionMeta.fromXDR(Buffer.from(this.meta, "base64"));
   }
+
+  public feeMetaFromXDR() {
+    return stellar.xdr.OperationMeta.fromXDR(Buffer.from(this.feeMeta, "base64"));
+  }
 }
