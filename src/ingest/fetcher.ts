@@ -1,5 +1,5 @@
 import db from "../database";
-import { Ledger } from "../model";
+import { Ledger, Transaction } from "../model";
 import { Collection } from "./collection";
 
 export class Fetcher {
@@ -10,33 +10,33 @@ export class Fetcher {
   }
 
   public async fetch(): Promise<Collection> {
-    const changes = new Collection();
+    const collection = new Collection();
 
-    const fees = await this.fetchTransactionFees(this.ledger);
-    const txChanges = await this.fetchTransactions(this.ledger);
+    const transactions = await db.transactions.findAllBySeq(this.ledger.seq);
 
-    changes.concatXDR(fees);
-    changes.concatXDR(txChanges);
+    const fees = await this.fetchTransactionFees(transactions);
+    const changes = await this.fetchTransactions(transactions);
 
-    return changes;
+    collection.concatXDR(fees);
+    collection.concatXDR(changes);
+
+    return collection;
   }
 
-  private async fetchTransactionFees(ledger: Ledger): Promise<any[]> {
-    const fees = await db.transactionFees.findAllBySeq(ledger.seq);
+  private async fetchTransactionFees(transactions: Transaction[]): Promise<any[]> {
     const result: any[] = [];
 
-    for (const fee of fees) {
-      result.push(...fee.changesFromXDR().changes());
+    for (const tx of transactions) {
+      result.push(...tx.feeMetaFromXDR().changes());
     }
 
     return result;
   }
 
-  private async fetchTransactions(ledger: Ledger): Promise<any[]> {
-    const txs = await db.transactions.findAllBySeq(ledger.seq);
+  private async fetchTransactions(transactions: Transaction[]): Promise<any[]> {
     const result: any[] = [];
 
-    for (const tx of txs) {
+    for (const tx of transactions) {
       const xdr = tx.metaFromXDR();
 
       switch (xdr.switch()) {

@@ -23,7 +23,10 @@ export class Collection extends Array<Payload> {
     xdrArray.forEach((xdr: any, i: number) => {
       if (
         xdr.switch() !== changeType.ledgerEntryUpdated() ||
-        xdr.updated().data().switch() !== ledgerEntryType.account()
+        xdr
+          .updated()
+          .data()
+          .switch() !== ledgerEntryType.account()
       ) {
         this.pushXDR(xdr);
         return;
