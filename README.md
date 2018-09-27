@@ -18,8 +18,8 @@ This is not final release. Schema might (and, most likely, *will* change in futu
 Here is the list of available settings:
 
 * `DB` – stellar-core database name ("stellar" by default)
-* `DBPORT` – database port to connect too (5432 by default)
-* `DBHOST` – database host to connect too
+* `DBPORT` – database port to connect to (5432 by default)
+* `DBHOST` – database host to connect to
 * `DBUSER` – database user to connect with ("stellar" by default)
 * `DBPASSWORD` – password to access the database (no password by default)
 * `PORT` - port (4000 by default)
