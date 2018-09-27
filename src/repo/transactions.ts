@@ -4,11 +4,11 @@ import { Transaction } from "../model";
 
 const sql = {
   selectTx:
-    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t RIGHT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid = $1",
+    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid = $1",
   selectTxIn:
-    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t RIGHT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid IN ($1:csv) ORDER BY t.ledgerseq, t.txindex",
+    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid IN ($1:csv) ORDER BY t.ledgerseq, t.txindex",
   selectTxInSeq:
-    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t RIGHT JOIN txfeehistory f ON t.txid = f.txid WHERE t.ledgerseq = $1 ORDER BY t.txindex"
+    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.ledgerseq = $1 ORDER BY t.txindex"
 };
 
 export default class TransactionsRepo {
