@@ -7,6 +7,7 @@ export class Transaction {
   public body: string;
   public result: string;
   public meta: string;
+  public feeMeta: string;
 
   constructor(data: {
     txid: string;
@@ -15,6 +16,7 @@ export class Transaction {
     txbody: string;
     txresult: string;
     txmeta: string;
+    txfeemeta: string;
   }) {
     this.id = data.txid;
     this.ledgerSeq = data.ledgerseq;
@@ -22,6 +24,7 @@ export class Transaction {
     this.body = data.txbody;
     this.result = data.txresult;
     this.meta = data.txmeta;
+    this.feeMeta = data.txfeemeta;
   }
 
   public metaFromXDR() {

@@ -157,6 +157,7 @@ export default gql`
     body: String!
     result: String!
     meta: String!
+    feeMeta: String!
   }
 
   type Query {
