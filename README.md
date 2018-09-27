@@ -1,25 +1,25 @@
 # Astrograph
 
 ## About the project
-Astrograph is the GraphQL server for the [Stellar](https://www.stellar.org/) network. You can think about it as a GraphQL version of the [Horizon](https://github.com/stellar/horizon). Astrograph allows you to retrieve the various data from the blockchain, as well as to subscribe to particular events, using [GraphQL subscriptions](https://github.com/apollographql/graphql-subscriptions) mechanism.
+Astrograph is a GraphQL server for the [Stellar](https://www.stellar.org/) network. You can think about it as a GraphQL version of [Horizon](https://github.com/stellar/horizon), the client-facing API server for the Stellar ecosystem. Astrograph allows you to retrieve various data from the blockchain, as well as allowing you to subscribe to particular events using [GraphQL subscriptions](https://github.com/apollographql/graphql-subscriptions) mechanisms.
 
-Astrograph works directly with the [stellar-core](https://github.com/stellar/stellar-core) database. What does it mean?
+Astrograph works directly with the [stellar-core](https://github.com/stellar/stellar-core) database. What does that mean?
 
-* to resolve any query Astrograph use raw data from stellar-core database
-* to publish events to subscribers, it polls stellar-core database for new ledgers once in a while. After new ledger is found, Astrograph fetches all changes from that and publish them
-* you need stellar-core instance up and running to launch your Astrograph server
+* To resolve any query, Astrograph uses raw data from stellar-core database
+* To publish events to subscribers, it polls stellar-core database for new ledgers once in a while. After a new ledger is found, Astrograph fetches all changes from that and publish them
+* You need stellar-core instance up and running to launch your Astrograph server
 
 ## WARNING
 
-This is not final release. Schema might (and, most likely, *will* change in next releases).
+This is not final release. Schema might (and, most likely, *will* change in future releases).
 
 ## Configure
 
 Here is the list of available settings:
 
 * `DB` – stellar-core database name ("stellar" by default)
-* `DBPORT` – database port to connect to (5432 by default)
-* `DBHOST` – database host to connect to
+* `DBPORT` – database port to connect too (5432 by default)
+* `DBHOST` – database host to connect too
 * `DBUSER` – database user to connect with ("stellar" by default)
 * `DBPASSWORD` – password to access the database (no password by default)
 * `PORT` - port (4000 by default)
@@ -39,23 +39,24 @@ DBUSER="john"
 
 You can install Astrograph, using [yarn](https://yarnpkg.com/):
 
-```
-git clone https://github.com/mobius-network/astrograph
-cd astrograph
-yarn # install dependencies
-yarn run dev # for developing purposes
-yarn run prod # for live setup
+```shell
+$ git clone https://github.com/mobius-network/astrograph
+$ cd astrograph
+$ yarn              # install dependencies
+$ yarn run dev      # for developing purposes
+$ yarn run prod     # for live setup
 ```
 
-Also there is [Dockerfile](https://github.com/mobius-network/astrograph/blob/master/Dockerfile). For now you can use it like this:
+Also there is a [Dockerfile](https://github.com/mobius-network/astrograph/blob/master/Dockerfile). For now you can use it like this:
 
+```shell
+$ docker build -t "astrograph:latest" . # build docker image
+$ docker run -e NODE_ENV=development -e DB=stellar_core -e DBUSER=john -p 4000:4000 astrograph
 ```
-docker build -t "astrograph:latest" . # build docker image
-docker run -e NODE_ENV=development -e DB=stellar_core -e DBUSER=john -p 4000:4000 astrograph
-```
+
 After that Astrograph server will be available on `http://localhost:4000`.
 
-You can configure docker setup _only_ with environmental variables, settings from the `.env` files are overwritten with default env setup from Dockerfile itself.
+Using the Docker setup *requires environmental variables only* or settings from the `.env` files are overwritten with default env setup from Dockerfile itself.
 
 Note that currently docker setup was tested only on macOS. If you experience any problems on Linux, please, file an issue.
 
@@ -113,7 +114,7 @@ account(id: "GBRWYDXFSDVIVAGGLDY5P7GH5NVMWRCGP6PUHG6ZDN5ID32FGGXEX6UJ") {
 }
 ```
 
-There is corresponding query for multiple accounts:
+There is also a corresponding query for multiple accounts:
 
 ```graphql
 query {
@@ -165,7 +166,7 @@ Response:
 }
 ```
 
-Please note that native balance is returned inside a trustline too, and is marked with the boolean flag
+Please note that native balance is returned inside a trustline too, and is marked with the boolean flag.
 
 You can query data entries, ledgers, transactions and account signers the same way. You can find the full schema definition in [type_defs.ts](src/schema/type_defs.ts)
 
@@ -227,21 +228,21 @@ Check out the [examples](examples) folder for more!
 
 To show all account trust lines:
 
-```
-yarn run examples/balance-cli.ts GAAAADNFT4FLC7M52WQIOU5MZOTYHDH34P4TZTGRC4IMHZKHDKKVPOMB
+```shell
+$ yarn run examples/balance-cli.ts GAAAADNFT4FLC7M52WQIOU5MZOTYHDH34P4TZTGRC4IMHZKHDKKVPOMB
 ```
 
 To monitor account trust line changes:
 
-```
-yarn run examples/balance-monitor-cli.ts GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH
+```shell
+$ yarn run examples/balance-monitor-cli.ts GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH
 ```
 
 All examples are assuming that Astrograph is running on `localhost:4000`. You can pass URL as secondary parameter.
 
 ## Benchmark
 
-We haven't done full stress test yet. Despite that, it looks like the server on MBP mid 14 with 16GB RAM survives approx 7k concurrent connections with no losses. Check the [benchmark script](benchmark/index.ts) for details. To implement the fully functional test, we need to implement dedicated stress test mode.
+We haven't done full stress tests yet. Despite that, it looks like the server on MBP mid 14 with 16GB RAM survives approx 7k concurrent connections with no losses. Check the [benchmark script](benchmark/index.ts) for details. To implement the fully functional test, we need to implement a dedicated stress test mode.
 
 ## Contributing
 
