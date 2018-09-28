@@ -1,4 +1,4 @@
-import { Cursor, Fetcher } from "../../ingest";
+import { Cursor, SubscriptionPayloadCollection } from "../../ingest";
 import { Publisher } from "../../pubsub";
 import logger from "./logger";
 import { DEBUG_LEDGER, INGEST_INTERVAL } from "./secrets";
@@ -20,7 +20,7 @@ export default async function startIngest() {
 
       logger.info(`Ingesting ledger ${ledger.seq}`);
 
-      const collection = new Fetcher(transactions).fetch();
+      const collection = new SubscriptionPayloadCollection(transactions);
       new Publisher(ledger, collection).publish();
     }
   };
