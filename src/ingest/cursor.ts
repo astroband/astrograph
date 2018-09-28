@@ -34,7 +34,7 @@ export class Cursor {
 
       // And there is a ledger somewhere forward in history (it is the gap)
       if (this.seq < maxSeq) {
-        this.seq = maxSeq; // Skip gap.
+        this.seq = maxSeq; // Fast-rewing to lastest ledger
       }
 
       return null;
