@@ -14,8 +14,8 @@ export class Fetcher {
 
     const transactions = await db.transactions.findAllBySeq(this.ledger.seq);
 
-    const fees = await this.fetchTransactionFees(transactions);
-    const changes = await this.fetchTransactions(transactions);
+    const fees = await this.fetchFees(transactions);
+    const changes = await this.fetchChanges(transactions);
 
     collection.concatXDR(fees);
     collection.concatXDR(changes);
@@ -23,7 +23,7 @@ export class Fetcher {
     return collection;
   }
 
-  private async fetchTransactionFees(transactions: Transaction[]): Promise<any[]> {
+  private async fetchFees(transactions: Transaction[]): Promise<any[]> {
     const result: any[] = [];
 
     for (const tx of transactions) {
@@ -33,7 +33,7 @@ export class Fetcher {
     return result;
   }
 
-  private async fetchTransactions(transactions: Transaction[]): Promise<any[]> {
+  private async fetchChanges(transactions: Transaction[]): Promise<any[]> {
     const result: any[] = [];
 
     for (const tx of transactions) {
