@@ -13,7 +13,7 @@ export default async function startIngest() {
   const cursor = await Cursor.build(DEBUG_LEDGER);
 
   const tick = async () => {
-    const ledger = await cursor.nextLedger();
+    const { ledger } = await cursor.nextLedger();
 
     if (ledger) {
       logger.info(`Ingesting ledger ${ledger.seq}`);
