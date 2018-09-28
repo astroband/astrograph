@@ -1,10 +1,10 @@
 import db from "../database";
 import { Ledger } from "../model";
 
+// Walks through ledgers in ledgerheaders table.
 export class Cursor {
-  // Factory function
   public static async build(seq?: number) {
-    const n = seq || (await db.ledgerHeaders.findMaxSeq()) + 1;
+    const n = seq === -1 ? await db.ledgerHeaders.findMinSeq() : seq || (await db.ledgerHeaders.findMaxSeq()) + 1;
     return new Cursor(n);
   }
 

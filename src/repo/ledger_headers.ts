@@ -5,7 +5,8 @@ import { LedgerHeader } from "../model";
 const sql = {
   selectLedger: "SELECT * FROM ledgerheaders WHERE ledgerseq = $1",
   selectLedgersIn: "SELECT * FROM ledgerheaders WHERE ledgerseq IN ($1:csv) ORDER BY ledgerseq",
-  selectMaxLedger: "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1"
+  selectMaxLedger: "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1",
+  selectMinLedger: "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq ASC LIMIT 1"
 };
 
 export default class LedgerHeadersRepo {
@@ -34,5 +35,10 @@ export default class LedgerHeadersRepo {
   // Returns max ledger number
   public findMaxSeq(): Promise<number> {
     return this.db.oneOrNone(sql.selectMaxLedger, null, res => res.ledgerseq);
+  }
+
+  // Returns min ledger number
+  public findMinSeq(): Promise<number> {
+    return this.db.oneOrNone(sql.selectMinLedger, null, res => res.ledgerseq);
   }
 }
