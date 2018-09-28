@@ -1,5 +1,5 @@
 import { PubSub } from "graphql-subscriptions";
-import { Collection } from "./ingest/collection";
+import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger } from "./model";
 
 export const pubsub = new PubSub();
@@ -21,9 +21,9 @@ export class Publisher {
   ];
 
   private ledger: Ledger;
-  private collection: Collection;
+  private collection: SubscriptionPayloadCollection;
 
-  constructor(ledger: Ledger, collection: Collection) {
+  constructor(ledger: Ledger, collection: SubscriptionPayloadCollection) {
     this.ledger = ledger;
     this.collection = collection;
   }

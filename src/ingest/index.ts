@@ -1,3 +1,2 @@
-export { Collection } from "./collection";
+export { SubscriptionPayloadCollection } from "./subscription_payload_collection";
 export { Cursor } from "./cursor";
-export { Fetcher } from "./fetcher";

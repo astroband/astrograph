@@ -1,5 +1,10 @@
 import db from "../database";
-import { Ledger } from "../model";
+import { Ledger, Transaction } from "../model";
+
+export interface ICursorResult {
+  ledger: Ledger;
+  transactions: Transaction[];
+}
 
 // Walks through ledgers in ledgerheaders table.
 export class Cursor {
@@ -14,7 +19,8 @@ export class Cursor {
     this.seq = seq;
   }
 
-  public async nextLedger(): Promise<Ledger | null> {
+  // Returns next ledger object and transactions
+  public async nextLedger(): Promise<ICursorResult | null> {
     const ledgerHeader = await db.ledgerHeaders.findBySeq(this.seq);
 
     // If there is no next ledger
@@ -31,8 +37,9 @@ export class Cursor {
 
     const ledger = new Ledger(this.seq);
     this.incrementSeq();
+    const transactions = await db.transactions.findAllBySeq(this.seq);
 
-    return ledger;
+    return { ledger, transactions };
   }
 
   // Increments current ledger number
