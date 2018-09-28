@@ -19,6 +19,10 @@ export class Cursor {
     this.seq = seq;
   }
 
+  get current(): number {
+    return this.seq;
+  }
+
   // Returns next ledger object and transactions
   public async nextLedger(): Promise<ICursorResult | null> {
     const ledgerHeader = await db.ledgerHeaders.findBySeq(this.seq);
