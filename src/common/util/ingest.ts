@@ -4,7 +4,11 @@ import logger from "./logger";
 import { DEBUG_LEDGER, INGEST_INTERVAL } from "./secrets";
 
 export default async function startIngest() {
-  logger.info(`Staring ingest every ${INGEST_INTERVAL} ms. from ${DEBUG_LEDGER || "lastest ledger"}`);
+  logger.info(
+    `Staring ingest every ${INGEST_INTERVAL} ms. from ${
+      DEBUG_LEDGER === -1 ? "first ledger" : DEBUG_LEDGER || "lastest ledger"
+    }`
+  );
 
   const cursor = await Cursor.build(DEBUG_LEDGER);
 
