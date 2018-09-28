@@ -1,21 +1,18 @@
-import db from "../database";
-import { Ledger, Transaction } from "../model";
+import { Transaction } from "../model";
 import { Collection } from "./collection";
 
 export class Fetcher {
-  public ledger: Ledger;
+  public transactions: Transaction[];
 
-  constructor(ledger: Ledger) {
-    this.ledger = ledger;
+  constructor(transactions: Transaction[]) {
+    this.transactions = transactions;
   }
 
-  public async fetch(): Promise<Collection> {
+  public fetch(): Collection {
     const collection = new Collection();
 
-    const transactions = await db.transactions.findAllBySeq(this.ledger.seq);
-
-    const fees = this.fetchFees(transactions);
-    const changes = this.fetchChanges(transactions);
+    const fees = this.fetchFees(this.transactions);
+    const changes = this.fetchChanges(this.transactions);
 
     collection.concatXDR(fees);
     collection.concatXDR(changes);
