@@ -13,10 +13,10 @@ export class Worker {
     const result = await this.cursor.nextLedger();
 
     if (result) {
-      const { ledgerHeader, transactions } = result;
+      const { seq, transactions } = result;
 
       const collection = new SubscriptionPayloadCollection(transactions);
-      new Publisher(ledgerHeader, collection).publish();
+      new Publisher(seq, collection).publish();
     }
   }
 }

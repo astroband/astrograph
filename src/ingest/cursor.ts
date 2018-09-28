@@ -1,8 +1,8 @@
 import db from "../database";
-import { Ledger, Transaction } from "../model";
+import { Transaction } from "../model";
 
 export interface ICursorResult {
-  ledger: Ledger;
+  seq: number;
   transactions: Transaction[];
 }
 
@@ -39,11 +39,10 @@ export class Cursor {
       return null;
     }
 
-    const ledger = new Ledger(this.seq);
     this.incrementSeq();
     const transactions = await db.transactions.findAllBySeq(this.seq);
 
-    return { ledger, transactions };
+    return { seq: this.seq, transactions };
   }
 
   // Increments current ledger number
