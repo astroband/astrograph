@@ -1,0 +1,14 @@
+query {
+  dataEntries(id:"GAKIES3XO4OTZAPGCQOJO3SRVKHCSGYSZ7EFYMCZV6QW44GRL7KWWMK6") {
+    value
+    account {
+      id
+    }
+    ledger {
+      seq
+      header {
+      	ledgerVersion
+    	}
+    }
+  }
+}
