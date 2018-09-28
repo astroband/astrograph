@@ -9,7 +9,8 @@ export interface ICursorResult {
 // Walks through ledgers in ledgerheaders table.
 export class Cursor {
   public static async build(seq?: number) {
-    const n = seq === -1 ? await db.ledgerHeaders.findMinSeq() : seq || (await db.ledgerHeaders.findMaxSeq()) + 1;
+    const dbh = db.ledgerHeaders;
+    const n = seq === -1 ? await dbh.findMinSeq() : seq || (await dbh.findMaxSeq()) + 1;
     return new Cursor(n);
   }
 
