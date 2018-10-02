@@ -1,6 +1,6 @@
 import { PubSub } from "graphql-subscriptions";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
-import { Ledger } from "./model";
+import { Ledger, LedgerHeader } from "./model";
 
 export const pubsub = new PubSub();
 
@@ -20,16 +20,16 @@ export class Publisher {
     { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY }
   ];
 
-  private seq: number;
+  private header: LedgerHeader;
   private collection: SubscriptionPayloadCollection;
 
-  constructor(seq: number, collection: SubscriptionPayloadCollection) {
-    this.seq = seq;
+  constructor(header: LedgerHeader, collection: SubscriptionPayloadCollection) {
+    this.header = header;
     this.collection = collection;
   }
 
   public async publish() {
-    pubsub.publish(LEDGER_CREATED, new Ledger(this.seq));
+    pubsub.publish(LEDGER_CREATED, new Ledger(this.header.ledgerSeq));
 
     for (const entry of this.collection) {
       const payloadClassName = entry.constructor.name;

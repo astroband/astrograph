@@ -1,8 +1,8 @@
 import db from "../database";
-import { Transaction } from "../model";
+import { LedgerHeader, Transaction } from "../model";
 
 export interface ICursorResult {
-  seq: number;
+  header: LedgerHeader;
   transactions: Transaction[];
 }
 
@@ -25,10 +25,10 @@ export class Cursor {
 
   // Returns next ledger object and transactions
   public async nextLedger(): Promise<ICursorResult | null> {
-    const ledgerHeader = await db.ledgerHeaders.findBySeq(this.seq);
+    const header = await db.ledgerHeaders.findBySeq(this.seq);
 
     // If there is no next ledger
-    if (ledgerHeader == null) {
+    if (header == null) {
       const maxSeq = await db.ledgerHeaders.findMaxSeq();
 
       // And there is a ledger somewhere forward in history (it is the gap)
@@ -42,7 +42,7 @@ export class Cursor {
     this.incrementSeq();
     const transactions = await db.transactions.findAllBySeq(this.seq);
 
-    return { seq: this.seq, transactions };
+    return { header, transactions };
   }
 
   // Increments current ledger number
