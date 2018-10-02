@@ -1,6 +1,10 @@
 import { Publisher } from "../pubsub";
 import { Cursor } from "./cursor";
+
 import { SubscriptionPayloadCollection } from "./subscription_payload_collection";
+
+import { Connection, Store } from "../storage";
+import { DGRAPH_URL } from "../util/secrets";
 
 export class Worker {
   public cursor: Cursor;
@@ -17,6 +21,13 @@ export class Worker {
 
       const collection = new SubscriptionPayloadCollection(transactions);
       new Publisher(header, collection).publish();
+
+      if (DGRAPH_URL) {
+        const connection = new Connection();
+        const storage = new Store(connection);
+        await storage.header(header);
+        connection.close();
+      }
     }
   }
 }

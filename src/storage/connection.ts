@@ -19,7 +19,7 @@ export class Connection {
   }
 
   public close() {
-    this.client.close();
+    this.stub.close();
   }
 
   public async migrate() {
@@ -43,6 +43,11 @@ export class Connection {
       logger.error(err);
       process.exit(-1);
     }
+  }
+
+  public async query(query: string, vars: any): Promise<any> {
+    const res = await this.client.newTxn().queryWithVars(query, vars);
+    return res.getJson();
   }
 }
 
