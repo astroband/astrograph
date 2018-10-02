@@ -2,7 +2,7 @@
 
 FROM node:alpine AS build
 
-ENV YARN_VERSION 1.9.4
+ENV YARN_VERSION 1.10.1
 ENV NODE_ENV="production"
 
 # Packages
