@@ -24,8 +24,9 @@ export class Worker {
 
       if (DGRAPH_URL) {
         const connection = new Connection();
-        const storage = new Store(connection);
-        await storage.header(header);
+        const store = new Store(connection);
+        await store.header(header);
+
         connection.close();
       }
     }
