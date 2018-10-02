@@ -3,10 +3,9 @@ import grpc from "grpc";
 import { DGRAPH_URL } from "../util/secrets";
 
 const schema = `
-  name: string @index(exact) .
-  married: bool .
-  loc: geo .
-  dob: datetime .
+  type: string @index(exact) .
+  seq: int @index(int) .
+  id: string @index(exact) .
 `;
 
 export class Connection {
