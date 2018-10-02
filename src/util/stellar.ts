@@ -1,7 +1,7 @@
 import Big from "big.js";
 import { Keypair, Network } from "stellar-base";
-import db from "../../database";
-import { Asset } from "../../model";
+import db from "../database";
+import { Asset } from "../model";
 
 const StellarAmountPrecision = 7;
 

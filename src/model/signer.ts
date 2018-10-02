@@ -1,4 +1,4 @@
-import { signerKeyFromXDR } from "../common/xdr";
+import { signerKeyFromXDR } from "../util/xdr";
 
 export class Signer {
   public static buildFromXDR(xdr: any, accountID: string) {

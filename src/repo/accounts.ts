@@ -1,6 +1,6 @@
 import { IDatabase } from "pg-promise";
-import { joinToMap, unique } from "../common/util/array";
 import { Account } from "../model";
+import { joinToMap, unique } from "../util/array";
 
 const sql = {
   selectAccount: "SELECT * FROM accounts WHERE accountid = $1",

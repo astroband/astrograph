@@ -1,6 +1,6 @@
 import { TrustLine } from "./trust_line";
 
-import { assetFromXDR, publicKeyFromXDR } from "../common/xdr";
+import { assetFromXDR, publicKeyFromXDR } from "../util/xdr";
 
 export class TrustLineValues extends TrustLine {
   public static buildFromXDR(xdr: any): TrustLineValues {

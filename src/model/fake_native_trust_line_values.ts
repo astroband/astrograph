@@ -1,9 +1,9 @@
 import stellar from "stellar-base";
 import { TrustLine } from "./trust_line";
 
-import { MAX_INT64 } from "../common";
-import { NATIVE_ASSET_CODE } from "../common/util/stellar";
-import { publicKeyFromXDR } from "../common/xdr";
+import { MAX_INT64 } from "../util";
+import { NATIVE_ASSET_CODE } from "../util/stellar";
+import { publicKeyFromXDR } from "../util/xdr";
 
 export class FakeNativeTrustLineValues extends TrustLine {
   public static buildFromXDR(xdr: any): FakeNativeTrustLineValues {

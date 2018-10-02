@@ -1,6 +1,6 @@
 import { IDatabase } from "pg-promise";
-import { joinToMap, unique } from "../common/util/array";
 import { TrustLine } from "../model";
+import { joinToMap, unique } from "../util/array";
 
 const sql = {
   selectTrustLines: "SELECT * FROM trustlines WHERE accountid = $1 ORDER BY assettype, assetcode",

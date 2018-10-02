@@ -1,6 +1,6 @@
 import { IDatabase } from "pg-promise";
-import { unique } from "../common/util/array";
 import { Transaction } from "../model";
+import { unique } from "../util/array";
 
 const sql = {
   selectTx:

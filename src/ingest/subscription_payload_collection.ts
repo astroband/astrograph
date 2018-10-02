@@ -1,5 +1,4 @@
 import stellar from "stellar-base";
-import { diffAccountsXDR, publicKeyFromXDR } from "../common/xdr";
 import {
   AccountSubscriptionPayload,
   DataEntrySubscriptionPayload,
@@ -8,6 +7,7 @@ import {
   Transaction,
   TrustLineSubscriptionPayload
 } from "../model";
+import { diffAccountsXDR, publicKeyFromXDR } from "../util/xdr";
 
 export type SubscriptionPayload =
   | AccountSubscriptionPayload

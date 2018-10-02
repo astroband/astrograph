@@ -1,6 +1,6 @@
 import { DataEntry } from "./data_entry";
 
-import { publicKeyFromXDR } from "../common/xdr";
+import { publicKeyFromXDR } from "../util/xdr";
 
 export class DataEntryValues extends DataEntry {
   public static buildFromXDR(xdr: any): DataEntryValues {

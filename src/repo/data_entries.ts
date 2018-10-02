@@ -1,6 +1,6 @@
 import { IDatabase } from "pg-promise";
-import { unique } from "../common/util/array";
 import { DataEntry } from "../model";
+import { unique } from "../util/array";
 
 const sql = {
   selectAccountData: "SELECT * FROM accountdata WHERE accountid = $1 ORDER BY dataname",

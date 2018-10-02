@@ -2,7 +2,7 @@ import { Account } from "./account";
 import { AccountThresholds } from "./account_thresholds";
 import { Signer } from "./signer";
 
-import { publicKeyFromXDR } from "../common/xdr";
+import { publicKeyFromXDR } from "../util/xdr";
 
 export class AccountValues extends Account {
   public static buildFromXDR(xdr: any): AccountValues {

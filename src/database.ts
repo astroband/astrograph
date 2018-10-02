@@ -5,7 +5,7 @@ import { IDatabase, IMain, IOptions } from "pg-promise";
 // Loading and initializing pg-promise:
 import pgPromise = require("pg-promise");
 
-import * as secrets from "./common/secrets";
+import * as secrets from "./util/secrets";
 
 import AccountsRepo from "./repo/accounts";
 import DataEntriesRepo from "./repo/data_entries";
@@ -57,7 +57,7 @@ const pgp: IMain = pgPromise(initOptions);
 const db = pgp(config) as IDatabase<IExtensions> & IExtensions;
 
 // Load and initialize optional diagnostics:
-import diagnostics = require("./common/db/diagnostics");
+import diagnostics = require("./util/db/diagnostics");
 
 diagnostics.init(initOptions);
 

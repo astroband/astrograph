@@ -1,4 +1,4 @@
-import { publicKeyFromXDR } from "../common/xdr";
+import { publicKeyFromXDR } from "../util/xdr";
 import { DataEntryValues } from "./data_entry_values";
 import { IMutationType, MutationType } from "./mutation_type";
 

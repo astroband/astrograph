@@ -2,7 +2,7 @@ import { Asset } from "./asset";
 import { IMutationType, MutationType } from "./mutation_type";
 import { TrustLineValues } from "./trust_line_values";
 
-import { assetFromXDR, publicKeyFromXDR } from "../common/xdr";
+import { assetFromXDR, publicKeyFromXDR } from "../util/xdr";
 
 export class TrustLineSubscriptionPayload implements IMutationType {
   public accountID: string;

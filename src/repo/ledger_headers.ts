@@ -1,6 +1,6 @@
 import { IDatabase } from "pg-promise";
-import { unique } from "../common/util/array";
 import { LedgerHeader } from "../model";
+import { unique } from "../util/array";
 
 const sql = {
   selectLedger: "SELECT * FROM ledgerheaders WHERE ledgerseq = $1",

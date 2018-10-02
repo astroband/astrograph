@@ -3,9 +3,9 @@ import { Asset } from "./";
 import { FakeNativeTrustLineValues } from "./fake_native_trust_line_values";
 import { IMutationType, MutationType } from "./mutation_type";
 
-import { publicKeyFromXDR } from "../common/xdr";
+import { publicKeyFromXDR } from "../util/xdr";
 
-import { buildNativeAsset } from "../common/util/stellar";
+import { buildNativeAsset } from "../util/stellar";
 
 export class NativeTrustLineSubscriptionPayload implements IMutationType {
   public mutationType: MutationType = MutationType.Update;
