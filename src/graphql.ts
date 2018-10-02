@@ -1,18 +1,11 @@
 import { ApolloServer } from "apollo-server";
 
-<<<<<<< HEAD
-import schema from "./schema";
-import logger from "./util/logger";
-import { BIND_ADDRESS, DEBUG_LEDGER, INGEST_INTERVAL, PORT } from "./util/secrets";
-import { setNetwork as setStellarNetwork } from "./util/stellar";
-=======
-import logger from "./common/util/logger";
-import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_URL, INGEST_INTERVAL, PORT } from "./common/util/secrets";
-import { setNetwork as setStellarNetwork } from "./common/util/stellar";
 import { Cursor, Worker } from "./ingest";
 import schema from "./schema";
 import { Connection } from "./storage";
->>>>>>> Introduced storage namespace
+import logger from "./util/logger";
+import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
+import { setNetwork as setStellarNetwork } from "./util/stellar";
 
 const isDev = process.env.NODE_ENV === "development";
 

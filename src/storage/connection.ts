@@ -1,6 +1,6 @@
 import { DgraphClient, DgraphClientStub, Operation } from "dgraph-js";
 import grpc from "grpc";
-import { DGRAPH_URL } from "../common/util/secrets";
+import { DGRAPH_URL } from "../util/secrets";
 
 const schema = `
   name: string @index(exact) .
