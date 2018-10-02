@@ -1,7 +1,7 @@
 import { ApolloServer } from "apollo-server";
 
-import logger from "./common/util/logger";
-import { BIND_ADDRESS, DEBUG_LEDGER, INGEST_INTERVAL, PORT } from "./common/util/secrets";
+import logger from "./common/logger";
+import { BIND_ADDRESS, DEBUG_LEDGER, INGEST_INTERVAL, PORT } from "./common/secrets";
 import { setNetwork as setStellarNetwork } from "./common/util/stellar";
 import { Cursor, Worker } from "./ingest";
 import schema from "./schema";

@@ -5,7 +5,7 @@ import { IDatabase, IMain, IOptions } from "pg-promise";
 // Loading and initializing pg-promise:
 import pgPromise = require("pg-promise");
 
-import * as secrets from "./common/util/secrets";
+import * as secrets from "./common/secrets";
 
 import AccountsRepo from "./repo/accounts";
 import DataEntriesRepo from "./repo/data_entries";

@@ -7,7 +7,7 @@
 import * as pgMonitor from "pg-monitor";
 import { IOptions } from "pg-promise";
 
-import logger from "../util/logger";
+import logger from "../logger";
 
 pgMonitor.setTheme("matrix"); // changing the default theme;
 
