@@ -4,11 +4,12 @@ import {
   DataEntrySubscriptionPayload,
   MutationType,
   NativeTrustLineSubscriptionPayload,
+  Transaction,
   TrustLineSubscriptionPayload
 } from "../model";
 import { diffAccountsXDR, publicKeyFromXDR } from "../util/xdr";
 
-export type Payload =
+export type SubscriptionPayload =
   | AccountSubscriptionPayload
   | TrustLineSubscriptionPayload
   | NativeTrustLineSubscriptionPayload
@@ -17,9 +18,33 @@ export type Payload =
 const changeType = stellar.xdr.LedgerEntryChangeType;
 const ledgerEntryType = stellar.xdr.LedgerEntryType;
 
-// Collection of ledger changes loaded from transaction metas, contains data from the only ledger.
-export class Collection extends Array<Payload> {
-  public concatXDR(xdrArray: any) {
+// Collection of ledger changes loaded from transaction metas, contains data only from ledger.
+export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
+  constructor(transactions: Transaction[]) {
+    super();
+
+    for (const tx of transactions) {
+      const xdr = tx.metaFromXDR();
+
+      switch (xdr.switch()) {
+        case 0:
+          for (const op of xdr.operations()) {
+            this.concatXDR(op.changes());
+          }
+          break;
+        case 1:
+          this.concatXDR(xdr.v1().txChanges());
+          for (const op of xdr.v1().operations()) {
+            this.concatXDR(op.changes());
+          }
+          break;
+      }
+
+      this.concatXDR(tx.feeMetaFromXDR().changes());
+    }
+  }
+
+  private concatXDR(xdrArray: any) {
     xdrArray.forEach((xdr: any, i: number) => {
       if (
         xdr.switch() !== changeType.ledgerEntryUpdated() ||
