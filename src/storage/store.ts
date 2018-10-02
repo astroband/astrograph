@@ -30,6 +30,7 @@ export class Store {
   }
 
   public async header(header: LedgerHeader) {
+    // FIXME: Not working without .toString(), hmmm
     const vars = {
       $prev: (header.ledgerSeq - 1).toString(),
       $next: (header.ledgerSeq + 1).toString(),
@@ -66,8 +67,4 @@ export class Store {
 
     await this.connection.push(nquads);
   }
-
-  // public transaction(transaction: Transaction) {
-  //
-  // }
 }
