@@ -37,10 +37,10 @@ export class Store {
       $current: header.ledgerSeq.toString()
     };
 
-    const result = await this.connection.query(queries.prevNextLedger, vars);
-    const current = result.current[0] ? `<${result.current[0].uid}>` : "_:ledger";
-    const prev = result.prev[0];
-    const next = result.next[0];
+    const uids = await this.connection.query(queries.prevNextLedger, vars);
+    const current = uids.current[0] ? `<${uids.current[0].uid}>` : "_:ledger";
+    const prev = uids.prev[0];
+    const next = uids.next[0];
 
     let nquads = `
       ${current} <type> "ledger" .
