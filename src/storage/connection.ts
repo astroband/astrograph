@@ -9,7 +9,7 @@ const schema = `
   dob: datetime .
 `;
 
-export class Storage {
+export class Connection {
   private stub: any;
   private client: any;
 
