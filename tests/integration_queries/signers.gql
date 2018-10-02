@@ -1,0 +1,11 @@
+query {
+  signers(id: "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC") {
+    account {
+      id
+    }
+    signer {
+      id
+    }
+    weight
+  }
+}

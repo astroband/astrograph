@@ -1,0 +1,8 @@
+query {
+  ledgers(seq: [2,3,4]) {
+    seq
+    header {
+      ledgerVersion
+    }
+  }
+}

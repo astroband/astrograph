@@ -1,0 +1,10 @@
+query {
+  trustLines(id: "GCY7C4WARB7NIABS3JRKK54A5NQSIVF4L5CIWIBPB6GKFOSESRLZVNMZ") {
+    authorized
+    balance
+    asset {
+      code
+      native
+    }
+  }
+}

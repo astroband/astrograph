@@ -1,0 +1,228 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Integration tests Accounts signed by 1`] = `
+Object {
+  "accountsSignedBy": Array [
+    Object {
+      "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
+      "ledger": Object {
+        "seq": 4,
+      },
+      "signers": Array [
+        Object {
+          "account": Object {
+            "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
+          },
+          "weight": 1,
+        },
+      ],
+      "trustLines": Array [
+        Object {
+          "asset": Object {
+            "code": "XLM",
+          },
+          "authorized": true,
+        },
+      ],
+    },
+    Object {
+      "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
+      "ledger": Object {
+        "seq": 3,
+      },
+      "signers": Array [
+        Object {
+          "account": Object {
+            "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
+          },
+          "weight": 1,
+        },
+        Object {
+          "account": Object {
+            "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
+          },
+          "weight": 1,
+        },
+      ],
+      "trustLines": Array [
+        Object {
+          "asset": Object {
+            "code": "XLM",
+          },
+          "authorized": true,
+        },
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Integration tests Data entries 1`] = `
+Object {
+  "dataEntries": Array [
+    Object {
+      "account": Object {
+        "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
+      },
+      "ledger": Object {
+        "header": Object {
+          "ledgerVersion": 10,
+        },
+        "seq": 4,
+      },
+      "value": "test_value",
+    },
+  ],
+}
+`;
+
+exports[`Integration tests Ledgers 1`] = `
+Object {
+  "ledgers": Array [
+    Object {
+      "header": Object {
+        "ledgerVersion": 10,
+      },
+      "seq": 2,
+    },
+    Object {
+      "header": Object {
+        "ledgerVersion": 10,
+      },
+      "seq": 3,
+    },
+    Object {
+      "header": Object {
+        "ledgerVersion": 10,
+      },
+      "seq": 4,
+    },
+  ],
+}
+`;
+
+exports[`Integration tests Signers 1`] = `
+Object {
+  "signers": Array [
+    Object {
+      "account": Object {
+        "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
+      },
+      "signer": Object {
+        "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
+      },
+      "weight": 1,
+    },
+    Object {
+      "account": Object {
+        "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
+      },
+      "signer": Object {
+        "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
+      },
+      "weight": 1,
+    },
+  ],
+}
+`;
+
+exports[`Integration tests Single account query 1`] = `
+Object {
+  "account": Object {
+    "data": Array [
+      Object {
+        "name": "test_data",
+        "value": "test_value",
+      },
+    ],
+    "flags": Object {
+      "authImmutable": false,
+      "authRequired": false,
+      "authRevokable": false,
+    },
+    "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
+    "inflationDest": null,
+    "ledger": Object {
+      "header": Object {
+        "ledgerVersion": 10,
+      },
+      "seq": 4,
+    },
+    "sequenceNumber": "8589934593",
+    "signerFor": Array [
+      Object {
+        "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
+        "trustLines": Array [
+          Object {
+            "asset": Object {
+              "code": "XLM",
+              "issuer": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+              "native": true,
+            },
+          },
+        ],
+      },
+      Object {
+        "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
+        "trustLines": Array [
+          Object {
+            "asset": Object {
+              "code": "XLM",
+              "issuer": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+              "native": true,
+            },
+          },
+        ],
+      },
+    ],
+    "signers": Array [
+      Object {
+        "signer": Object {
+          "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
+        },
+      },
+    ],
+    "thresholds": Object {
+      "high": 0,
+      "low": 0,
+      "masterWeight": 1,
+      "medium": 0,
+    },
+    "trustLines": Array [
+      Object {
+        "account": Object {
+          "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
+        },
+        "asset": Object {
+          "code": "XLM",
+          "issuer": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+          "native": true,
+        },
+      },
+    ],
+  },
+}
+`;
+
+exports[`Integration tests Trust lines 1`] = `
+Object {
+  "trustLines": Array [
+    Object {
+      "asset": Object {
+        "code": "XLM",
+        "native": true,
+      },
+      "authorized": true,
+      "balance": "999.9999900",
+    },
+    Object {
+      "asset": Object {
+        "code": "KHL",
+        "native": false,
+      },
+      "authorized": true,
+      "balance": "0.0000000",
+    },
+  ],
+}
+`;
