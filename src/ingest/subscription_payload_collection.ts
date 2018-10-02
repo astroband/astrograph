@@ -8,7 +8,7 @@ import {
 } from "../model";
 import { diffAccountsXDR, publicKeyFromXDR } from "../util/xdr";
 
-export type Payload =
+export type SubscriptionPayload =
   | AccountSubscriptionPayload
   | TrustLineSubscriptionPayload
   | NativeTrustLineSubscriptionPayload
@@ -18,7 +18,7 @@ const changeType = stellar.xdr.LedgerEntryChangeType;
 const ledgerEntryType = stellar.xdr.LedgerEntryType;
 
 // Collection of ledger changes loaded from transaction metas, contains data from the only ledger.
-export class Collection extends Array<Payload> {
+export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
   public concatXDR(xdrArray: any) {
     xdrArray.forEach((xdr: any, i: number) => {
       if (
