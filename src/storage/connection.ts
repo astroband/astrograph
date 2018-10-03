@@ -7,6 +7,7 @@ const schema = `
   type: string @index(exact) .
   seq: int @index(int) .
   id: string @index(exact) .
+  index: int @index(int) .
 `;
 
 export class Connection {

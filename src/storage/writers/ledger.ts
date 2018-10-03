@@ -2,7 +2,7 @@ import { LedgerHeader } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
-export class Header extends Writer {
+export class Ledger extends Writer {
   private header: LedgerHeader;
 
   constructor(connection: Connection, header: LedgerHeader) {
@@ -12,7 +12,7 @@ export class Header extends Writer {
 
   public async write(): Promise<string> {
     const { prev, next, current } = await this.prevNextCurrent(this.vars());
-    const uid = current ? `<${current.uid}>` : "_:ledger";
+    const uid = this.newOrUID(current, "ledger");
 
     let nquads = this.baseNQuads(uid);
     nquads += this.prevNQuads(uid, prev);
@@ -57,27 +57,5 @@ export class Header extends Writer {
       ${uid} <baseReserve> "${this.header.baseReserve}" .
       ${uid} <maxTxSetSize> "${this.header.maxTxSetSize}" .
     `;
-  }
-
-  private prevNQuads(uid: string, prev: any): string {
-    if (prev) {
-      return `
-        ${uid} <prev> <${prev.uid}> .
-        <${prev.uid}> <next> ${uid} .
-      `;
-    }
-
-    return "";
-  }
-
-  private nextNQuads(uid: string, next: any): string {
-    if (next) {
-      return `
-        <${next.uid}> <prev> ${uid} .
-        ${uid} <next> <${next.uid}> .
-      `;
-    }
-
-    return "";
   }
 }

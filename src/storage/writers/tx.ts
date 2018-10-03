@@ -13,17 +13,25 @@ export class Tx extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prev, next, current } = this.prevNextCurrent(this.vars);
+    const { prev, next, current } = await this.prevNextCurrent(this.vars());
+    const uid = this.newOrUID(current, "transaction");
+
+    let nquads = this.baseNQuads(uid);
+    nquads += this.prevNQuads(uid, prev);
+    nquads += this.nextNQuads(uid, next);
+
+    const result = await this.connection.push(nquads);
+    return result.getUidsMap().get("transaction") || current.uid;
   }
 
   protected prevNextCurrentQuery() {
     return `
-      query prevNextCurrent($id: string, $prevIndex: int, $nextIndex: int) {
+      query prevNextCurrent($id: string, $seq: string, $prevIndex: int, $nextIndex: int) {
         prev(func: eq(type, "transaction")) @filter(eq(seq, $seq) AND eq(index, $prevIndex)) {
           uid
         }
 
-        next(func: eq(type, "transaction")) @filter(eq(seq, $seq) AND eq(index, $prevIndex)) {
+        next(func: eq(type, "transaction")) @filter(eq(seq, $seq) AND eq(index, $nextIndex)) {
           uid
         }
 
@@ -36,34 +44,22 @@ export class Tx extends Writer {
 
   private baseNQuads(uid: string): string {
     return `
-      ${uid} <id> ${this.tx.id}
-      ${uid} <seq> ${this.tx.ledgerSeq}
-      ${uid} <index> ${this.tx.index}
+      ${uid} <type> "transaction" .
+      ${uid} <id> "${this.tx.id}" .
+      ${uid} <seq> "${this.tx.ledgerSeq}" .
+      ${uid} <index> "${this.tx.index}" .
+      ${uid} <ledger> <${this.ledgerUID}> .
+
+      <${this.ledgerUID}> <transactions> ${uid} .
     `;
   }
 
   private vars(): any {
     return {
+      $seq: this.tx.ledgerSeq.toString(),
       $prevIndex: (this.tx.index - 1).toString(),
       $nextIndex: (this.tx.index + 1).toString(),
       $id: this.tx.id
     };
   }
 }
-// public async transaction(tx: Transaction) {
-//   const ledgerAndTransaction = await this.connection.query(
-//     queries.ledgerAndTransaction,
-//     { seq: tx.ledgerSeq, id: tx.id }
-//   );
-//
-//   const ledger = ledgerAndTransaction.ledger[0];
-//   const transaction = ledgerAndTransaction.transaction[0];
-//
-//   let nquads = `
-//
-//   `;
-//
-//   if (ledger) {
-//
-//   }
-// }

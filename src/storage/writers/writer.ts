@@ -7,6 +7,9 @@ export abstract class Writer {
     this.connection = connection;
   }
 
+  public abstract async write(): Promise<string>;
+  protected abstract prevNextCurrentQuery(): string;
+
   protected async prevNextCurrent(vars: any): Promise<any> {
     const result = await this.connection.query(this.prevNextCurrentQuery(), vars);
     const current = result.current[0];
@@ -16,5 +19,29 @@ export abstract class Writer {
     return { prev, next, current };
   }
 
-  protected abstract prevNextCurrentQuery(): string;
+  protected newOrUID(subject: any, name: string) {
+    return subject ? `<${subject.uid}>` : `_:${name}`;
+  }
+
+  protected prevNQuads(uid: string, prev: any): string {
+    if (prev) {
+      return `
+        ${uid} <prev> <${prev.uid}> .
+        <${prev.uid}> <next> ${uid} .
+      `;
+    }
+
+    return "";
+  }
+
+  protected nextNQuads(uid: string, next: any): string {
+    if (next) {
+      return `
+        <${next.uid}> <prev> ${uid} .
+        ${uid} <next> <${next.uid}> .
+      `;
+    }
+
+    return "";
+  }
 }
