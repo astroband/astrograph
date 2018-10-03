@@ -30,16 +30,16 @@ describe("nextLedger", () => {
       nextLedger = await subject.nextLedger();
     });
 
-    test("returns { header, transactions } object", async () => {
+    it("returns { header, transactions } object", async () => {
       expect(nextLedger).toHaveProperty("header");
       expect(nextLedger).toHaveProperty("transactions");
     });
 
-    test("returns LedgerHeader instance", async () => {
+    it("returns LedgerHeader instance", async () => {
       expect(nextLedger!.header).toBeInstanceOf(LedgerHeader);
     });
 
-    test("returns transactions list", async () => {
+    it("returns transactions list", async () => {
       const result = await subject.nextLedger();
       const transactions = result!.transactions;
 
@@ -48,7 +48,7 @@ describe("nextLedger", () => {
       expect(transactions[0].ledgerSeq).toBe(currentSeq);
     });
 
-    test("increments sequence number", async () => {
+    it("increments sequence number", async () => {
       expect(subject.current).toBe(currentSeq + 1);
     });
   });
@@ -65,7 +65,7 @@ describe("nextLedger", () => {
       db.ledgerHeaders.findMaxSeq = jest.fn(() => { return maxSeq; });
     });
 
-    test("returns null", async () => {
+    it("returns null", async () => {
       nextLedger = await subject.nextLedger();
       expect(nextLedger).toBeNull()
     });
@@ -73,7 +73,7 @@ describe("nextLedger", () => {
     describe("when there is gap between max seq and current seq", () => {
       beforeEach(() => { maxSeq = currentSeq + 20 });
 
-      test("skips the gap", async () => {
+      it("skips the gap", async () => {
         await subject.nextLedger();
         expect(subject.current).toBe(maxSeq);
       });
@@ -82,7 +82,7 @@ describe("nextLedger", () => {
     describe("there is no gap between max seq and current seq", () => {
       beforeEach(() => { maxSeq = currentSeq });
 
-      test("doesn't increment the seq", async () => {
+      it("doesn't increment the seq", async () => {
         await subject.nextLedger();
         expect(subject.current).toBe(currentSeq);
       });
