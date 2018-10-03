@@ -5,17 +5,25 @@ const queries = {
   prevNextLedger: `
     query prevNext($prev: int, $next: int, $current: int) {
       prev(func: eq(type, "ledger")) @filter(eq(seq, $prev)) {
-        seq
         uid
       }
 
       current(func: eq(type, "ledger")) @filter(eq(seq, $current)) {
-        seq
         uid
       }
 
       next(func: eq(type, "ledger")) @filter(eq(seq, $next)) {
-        seq
+        uid
+      }
+    }
+  `,
+  ledgerAndTransaction: `
+    query ledgerAndTransaction($seq: int, $id: id) {
+      ledger(func: eq(type, "ledger")) @filter(eq(seq, $seq)) {
+        uid
+      }
+
+      transaction(func: eq(type, "transaction")) @filter(eq(id, $id)) {
         uid
       }
     }
@@ -29,42 +37,61 @@ export class Store {
     this.connection = connection;
   }
 
-  public async header(header: LedgerHeader) {
-    // FIXME: Not working without .toString(), hmmm
+  public async header(header: LedgerHeader): Promise<string> {
     const vars = {
       $prev: (header.ledgerSeq - 1).toString(),
       $next: (header.ledgerSeq + 1).toString(),
       $current: header.ledgerSeq.toString()
     };
 
-    const uids = await this.connection.query(queries.prevNextLedger, vars);
-    const current = uids.current[0] ? `<${uids.current[0].uid}>` : "_:ledger";
-    const prev = uids.prev[0];
-    const next = uids.next[0];
+    const ledgers = await this.connection.query(queries.prevNextLedger, vars);
+    const current = ledgers.current[0];
+    const uid = current ? `<${current.uid}>` : "_:ledger";
+    const prev = ledgers.prev[0];
+    const next = ledgers.next[0];
 
     let nquads = `
-      ${current} <type> "ledger" .
-      ${current} <seq> "${header.ledgerSeq}" .
-      ${current} <version> "${header.ledgerVersion}" .
-      ${current} <baseFee> "${header.baseFee}" .
-      ${current} <baseReserve> "${header.baseReserve}" .
-      ${current} <maxTxSetSize> "${header.maxTxSetSize}" .
+      ${uid} <type> "ledger" .
+      ${uid} <seq> "${header.ledgerSeq}" .
+      ${uid} <version> "${header.ledgerVersion}" .
+      ${uid} <baseFee> "${header.baseFee}" .
+      ${uid} <baseReserve> "${header.baseReserve}" .
+      ${uid} <maxTxSetSize> "${header.maxTxSetSize}" .
     `;
 
     if (prev) {
       nquads += `
-        ${current} <prev> <${prev.uid}> .
-        <${prev.uid}> <next> ${current} .
+        ${uid} <prev> <${prev.uid}> .
+        <${prev.uid}> <next> ${uid} .
       `;
     }
 
     if (next) {
       nquads += `
-        ${current} <next> <${next.uid}> .
-        <${next.uid}> <prev> ${current} .
+        <${next.uid}> <prev> ${uid} .
+        ${uid} <next> <${next.uid}> .
       `;
     }
 
-    await this.connection.push(nquads);
+    const result = await this.connection.push(nquads);
+    return result.getUidsMap().get("ledger") || current.uid;
   }
+
+  // public async transaction(tx: Transaction) {
+  //   const ledgerAndTransaction = await this.connection.query(
+  //     queries.ledgerAndTransaction,
+  //     { seq: tx.ledgerSeq, id: tx.id }
+  //   );
+  //
+  //   const ledger = ledgerAndTransaction.ledger[0];
+  //   const transaction = ledgerAndTransaction.transaction[0];
+  //
+  //   let nquads = `
+  //
+  //   `;
+  //
+  //   if (ledger) {
+  //
+  //   }
+  // }
 }

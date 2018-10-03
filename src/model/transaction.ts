@@ -27,6 +27,10 @@ export class Transaction {
     this.feeMeta = data.txfeemeta;
   }
 
+  public envelopeFromXDR() {
+    return stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(this.meta, "base64"));
+  }
+
   public metaFromXDR() {
     return stellar.xdr.TransactionMeta.fromXDR(Buffer.from(this.meta, "base64"));
   }
