@@ -3,17 +3,17 @@ import { Connection } from "../connection";
 import { Writer } from "./writer";
 
 export class Header extends Writer {
-  private query: string = `
-    query prevNext($prev: int, $next: int, $current: int) {
+  private query = `
+    query prevNextCurrent($prev: int, $next: int, $current: int) {
       prev(func: eq(type, "ledger")) @filter(eq(seq, $prev)) {
         uid
       }
 
-      current(func: eq(type, "ledger")) @filter(eq(seq, $current)) {
+      next(func: eq(type, "ledger")) @filter(eq(seq, $next)) {
         uid
       }
 
-      next(func: eq(type, "ledger")) @filter(eq(seq, $next)) {
+      current(func: eq(type, "ledger")) @filter(eq(seq, $current)) {
         uid
       }
     }
@@ -85,22 +85,4 @@ export class Header extends Writer {
 
     return "";
   }
-
-  // public async transaction(tx: Transaction) {
-  //   const ledgerAndTransaction = await this.connection.query(
-  //     queries.ledgerAndTransaction,
-  //     { seq: tx.ledgerSeq, id: tx.id }
-  //   );
-  //
-  //   const ledger = ledgerAndTransaction.ledger[0];
-  //   const transaction = ledgerAndTransaction.transaction[0];
-  //
-  //   let nquads = `
-  //
-  //   `;
-  //
-  //   if (ledger) {
-  //
-  //   }
-  // }
 }
