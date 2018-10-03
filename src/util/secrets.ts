@@ -2,11 +2,14 @@ import dotenv from "dotenv";
 import fs from "fs";
 import logger from "./logger";
 
+const environment = process.env.NODE_ENV;
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env";
 
 if (fs.existsSync(envFile)) {
   logger.log("info", `Using ${envFile} file to supply config environment variables`);
   dotenv.config({ path: envFile });
+} else if (environment === "test") {
+  throw new Error("No .env file found for the test environment. Create `.env.test` file with necessary settings");
 }
 
 export const DB = process.env.DB || "stellar";

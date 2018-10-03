@@ -64,7 +64,8 @@
     "bench": "ts-node ./benchmark/index.ts",
     "prod": "yarn build && yarn tslint && yarn start-prod",
     "tslint": "tslint -c tslint.json -p tsconfig.json --fix",
-    "tslint-check": "tslint-config-prettier-check ./tslint.json"
+    "tslint-check": "tslint-config-prettier-check ./tslint.json",
+    "test": "NODE_ENV=test yarn run jest"
   },
   "license": "MIT",
   "private": true

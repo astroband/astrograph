@@ -1,10 +1,12 @@
-import db from "../src/database";
+import { Client as dbClient } from "pg";
 import schema from "../src/schema";
 import fs from "fs";
 import { graphql } from "graphql";
 import { Network } from "stellar-base";
-import { QueryFile } from "pg-promise";
 import path from "path";
+import logger from "../src/util/logger";
+import * as secrets from "../src/util/secrets";
+import { execSync } from "child_process";
 
 Network.useTestNetwork();
 
@@ -17,16 +19,40 @@ const testCases = [
   "Trust lines",
 ];
 
-const dbDump = new QueryFile(path.join(__dirname, "test_db.sql"));
+async function importDbDump() {
+  const client = new dbClient({
+    host: secrets.DBHOST,
+    port: secrets.DBPORT,
+    database: secrets.DB,
+    user: secrets.DBUSER,
+    password: secrets.DBPASSWORD
+  });
 
-// FIXME: This is a hack, because
-// jest's beforeAll somehow is messed
-// up with async dump loading
-(async () => {
-  await db.query(dbDump);
-})();
+  const sql = fs.readFileSync(path.join(__dirname, "test_db.sql"), 'utf8');
+
+  await client.connect();
+
+  logger.log("info", "importing database fixture...");
+
+  await client.query(sql);
+  await client.end();
+}
 
 describe("Integration tests", () => {
+  beforeAll(async () => {
+    try {
+      await importDbDump();
+    } catch(e) {
+      if (e.message !== `database "${secrets.DB}" does not exist`) {
+        throw e;
+      }
+
+      logger.log("info", `${e.message}. Creating...`);
+      execSync(`createdb ${secrets.DB}`);
+      await importDbDump();
+    }
+  });
+
   test.each(testCases)("%s", async (caseName: string) => {
     const queryFile = caseName.toLowerCase().replace(/ /g, "_");
     const query = fs.readFileSync(`${__dirname}/integration_queries/${queryFile}.gql`, "utf8");
