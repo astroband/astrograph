@@ -3,22 +3,6 @@ import { Connection } from "../connection";
 import { Writer } from "./writer";
 
 export class Header extends Writer {
-  private query = `
-    query prevNextCurrent($prev: int, $next: int, $current: int) {
-      prev(func: eq(type, "ledger")) @filter(eq(seq, $prev)) {
-        uid
-      }
-
-      next(func: eq(type, "ledger")) @filter(eq(seq, $next)) {
-        uid
-      }
-
-      current(func: eq(type, "ledger")) @filter(eq(seq, $current)) {
-        uid
-      }
-    }
-  `;
-
   private header: LedgerHeader;
 
   constructor(connection: Connection, header: LedgerHeader) {
@@ -27,7 +11,7 @@ export class Header extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prev, next, current } = await this.prevNextCurrent();
+    const { prev, next, current } = await this.prevNextCurrent(this.vars());
     const uid = current ? `<${current.uid}>` : "_:ledger";
 
     let nquads = this.baseNQuads(uid);
@@ -38,19 +22,30 @@ export class Header extends Writer {
     return result.getUidsMap().get("ledger") || current.uid;
   }
 
-  private async prevNextCurrent(): Promise<any> {
-    const vars = {
+  protected prevNextCurrentQuery(): string {
+    return `
+      query prevNextCurrent($prev: int, $next: int, $current: int) {
+        prev(func: eq(type, "ledger")) @filter(eq(seq, $prev)) {
+          uid
+        }
+
+        next(func: eq(type, "ledger")) @filter(eq(seq, $next)) {
+          uid
+        }
+
+        current(func: eq(type, "ledger")) @filter(eq(seq, $current)) {
+          uid
+        }
+      }
+    `;
+  }
+
+  private vars(): any {
+    return {
       $prev: (this.header.ledgerSeq - 1).toString(),
       $next: (this.header.ledgerSeq + 1).toString(),
       $current: this.header.ledgerSeq.toString()
     };
-
-    const ledgers = await this.connection.query(this.query, vars);
-    const current = ledgers.current[0];
-    const prev = ledgers.prev[0];
-    const next = ledgers.next[0];
-
-    return { prev, next, current };
   }
 
   private baseNQuads(uid: string): string {
