@@ -20,18 +20,10 @@ export class Publisher {
     { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY }
   ];
 
-  private header: LedgerHeader;
-  private collection: SubscriptionPayloadCollection;
+  public static async publish(header: LedgerHeader, collection: SubscriptionPayloadCollection) {
+    pubsub.publish(LEDGER_CREATED, new Ledger(header.ledgerSeq));
 
-  constructor(header: LedgerHeader, collection: SubscriptionPayloadCollection) {
-    this.header = header;
-    this.collection = collection;
-  }
-
-  public async publish() {
-    pubsub.publish(LEDGER_CREATED, new Ledger(this.header.ledgerSeq));
-
-    for (const entry of this.collection) {
+    for (const entry of collection) {
       const payloadClassName = entry.constructor.name;
 
       for (const m of Publisher.eventMap) {
