@@ -12,8 +12,6 @@ export class Operation extends Writer {
     this.txUID = txUID;
     this.op = op;
     this.index = index;
-
-    console.log(this.op);
   }
 
   public async write(): Promise<string> {
@@ -32,17 +30,26 @@ export class Operation extends Writer {
 
   protected prevNextCurrentQuery() {
     return `
-      query prevNextCurrent($id: string, $prevIndex: int, $nextIndex) {
-        prev(func: eq(type, "operation")) @filter(eq(transaction, $id) AND eq(index, $prevIndex)) {
+      query prevNextCurrent($id: string, $prevIndex: int, $nextIndex: int, $current: int) {
+        prev(func: eq(type, "operation")) @filter(eq(index, $prevIndex)) @cascade {
           uid
+          transaction @filter(uid($id)) {
+            uid
+          }
         }
 
-        next(func: eq(type, "operation")) @filter(eq(transaction, $id) AND eq(index, $nextIndex)) {
+        next(func: eq(type, "operation")) @filter(eq(index, $nextIndex)) @cascade {
           uid
+          transaction @filter(uid($id)) {
+            uid
+          }
         }
 
-        current(func: eq(type, "operation")) @filter(eq(transaction, $id)) {
+        current(func: eq(type, "operation")) @filter(eq(index, $current)) @cascade {
           uid
+          transaction @filter(uid($id)) {
+            uid
+          }
         }
       }
     `;
@@ -51,8 +58,9 @@ export class Operation extends Writer {
   private baseNQuads(uid: string): string {
     return `
       ${uid} <type> "operation" .
-      ${uid} <transaction> <"${this.txUID}"> .
+      ${uid} <transaction> <${this.txUID}> .
       ${uid} <index> "${this.index}" .
+      ${uid} <kind> "${this.body().switch().name}" .
 
       <${this.txUID}> <operations> ${uid} .
     `;
@@ -62,7 +70,12 @@ export class Operation extends Writer {
     return {
       $id: this.txUID,
       $prevIndex: (this.index - 1).toString(),
-      $nextIndex: (this.index + 1).toString()
+      $nextIndex: (this.index + 1).toString(),
+      $current: this.index.toString()
     };
+  }
+
+  private body(): any {
+    return this.op.body();
   }
 }
