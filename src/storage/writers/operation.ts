@@ -6,7 +6,7 @@ export class Operation extends Writer {
   private op: any;
   private index: number;
 
-  constructor(connection: Connection, txUID: string, op: any, index: number) {
+  constructor(connection: Connection, op: any, txUID: string, index: number) {
     super(connection);
 
     this.txUID = txUID;

@@ -26,7 +26,7 @@ export class Tx extends Writer {
     const ops = this.operations();
 
     for (let index = 0; index < ops.length; index++) {
-      await new Operation(this.connection, txUID, ops[index], index).write();
+      await new Operation(this.connection, ops[index], txUID, index).write();
     }
 
     return txUID;
