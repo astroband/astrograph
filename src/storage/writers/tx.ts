@@ -23,6 +23,10 @@ export class Tx extends Writer {
     const result = await this.connection.push(nquads);
     const txUID = result.getUidsMap().get("transaction") || current.uid;
 
+    this.tx.envelopeXDR.forEach((op: any, index: number) => {
+      new Operation(connection, txUID, op, index).write();
+    });
+
     return txUID;
   }
 
