@@ -1,18 +1,19 @@
-import { Transaction } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
 export class Operation extends Writer {
-  private txUID: Transaction;
+  private txUID: string;
   private op: any;
   private index: number;
 
-  constructor(connection: Connection, txUID: number, op: any, index: number) {
+  constructor(connection: Connection, txUID: string, op: any, index: number) {
     super(connection);
 
     this.txUID = txUID;
     this.op = op;
     this.index = index;
+
+    console.log(this.op);
   }
 
   public async write(): Promise<string> {
@@ -61,7 +62,7 @@ export class Operation extends Writer {
     return {
       $id: this.txUID,
       $prevIndex: (this.index - 1).toString(),
-      $nextIndex: (this.index + 1).toString(),
+      $nextIndex: (this.index + 1).toString()
     };
   }
 }
