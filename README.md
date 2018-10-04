@@ -66,6 +66,16 @@ In order to develop locally, you need to get the stellar-core database. The easi
 
 After `yarn run dev` [GraphQL playground](https://www.npmjs.com/package/graphql-playground) will be available on `http://localhost:4000`
 
+### Testing
+
+Astrograph uses [jest](https://github.com/facebook/jest) for the tests.
+
+You can run all available tests with `yarn run test` command.
+
+Astrograph ships with integration tests too.
+You should configure test database connection with `.env.test` file before running them because they are using [database fixture](https://github.com/mobius-network/astrograph/blob/master/tests/test_db.sql). 
+`.env.test` file presence is mandatory to prevent accidental overwriting your stellar-core database with the fixture!
+
 ## Usage
 
 Let's go straight to some example queries:
