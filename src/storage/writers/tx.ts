@@ -1,6 +1,6 @@
 import { Transaction } from "../../model";
 import { Connection } from "../connection";
-import { Operation } from "./operation";
+//import { Operation } from "./operation";
 import { Writer } from "./writer";
 
 export class Tx extends Writer {
@@ -25,10 +25,10 @@ export class Tx extends Writer {
     const txUID = result.getUidsMap().get("transaction") || current.uid;
 
     console.log(this.tx.envelopeXDR.operations());
-    this.tx.envelopeXDR.operations().forEach(async (op: any, index: number) => {
-      console.log("OPER!!!");
-      await (new Operation(this.connection, txUID, op, index)).write();
-    });
+    // this.tx.envelopeXDR.operations().forEach(async (op: any, index: number) => {
+    //   console.log("OPER!!!");
+    //   await (new Operation(this.connection, txUID, op, index)).write();
+    // });
 
     return txUID;
   }
