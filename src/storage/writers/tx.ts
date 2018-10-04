@@ -21,7 +21,9 @@ export class Tx extends Writer {
     nquads += this.nextNQuads(uid, next);
 
     const result = await this.connection.push(nquads);
-    return result.getUidsMap().get("transaction") || current.uid;
+    const txUID = result.getUidsMap().get("transaction") || current.uid;
+
+    return txUID;
   }
 
   protected prevNextCurrentQuery() {
