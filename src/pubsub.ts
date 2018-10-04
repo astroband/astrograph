@@ -13,13 +13,6 @@ export const TRUST_LINE = "TRUST_LINE";
 export const DATA_ENTRY = "DATA_ENTRY";
 
 export class Publisher {
-  private static eventMap = [
-    { payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT },
-    { payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE },
-    { payloadClassName: "NativeTrustLineSubscriptionPayload", event: TRUST_LINE },
-    { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY }
-  ];
-
   public static async publish(header: LedgerHeader, collection: SubscriptionPayloadCollection) {
     pubsub.publish(LEDGER_CREATED, new Ledger(header.ledgerSeq));
 
@@ -33,4 +26,11 @@ export class Publisher {
       }
     }
   }
+
+  private static eventMap = [
+    { payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT },
+    { payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE },
+    { payloadClassName: "NativeTrustLineSubscriptionPayload", event: TRUST_LINE },
+    { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY }
+  ];
 }
