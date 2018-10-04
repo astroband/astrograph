@@ -9,6 +9,8 @@ export class Transaction {
   public meta: string;
   public feeMeta: string;
 
+  public envelopeXDR: any;
+
   constructor(data: {
     txid: string;
     ledgerseq: number;
@@ -25,6 +27,8 @@ export class Transaction {
     this.result = data.txresult;
     this.meta = data.txmeta;
     this.feeMeta = data.txfeemeta;
+
+    this.envelopeXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(this.meta, "base64"));
   }
 
   public envelopeFromXDR() {

@@ -20,7 +20,7 @@ export class Worker {
       const { header, transactions } = result;
 
       const collection = new SubscriptionPayloadCollection(transactions);
-      new Publisher(header, collection).publish();
+      Publisher(header, collection).publish();
 
       if (DGRAPH_URL) {
         const connection = new Connection();
