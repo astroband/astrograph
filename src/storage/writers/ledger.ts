@@ -25,15 +25,15 @@ export class Ledger extends Writer {
   protected prevNextCurrentQuery(): string {
     return `
       query prevNextCurrent($prev: int, $next: int, $current: int) {
-        prev(func: eq(type, "ledger")) @filter(eq(seq, $prev)) {
+        prev(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $prev)) {
           uid
         }
 
-        next(func: eq(type, "ledger")) @filter(eq(seq, $next)) {
+        next(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $next)) {
           uid
         }
 
-        current(func: eq(type, "ledger")) @filter(eq(seq, $current)) {
+        current(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $current)) {
           uid
         }
       }

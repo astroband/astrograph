@@ -35,15 +35,15 @@ export class Tx extends Writer {
   protected prevNextCurrentQuery() {
     return `
       query prevNextCurrent($id: string, $seq: string, $prevIndex: int, $nextIndex: int) {
-        prev(func: eq(type, "transaction")) @filter(eq(seq, $seq) AND eq(index, $prevIndex)) {
+        prev(func: eq(type, "transaction"), first: 1) @filter(eq(seq, $seq) AND eq(index, $prevIndex)) {
           uid
         }
 
-        next(func: eq(type, "transaction")) @filter(eq(seq, $seq) AND eq(index, $nextIndex)) {
+        next(func: eq(type, "transaction"), first: 1) @filter(eq(seq, $seq) AND eq(index, $nextIndex)) {
           uid
         }
 
-        current(func: eq(type, "transaction")) @filter(eq(id, $id)) {
+        current(func: eq(type, "transaction"), first: 1) @filter(eq(id, $id)) {
           uid
         }
       }
