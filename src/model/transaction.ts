@@ -1,13 +1,6 @@
 import stellar from "stellar-base";
+import { TransactionMemo } from "./transaction_memo";
 import { publicKeyFromBuffer } from "../util/xdr";
-
-type MemoValue = string | number;
-enum MemoType {
-  Id = "ID",
-  Text = "TEXT",
-  Hash = "HASH",
-  Return = "RETURN"
-}
 
 export class Transaction {
   public id: string;
@@ -17,7 +10,7 @@ export class Transaction {
   public result: string;
   public meta: string;
   public feeMeta: string;
-  public memo: { value: MemoValue; type: MemoType } | null = null;
+  public memo: TransactionMemo | null = null;
   public feeAmount: string;
   public sourceAccount: string;
   public timeBounds: [number, number] | null = null;
@@ -47,7 +40,12 @@ export class Transaction {
 
     const txBody = this.envelopeXDR.tx();
 
-    this.memo = this.extractMemo(txBody);
+    const memo = new TransactionMemo(txBody.memo());
+
+    if (memo.value !== null) {
+      this.memo = memo;
+    }
+
     this.feeAmount = txBody.fee();
     this.sourceAccount = publicKeyFromBuffer(txBody.sourceAccount().value());
 
@@ -64,25 +62,5 @@ export class Transaction {
 
   public feeMetaFromXDR() {
     return stellar.xdr.OperationMeta.fromXDR(Buffer.from(this.feeMeta, "base64"));
-  }
-
-  private extractMemo(txBody: any): { value: MemoValue; type: MemoType } | null {
-    const memoType = stellar.xdr.MemoType;
-    const memoValue = txBody.memo().value();
-
-    switch (txBody.memo().switch()) {
-      case memoType.memoNone():
-        return null;
-      case memoType.memoId():
-        return { value: parseInt(memoValue, 10), type: MemoType.Id };
-      case memoType.memoText():
-        return { value: memoValue, type: MemoType.Text };
-      case memoType.memoHash():
-        return { value: memoValue.toString("utf8"), type: MemoType.Hash };
-      case memoType.memoReturn():
-        return { value: memoValue.toString("utf8"), type: MemoType.Return };
-      default:
-        return null;
-    }
   }
 }
