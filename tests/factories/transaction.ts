@@ -12,9 +12,8 @@ Factory
   .attr("txfeemeta", "AAAAAgAAAAMArCsSAAAAAAAAAABZMzIXDfMu3TF0IOyH86cAIKLzSkhv2nd/MkBF5oGHYwAAAMLD6qcDAGTtggAFK6IAAAiBAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAABAAAB9zInkiAAAAAdG2aFyAAAAAAAAAAAAAAAAQCsKxQAAAAAAAAAAFkzMhcN8y7dMXQg7IfzpwAgovNKSG/ad38yQEXmgYdjAAAAwsPqpp8AZO2CAAUrogAACIEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAEAAAH3MieSIAAAAB0bZoXIAAAAAAAAAAA=")
 
 export default {
-  build: function(overrides?: Object) {
+  build: function(overrides?: object): Transaction {
     const data = Factory.attributes("transaction", overrides);
     return new Transaction(data);
   },
 };
-
