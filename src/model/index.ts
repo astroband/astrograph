@@ -13,6 +13,7 @@ export * from "./ledger_header";
 export * from "./mutation_type";
 export * from "./native_trust_line_subscription_payload";
 export * from "./transaction";
+export * from "./transaction_memo";
 export * from "./trust_line";
 export * from "./trust_line_subscription_payload";
 export * from "./trust_line_values";

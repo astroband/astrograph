@@ -3,11 +3,25 @@ import { gql } from "apollo-server";
 export default gql`
   scalar AssetCode
   scalar AccountID
+  scalar TimeBounds
+  scalar MemoValue
+
+  enum MemoType {
+    ID
+    TEXT
+    HASH
+    RETURN
+  }
 
   enum MutationType {
     CREATE
     UPDATE
     REMOVE
+  }
+
+  type Memo {
+    value: MemoValue!
+    type: MemoType!
   }
 
   type LedgerHeader {
@@ -155,9 +169,13 @@ export default gql`
     ledger: Ledger!
     index: Int!
     body: String!
+    memo: Memo
+    feeAmount: Int!
     result: String!
     meta: String!
     feeMeta: String!
+    sourceAccount: String!
+    timeBounds: TimeBounds
   }
 
   type Query {
