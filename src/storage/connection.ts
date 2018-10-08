@@ -10,6 +10,7 @@ const schema = `
   index: int @index(int) .
   sortHandle: string @index(exact) .
   sourceAccountID: string @index(exact) .
+  kind: string @index(exact) .
 `;
 
 export class Connection {

@@ -33,7 +33,7 @@ export class Worker {
           const ops = tx.operationsXDR();
 
           for (let index = 0; index < ops.length; index++) {
-            await store.operation(ops[index], txUID, index);
+            await store.operation(tx, ops[index], txUID, index);
           }
         }
 

@@ -19,7 +19,7 @@ export class Store {
     return new Tx(this.connection, transaction, ledgerUID).write();
   }
 
-  public async operation(operation: any, txUID: string, index: number) {
-    return new Operation(this.connection, operation, txUID, index).write();
+  public async operation(transaction: Transaction, operation: any, txUID: string, index: number) {
+    return new Operation(this.connection, transaction, operation, index, txUID).write();
   }
 }

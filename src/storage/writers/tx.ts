@@ -23,9 +23,7 @@ export class Tx extends Writer {
     nquads += this.timeBoundsNQuads(uid);
 
     const result = await this.connection.push(nquads);
-    const txUID = result.getUidsMap().get("transaction") || current[0].uid;
-
-    return txUID;
+    return result.getUidsMap().get("transaction") || current[0].uid;
   }
 
   // Returns prev/next transactions within ledger.
@@ -76,12 +74,12 @@ export class Tx extends Writer {
       ${uid} <id> "${this.tx.id}" .
       ${uid} <index> "${this.tx.index}" .
       ${uid} <seq> "${this.tx.ledgerSeq}" .
-      ${uid} <ledger> <${this.ledgerUID}> .
       ${uid} <sortHandle> "${this.sortHandle()}" .
       ${uid} <feeAmount> "${this.tx.feeAmount}" .
       ${uid} <sourceAccountID> "${this.tx.sourceAccount}" .
 
       <${this.ledgerUID}> <transactions> ${uid} .
+      ${uid} <ledger> <${this.ledgerUID}> .      
     `;
   }
 
