@@ -11,7 +11,7 @@ export class AccountCache {
   public async fetch(id: string): Promise<string> {
     const cached = this.cache().get(id);
 
-    if (cached) {      
+    if (cached) {
       return cached;
     }
 
