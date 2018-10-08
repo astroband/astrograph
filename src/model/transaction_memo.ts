@@ -37,7 +37,7 @@ export class TransactionMemo {
         this.type = MemoType.Return;
         break;
       default:
-        throw `Unknown memo type ${xdr.switch()}!`;
+        throw new Error(`Unknown memo type ${xdr.switch()}!`);
     }
   }
-};
+}

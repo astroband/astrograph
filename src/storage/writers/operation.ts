@@ -15,7 +15,7 @@ export class Operation extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prev, next, current } = await this.prevNextCurrent(this.vars());
+    const { prev, next, current } = await this.queryContext(this.vars());
     const uid = this.newOrUID(current, "operation");
 
     let nquads = this.baseNQuads(uid);
@@ -28,7 +28,7 @@ export class Operation extends Writer {
     return txUID;
   }
 
-  protected prevNextCurrentQuery() {
+  protected contextQuery() {
     return `
       query prevNextCurrent($id: string, $prevIndex: int, $nextIndex: int, $current: int) {
         prev(func: eq(type, "operation")) @filter(eq(index, $prevIndex)) @cascade {

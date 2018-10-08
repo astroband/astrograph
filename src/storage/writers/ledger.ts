@@ -11,7 +11,7 @@ export class Ledger extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prev, next, current } = await this.prevNextCurrent(this.vars());
+    const { prev, next, current } = await this.queryContext(this.vars());
     const uid = this.newOrUID(current, "ledger");
 
     let nquads = this.baseNQuads(uid);
@@ -22,7 +22,7 @@ export class Ledger extends Writer {
     return result.getUidsMap().get("ledger") || current.uid;
   }
 
-  protected prevNextCurrentQuery(): string {
+  protected contextQuery(): string {
     return `
       query prevNextCurrent($prev: int, $next: int, $current: int) {
         prev(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $prev)) {

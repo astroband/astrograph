@@ -14,12 +14,13 @@ export class Tx extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prev, next, current } = await this.prevNextCurrent(this.vars());
+    const { prev, next, current } = await this.queryContext(this.vars());
     const uid = this.newOrUID(current, "transaction");
 
     let nquads = this.baseNQuads(uid);
     nquads += this.prevNQuads(uid, prev);
     nquads += this.nextNQuads(uid, next);
+    // nquads += this.memoNQuads(uid);
 
     const result = await this.connection.push(nquads);
     const txUID = result.getUidsMap().get("transaction") || current.uid;
@@ -32,7 +33,7 @@ export class Tx extends Writer {
     return txUID;
   }
 
-  protected prevNextCurrentQuery() {
+  protected contextQuery() {
     return `
       query prevNextCurrent($id: string, $seq: string, $prevIndex: int, $nextIndex: int) {
         prev(func: eq(type, "transaction"), first: 1) @filter(eq(seq, $seq) AND eq(index, $prevIndex)) {

@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
-import { TransactionMemo } from "./transaction_memo";
 import { publicKeyFromBuffer } from "../util/xdr";
+import { TransactionMemo } from "./transaction_memo";
 
 export class Transaction {
   public id: string;

@@ -8,15 +8,17 @@ export abstract class Writer {
   }
 
   public abstract async write(): Promise<string>;
-  protected abstract prevNextCurrentQuery(): string;
+  protected abstract contextQuery(): string;
 
-  protected async prevNextCurrent(vars: any): Promise<any> {
-    const result = await this.connection.query(this.prevNextCurrentQuery(), vars);
-    const current = result.current[0];
-    const prev = result.prev[0];
-    const next = result.next[0];
+  protected async queryContext(vars: any): Promise<any> {
+    const queryResult = await this.connection.query(this.contextQuery(), vars);
+    const result = {};
 
-    return { prev, next, current };
+    Object.keys(queryResult).map((key: string) => {
+      result[key] = queryResult[key][0];
+    });
+
+    return result;
   }
 
   protected newOrUID(subject: any, name: string) {
