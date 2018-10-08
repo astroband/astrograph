@@ -35,7 +35,12 @@ export class Tx extends Writer {
 
   protected contextQuery() {
     return `
-      query prevNextCurrent($id: string, $seq: string, $prevIndex: int, $nextIndex: int) {
+      query context(
+        $id: string,
+        $seq: string,
+        $prevIndex: int,
+        $nextIndex: int
+      ) {
         prev(func: eq(type, "transaction"), first: 1) @filter(eq(seq, $seq) AND eq(index, $prevIndex)) {
           uid
         }

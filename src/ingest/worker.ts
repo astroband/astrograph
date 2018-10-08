@@ -5,6 +5,7 @@ import { SubscriptionPayloadCollection } from "./subscription_payload_collection
 
 import { Connection, Store } from "../storage";
 import { DGRAPH_URL } from "../util/secrets";
+// import logger from "../util/logger";
 
 export class Worker {
   public cursor: Cursor;
@@ -27,7 +28,10 @@ export class Worker {
         const store = new Store(connection);
         const ledgerUID = await store.ledger(header);
 
+        // logger.debug(`Ledger`, { seq: header.ledgerSeq });
+
         for (const tx of transactions) {
+          // logger.debug(`Transaction`, { seq: tx.ledgerSeq });
           await store.transaction(tx, ledgerUID);
         }
 

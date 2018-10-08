@@ -40,8 +40,8 @@ export class Cursor {
       return null;
     }
 
-    this.incrementSeq();
     const transactions = await db.transactions.findAllBySeq(this.seq);
+    this.incrementSeq();
 
     return { header, transactions };
   }
