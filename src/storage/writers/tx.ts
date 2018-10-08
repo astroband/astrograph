@@ -1,6 +1,5 @@
 import { Transaction } from "../../model";
 import { Connection } from "../connection";
-import { Operation } from "./operation";
 import { Writer } from "./writer";
 
 export class Tx extends Writer {
@@ -26,21 +25,7 @@ export class Tx extends Writer {
     const result = await this.connection.push(nquads);
     const txUID = result.getUidsMap().get("transaction") || current[0].uid;
 
-    await this.writeOperations(txUID);
-
     return txUID;
-  }
-
-  private async writeOperations(txUID: string) {
-    const ops = this.operations();
-
-    for (let index = 0; index < ops.length; index++) {
-      await new Operation(this.connection, ops[index], txUID, index); // .write();
-    }
-  }
-
-  private operations() {
-    return this.tx.envelopeXDR.tx().operations();
   }
 
   // Returns prev/next transactions within ledger.

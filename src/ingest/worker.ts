@@ -29,7 +29,12 @@ export class Worker {
         const headerUID = await store.ledger(header);
 
         for (const tx of transactions) {
-          await store.transaction(tx, headerUID);
+          const txUID = await store.transaction(tx, headerUID);
+          const ops = tx.operationsXDR();
+
+          for (let index = 0; index < ops.length; index++) {
+            await store.operation(ops[index], txUID, index);
+          }
         }
 
         connection.close();
