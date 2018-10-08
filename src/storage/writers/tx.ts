@@ -14,8 +14,9 @@ export class Tx extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prev, next, current } = await this.queryContext(this.vars());
+    const { prevTree, next, current } = await this.queryContext(this.vars());
     const uid = this.newOrUID(current, "transaction");
+    const prev = this.findPrev(prevTree);
 
     let nquads = this.baseNQuads(uid);
     nquads += this.prevNQuads(uid, prev);
@@ -33,16 +34,36 @@ export class Tx extends Writer {
     return txUID;
   }
 
+  // Returns prev/next transactions within ledger.
+  //
+  // We assume that all ledgers are ingested in full, including all underlying transactions, operations
+  // and all other entities.
+  //
+  // prevTree finds previous lastest transaction within linked list of ledgers and ensures the chain is
+  // consistent. For example, if you have ingested ledgers 100-200 and then decide to ingest ledgers 500-600,
+  // first transaction from ledger 500 should have blank previous transaction because it is missing in database.
+  //
+  // `depth` sets the maximum number of ledgers in row containing zero transactions.
   protected contextQuery() {
     return `
       query context(
         $id: string,
         $seq: string,
+        $ledger: string,
         $prevIndex: int,
         $nextIndex: int
       ) {
-        prev(func: eq(type, "transaction"), first: 1) @filter(eq(seq, $seq) AND eq(index, $prevIndex)) {
+        prevTree(func: uid($ledger), orderdesc: seq, orderdesc: index) @recurse(depth: 20, loop: true) {
           uid
+          index
+          seq
+
+          transactions(orderdesc: index) {
+            uid
+            index
+          }
+
+          prev
         }
 
         next(func: eq(type, "transaction"), first: 1) @filter(eq(seq, $seq) AND eq(index, $nextIndex)) {
@@ -60,18 +81,22 @@ export class Tx extends Writer {
     return `
       ${uid} <type> "transaction" .
       ${uid} <id> "${this.tx.id}" .
-      ${uid} <seq> "${this.tx.ledgerSeq}" .
       ${uid} <index> "${this.tx.index}" .
       ${uid} <ledger> <${this.ledgerUID}> .
+      ${uid} <sortfactor> "${this.sortFactor()}" .
 
       <${this.ledgerUID}> <transactions> ${uid} .
     `;
   }
 
+  private sortFactor(): string {
+    return `${this.tx.ledgerSeq}-${this.tx.index}`;
+  }
+
   private vars(): any {
     return {
       $seq: this.tx.ledgerSeq.toString(),
-      $prevIndex: (this.tx.index - 1).toString(),
+      $ledger: this.ledgerUID,
       $nextIndex: (this.tx.index + 1).toString(),
       $id: this.tx.id
     };
@@ -79,5 +104,35 @@ export class Tx extends Writer {
 
   private operations() {
     return this.tx.envelopeXDR.tx().operations();
+  }
+
+  private findPrev(prev: any): string | null {
+    if (!prev) {
+      return null;
+    }
+
+    // Find previous transaction in current ledger transactions
+    const current = (prev.transactions || []).find((tx: any) => {
+      return tx.index === this.tx.index - 1;
+    });
+
+    if (current) {
+      return current;
+    }
+
+    // Try to find previous transaction in current ledger blocks
+    return this.walkInPrev(prev.prev);
+  }
+
+  private walkInPrev(prev: any): string | null {
+    if (!prev || !prev[0]) {
+      return null;
+    }
+
+    if (prev[0].transactions) {
+      return prev[0].transactions[0];
+    }
+
+    return this.walkInPrev(prev[0].prev);
   }
 }

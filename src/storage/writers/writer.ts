@@ -15,7 +15,11 @@ export abstract class Writer {
     const result = {};
 
     Object.keys(queryResult).map((key: string) => {
-      result[key] = queryResult[key][0];
+      const value = queryResult[key];
+
+      if (value) {
+        result[key] = value instanceof Array ? value[0] : value;
+      }
     });
 
     return result;

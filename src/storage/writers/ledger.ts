@@ -22,9 +22,11 @@ export class Ledger extends Writer {
     return result.getUidsMap().get("ledger") || current.uid;
   }
 
+  // Returns prev and next ledger uids, ledger sequence is contniuous, must not contain gaps.
+  // It is primary criteria for prev/next indexing of all objects in graph.
   protected contextQuery(): string {
     return `
-      query prevNextCurrent($prev: int, $next: int, $current: int) {
+      query context($prev: int, $next: int, $current: int) {
         prev(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $prev)) {
           uid
         }

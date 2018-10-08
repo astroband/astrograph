@@ -8,6 +8,7 @@ const schema = `
   seq: int @index(int) .
   id: string @index(exact) .
   index: int @index(int) .
+  sortfactor: string @index(exact) .
 `;
 
 export class Connection {

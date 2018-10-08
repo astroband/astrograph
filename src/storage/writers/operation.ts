@@ -30,7 +30,7 @@ export class Operation extends Writer {
 
   protected contextQuery() {
     return `
-      query prevNextCurrent($id: string, $prevIndex: int, $nextIndex: int, $current: int) {
+      query context($id: string, $prevIndex: int, $nextIndex: int, $current: int) {
         prev(func: eq(type, "operation")) @filter(eq(index, $prevIndex)) @cascade {
           uid
           transaction @filter(uid($id)) {
