@@ -28,7 +28,7 @@ export class Operation extends Writer {
     let nquads = this.baseNQuads(uid);
     nquads += this.prevNQuads(uid, prev);
     nquads += this.sourceAccountIDNQuads(uid);
-    nquads += this.opTypeNQuads(uid);
+    nquads += await this.opTypeNQuads(uid);
 
     const result = await this.connection.push(nquads);
     const txUID = result.getUidsMap().get("operation") || current[0].uid;
@@ -89,7 +89,7 @@ export class Operation extends Writer {
     return "";
   }
 
-  private opTypeNQuads(uid: string): string {
+  private async opTypeNQuads(uid: string): Promise<string> {
     const t = stellar.xdr.OperationType;
 
     switch (this.xdr.body().switch()) {
@@ -100,14 +100,18 @@ export class Operation extends Writer {
     return "";
   }
 
-  private createAccountNQuads(uid: string): string {
+  private async createAccountNQuads(uid: string): Promise<string> {
     const op = this.xdr.body().createAccountOp();
     const destination = publicKeyFromBuffer(op.destination().value());
     const startingBalance = op.startingBalance().toString();
+    const destinationAccount = await this.accountCache.fetch(destination);
 
     return `
       ${uid} <destination> "${destination}" .
+      ${uid} <destinationAccount> ${destinationAccount} .
       ${uid} <startingBalance> "${startingBalance}" .
+
+      ${destinationAccount} <operations> ${uid} .
     `;
   }
 
