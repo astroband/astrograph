@@ -1,10 +1,13 @@
+import { AccountCache } from "../account_cache";
 import { Connection } from "../connection";
 
 export abstract class Writer {
   protected connection: Connection;
+  protected accountCache: AccountCache;
 
   constructor(connection: Connection) {
     this.connection = connection;
+    this.accountCache = new AccountCache(connection);
   }
 
   public abstract async write(): Promise<string>;

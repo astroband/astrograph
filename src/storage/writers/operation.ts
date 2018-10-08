@@ -16,8 +16,8 @@ export class Operation extends Writer {
     super(connection);
 
     this.tx = tx;
-    this.txUID = txUID;
     this.xdr = xdr;
+    this.txUID = txUID;
     this.index = index;
   }
 

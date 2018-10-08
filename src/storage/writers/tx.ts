@@ -21,6 +21,7 @@ export class Tx extends Writer {
     nquads += this.prevNQuads(uid, prev);
     nquads += this.memoNQuads(uid, current);
     nquads += this.timeBoundsNQuads(uid);
+    nquads += await this.accountsNQuads(uid);
 
     const result = await this.connection.push(nquads);
     return result.getUidsMap().get("transaction") || current[0].uid;
@@ -79,7 +80,7 @@ export class Tx extends Writer {
       ${uid} <sourceAccountID> "${this.tx.sourceAccount}" .
 
       <${this.ledgerUID}> <transactions> ${uid} .
-      ${uid} <ledger> <${this.ledgerUID}> .      
+      ${uid} <ledger> <${this.ledgerUID}> .
     `;
   }
 
@@ -117,6 +118,15 @@ export class Tx extends Writer {
 
   private sortHandle(): string {
     return `${this.tx.ledgerSeq}-${this.tx.index}`;
+  }
+
+  private async accountsNQuads(uid: string): Promise<string> {
+    const sourceAccount = await this.accountCache.fetch(this.tx.sourceAccount);
+
+    return `
+      ${uid} <sourceAccount> ${sourceAccount} .
+      ${sourceAccount} <transactions> ${uid} .
+    `;
   }
 
   private findPrev(tree: any): string | null {
