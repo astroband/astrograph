@@ -28,10 +28,7 @@ export class Worker {
         const store = new Store(connection);
         const ledgerUID = await store.ledger(header);
 
-        // logger.debug(`Ledger`, { seq: header.ledgerSeq });
-
         for (const tx of transactions) {
-          // logger.debug(`Transaction`, { seq: tx.ledgerSeq });
           await store.transaction(tx, ledgerUID);
         }
 

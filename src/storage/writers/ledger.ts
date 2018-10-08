@@ -11,7 +11,7 @@ export class Ledger extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prev, next, current } = await this.queryContext(this.vars());
+    const { prev, next, current } = await this.queryContext();
     const uid = this.newOrUID(current, "ledger");
 
     let nquads = this.baseNQuads(uid);
@@ -19,35 +19,34 @@ export class Ledger extends Writer {
     nquads += this.nextNQuads(uid, next);
 
     const result = await this.connection.push(nquads);
-    return result.getUidsMap().get("ledger") || current.uid;
+    return result.getUidsMap().get("ledger") || current[0].uid;
   }
 
   // Returns prev and next ledger uids, ledger sequence is contniuous, must not contain gaps.
   // It is primary criteria for prev/next indexing of all objects in graph.
-  protected contextQuery(): string {
-    return `
-      query context($prev: int, $next: int, $current: int) {
-        prev(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $prev)) {
-          uid
-        }
+  private async queryContext(): Promise<any> {
+    return this.connection.query(
+      `
+        query context($prev: int, $next: int, $current: int) {
+          prev(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $prev)) {
+            uid
+          }
 
-        next(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $next)) {
-          uid
-        }
+          next(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $next)) {
+            uid
+          }
 
-        current(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $current)) {
-          uid
+          current(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $current)) {
+            uid
+          }
         }
+      `,
+      {
+        $prev: (this.header.ledgerSeq - 1).toString(),
+        $next: (this.header.ledgerSeq + 1).toString(),
+        $current: this.header.ledgerSeq.toString()
       }
-    `;
-  }
-
-  private vars(): any {
-    return {
-      $prev: (this.header.ledgerSeq - 1).toString(),
-      $next: (this.header.ledgerSeq + 1).toString(),
-      $current: this.header.ledgerSeq.toString()
-    };
+    );
   }
 
   private baseNQuads(uid: string): string {

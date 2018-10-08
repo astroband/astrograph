@@ -14,21 +14,22 @@ export class Tx extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prevTree, next, current } = await this.queryContext(this.vars());
+    const { prevTree, next, current } = await this.queryContext();
     const uid = this.newOrUID(current, "transaction");
     const prev = this.findPrev(prevTree);
 
     let nquads = this.baseNQuads(uid);
     nquads += this.prevNQuads(uid, prev);
     nquads += this.nextNQuads(uid, next);
-    // nquads += this.memoNQuads(uid);
+    nquads += this.memoNQuads(uid, current);
+    nquads += this.timeBoundsNQuads(uid);
 
     const result = await this.connection.push(nquads);
-    const txUID = result.getUidsMap().get("transaction") || current.uid;
+    const txUID = result.getUidsMap().get("transaction") || current[0].uid;
     const ops = this.operations();
 
     for (let index = 0; index < ops.length; index++) {
-      await new Operation(this.connection, ops[index], txUID, index).write();
+      await new Operation(this.connection, ops[index], txUID, index); // .write();
     }
 
     return txUID;
@@ -44,37 +45,48 @@ export class Tx extends Writer {
   // first transaction from ledger 500 should have blank previous transaction because it is missing in database.
   //
   // `depth` sets the maximum number of ledgers in row containing zero transactions.
-  protected contextQuery() {
-    return `
-      query context(
-        $id: string,
-        $seq: string,
-        $ledger: string,
-        $prevIndex: int,
-        $nextIndex: int
-      ) {
-        prevTree(func: uid($ledger), orderdesc: seq, orderdesc: index) @recurse(depth: 20, loop: true) {
-          uid
-          index
-          seq
-
-          transactions(orderdesc: index) {
+  protected async queryContext(): Promise<any> {
+    return this.connection.query(
+      `
+        query context(
+          $id: string,
+          $seq: string,
+          $ledger: string,
+          $prevIndex: int,
+          $nextIndex: int
+        ) {
+          prevTree(func: uid($ledger), orderdesc: seq) @recurse(depth: 20, loop: true) {
             uid
             index
+            seq
+
+            transactions(orderdesc: index) {
+              uid
+              index
+            }
+
+            prev
           }
 
-          prev
-        }
+          next(func: eq(type, "transaction"), first: 1) @filter(eq(seq, $seq) AND eq(index, $nextIndex)) {
+            uid
+          }
 
-        next(func: eq(type, "transaction"), first: 1) @filter(eq(seq, $seq) AND eq(index, $nextIndex)) {
-          uid
+          current(func: eq(type, "transaction"), first: 1) @filter(eq(id, $id)) {
+            uid
+            memo {
+              uid
+            }
+          }
         }
-
-        current(func: eq(type, "transaction"), first: 1) @filter(eq(id, $id)) {
-          uid
-        }
+      `,
+      {
+        $seq: this.tx.ledgerSeq.toString(),
+        $ledger: this.ledgerUID,
+        $nextIndex: (this.tx.index + 1).toString(),
+        $id: this.tx.id
       }
-    `;
+    );
   }
 
   private baseNQuads(uid: string): string {
@@ -82,24 +94,50 @@ export class Tx extends Writer {
       ${uid} <type> "transaction" .
       ${uid} <id> "${this.tx.id}" .
       ${uid} <index> "${this.tx.index}" .
+      ${uid} <seq> "${this.tx.ledgerSeq}" .
       ${uid} <ledger> <${this.ledgerUID}> .
-      ${uid} <sortfactor> "${this.sortFactor()}" .
+      ${uid} <sortHandle> "${this.sortHandle()}" .
+      ${uid} <feeAmount> "${this.tx.feeAmount}" .
+      ${uid} <sourceAccountID> "${this.tx.sourceAccount}" .
 
       <${this.ledgerUID}> <transactions> ${uid} .
     `;
   }
 
-  private sortFactor(): string {
-    return `${this.tx.ledgerSeq}-${this.tx.index}`;
+  private memoNQuads(uid: string, current: any): string {
+    const memo = this.tx.memo;
+
+    if (!memo) {
+      return "";
+    }
+
+    const memoUID =
+      current && current[0] && current[0].memo && current[0].memo[0] ? `<${current[0].memo[0].uid}>` : "_:ledger";
+
+    const s = `
+      ${memoUID} <type> "${memo.type.toString()}" .
+      ${memoUID} <value> "${memo.value}" .
+
+      ${uid} <memo> ${memoUID} .
+      ${memoUID} <transaction> ${uid} .
+    `;
+
+    return s;
   }
 
-  private vars(): any {
-    return {
-      $seq: this.tx.ledgerSeq.toString(),
-      $ledger: this.ledgerUID,
-      $nextIndex: (this.tx.index + 1).toString(),
-      $id: this.tx.id
-    };
+  private timeBoundsNQuads(uid: string): string {
+    if (!this.tx.timeBounds) {
+      return "";
+    }
+
+    return `
+      ${uid} <time_bound_min> "${this.tx.timeBounds[0]}" .
+      ${uid} <time_bound_max> "${this.tx.timeBounds[1]}" .
+    `;
+  }
+
+  private sortHandle(): string {
+    return `${this.tx.ledgerSeq}-${this.tx.index}`;
   }
 
   private operations() {

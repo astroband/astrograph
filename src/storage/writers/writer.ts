@@ -8,32 +8,18 @@ export abstract class Writer {
   }
 
   public abstract async write(): Promise<string>;
-  protected abstract contextQuery(): string;
-
-  protected async queryContext(vars: any): Promise<any> {
-    const queryResult = await this.connection.query(this.contextQuery(), vars);
-    const result = {};
-
-    Object.keys(queryResult).map((key: string) => {
-      const value = queryResult[key];
-
-      if (value) {
-        result[key] = value instanceof Array ? value[0] : value;
-      }
-    });
-
-    return result;
-  }
 
   protected newOrUID(subject: any, name: string) {
-    return subject ? `<${subject.uid}>` : `_:${name}`;
+    return subject && (subject.uid || subject[0]) ? `<${subject.uid || subject[0].uid}>` : `_:${name}`;
   }
 
   protected prevNQuads(uid: string, prev: any): string {
-    if (prev) {
+    if (prev && (prev.uid || prev[0])) {
+      const prevUID = prev.uid || prev[0].uid;
+
       return `
-        ${uid} <prev> <${prev.uid}> .
-        <${prev.uid}> <next> ${uid} .
+        ${uid} <prev> <${prevUID}> .
+        <${prevUID}> <next> ${uid} .
       `;
     }
 
@@ -41,10 +27,12 @@ export abstract class Writer {
   }
 
   protected nextNQuads(uid: string, next: any): string {
-    if (next) {
+    if (next && (next.uid || next[0])) {
+      const nextUID = next.uid || next[0].uid;
+
       return `
-        <${next.uid}> <prev> ${uid} .
-        ${uid} <next> <${next.uid}> .
+        <${nextUID}> <prev> ${uid} .
+        ${uid} <next> <${nextUID}> .
       `;
     }
 
