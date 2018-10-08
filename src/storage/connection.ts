@@ -53,11 +53,3 @@ export class Connection {
     return res.getJson();
   }
 }
-
-// private transactions: Transaction[];
-//
-// constructor(transactions: Transaction[]) {
-//   this.stub = new DgraphClientStub(DGRAPH_URL, grpc.credentials.createInsecure());
-//   this.client = new DgraphClient(this.stub());
-//   this.transactions = transactions;
-// }

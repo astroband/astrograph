@@ -38,4 +38,22 @@ export abstract class Writer {
 
     return "";
   }
+
+  protected walk(data: any, fn: any): string | null {
+    if (!data) {
+      return null;
+    }
+
+    const { leaf, result } = fn(data);
+
+    if (result) {
+      return result;
+    }
+
+    if (leaf) {
+      return this.walk(leaf, fn);
+    }
+
+    return null;
+  }
 }

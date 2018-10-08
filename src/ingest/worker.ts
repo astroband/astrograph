@@ -26,10 +26,10 @@ export class Worker {
       if (DGRAPH_URL) {
         const connection = new Connection();
         const store = new Store(connection);
-        const ledgerUID = await store.ledger(header);
+        const headerUID = await store.ledger(header);
 
         for (const tx of transactions) {
-          await store.transaction(tx, ledgerUID);
+          await store.transaction(tx, headerUID);
         }
 
         connection.close();

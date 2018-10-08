@@ -14,25 +14,33 @@ export class Tx extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prevTree, next, current } = await this.queryContext();
+    const { prevTree, current } = await this.queryContext();
     const uid = this.newOrUID(current, "transaction");
     const prev = this.findPrev(prevTree);
 
     let nquads = this.baseNQuads(uid);
     nquads += this.prevNQuads(uid, prev);
-    nquads += this.nextNQuads(uid, next);
     nquads += this.memoNQuads(uid, current);
     nquads += this.timeBoundsNQuads(uid);
 
     const result = await this.connection.push(nquads);
     const txUID = result.getUidsMap().get("transaction") || current[0].uid;
+
+    await this.writeOperations(txUID);
+
+    return txUID;
+  }
+
+  private async writeOperations(txUID: string) {
     const ops = this.operations();
 
     for (let index = 0; index < ops.length; index++) {
       await new Operation(this.connection, ops[index], txUID, index); // .write();
     }
+  }
 
-    return txUID;
+  private operations() {
+    return this.tx.envelopeXDR.tx().operations();
   }
 
   // Returns prev/next transactions within ledger.
@@ -45,16 +53,10 @@ export class Tx extends Writer {
   // first transaction from ledger 500 should have blank previous transaction because it is missing in database.
   //
   // `depth` sets the maximum number of ledgers in row containing zero transactions.
-  protected async queryContext(): Promise<any> {
+  private async queryContext(): Promise<any> {
     return this.connection.query(
       `
-        query context(
-          $id: string,
-          $seq: string,
-          $ledger: string,
-          $prevIndex: int,
-          $nextIndex: int
-        ) {
+        query context($id: string, $ledger: string) {
           prevTree(func: uid($ledger), orderdesc: seq) @recurse(depth: 20, loop: true) {
             uid
             index
@@ -68,10 +70,6 @@ export class Tx extends Writer {
             prev
           }
 
-          next(func: eq(type, "transaction"), first: 1) @filter(eq(seq, $seq) AND eq(index, $nextIndex)) {
-            uid
-          }
-
           current(func: eq(type, "transaction"), first: 1) @filter(eq(id, $id)) {
             uid
             memo {
@@ -81,9 +79,7 @@ export class Tx extends Writer {
         }
       `,
       {
-        $seq: this.tx.ledgerSeq.toString(),
         $ledger: this.ledgerUID,
-        $nextIndex: (this.tx.index + 1).toString(),
         $id: this.tx.id
       }
     );
@@ -112,7 +108,7 @@ export class Tx extends Writer {
     }
 
     const memoUID =
-      current && current[0] && current[0].memo && current[0].memo[0] ? `<${current[0].memo[0].uid}>` : "_:ledger";
+      current && current[0] && current[0].memo && current[0].memo[0] ? `<${current[0].memo[0].uid}>` : "_:memo";
 
     const s = `
       ${memoUID} <type> "${memo.type.toString()}" .
@@ -140,37 +136,23 @@ export class Tx extends Writer {
     return `${this.tx.ledgerSeq}-${this.tx.index}`;
   }
 
-  private operations() {
-    return this.tx.envelopeXDR.tx().operations();
-  }
+  private findPrev(tree: any): string | null {
+    return this.walk(tree[0], (data: any) => {
+      if (data === null) {
+        return null;
+      }
 
-  private findPrev(prev: any): string | null {
-    if (!prev) {
-      return null;
-    }
+      const txs = data.transactions || [];
+      const result = txs.find((tx: any) => {
+        const sameLedger = tx.seq === this.tx.ledgerSeq;
+        const prevIndex = tx.index === this.tx.index - 1;
 
-    // Find previous transaction in current ledger transactions
-    const current = (prev.transactions || []).find((tx: any) => {
-      return tx.index === this.tx.index - 1;
+        return (sameLedger && prevIndex) || !sameLedger;
+      });
+
+      const leaf = data.prev && data.prev[0] ? data.prev[0] : null;
+
+      return { leaf, result };
     });
-
-    if (current) {
-      return current;
-    }
-
-    // Try to find previous transaction in current ledger blocks
-    return this.walkInPrev(prev.prev);
-  }
-
-  private walkInPrev(prev: any): string | null {
-    if (!prev || !prev[0]) {
-      return null;
-    }
-
-    if (prev[0].transactions) {
-      return prev[0].transactions[0];
-    }
-
-    return this.walkInPrev(prev[0].prev);
   }
 }

@@ -11,12 +11,11 @@ export class Ledger extends Writer {
   }
 
   public async write(): Promise<string> {
-    const { prev, next, current } = await this.queryContext();
+    const { prev, current } = await this.queryContext();
     const uid = this.newOrUID(current, "ledger");
 
     let nquads = this.baseNQuads(uid);
     nquads += this.prevNQuads(uid, prev);
-    nquads += this.nextNQuads(uid, next);
 
     const result = await this.connection.push(nquads);
     return result.getUidsMap().get("ledger") || current[0].uid;
@@ -32,10 +31,6 @@ export class Ledger extends Writer {
             uid
           }
 
-          next(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $next)) {
-            uid
-          }
-
           current(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $current)) {
             uid
           }
@@ -43,7 +38,6 @@ export class Ledger extends Writer {
       `,
       {
         $prev: (this.header.ledgerSeq - 1).toString(),
-        $next: (this.header.ledgerSeq + 1).toString(),
         $current: this.header.ledgerSeq.toString()
       }
     );
