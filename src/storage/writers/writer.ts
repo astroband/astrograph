@@ -26,19 +26,6 @@ export abstract class Writer {
     return "";
   }
 
-  protected nextNQuads(uid: string, next: any): string {
-    if (next && (next.uid || next[0])) {
-      const nextUID = next.uid || next[0].uid;
-
-      return `
-        <${nextUID}> <prev> ${uid} .
-        ${uid} <next> <${nextUID}> .
-      `;
-    }
-
-    return "";
-  }
-
   protected walk(data: any, fn: any): string | null {
     if (!data) {
       return null;
