@@ -39,6 +39,7 @@ blog.sqlite
 
 dist/
 .env
+.env.*
 
 .DS_Store
 

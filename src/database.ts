@@ -54,7 +54,7 @@ const config = {
 const pgp: IMain = pgPromise(initOptions);
 
 // Create the database instance with extensions:
-const db = pgp(config) as IDatabase<IExtensions> & IExtensions;
+const db = pgp(config) as IDatabase<IExtensions> & IExtensions & IMain;
 
 // Load and initialize optional diagnostics:
 import diagnostics = require("./util/db/diagnostics");
