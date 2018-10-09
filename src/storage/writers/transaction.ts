@@ -1,6 +1,9 @@
 import { Transaction } from "../../model";
 import { Connection } from "../connection";
+import { RecurseIterator } from "../recurse_iterator";
 import { Writer } from "./writer";
+
+import * as nquads from "../nquads";
 
 export interface IArgs {
   ledger: nquads.IValue;
@@ -14,24 +17,14 @@ interface IContext extends IArgs {
 export class TransactionWriter extends Writer {
   public static async write(connection: Connection, tx: Transaction, args: IArgs): Promise<nquads.IValue> {
     const ledger = args.ledger;
-    const context = await this.queryContext(connection, ledger, tx.id);
+    const context = await this.queryContext(connection, ledger.value, tx.id);
 
     const current = nquads.UID.from(context.current) || new nquads.Blank("transaction");
-    const prevTransaction = new RecurseIterator(context.prevTree, "prev", "transactions").find(this.matchTransaction);
+
+    const prevTransaction = this.findPrevTransaction(context.prevTree, tx);
     const prev = nquads.UID.from(prevTransaction);
 
     return new TransactionWriter(connection, tx, { ledger, current, prev }).write();
-  }
-
-  private matchTransaction(value: any): any {
-    // if (!value) {
-    //   return null;
-    // }
-    //
-    // const transaction = value.find({});
-    //
-    // return transaction;
-    return null;
   }
 
   // Returns prev and next ledger uids, ledger sequence is contniuous, must not contain gaps.
@@ -68,16 +61,34 @@ export class TransactionWriter extends Writer {
     );
   }
 
+  private static findPrevTransaction(prevTree: any, tx: Transaction) {
+    return new RecurseIterator(prevTree, "prev", "transactions")
+      .find(this.matchTransaction(tx.seq, tx.index));
+  }
+
+  private static matchTransaction(seq: number, index: number): any {
+    return (txs: any): any => {
+      const tx = value.find((tx: any) => {
+        const sameLedger = tx.seq === seq;
+        const prevIndex = tx.index === index - 1;
+
+        return (sameLedger && prevIndex) || !sameLedger;
+      });
+
+      return tx;
+    }
+  }
+
   private tx: Transaction;
   private context: IContext;
 
-  constructor(connection: Connection, tx: Transaction, args: IArgs) {
+  constructor(connection: Connection, tx: Transaction, args: IContext) {
     super(connection);
     this.tx = tx;
-    this.args = args;
+    this.context = context;
   }
 
-  public async write(): Promise<string> {
+  public async write(): Promise<nquads.IValue> {
     const { prevTree, current } = await this.queryContext();
     const uid = this.newOrUID(current, "transaction");
     const prev = this.findPrev(prevTree);

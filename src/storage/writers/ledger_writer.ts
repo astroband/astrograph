@@ -10,37 +10,6 @@ interface IContext {
 }
 
 export class LedgerWriter extends Writer {
-  public static async write(connection: Connection, header: LedgerHeader): Promise<nquads.IValue> {
-    const context = await this.queryContext(connection, header.ledgerSeq);
-
-    const current = nquads.UID.from(context.current) || new nquads.Blank("ledger");
-    const prev = nquads.UID.from(context.prev);
-
-    return new LedgerWriter(connection, header, { current, prev }).write();
-  }
-
-  // Returns prev and next ledger uids, ledger sequence is contniuous, must not contain gaps.
-  // It is primary criteria for prev/next indexing of all objects in graph.
-  private static queryContext(connection: Connection, seq: number): Promise<any> {
-    return connection.query(
-      `
-        query context($prev: int, $next: int, $current: int) {
-          prev(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $prev)) {
-            uid
-          }
-
-          current(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $current)) {
-            uid
-          }
-        }
-      `,
-      {
-        $prev: (seq - 1).toString(),
-        $current: seq.toString()
-      }
-    );
-  }
-
   private header: LedgerHeader;
   private context: IContext;
 

@@ -10,22 +10,28 @@ export class RecurseIterator {
   }
 
   public find(matchFn: any): any | null {
-    this.walk(this.tree, matchFn);
+    this.walk(this.tree[0], matchFn);
   }
 
-  private walk(tree: any, matchFn: any): any | null {
+  private walk(leaf: any, matchFn: any): any | null {
     if (!tree) {
       return null;
     }
 
-    const match = matchFn(tree[valueKey]);
+    const value = tree[valueKey];
 
-    if (match) {
-      return match;
+    if (value) {
+      const match = matchFn(value);
+
+      if (match) {
+        return match;
+      }
     }
 
-    if (tree[this.leafKey]) {
-      return this.walk(tree[this.leafKey], matchFn);
+    const nextLeaf = leaf[this.leafKey] ? leaf[this.leafKey][0] : null;
+
+    if (nextLeaf) {
+      return this.walk(nextLeaf, matchFn);
     }
 
     return null;
