@@ -3,7 +3,6 @@ import { Plain } from "./plain";
 
 export interface IValue {
   readonly value: string;
-  readonly raw: string;
 }
 
 export class Builder {

@@ -23,8 +23,16 @@ export class LedgerWriter extends Writer {
   public async write(): Promise<nquads.IValue> {
     const { current, prev } = this.context;
 
+    this.appendRoot();
+    this.appendPrev(current, prev);
+
+    const created = await this.push("ledger");
+    return created || current;
+  }
+
+  private appendRoot() {
     this.b
-      .for(current)
+      .for(this.context.current)
       .append("type", "ledger")
       .append("seq", this.header.ledgerSeq)
       .append("sortHandle", this.header.ledgerSeq)
@@ -32,10 +40,5 @@ export class LedgerWriter extends Writer {
       .append("baseFee", this.header.baseFee)
       .append("baseReserve", this.header.baseReserve)
       .append("maxTxSetSize", this.header.maxTxSetSize);
-
-    this.appendPrev(current, prev);
-
-    const created = await this.push("ledger");
-    return created || current;
   }
 }

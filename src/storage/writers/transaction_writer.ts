@@ -22,7 +22,20 @@ export class TransactionWriter extends Writer {
 
   public async write(): Promise<nquads.IValue> {
     const { ledger, current, prev } = this.context;
-    const timeBounds = this.tx.timeBounds;
+
+    this.appendRoot();
+    this.appendTimeBounds();
+    this.appendPrev(current, prev);
+    this.appendMemo();
+
+    await this.appendSourceAccount();
+
+    const created = await this.push("transaction");
+    return created || current;
+  }
+
+  private appendRoot() {
+    const { ledger, current } = this.context;
 
     this.b
       .for(current)
@@ -31,25 +44,21 @@ export class TransactionWriter extends Writer {
       .append("index", this.tx.index)
       .append("seq", this.tx.ledgerSeq)
       .append("sortHandle", this.sortHandle())
-      .append("feeAmount", this.tx.feeAmount)
-      .append("sourceAccountID", this.tx.sourceAccount);
+      .append("feeAmount", this.tx.feeAmount);
 
     this.b.append(ledger, "transactions", current);
     this.b.append(current, "ledger", ledger);
+  }
+
+  private appendTimeBounds() {
+    const timeBounds = this.tx.timeBounds;
 
     if (timeBounds) {
       this.b
-        .for(current)
+        .for(this.context.current)
         .append("timeBoundMin", timeBounds[0])
         .append("timeBoundMax", timeBounds[1]);
     }
-
-    this.appendPrev(current, prev);
-    this.appendMemo();
-    await this.appendAccounts();
-
-    const created = await this.push("transaction");
-    return created || current;
   }
 
   private appendMemo() {
@@ -72,10 +81,11 @@ export class TransactionWriter extends Writer {
     this.b.append(current, "memo", currentMemo);
   }
 
-  private async appendAccounts() {
+  private async appendSourceAccount() {
     const { current } = this.context;
     const sourceAccount = await this.accountCache.fetch(this.tx.sourceAccount);
 
+    this.b.append(current, "sourceAccountID", this.tx.sourceAccount);
     this.b.append(current, "sourceAccount", sourceAccount);
     this.b.append(sourceAccount, "transactions", current);
   }
