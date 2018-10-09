@@ -6,8 +6,8 @@ import { WriterFactory } from "./writer_factory";
 import * as nquads from "../nquads";
 
 interface IArgs {
-  ledger: nquads.Object;
-  tx: nquads.Object;
+  ledger: nquads.Value;
+  tx: nquads.Value;
   txIndex: number;
   seq: number;
 }

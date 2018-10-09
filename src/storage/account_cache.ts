@@ -2,14 +2,14 @@ import { Connection } from "./connection";
 import * as nquads from "./nquads";
 
 export class AccountCache {
-  private static cache: Map<string, nquads.Object> = new Map<string, nquads.Object>();
+  private static cache: Map<string, nquads.Value> = new Map<string, nquads.Value>();
   private connection: Connection;
 
   constructor(connection: Connection) {
     this.connection = connection;
   }
 
-  public async fetch(id: string): Promise<nquads.Object> {
+  public async fetch(id: string): Promise<nquads.Value> {
     const cached = this.cache().get(id);
 
     if (cached) {
@@ -19,11 +19,11 @@ export class AccountCache {
     return this.findOrCreate(id);
   }
 
-  private cache(): Map<string, nquads.Object> {
+  private cache(): Map<string, nquads.Value> {
     return AccountCache.cache;
   }
 
-  private async findOrCreate(id: string): Promise<nquads.Object> {
+  private async findOrCreate(id: string): Promise<nquads.Value> {
     const found = await this.find(id);
 
     if (found) {
@@ -34,7 +34,7 @@ export class AccountCache {
     return this.create(id);
   }
 
-  private async find(id: string): Promise<nquads.Object | null> {
+  private async find(id: string): Promise<nquads.Value | null> {
     const result = await this.connection.query(
       `
         query account($id: string) {
@@ -55,7 +55,7 @@ export class AccountCache {
     return null;
   }
 
-  private async create(id: string): Promise<nquads.Object> {
+  private async create(id: string): Promise<nquads.Value> {
     const builder = new nquads.Builder();
     const account = new nquads.Blank("account");
 

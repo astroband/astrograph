@@ -5,9 +5,9 @@ import { Writer } from "./writer";
 import * as nquads from "../nquads";
 
 interface IContext {
-  ledger: nquads.Object;
-  current: nquads.Object;
-  prev: nquads.Object | null;
+  ledger: nquads.Value;
+  current: nquads.Value;
+  prev: nquads.Value | null;
 }
 
 export class TransactionWriter extends Writer {
@@ -20,7 +20,7 @@ export class TransactionWriter extends Writer {
     this.context = context;
   }
 
-  public async write(): Promise<nquads.Object> {
+  public async write(): Promise<nquads.Value> {
     const { current, prev } = this.context;
 
     this.appendRoot();
@@ -85,7 +85,7 @@ export class TransactionWriter extends Writer {
     const { current } = this.context;
     const sourceAccount = await this.accountCache.fetch(this.tx.sourceAccount);
 
-    this.b.append(current, "sourceAccountID", this.tx.sourceAccount);
+    // this.b.append(current, "sourceAccountID", this.tx.sourceAccount);
     this.b.append(current, "sourceAccount", sourceAccount);
     this.b.append(sourceAccount, "transactions", current);
   }
