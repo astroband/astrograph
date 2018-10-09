@@ -1,32 +1,22 @@
 import { AccountCache } from "../account_cache";
 import { Connection } from "../connection";
+import * as nquads from "../nquads";
 
 export abstract class Writer {
   protected connection: Connection;
   protected accountCache: AccountCache;
+  protected b: nquads.Builder;
 
   constructor(connection: Connection) {
     this.connection = connection;
     this.accountCache = new AccountCache(connection);
+    this.b = new nquads.Builder();
   }
 
-  public abstract async write(): Promise<string>;
+  public abstract async write(): Promise<nquads.IValue>;
 
   protected newOrUID(subject: any, name: string) {
     return subject && (subject.uid || subject[0]) ? `<${subject.uid || subject[0].uid}>` : `_:${name}`;
-  }
-
-  protected prevNQuads(uid: string, prev: any): string {
-    if (prev && (prev.uid || prev[0])) {
-      const prevUID = prev.uid || prev[0].uid;
-
-      return `
-        ${uid} <prev> <${prevUID}> .
-        <${prevUID}> <next> ${uid} .
-      `;
-    }
-
-    return "";
   }
 
   protected walk(data: any, fn: any): string | null {

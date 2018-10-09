@@ -2,29 +2,27 @@ import { LedgerHeader } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
-export class Ledger extends Writer {
-  private header: LedgerHeader;
+import * as nquads from "../nquads";
 
-  constructor(connection: Connection, header: LedgerHeader) {
-    super(connection);
-    this.header = header;
-  }
+interface IContext {
+  current: nquads.IValue;
+  prev: nquads.IValue | null;
+}
 
-  public async write(): Promise<string> {
-    const { prev, current } = await this.queryContext();
-    const uid = this.newOrUID(current, "ledger");
+export class LedgerWriter extends Writer {
+  public static async write(connection: Connection, header: LedgerHeader): Promise<nquads.IValue> {
+    const context = await this.queryContext(connection, header.ledgerSeq);
 
-    let nquads = this.baseNQuads(uid);
-    nquads += this.prevNQuads(uid, prev);
+    const current = nquads.UID.from(context.current) || new nquads.Blank("ledger");
+    const prev = nquads.UID.from(context.prev);
 
-    const result = await this.connection.push(nquads);
-    return result.getUidsMap().get("ledger") || current[0].uid;
+    return new LedgerWriter(connection, header, { current, prev }).write();
   }
 
   // Returns prev and next ledger uids, ledger sequence is contniuous, must not contain gaps.
   // It is primary criteria for prev/next indexing of all objects in graph.
-  private async queryContext(): Promise<any> {
-    return this.connection.query(
+  private static queryContext(connection: Connection, seq: number): Promise<any> {
+    return connection.query(
       `
         query context($prev: int, $next: int, $current: int) {
           prev(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $prev)) {
@@ -37,20 +35,40 @@ export class Ledger extends Writer {
         }
       `,
       {
-        $prev: (this.header.ledgerSeq - 1).toString(),
-        $current: this.header.ledgerSeq.toString()
+        $prev: (seq - 1).toString(),
+        $current: seq.toString()
       }
     );
   }
 
-  private baseNQuads(uid: string): string {
-    return `
-      ${uid} <type> "ledger" .
-      ${uid} <seq> "${this.header.ledgerSeq}" .
-      ${uid} <version> "${this.header.ledgerVersion}" .
-      ${uid} <baseFee> "${this.header.baseFee}" .
-      ${uid} <baseReserve> "${this.header.baseReserve}" .
-      ${uid} <maxTxSetSize> "${this.header.maxTxSetSize}" .
-    `;
+  private header: LedgerHeader;
+  private context: IContext;
+
+  private constructor(connection: Connection, header: LedgerHeader, context: IContext) {
+    super(connection);
+
+    this.header = header;
+    this.context = context;
+  }
+
+  public async write(): Promise<nquads.IValue> {
+    const { current, prev } = this.context;
+
+    this.b
+      .for(current)
+      .append("type", "ledger")
+      .append("seq", this.header.ledgerSeq)
+      .append("version", this.header.ledgerVersion)
+      .append("baseFee", this.header.baseFee)
+      .append("baseReserve", this.header.baseReserve)
+      .append("maxTxSetSize", this.header.maxTxSetSize);
+
+    if (prev) {
+      this.b.append(current, "prev", prev);
+      this.b.append(prev, "next", current);
+    }
+
+    const result = await this.connection.push(this.b.nquads);
+    return nquads.UID.from(result.getUidsMap().get("ledger")) || current;
   }
 }
