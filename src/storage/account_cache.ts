@@ -1,7 +1,8 @@
 import { Connection } from "./connection";
+import * as nquads from "./nquads";
 
 export class AccountCache {
-  private static cache: Map<string, string> = new Map<string, string>();
+  private static cache: Map<string, nquads.IValue> = new Map<string, nquads.IValue>();
   private connection: Connection;
 
   constructor(connection: Connection) {
@@ -12,13 +13,13 @@ export class AccountCache {
     const cached = this.cache().get(id);
 
     if (cached) {
-      return cached;
+      return cached.value;
     }
 
     return this.findOrCreate(id);
   }
 
-  private cache(): Map<string, string> {
+  private cache(): Map<string, nquads.IValue> {
     return AccountCache.cache;
   }
 
@@ -27,13 +28,13 @@ export class AccountCache {
 
     if (found) {
       this.cache().set(id, found);
-      return found;
+      return found.value;
     }
 
     return this.create(id);
   }
 
-  private async find(id: string): Promise<string | null> {
+  private async find(id: string): Promise<nquads.IValue | null> {
     const result = await this.connection.query(
       `
         query account($id: string) {
@@ -46,24 +47,24 @@ export class AccountCache {
     );
 
     if (result.account && result.account[0]) {
-      const created = result.account[0].uid;
+      const created = new nquads.UID(result.account[0].uid);
       this.cache().set(id, created);
-      return `<${created}>`;
+      return created;
     }
 
     return null;
   }
 
   private async create(id: string): Promise<string> {
-    const pushResult = await this.connection.push(
-      `
-        _:account <type> "account" .
-        _:account <id> "${id}" .
-      `
-    );
+    const builder = new nquads.Builder();
+    const account = new nquads.Blank("account");
 
+    builder.append(account, "type", "account");
+    builder.append(account, "id", id);
+
+    const pushResult = await this.connection.push(builder.nquads);
     const uid = pushResult.getUidsMap().get("account");
 
-    return `<${uid}>`;
+    return new nquads.UID(uid).value;
   }
 }
