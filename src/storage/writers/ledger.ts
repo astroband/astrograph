@@ -58,6 +58,7 @@ export class LedgerWriter extends Writer {
       .for(current)
       .append("type", "ledger")
       .append("seq", this.header.ledgerSeq)
+      .append("sortHandle", this.header.ledgerSeq)
       .append("version", this.header.ledgerVersion)
       .append("baseFee", this.header.baseFee)
       .append("baseReserve", this.header.baseReserve)

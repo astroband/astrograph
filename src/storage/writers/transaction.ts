@@ -2,18 +2,79 @@ import { Transaction } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
-export interface ITxUID {
-  ledger: string;
+export interface IArgs {
+  ledger: nquads.IValue;
 }
 
-export class Tx extends Writer {
-  private tx: Transaction;
-  private uid: ITxUID;
+interface IContext extends IArgs {
+  current: nquads.IValue;
+  prev: nquads.IValue | null;
+}
 
-  constructor(connection: Connection, tx: Transaction, uid: ITxUID) {
+export class TransactionWriter extends Writer {
+  public static async write(connection: Connection, tx: Transaction, args: IArgs): Promise<nquads.IValue> {
+    const ledger = args.ledger;
+    const context = await this.queryContext(connection, ledger, tx.id);
+
+    const current = nquads.UID.from(context.current) || new nquads.Blank("transaction");
+    const prevTransaction = new RecurseIterator(context.prevTree, "prev", "transactions").find(this.matchTransaction);
+    const prev = nquads.UID.from(prevTransaction);
+
+    return new TransactionWriter(connection, tx, { ledger, current, prev }).write();
+  }
+
+  private matchTransaction(value: any): any {
+    // if (!value) {
+    //   return null;
+    // }
+    //
+    // const transaction = value.find({});
+    //
+    // return transaction;
+    return null;
+  }
+
+  // Returns prev and next ledger uids, ledger sequence is contniuous, must not contain gaps.
+  // It is primary criteria for prev/next indexing of all objects in graph.
+  private static queryContext(connection: Connection, ledger: string, id: string): Promise<any> {
+    return connection.query(
+      `
+        query context($id: string, $ledger: string) {
+          prevTree(func: uid($ledger), orderdesc: seq) @recurse(depth: 20, loop: true) {
+            uid
+            index
+            seq
+
+            transactions(orderdesc: index) {
+              uid
+              index
+            }
+
+            prev
+          }
+
+          current(func: eq(type, "transaction"), first: 1) @filter(eq(id, $id)) {
+            uid
+            memo {
+              uid
+            }
+          }
+        }
+      `,
+      {
+        $ledger: ledger,
+        $id: id
+      }
+    );
+  }
+
+  private tx: Transaction;
+  private context: IContext;
+
+  constructor(connection: Connection, tx: Transaction, args: IArgs) {
     super(connection);
     this.tx = tx;
-    this.uid = uid;
+    this.args = args;
   }
 
   public async write(): Promise<string> {

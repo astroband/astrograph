@@ -26,8 +26,8 @@ export class Worker {
       if (DGRAPH_URL) {
         const connection = new Connection();
         const store = new Store(connection);
-        //const ledgerUID =
-        console.log(await store.ledger(header));
+        const ledger = await store.ledger(header));
+        console.log(ledger);
 
         // for (const tx of transactions) {
         //   const txUID = await store.transaction(tx, { ledger: ledgerUID });
