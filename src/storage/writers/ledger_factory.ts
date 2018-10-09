@@ -1,17 +1,17 @@
 import { LedgerHeader } from "../../model";
 import { Connection } from "../connection";
-import { WriterFactory } from "./writer_factory";
 import { LedgerWriter } from "./ledger_writer";
 import { Writer } from "./writer";
+import { WriterFactory } from "./writer_factory";
 
 import * as nquads from "../nquads";
 
 export class LedgerFactory extends WriterFactory {
-  private header: LedgerHeader;
-
   public static async produce(connection: Connection, header: LedgerHeader): Promise<Writer> {
     return new LedgerFactory(connection, header).produce();
   }
+
+  private header: LedgerHeader;
 
   constructor(connection: Connection, header: LedgerHeader) {
     super(connection);

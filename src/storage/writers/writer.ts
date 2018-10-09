@@ -27,7 +27,7 @@ export abstract class Writer {
   protected appendPrev(current: nquads.IValue, prev: nquads.IValue | null) {
     if (prev) {
       this.b.append(current, "prev", prev).append(prev, "next", current);
-    }    
+    }
   }
 
   protected walk(data: any, fn: any): string | null {

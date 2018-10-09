@@ -6,7 +6,6 @@ import { TransactionFactory } from "./writers/transaction_factory";
 //import { IOperationUID, Operation } from "./writers/operation";
 //import { ITxUID, Tx } from "./writers/tx";
 
-
 export class Store {
   private connection: Connection;
 

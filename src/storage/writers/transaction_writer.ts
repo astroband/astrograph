@@ -38,9 +38,12 @@ export class TransactionWriter extends Writer {
     this.b.append(current, "ledger", ledger);
 
     if (timeBounds) {
-      this.b.for(current).append("timeBoundMin", timeBounds[0]).append("timeBoundMax", timeBounds[1]);
+      this.b
+        .for(current)
+        .append("timeBoundMin", timeBounds[0])
+        .append("timeBoundMax", timeBounds[1]);
     }
-console.log(prev);
+
     this.appendPrev(current, prev);
     this.appendMemo();
     await this.appendAccounts();
@@ -58,7 +61,7 @@ console.log(prev);
     }
 
     const currentMemo =
-      current && current[0] && current[0].memo && nquads.UID.from(current[0].memo) || new nquads.Blank("memo");
+      (current && current[0] && current[0].memo && nquads.UID.from(current[0].memo)) || new nquads.Blank("memo");
 
     this.b
       .for(currentMemo)
