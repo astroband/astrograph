@@ -68,7 +68,7 @@ export class LedgerWriter extends Writer {
       this.b.append(prev, "next", current);
     }
 
-    const result = await this.connection.push(this.b.nquads);
-    return nquads.UID.from(result.getUidsMap().get("ledger")) || current;
+    const created = await this.push("ledger");
+    return created || current;
   }
 }

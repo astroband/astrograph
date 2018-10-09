@@ -15,6 +15,11 @@ export abstract class Writer {
 
   public abstract async write(): Promise<nquads.IValue>;
 
+  protected async push(key: string): Promise<nquads.IValue | null> {
+    const result = await this.connection.push(this.b.nquads);
+    return nquads.UID.from(result.getUidsMap().get(key));
+  }
+
   protected newOrUID(subject: any, name: string) {
     return subject && (subject.uid || subject[0]) ? `<${subject.uid || subject[0].uid}>` : `_:${name}`;
   }
