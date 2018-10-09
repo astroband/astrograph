@@ -2,14 +2,18 @@ import { Transaction } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
+export interface ITxUID {
+  ledger: string;
+}
+
 export class Tx extends Writer {
   private tx: Transaction;
-  private ledgerUID: string;
+  private uid: ITxUID;
 
-  constructor(connection: Connection, tx: Transaction, ledgerUID: string) {
+  constructor(connection: Connection, tx: Transaction, uid: ITxUID) {
     super(connection);
     this.tx = tx;
-    this.ledgerUID = ledgerUID;
+    this.uid = uid;
   }
 
   public async write(): Promise<string> {
@@ -63,7 +67,7 @@ export class Tx extends Writer {
         }
       `,
       {
-        $ledger: this.ledgerUID,
+        $ledger: this.uid.ledger,
         $id: this.tx.id
       }
     );
@@ -79,8 +83,8 @@ export class Tx extends Writer {
       ${uid} <feeAmount> "${this.tx.feeAmount}" .
       ${uid} <sourceAccountID> "${this.tx.sourceAccount}" .
 
-      <${this.ledgerUID}> <transactions> ${uid} .
-      ${uid} <ledger> <${this.ledgerUID}> .
+      <${this.uid.ledger}> <transactions> ${uid} .
+      ${uid} <ledger> <${this.uid.ledger}> .
     `;
   }
 

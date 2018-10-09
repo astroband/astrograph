@@ -26,14 +26,14 @@ export class Worker {
       if (DGRAPH_URL) {
         const connection = new Connection();
         const store = new Store(connection);
-        const headerUID = await store.ledger(header);
+        const ledgerUID = await store.ledger(header);
 
         for (const tx of transactions) {
-          const txUID = await store.transaction(tx, headerUID);
+          const txUID = await store.transaction(tx, { ledger: ledgerUID });
           const ops = tx.operationsXDR();
 
           for (let index = 0; index < ops.length; index++) {
-            await store.operation(tx, ops[index], txUID, index);
+            await store.operation(tx, ops[index], index, { ledger: ledgerUID, tx: txUID });
           }
         }
 

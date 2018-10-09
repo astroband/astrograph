@@ -6,18 +6,23 @@ import { publicKeyFromBuffer } from "../../util/xdr/account";
 
 import stellar from "stellar-base";
 
+export interface IOperationUID {
+  tx: string;
+  ledger: string;
+}
+
 export class Operation extends Writer {
   private tx: Transaction;
   private xdr: any;
-  private txUID: string;
   private index: number;
+  private uid: IOperationUID;
 
-  constructor(connection: Connection, tx: Transaction, xdr: any, index: number, txUID: string) {
+  constructor(connection: Connection, tx: Transaction, xdr: any, index: number, uid: IOperationUID) {
     super(connection);
 
     this.tx = tx;
     this.xdr = xdr;
-    this.txUID = txUID;
+    this.uid = uid;
     this.index = index;
   }
 
@@ -31,15 +36,13 @@ export class Operation extends Writer {
     nquads += await this.opTypeNQuads(uid);
 
     const result = await this.connection.push(nquads);
-    const txUID = result.getUidsMap().get("operation") || current[0].uid;
-
-    return txUID;
+    return result.getUidsMap().get("operation") || current[0].uid;
   }
 
   protected async queryContext() {
     return this.connection.query(
       `
-        query context($id: string, $prevIndex: int, $current: int) {
+        query context($id: string, $prevIndex: int, $current: int) {          
           prev(func: eq(type, "operation")) @filter(eq(index, $prevIndex)) @cascade {
             uid
             transaction @filter(uid($id)) {
@@ -56,7 +59,7 @@ export class Operation extends Writer {
         }
       `,
       {
-        $id: this.txUID,
+        $id: this.uid.tx,
         $prevIndex: (this.index - 1).toString(),
         $current: this.index.toString()
       }
@@ -66,12 +69,14 @@ export class Operation extends Writer {
   private baseNQuads(uid: string): string {
     return `
       ${uid} <type> "operation" .
-      ${uid} <transaction> <${this.txUID}> .
+      ${uid} <transaction> <${this.uid.tx}> .
+      ${uid} <ledger> <${this.uid.ledger}> .
       ${uid} <index> "${this.index}" .
       ${uid} <kind> "${this.xdr.body().switch().name}" .
       ${uid} <sortHandle> "${this.sortHandle()}" .
 
-      <${this.txUID}> <operations> ${uid} .
+      <${this.uid.tx}> <operations> ${uid} .
+      <${this.uid.ledger}> <operations> ${uid} .
     `;
   }
 
