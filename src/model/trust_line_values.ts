@@ -4,7 +4,7 @@ import { assetFromXDR, publicKeyFromXDR } from "../util/xdr";
 
 export class TrustLineValues extends TrustLine {
   public static buildFromXDR(xdr: any): TrustLineValues {
-    const { assettype, assetcode, issuer } = assetFromXDR(xdr);
+    const { assettype, assetcode, issuer } = assetFromXDR(xdr.asset());
 
     return new TrustLineValues({
       accountid: publicKeyFromXDR(xdr),
