@@ -13,7 +13,7 @@ export class LedgerWriter extends Writer {
   private header: LedgerHeader;
   private context: IContext;
 
-  private constructor(connection: Connection, header: LedgerHeader, context: IContext) {
+  constructor(connection: Connection, header: LedgerHeader, context: IContext) {
     super(connection);
 
     this.header = header;
@@ -33,9 +33,7 @@ export class LedgerWriter extends Writer {
       .append("baseReserve", this.header.baseReserve)
       .append("maxTxSetSize", this.header.maxTxSetSize);
 
-    if (prev) {
-      this.b.append(current, "prev", prev).append(prev, "next", current);
-    }
+    this.appendPrev(current, prev);
 
     const created = await this.push("ledger");
     return created || current;

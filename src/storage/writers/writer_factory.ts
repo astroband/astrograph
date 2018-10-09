@@ -1,8 +1,6 @@
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
-import * as nquads from "../nquads";
-
 export abstract class WriterFactory {
   protected connection: Connection;
 
@@ -10,5 +8,5 @@ export abstract class WriterFactory {
     this.connection = connection;
   }
 
-  public abstract async produce(): Writer;
+  public abstract async produce(): Promise<Writer>;
 }

@@ -9,11 +9,11 @@ export class AccountCache {
     this.connection = connection;
   }
 
-  public async fetch(id: string): Promise<string> {
+  public async fetch(id: string): Promise<nquads.IValue> {
     const cached = this.cache().get(id);
 
     if (cached) {
-      return cached.value;
+      return cached;
     }
 
     return this.findOrCreate(id);
@@ -23,12 +23,12 @@ export class AccountCache {
     return AccountCache.cache;
   }
 
-  private async findOrCreate(id: string): Promise<string> {
+  private async findOrCreate(id: string): Promise<nquads.IValue> {
     const found = await this.find(id);
 
     if (found) {
       this.cache().set(id, found);
-      return found.value;
+      return found;
     }
 
     return this.create(id);
@@ -55,7 +55,7 @@ export class AccountCache {
     return null;
   }
 
-  private async create(id: string): Promise<string> {
+  private async create(id: string): Promise<nquads.IValue> {
     const builder = new nquads.Builder();
     const account = new nquads.Blank("account");
 
@@ -65,6 +65,6 @@ export class AccountCache {
     const pushResult = await this.connection.push(builder.nquads);
     const uid = pushResult.getUidsMap().get("account");
 
-    return new nquads.UID(uid).value;
+    return new nquads.UID(uid);
   }
 }

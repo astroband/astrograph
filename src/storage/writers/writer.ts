@@ -24,6 +24,12 @@ export abstract class Writer {
     return subject && (subject.uid || subject[0]) ? `<${subject.uid || subject[0].uid}>` : `_:${name}`;
   }
 
+  protected appendPrev(current: nquads.IValue, prev: nquads.IValue | null) {
+    if (prev) {
+      this.b.append(current, "prev", prev).append(prev, "next", current);
+    }    
+  }
+
   protected walk(data: any, fn: any): string | null {
     if (!data) {
       return null;

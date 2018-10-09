@@ -12,12 +12,14 @@ export class UID implements IValue {
   }
 
   public readonly value: string;
+  public readonly raw: string;
 
   constructor(value: string) {
     if (value === "") {
       throw new Error(`UID value can not be empty`);
     }
 
+    this.raw = value;
     this.value = `<${value}>`;
   }
 }

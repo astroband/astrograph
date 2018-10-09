@@ -14,11 +14,11 @@ export class RecurseIterator {
   }
 
   private walk(leaf: any, matchFn: any): any | null {
-    if (!tree) {
+    if (!leaf) {
       return null;
     }
 
-    const value = tree[valueKey];
+    const value = leaf[this.valueKey];
 
     if (value) {
       const match = matchFn(value);

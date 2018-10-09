@@ -50,7 +50,14 @@ export class Connection {
   }
 
   public async query(query: string, vars: any): Promise<any> {
-    const res = await this.client.newTxn().queryWithVars(query, vars);
-    return res.getJson();
+    try {
+      const res = await this.client.newTxn().queryWithVars(query, vars);
+      return res.getJson();
+    } catch (err) {
+      logger.error(err);
+      logger.error("Query:", { query });
+      logger.error("Vars:", vars);
+      return null;
+    }
   }
 }

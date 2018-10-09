@@ -2,18 +2,14 @@ import { LedgerHeader } from "../../model";
 import { Connection } from "../connection";
 import { WriterFactory } from "./writer_factory";
 import { LedgerWriter } from "./ledger_writer";
+import { Writer } from "./writer";
 
 import * as nquads from "../nquads";
-
-interface IContext {
-  current: nquads.IValue;
-  prev: nquads.IValue | null;
-}
 
 export class LedgerFactory extends WriterFactory {
   private header: LedgerHeader;
 
-  public static async produce(connection: Connection, header: LedgerHeader): Writer {
+  public static async produce(connection: Connection, header: LedgerHeader): Promise<Writer> {
     return new LedgerFactory(connection, header).produce();
   }
 
@@ -22,13 +18,13 @@ export class LedgerFactory extends WriterFactory {
     this.header = header;
   }
 
-  public async produce(): Writer {
+  public async produce(): Promise<Writer> {
     const context = await this.queryContext();
 
     const current = nquads.UID.from(context.current) || new nquads.Blank("ledger");
     const prev = nquads.UID.from(context.prev);
 
-    return new LedgerWriter(connection, header, { current, prev }).write();
+    return new LedgerWriter(this.connection, this.header, { current, prev });
   }
 
   // Returns prev and next ledger uids, ledger sequence is contniuous, must not contain gaps.
