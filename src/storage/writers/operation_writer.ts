@@ -8,10 +8,10 @@ import stellar from "stellar-base";
 import * as nquads from "../nquads";
 
 export interface IContext {
-  current: nquads.IValue;
-  prev: nquads.IValue | null;
-  ledger: nquads.IValue;
-  tx: nquads.IValue;
+  current: nquads.Object;
+  prev: nquads.Object | null;
+  ledger: nquads.Object;
+  tx: nquads.Object;
   txIndex: number;
   seq: number;
 }
@@ -29,7 +29,7 @@ export class OperationWriter extends Writer {
     this.context = context;
   }
 
-  public async write(): Promise<nquads.IValue> {
+  public async write(): Promise<nquads.Object> {
     const { current, prev } = this.context;
 
     this.appendRoot();
@@ -114,7 +114,7 @@ export class OperationWriter extends Writer {
       .append("assetCode", assetcode);
 
     await this.appendAccount("destinationAccount", destination);
-    await this.appendAccount("issuerAccount", issuer, "ownAssetsOperations");
+    await this.appendAccount("assetIssuerAccount", issuer, "ownAssetsOperations");
   }
 
   private async appendAccount(predicate: string, id: string, foreignKey: string = "operations") {

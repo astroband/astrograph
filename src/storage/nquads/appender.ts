@@ -1,10 +1,10 @@
-import { Builder, IValue } from "./builder";
+import { Builder, Source } from "./builder";
 
 export class Appender {
-  private source: IValue;
+  private source: Source;
   private builder: Builder;
 
-  constructor(source: IValue, builder: Builder) {
+  constructor(source: Source, builder: Builder) {
     this.source = source;
     this.builder = builder;
   }

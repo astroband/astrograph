@@ -7,7 +7,7 @@ import { WriterFactory } from "./writer_factory";
 import * as nquads from "../nquads";
 
 export interface IArgs {
-  ledger: nquads.IValue;
+  ledger: nquads.Object;
 }
 
 export class TransactionFactory extends WriterFactory {

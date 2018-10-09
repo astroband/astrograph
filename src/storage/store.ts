@@ -1,6 +1,6 @@
 import { LedgerHeader, Transaction } from "../model";
 import { Connection } from "./connection";
-import { IValue } from "./nquads";
+import { Value } from "./nquads";
 import { LedgerFactory } from "./writers/ledger_factory";
 import { OperationFactory } from "./writers/operation_factory";
 import { TransactionFactory } from "./writers/transaction_factory";
@@ -12,11 +12,11 @@ export class Store {
     this.connection = connection;
   }
 
-  public async ledger(header: LedgerHeader): Promise<IValue> {
+  public async ledger(header: LedgerHeader): Promise<Value> {
     return (await LedgerFactory.produce(this.connection, header)).write();
   }
 
-  public async transaction(transaction: Transaction, args: any): Promise<IValue> {
+  public async transaction(transaction: Transaction, args: any): Promise<Value> {
     return (await TransactionFactory.produce(this.connection, transaction, args)).write();
   }
 

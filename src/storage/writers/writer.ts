@@ -13,9 +13,9 @@ export abstract class Writer {
     this.b = new nquads.Builder();
   }
 
-  public abstract async write(): Promise<nquads.IValue>;
+  public abstract async write(): Promise<nquads.Object>;
 
-  protected async push(key: string): Promise<nquads.IValue | null> {
+  protected async push(key: string): Promise<nquads.Object | null> {
     const result = await this.connection.push(this.b.nquads);
     return nquads.UID.from(result.getUidsMap().get(key));
   }
@@ -24,7 +24,7 @@ export abstract class Writer {
     return subject && (subject.uid || subject[0]) ? `<${subject.uid || subject[0].uid}>` : `_:${name}`;
   }
 
-  protected appendPrev(current: nquads.IValue, prev: nquads.IValue | null) {
+  protected appendPrev(current: nquads.Object, prev: nquads.Object | null) {
     if (prev) {
       this.b.append(current, "prev", prev).append(prev, "next", current);
     }

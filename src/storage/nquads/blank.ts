@@ -1,6 +1,4 @@
-import { IValue } from "./builder";
-
-export class Blank implements IValue {
+export class Blank {
   public readonly value: string;
 
   constructor(value: string) {

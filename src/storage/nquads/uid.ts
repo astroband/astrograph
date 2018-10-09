@@ -1,6 +1,5 @@
-import { IValue } from "./builder";
-
-export class UID implements IValue {
+export class UID {
+  // TODO: Working with query result violates SRP, move somewhere else.
   public static from(value: any): UID | null {
     if (!value || (!value[0] && !value.uid)) {
       return null;
