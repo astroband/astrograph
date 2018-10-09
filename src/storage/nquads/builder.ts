@@ -12,6 +12,7 @@ export class Builder {
     const ival = object as IValue;
     const value = ival.value ? ival : new Plain(object.toString());
     this.nquads += `${source.value} <${predicate}> ${value.value} .\n`;
+    return this;
   }
 
   public for(source: IValue): Appender {

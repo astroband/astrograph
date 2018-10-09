@@ -64,8 +64,9 @@ export class LedgerWriter extends Writer {
       .append("maxTxSetSize", this.header.maxTxSetSize);
 
     if (prev) {
-      this.b.append(current, "prev", prev);
-      this.b.append(prev, "next", current);
+      this.b
+        .append(current, "prev", prev)
+        .append(prev, "next", current);
     }
 
     const created = await this.push("ledger");
