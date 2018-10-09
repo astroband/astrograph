@@ -91,17 +91,11 @@ export class OperationWriter extends Writer {
     const op = this.xdr.body().createAccountOp();
 
     const startingBalance = op.startingBalance().toString();
-
     const destination = publicKeyFromBuffer(op.destination().value());
-    const destinationAccount = await this.accountCache.fetch(destination);
 
-    this.b
-      .for(current)
-      .append("startingBalance", startingBalance)
-      .append("destinationAccountID", destination)
-      .append("destinationAccount", destinationAccount);
+    this.b.for(current).append("startingBalance", startingBalance);
 
-    this.b.append(destinationAccount, "operations", current);
+    await this.appendAccount("destinationAccount", destination);
   }
 
   private async appendPaymentOp() {
@@ -109,7 +103,22 @@ export class OperationWriter extends Writer {
     const op = this.xdr.body().paymentOp();
 
     const amount = op.amount().toString();
+    const destination = publicKeyFromBuffer(op.destination().value());
 
     this.b.for(current).append("amount", amount);
+
+    await this.appendAccount("destinationAccount", destination);
+  }
+
+  private async appendAccount(predicate: string, id: string) {
+    const { current } = this.context;
+    const account = await this.accountCache.fetch(id);
+
+    this.b
+      .for(current)
+      .append(`${predicate}ID`, id)
+      .append(`${predicate}`, account);
+
+    this.b.append(account, "operations", current);
   }
 }
