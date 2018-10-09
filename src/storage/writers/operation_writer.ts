@@ -2,6 +2,7 @@ import { Connection } from "../connection";
 import { Writer } from "./writer";
 
 import { publicKeyFromBuffer } from "../../util/xdr/account";
+import { assetFromXDR } from "../../util/xdr/asset";
 
 import stellar from "stellar-base";
 import * as nquads from "../nquads";
@@ -104,13 +105,19 @@ export class OperationWriter extends Writer {
 
     const amount = op.amount().toString();
     const destination = publicKeyFromBuffer(op.destination().value());
+    const { assettype, assetcode, issuer } = assetFromXDR(op.asset());
 
-    this.b.for(current).append("amount", amount);
+    this.b
+      .for(current)
+      .append("amount", amount)
+      .append("assetType", assettype)
+      .append("assetCode", assetcode);
 
     await this.appendAccount("destinationAccount", destination);
+    await this.appendAccount("issuerAccount", issuer, "ownAssetsOperations");
   }
 
-  private async appendAccount(predicate: string, id: string) {
+  private async appendAccount(predicate: string, id: string, foreignKey: string = "operations") {
     const { current } = this.context;
     const account = await this.accountCache.fetch(id);
 
@@ -119,6 +126,6 @@ export class OperationWriter extends Writer {
       .append(`${predicate}ID`, id)
       .append(`${predicate}`, account);
 
-    this.b.append(account, "operations", current);
+    this.b.append(account, foreignKey, current);
   }
 }
