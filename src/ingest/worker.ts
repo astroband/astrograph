@@ -28,15 +28,15 @@ export class Worker {
         const store = new Store(connection);
         const ledger = await store.ledger(header);
 
-        for (const tx of transactions) {
-          const transaction = await store.transaction(tx, { ledger });
+        for (const transaction of transactions) {
+          const tx = await store.transaction(transaction, { ledger });
 
-          // const ops = tx.operationsXDR();
-          // for (let index = 0; index < ops.length; index++) {
-          //   const op = ops[index];
-          //
-          //   await store.operation(transaction, op, index, { ledger, transaction });
-          // }
+          const ops = transaction.operationsXDR();
+          for (let index = 0; index < ops.length; index++) {
+            const op = ops[index];
+
+            await store.operation(transaction, op, index, { ledger, tx });
+          }
         }
 
         connection.close();

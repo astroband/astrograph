@@ -1,21 +1,21 @@
 import { Connection } from "../connection";
 import { Writer } from "./writer";
-import { nquads } from "../nquads";
 
 import { publicKeyFromBuffer } from "../../util/xdr/account";
 
 import stellar from "stellar-base";
+import * as nquads from "../nquads";
 
 export interface IContext {
   current: nquads.IValue;
-  prev: nquads.IValue;
+  prev: nquads.IValue | null;
   ledger: nquads.IValue;
   tx: nquads.IValue;
   txIndex: number;
   seq: number;
 }
 
-export class Operation extends Writer {
+export class OperationWriter extends Writer {
   private xdr: any;
   private index: number;
   private context: IContext;
@@ -71,32 +71,45 @@ export class Operation extends Writer {
     }
   }
 
+  private sortHandle(): string {
+    return `${this.context.seq}-${this.context.txIndex}-${this.index}`;
+  }
+
   private async appendOp() {
     const t = stellar.xdr.OperationType;
 
     switch (this.xdr.body().switch()) {
       case t.createAccount():
         return this.appendCreateAccountOp();
+      case t.payment():
+        return this.appendPaymentOp();
     }
   }
 
   private async appendCreateAccountOp() {
-    const op = this.xdr.body().createAccountOp();
-    const destination = publicKeyFromBuffer(op.destination().value());
-    const startingBalance = op.startingBalance().toString();
-    const destinationAccount = await this.accountCache.fetch(destination);
     const { current } = this.context;
+    const op = this.xdr.body().createAccountOp();
+
+    const startingBalance = op.startingBalance().toString();
+
+    const destination = publicKeyFromBuffer(op.destination().value());
+    const destinationAccount = await this.accountCache.fetch(destination);
 
     this.b
       .for(current)
+      .append("startingBalance", startingBalance)
       .append("destinationAccountID", destination)
-      .append("destinationAccount", destinationAccount)
-      .append("startingBalance", startingBalance);
+      .append("destinationAccount", destinationAccount);
 
     this.b.append(destinationAccount, "operations", current);
   }
 
-  private sortHandle(): string {
-    return `${this.context.seq}-${this.context.txIndex}-${this.index}`;
+  private async appendPaymentOp() {
+    const { current } = this.context;
+    const op = this.xdr.body().paymentOp();
+
+    const amount = op.amount().toString();
+
+    this.b.for(current).append("amount", amount);
   }
 }

@@ -2,9 +2,8 @@ import { LedgerHeader, Transaction } from "../model";
 import { Connection } from "./connection";
 import { IValue } from "./nquads";
 import { LedgerFactory } from "./writers/ledger_factory";
+import { OperationFactory } from "./writers/operation_factory";
 import { TransactionFactory } from "./writers/transaction_factory";
-//import { IOperationUID, Operation } from "./writers/operation";
-//import { ITxUID, Tx } from "./writers/tx";
 
 export class Store {
   private connection: Connection;
@@ -20,8 +19,12 @@ export class Store {
   public async transaction(transaction: Transaction, args: any): Promise<IValue> {
     return (await TransactionFactory.produce(this.connection, transaction, args)).write();
   }
-  //
-  // public async operation(transaction: Transaction, operation: any, index: number, uid: IOperationUID) {
-  //   return new Operation(this.connection, transaction, operation, index, uid).write();
-  // }
+
+  public async operation(transaction: Transaction, op: any, index: number, args: any) {
+    const { ledger, tx } = args;
+    const seq = transaction.ledgerSeq;
+    const txIndex = transaction.index;
+
+    return (await OperationFactory.produce(this.connection, op, index, { ledger, tx, txIndex, seq })).write();
+  }
 }

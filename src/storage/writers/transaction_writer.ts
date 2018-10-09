@@ -21,7 +21,7 @@ export class TransactionWriter extends Writer {
   }
 
   public async write(): Promise<nquads.IValue> {
-    const { ledger, current, prev } = this.context;
+    const { current, prev } = this.context;
 
     this.appendRoot();
     this.appendTimeBounds();
