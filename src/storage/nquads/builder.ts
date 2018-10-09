@@ -8,6 +8,7 @@ export interface IValue {
 export class Builder {
   public nquads: string = "";
 
+  // TODO: source: ISource = UID | Blank           IObject = UID | Plain + | string | number here
   public append(source: IValue, predicate: string, object: IValue | string | number) {
     const ival = object as IValue;
     const value = ival.value ? ival : new Plain(object.toString());
