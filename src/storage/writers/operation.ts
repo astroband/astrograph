@@ -42,7 +42,7 @@ export class Operation extends Writer {
   protected async queryContext() {
     return this.connection.query(
       `
-        query context($id: string, $prevIndex: int, $current: int) {          
+        query context($id: string, $prevIndex: int, $current: int, $ledger: string) {          
           prev(func: eq(type, "operation")) @filter(eq(index, $prevIndex)) @cascade {
             uid
             transaction @filter(uid($id)) {
@@ -60,6 +60,7 @@ export class Operation extends Writer {
       `,
       {
         $id: this.uid.tx,
+        $ledger: this.uid.ledger,
         $prevIndex: (this.index - 1).toString(),
         $current: this.index.toString()
       }
