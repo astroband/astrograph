@@ -45,8 +45,8 @@ export class TransactionWriter extends Writer {
       .append("id", this.tx.id)
       .append("index", this.tx.index)
       .append("seq", this.tx.ledgerSeq)
-      .append("sortHandle", this.sortHandle())
-      .append("feeAmount", this.tx.feeAmount);
+      .append("order", this.order())
+      .append("fee_amount", this.tx.feeAmount);
 
     this.b.append(ledger, "transactions", current);
     this.b.append(current, "ledger", ledger);
@@ -58,8 +58,8 @@ export class TransactionWriter extends Writer {
     if (timeBounds) {
       this.b
         .for(this.context.current)
-        .append("timeBoundMin", timeBounds[0])
-        .append("timeBoundMax", timeBounds[1]);
+        .append("time_bounds.min", timeBounds[0])
+        .append("time_bounds.max", timeBounds[1]);
     }
   }
 
@@ -90,7 +90,7 @@ export class TransactionWriter extends Writer {
     this.b.append(sourceAccount, "transactions", current);
   }
 
-  private sortHandle(): string {
+  private order(): string {
     return `${this.tx.ledgerSeq}-${this.tx.index}`;
   }
 }

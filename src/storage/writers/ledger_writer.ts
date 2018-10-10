@@ -35,10 +35,10 @@ export class LedgerWriter extends Writer {
       .for(this.context.current)
       .append("type", "ledger")
       .append("seq", this.header.ledgerSeq)
-      .append("sortHandle", this.header.ledgerSeq)
+      .append("order", this.header.ledgerSeq)
       .append("version", this.header.ledgerVersion)
-      .append("baseFee", this.header.baseFee)
-      .append("baseReserve", this.header.baseReserve)
-      .append("maxTxSetSize", this.header.maxTxSetSize);
+      .append("base_fee", this.header.baseFee)
+      .append("base_reserve", this.header.baseReserve)
+      .append("max_tx_set_size", this.header.maxTxSetSize);
   }
 }

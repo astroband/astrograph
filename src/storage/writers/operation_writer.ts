@@ -51,7 +51,7 @@ export class OperationWriter extends Writer {
       .append("ledger", ledger)
       .append("index", this.index)
       .append("kind", this.xdr.body().switch().name)
-      .append("sortHandle", this.sortHandle())
+      .append("order", this.order())
       .append("transaction", tx);
 
     this.b.append(tx, "operations", current);
