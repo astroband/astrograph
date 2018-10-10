@@ -1,4 +1,4 @@
-import { AccountCache } from "../account_cache";
+import { AccountCache } from "../cache";
 import { Connection } from "../connection";
 import * as nquads from "../nquads";
 

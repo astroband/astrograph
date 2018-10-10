@@ -5,7 +5,6 @@ import { SubscriptionPayloadCollection } from "./subscription_payload_collection
 
 import { Connection, Store } from "../storage";
 import { DGRAPH_URL } from "../util/secrets";
-// import logger from "../util/logger";
 
 export class Worker {
   public cursor: Cursor;
@@ -25,6 +24,7 @@ export class Worker {
 
       if (DGRAPH_URL) {
         const connection = new Connection();
+
         const store = new Store(connection);
         const ledger = await store.ledger(header);
 

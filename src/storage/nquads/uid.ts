@@ -12,7 +12,7 @@ export class UID {
   public readonly raw: string;
 
   constructor(value: string) {
-    if (value === "") {
+    if ((value === "") || (value === undefined) || (value === null)) {
       throw new Error(`UID value can not be empty`);
     }
 

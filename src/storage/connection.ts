@@ -9,7 +9,6 @@ const schema = `
   id: string @index(exact) .
   index: int @index(int) .
   order: string @index(exact) .
-  sourceAccountID: string @index(exact) .
   kind: string @index(exact) .
 `;
 
