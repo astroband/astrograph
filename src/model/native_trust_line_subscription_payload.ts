@@ -5,8 +5,6 @@ import { IMutationType, MutationType } from "./mutation_type";
 
 import { publicKeyFromXDR } from "../util/xdr";
 
-import { buildNativeAsset } from "../util/stellar";
-
 export class NativeTrustLineSubscriptionPayload implements IMutationType {
   public mutationType: MutationType = MutationType.Update;
   public accountID: string;
@@ -23,6 +21,6 @@ export class NativeTrustLineSubscriptionPayload implements IMutationType {
   }
 
   get asset(): Asset {
-    return buildNativeAsset();
+    return Asset.buildNative();
   }
 }
