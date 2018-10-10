@@ -2,6 +2,7 @@ import { DgraphClient, DgraphClientStub, Mutation, Operation } from "dgraph-js";
 import grpc from "grpc";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
+import { Repo } from "./repo";
 
 const schema = `
   type: string @index(exact) .
@@ -17,10 +18,12 @@ const schema = `
 export class Connection {
   private stub: any;
   private client: any;
+  public repo: Repo;
 
   constructor() {
     this.stub = new DgraphClientStub(DGRAPH_URL, grpc.credentials.createInsecure());
     this.client = new DgraphClient(this.stub);
+    this.repo = new Repo(this);
   }
 
   public close() {

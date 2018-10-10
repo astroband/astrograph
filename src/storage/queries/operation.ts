@@ -15,10 +15,10 @@ export class OperationQuery extends Query<IOperationQueryResult> {
   constructor(connection: Connection, tx: Transaction, index: number) {
     super(connection);
     this.tx = tx;
-    this.number = number;
+    this.index = index;
   }
 
-  protected async call(): Promise<any> {
+  protected async request(): Promise<any> {
     return this.connection.query(
       `
         query context($id: string, $prevIndex: int, $current: int) {
@@ -38,14 +38,14 @@ export class OperationQuery extends Query<IOperationQueryResult> {
         }
       `,
       {
-        $id: this.args.tx.id,
+        $id: this.tx.id,
         $prevIndex: (this.index - 1).toString(),
         $current: this.index.toString()
       }
     );
   }
 
-  public async result(): Promise<IOperationQueryResult> {
+  public async call(): Promise<IOperationQueryResult> {
     const r = await this.call();
 
     return {

@@ -17,7 +17,7 @@ export class TransactionQuery extends Query<ITransactionQueryResult> {
     this.tx = tx;
   }
 
-  protected async call(): Promise<any> {
+  protected async request(): Promise<any> {
     return this.connection.query(
       `
         query context($id: string, $ledger: string, $seq: string, $prevIndex: string) {
@@ -41,7 +41,7 @@ export class TransactionQuery extends Query<ITransactionQueryResult> {
     );
   }
 
-  public async result(): Promise<ITransactionQueryResult> {
+  public async call(): Promise<ITransactionQueryResult> {
     const r = await this.call();
 
     return {

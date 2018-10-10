@@ -12,7 +12,7 @@ export class AccountQuery extends Query<IAccountQueryResult> {
     this.id = id;
   }
 
-  protected async call(): Promise<any> {
+  protected async request(): Promise<any> {
     return this.connection.query(
       `
         query account($id: string) {
@@ -25,8 +25,8 @@ export class AccountQuery extends Query<IAccountQueryResult> {
     );
   }
 
-  public async result(): Promise<IAccountQueryResult> {
-    const r = await this.call();
+  public async call(): Promise<IAccountQueryResult> {
+    const r = await this.request();
     return this.digUID(r, "account", 0, "uid");
   }
 }

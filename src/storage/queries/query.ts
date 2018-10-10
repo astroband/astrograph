@@ -10,8 +10,8 @@ export abstract class Query<R> {
     this.connection = connection;
   }
 
-  protected abstract async call(): Promise<any>;
-  public abstract async result(): Promise<R>;
+  protected abstract async request(): Promise<any>;
+  public abstract async call(): Promise<R>;
 
   protected digUID(r: any, ...args: any[]): nquads.UID | null {
     return nquads.UID.from(dig(r, ...args));

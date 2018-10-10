@@ -12,7 +12,7 @@ export class AssetQuery extends Query<IAssetQueryResult> {
     this.asset = asset;
   }
 
-  protected async call(): Promise<any> {
+  protected async requst(): Promise<any> {
     const asset = this.asset;
 
     return this.connection.query(
@@ -31,7 +31,7 @@ export class AssetQuery extends Query<IAssetQueryResult> {
     );
   }
 
-  public async result(): Promise<IAssetQueryResult> {
+  public async call(): Promise<IAssetQueryResult> {
     const r = await this.call();
     return this.digUID(r, "asset", 0, "uid");
   }

@@ -16,7 +16,7 @@ export class LedgerQuery extends Query<ILedgerQueryResult> {
     this.header = header;
   }
 
-  protected async call(): Promise<any> {
+  protected async request(): Promise<any> {
     const seq = this.header.ledgerSeq;
 
     return this.connection.query(
@@ -38,7 +38,7 @@ export class LedgerQuery extends Query<ILedgerQueryResult> {
     );
   }
 
-  public async result(): Promise<ILedgerQueryResult> {
+  public async call(): Promise<ILedgerQueryResult> {
     const r = await this.call();
 
     return {
