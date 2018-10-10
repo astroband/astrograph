@@ -1,13 +1,11 @@
 export class UID {
-  // TODO: Working with query result violates SRP, move somewhere else.
+  // Creates UID if value is present, returns null for blank value. Useful for UID.from() || UID.blank()
   public static from(value: any): UID | null {
-    if (!value || (!value[0] && !value.uid)) {
+    if (!value) {
       return null;
     }
 
-    const uid = value[0].uid || value.uid;
-
-    return new UID(uid || value);
+    return new UID(value);
   }
 
   public readonly value: string;

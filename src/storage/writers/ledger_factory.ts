@@ -4,6 +4,8 @@ import { LedgerWriter } from "./ledger_writer";
 import { Writer } from "./writer";
 import { WriterFactory } from "./writer_factory";
 
+import dig from "object-dig";
+
 import * as nquads from "../nquads";
 
 export class LedgerFactory extends WriterFactory {
@@ -21,8 +23,8 @@ export class LedgerFactory extends WriterFactory {
   public async produce(): Promise<Writer> {
     const context = await this.queryContext();
 
-    const current = nquads.UID.from(context.current) || new nquads.Blank("ledger");
-    const prev = nquads.UID.from(context.prev);
+    const current = nquads.UID.from(dig(context.current, 0, "uid")) || new nquads.Blank("ledger");
+    const prev = nquads.UID.from(dig(context.prev, 0, "uid"));
 
     return new LedgerWriter(this.connection, this.header, { current, prev });
   }

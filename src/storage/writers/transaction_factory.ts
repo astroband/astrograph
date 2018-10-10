@@ -6,6 +6,8 @@ import { WriterFactory } from "./writer_factory";
 
 import * as nquads from "../nquads";
 
+import dig from "object-dig";
+
 export interface IArgs {
   ledger: nquads.Value;
 }
@@ -28,8 +30,8 @@ export class TransactionFactory extends WriterFactory {
     const ledger = this.args.ledger;
     const context = await this.queryContext();
 
-    const current = nquads.UID.from(context.current) || new nquads.Blank("transaction");
-    const prev = nquads.UID.from(context.prev);
+    const current = nquads.UID.from(dig(context.current, 0, "uid")) || new nquads.Blank("transaction");
+    const prev = nquads.UID.from(dig(context.prev, 0, "uid"));
 
     return new TransactionWriter(this.connection, this.tx, { ledger, current, prev });
   }

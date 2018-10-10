@@ -4,6 +4,8 @@ import { Writer } from "./writer";
 
 import * as nquads from "../nquads";
 
+import dig from "object-dig";
+
 interface IContext {
   ledger: nquads.Value;
   current: nquads.Value;
@@ -69,8 +71,7 @@ export class TransactionWriter extends Writer {
       return;
     }
 
-    const currentMemo =
-      (current && current[0] && current[0].memo && nquads.UID.from(current[0].memo)) || new nquads.Blank("memo");
+    const currentMemo = nquads.UID.from(dig(current, 0, "memo", 0, "uid")) || new nquads.Blank("memo");
 
     this.b
       .for(currentMemo)
@@ -85,7 +86,6 @@ export class TransactionWriter extends Writer {
     const { current } = this.context;
     const sourceAccount = await this.accountCache.fetch(this.tx.sourceAccount);
 
-    // this.b.append(current, "sourceAccountID", this.tx.sourceAccount);
     this.b.append(current, "sourceAccount", sourceAccount);
     this.b.append(sourceAccount, "transactions", current);
   }
