@@ -1,7 +1,6 @@
 import Big from "big.js";
-import { Keypair, Network } from "stellar-base";
+import { Network } from "stellar-base";
 import db from "../database";
-import { Asset } from "../model";
 
 const StellarAmountPrecision = 7;
 
@@ -14,10 +13,6 @@ export async function setNetwork(): Promise<string> {
   });
 
   return promise;
-}
-
-export function buildNativeAsset(): Asset {
-  return new Asset(true, NATIVE_ASSET_CODE, Keypair.master().publicKey());
 }
 
 // converts amounts according to Stellar precision like this:
