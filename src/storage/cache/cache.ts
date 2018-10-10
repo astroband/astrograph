@@ -3,51 +3,40 @@ import * as nquads from "./nquads";
 
 import dig from "object-dig";
 
-export abstract class Cache {
-  private static cache: Map<string, nquads.Value> = new Map<string, nquads.Value>();
+export abstract class Cache<T> {
+  private static cache: Map<T, nquads.Value> = new Map<T, nquads.Value>();
   private connection: Connection;
 
   constructor(connection: Connection) {
     this.connection = connection;
   }
 
-  public async fetch(id: string): Promise<nquads.Value> {
-    const cached = this.cache().get(id);
+  public async fetch(key: T): Promise<nquads.Value> {
+    const cached = this.cache().get(key);
 
     if (cached) {
       return cached;
     }
 
-    return this.findOrCreate(id);
+    return this.find(key);// || this.create(key);
   }
 
   private cache(): Map<string, nquads.Value> {
     return AccountCache.cache;
   }
 
-  private async findOrCreate(id: string): Promise<nquads.Value> {
-    const found = await this.find(id);
+  private async find(id: T): Promise<nquads.Value | null> {
+    const found = await this.query(id);
 
     if (found) {
       this.cache().set(id, found);
       return found;
     }
 
-    return this.create(id);
+    return null;
   }
 
-  private async find(id: string): Promise<nquads.Value | null> {
-    const result = await queryFind(id);
-    const found = nquads.UID.from(dig(result, "record", 0, "uid"));
-
-    if (found) {
-      this.cache().set(id, found);
-    }
-
-    return found;
-  }
-
-  protected queryFind(id: string): Promise<any> {
+  protected query(id: T): Promise<any> {
     return this.connection.query(
       `
         query record($id: string) {
@@ -60,16 +49,14 @@ export abstract class Cache {
     );
   }
 
-  private async create(id: string): Promise<nquads.Value> {
-    const builder = new nquads.Builder();
-    const account = new nquads.Blank("account");
-
-    builder.append(account, "type", "account");
-    builder.append(account, "id", id);
-
-    const pushResult = await this.connection.push(builder.nquads);
-    const uid = pushResult.getUidsMap().get("account");
-
-    return new nquads.UID(uid);
-  }
+  // protected async create(id: string): Promise<nquads.Value> {
+  //   const builder = new nquads.Builder();
+  //   const account = new nquads.Blank("account");
+  //
+  //   builder.append(account, "type", "account");
+  //   builder.append(account, "id", id);
+  //
+  //   const pushResult = await this.connection.push(builder.nquads);
+  //   return nquads.UID.from(pushResult.getUidsMap().get("account"));
+  // }
 }
