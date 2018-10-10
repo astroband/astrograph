@@ -1,4 +1,4 @@
-import { Transaction } from "../../model";
+import { Asset, Transaction } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
@@ -103,16 +103,17 @@ export class OperationWriter extends Writer {
 
     const amount = op.amount().toString();
     const destination = publicKeyFromBuffer(op.destination().value());
-    const { assettype, assetcode, issuer } = assetFromXDR(op.asset());
+    const assetArgs = assetFromXDR(op.asset());
+    const asset = Asset.build(
+      assetArgs.assettype,
+      assetArgs.assetcode,
+      assetArgs.assetissuer
+    );
 
-    this.b
-      .for(current)
-      .append("amount", amount)
-      .append("assetType", assettype)
-      .append("assetCode", assetcode);
+    this.b.append(current, "amount", amount);
 
+    await this.appendAsset(current, "asset", asset, "operations");
     await this.appendAccount(current, "account.destination", destination, "operations");
-    await this.appendAccount(current, "assetIssuerAccount", issuer, "operations.asset");
   }
 
   private async pathPaymentOp() {
@@ -123,7 +124,6 @@ export class OperationWriter extends Writer {
     const destAmount = op.destAmount().toString();
 
     const destination = publicKeyFromBuffer(op.destination().value());
-    // const { assettype, assetcode, issuer } = assetFromXDR(op.asset());
 
     this.b
       .for(current)
