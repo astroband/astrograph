@@ -3,6 +3,7 @@ import { Connection } from "../connection";
 import { Writer } from "./writer";
 
 import * as nquads from "../nquads";
+import * as queries from "../queries";
 
 interface IContext {
   current: nquads.Value;
@@ -22,7 +23,8 @@ export class LedgerWriter extends Writer {
 
   public async write(): Promise<nquads.Value> {
     const { current, prev } = this.context;
-
+    console.log(await new queries.Account(this.connection, "GA4IBZJDA2K3JWC3L6XOKJLHCKES63HXVI2XCDN4SZ7FODVNL2QJY6GF").results());
+    console.log(await new queries.Ledger(this.connection, this.header).results());    
     this.appendRoot();
     this.appendPrev(current, prev);
 
