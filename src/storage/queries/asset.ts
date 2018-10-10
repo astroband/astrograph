@@ -17,13 +17,13 @@ export class AssetQuery extends Query<IAssetQueryResult> {
 
     return this.connection.query(
       `
-        query record($native: string, $code: string, $issuer: string) @cascade {
+        query record($native: string, $code: string, $issuer: string) {
           val(func: eq(type, "account")) @filter(eq(id, $issuer)) {
-            issuer AS uid
+            id AS uid
           }
 
-          asset(func: eq(type, "asset")) @filter(eq(native, $native) AND eq(code, $code)) {
-            uid @filter(uid(issuer))
+          asset(func: eq(type, "asset")) @filter(eq(native, $native) AND eq(code, $code)) @cascade {
+            uid @filter(uid(id))
           }
         }
       `,
