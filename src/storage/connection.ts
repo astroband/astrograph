@@ -8,7 +8,7 @@ const schema = `
   seq: int @index(int) .
   id: string @index(exact) .
   index: int @index(int) .
-  order string @index(exact) .
+  order: string @index(exact) .
   sourceAccountID: string @index(exact) .
   kind: string @index(exact) .
 `;

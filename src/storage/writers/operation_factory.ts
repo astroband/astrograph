@@ -1,3 +1,4 @@
+import { Transaction } from "../../model";
 import { Connection } from "../connection";
 import { OperationWriter } from "./operation_writer";
 import { Writer } from "./writer";
@@ -10,23 +11,21 @@ import * as nquads from "../nquads";
 interface IArgs {
   ledger: nquads.Value;
   tx: nquads.Value;
-  txIndex: number;
-  seq: number;
 }
 
 export class OperationFactory extends WriterFactory {
-  public static async produce(connection: Connection, xdr: any, index: number, args: IArgs): Promise<Writer> {
-    return new OperationFactory(connection, xdr, index, args).produce();
+  public static async produce(connection: Connection, tx: Transaction, index: number, args: IArgs): Promise<Writer> {
+    return new OperationFactory(connection, tx, index, args).produce();
   }
 
-  private xdr: any;
+  private tx: Transaction;
   private index: number;
   private args: IArgs;
 
-  constructor(connection: Connection, xdr: any, index: number, args: IArgs) {
+  constructor(connection: Connection, tx: Transaction, index: number, args: IArgs) {
     super(connection);
 
-    this.xdr = xdr;
+    this.tx = tx;
     this.index = index;
     this.args = args;
   }
@@ -37,15 +36,13 @@ export class OperationFactory extends WriterFactory {
     const current = nquads.UID.from(dig(context.current, "0", "uid")) || new nquads.Blank("operation");
     const prev = nquads.UID.from(dig(context.prev, "0", "uid"));
 
-    const { ledger, tx, txIndex, seq } = this.args;
+    const { ledger, tx } = this.args;
 
-    return new OperationWriter(this.connection, this.xdr, this.index, {
+    return new OperationWriter(this.connection, this.tx, this.index, {
       current,
       prev,
       ledger,
-      tx,
-      txIndex,
-      seq
+      tx
     });
   }
 

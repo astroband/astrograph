@@ -20,11 +20,9 @@ export class Store {
     return (await TransactionFactory.produce(this.connection, transaction, args)).write();
   }
 
-  public async operation(transaction: Transaction, op: any, index: number, args: any) {
+  public async operation(transaction: Transaction, index: number, args: any) {
     const { ledger, tx } = args;
-    const seq = transaction.ledgerSeq;
-    const txIndex = transaction.index;
 
-    return (await OperationFactory.produce(this.connection, op, index, { ledger, tx, txIndex, seq })).write();
+    return (await OperationFactory.produce(this.connection, transaction, index, { ledger, tx })).write();
   }
 }

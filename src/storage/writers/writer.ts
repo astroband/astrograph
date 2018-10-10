@@ -25,4 +25,11 @@ export abstract class Writer {
       this.b.append(current, "prev", prev).append(prev, "next", current);
     }
   }
+
+  protected async appendAccount(current: nquads.Value, predicate: string, id: string, foreignKey: string) {
+    const account = await this.accountCache.fetch(id);
+
+    this.b.append(current, predicate, account);
+    this.b.append(account, foreignKey, current);
+  }
 }

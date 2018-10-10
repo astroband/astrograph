@@ -31,11 +31,8 @@ export class Worker {
         for (const transaction of transactions) {
           const tx = await store.transaction(transaction, { ledger });
 
-          const ops = transaction.operationsXDR();
-          for (let index = 0; index < ops.length; index++) {
-            const op = ops[index];
-
-            await store.operation(transaction, op, index, { ledger, tx });
+          for (let index = 0; index < transaction.operationsXDR().length; index++) {
+            await store.operation(transaction, index, { ledger, tx });
           }
         }
 

@@ -1,3 +1,4 @@
+import { Transaction } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
@@ -12,21 +13,22 @@ export interface IContext {
   prev: nquads.Value | null;
   ledger: nquads.Value;
   tx: nquads.Value;
-  txIndex: number;
-  seq: number;
 }
 
 export class OperationWriter extends Writer {
+  private tx: Transaction;
   private xdr: any;
   private index: number;
   private context: IContext;
 
-  constructor(connection: Connection, xdr: any, index: number, context: IContext) {
+  constructor(connection: Connection, tx: Transaction, index: number, context: IContext) {
     super(connection);
 
-    this.xdr = xdr;
+    this.tx = tx;
     this.index = index;
     this.context = context;
+
+    this.xdr = tx.operationsXDR()[index];
   }
 
   public async write(): Promise<nquads.Value> {
@@ -62,18 +64,13 @@ export class OperationWriter extends Writer {
     const account = this.xdr.sourceAccount();
 
     if (account) {
-      const { current } = this.context;
-      const id = publicKeyFromBuffer(account.value());
-      const sourceAccount = await this.accountCache.fetch(id);
-
-      this.b.append(current, "sourceAccountID", id);
-      this.b.append(current, "sourceAccount", sourceAccount);
-      this.b.append(sourceAccount, "transactions", current);
+      const id = publicKeyFromBuffer(account.value()) || this.tx.sourceAccount;
+      await this.appendAccount(this.context.current, "account.source", id, "operations");
     }
   }
 
   private order(): string {
-    return `${this.context.seq}-${this.context.txIndex}-${this.index}`;
+    return `${this.tx.ledgerSeq}-${this.tx.index}-${this.index}`;
   }
 
   private async appendOp() {
@@ -94,9 +91,9 @@ export class OperationWriter extends Writer {
     const startingBalance = op.startingBalance().toString();
     const destination = publicKeyFromBuffer(op.destination().value());
 
-    this.b.for(current).append("startingBalance", startingBalance);
+    this.b.for(current).append("starting_balance", startingBalance);
 
-    await this.appendAccount("destinationAccount", destination);
+    await this.appendAccount(current, "account.destination", destination, "operations");
   }
 
   private async appendPaymentOp() {
@@ -113,19 +110,7 @@ export class OperationWriter extends Writer {
       .append("assetType", assettype)
       .append("assetCode", assetcode);
 
-    await this.appendAccount("destinationAccount", destination);
-    await this.appendAccount("assetIssuerAccount", issuer, "ownAssetsOperations");
-  }
-
-  private async appendAccount(predicate: string, id: string, foreignKey: string = "operations") {
-    const { current } = this.context;
-    const account = await this.accountCache.fetch(id);
-
-    this.b
-      .for(current)
-      .append(`${predicate}ID`, id)
-      .append(`${predicate}`, account);
-
-    this.b.append(account, foreignKey, current);
+    await this.appendAccount(current, "account.destination", destination, "operations");
+    await this.appendAccount(current, "assetIssuerAccount", issuer, "operations.asset");
   }
 }

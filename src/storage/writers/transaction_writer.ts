@@ -30,7 +30,7 @@ export class TransactionWriter extends Writer {
     this.appendPrev(current, prev);
     this.appendMemo();
 
-    await this.appendSourceAccount();
+    await this.appendAccount(this.context.current, this.tx.sourceAccount, "account.source", "transactions");
 
     const created = await this.push("transaction");
     return created || current;
@@ -80,14 +80,6 @@ export class TransactionWriter extends Writer {
       .append("transaction", current);
 
     this.b.append(current, "memo", currentMemo);
-  }
-
-  private async appendSourceAccount() {
-    const { current } = this.context;
-    const sourceAccount = await this.accountCache.fetch(this.tx.sourceAccount);
-
-    this.b.append(current, "sourceAccount", sourceAccount);
-    this.b.append(sourceAccount, "transactions", current);
   }
 
   private order(): string {
