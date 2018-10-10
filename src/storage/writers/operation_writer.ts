@@ -72,7 +72,7 @@ export class OperationWriter extends Writer {
     }
   }
 
-  private sortHandle(): string {
+  private order(): string {
     return `${this.context.seq}-${this.context.txIndex}-${this.index}`;
   }
 
