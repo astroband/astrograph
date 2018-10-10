@@ -80,6 +80,8 @@ export class OperationWriter extends Writer {
         return this.appendCreateAccountOp();
       case t.payment():
         return this.appendPaymentOp();
+      case t.pathPayment():
+        return this.pathPaymentOp();
     }
   }
 
@@ -111,5 +113,23 @@ export class OperationWriter extends Writer {
 
     await this.appendAccount(current, "account.destination", destination, "operations");
     await this.appendAccount(current, "assetIssuerAccount", issuer, "operations.asset");
+  }
+
+  private async pathPaymentOp() {
+    const { current } = this.context;
+    const op = this.xdr.body().pathPaymentOp();
+
+    const sendMax = op.sendMax().toString();
+    const destAmount = op.destAmount().toString();
+
+    const destination = publicKeyFromBuffer(op.destination().value());
+    // const { assettype, assetcode, issuer } = assetFromXDR(op.asset());
+
+    this.b
+      .for(current)
+      .append("send_max", sendMax)
+      .append("dest_amount", destAmount);
+
+    await this.appendAccount(current, "account.destination", destination, "operations");
   }
 }
