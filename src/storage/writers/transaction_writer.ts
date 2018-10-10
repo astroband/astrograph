@@ -30,7 +30,7 @@ export class TransactionWriter extends Writer {
     this.appendPrev(current, prev);
     this.appendMemo();
 
-    await this.appendAccount(this.context.current, this.tx.sourceAccount, "account.source", "transactions");
+    await this.appendAccount(this.context.current, "account.source", this.tx.sourceAccount, "transactions");
 
     const created = await this.push("transaction");
     return created || current;

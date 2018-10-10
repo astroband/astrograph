@@ -12,13 +12,13 @@ export class AssetCache extends Cache<Asset> {
   protected async query(key: Asset): Promise<any> {
     return this.connection.query(
       `
-        query record($native: boolean, $code: string, $issuer: string) {
+        query record($native: string, $code: string, $issuer: string) {
           record(func: eq(type, "asset")) @filter(eq(native, $native) AND eq(code, $code) AND eq(issuer, $issuer)) {
             uid
           }
         }
       `,
-      { $native: key.native, $code: key.code, $issuer: key.issuer }
+      { $native: key.native.toString(), $code: key.code, $issuer: key.issuer }
     );
   }
 

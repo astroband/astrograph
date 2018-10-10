@@ -9,6 +9,8 @@ const schema = `
   id: string @index(exact) .
   index: int @index(int) .
   order: string @index(exact) .
+  code: string @index (exact) .
+  native: bool @index (bool) .
   kind: string @index(exact) .
 `;
 

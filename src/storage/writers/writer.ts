@@ -38,7 +38,7 @@ export abstract class Writer {
 
   protected async appendAsset(current: nquads.Value, predicate: string, a: Asset, foreignKey: string) {
     const asset = await this.assetCache.fetch(a);
-
+console.log(a, asset);
     this.b.append(current, predicate, asset);
     this.b.append(asset, foreignKey, current);
   }
