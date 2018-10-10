@@ -1,7 +1,13 @@
-import { Cache } from "./cache";
 import * as nquads from "../nquads";
+import { Cache } from "./cache";
+
+const cache = new Map<string, nquads.Value>();
 
 export class AccountCache extends Cache<string> {
+  protected cache(): Map<string, nquads.Value> {
+    return cache;
+  }
+
   protected async query(key: string): Promise<any> {
     return this.connection.query(
       `
@@ -19,7 +25,10 @@ export class AccountCache extends Cache<string> {
     const builder = new nquads.Builder();
     const account = new nquads.Blank("account");
 
-    builder.for(account).append("type", "account").append("id", key);
+    builder
+      .for(account)
+      .append("type", "account")
+      .append("id", key);
 
     return builder;
   }

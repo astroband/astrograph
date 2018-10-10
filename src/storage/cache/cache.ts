@@ -5,21 +5,19 @@ import dig from "object-dig";
 
 export abstract class Cache<T> {
   protected connection: Connection;
-  private cache: Map<T, nquads.Value> = new Map<T, nquads.Value>();
 
   constructor(connection: Connection) {
     this.connection = connection;
   }
 
   public async fetch(key: T): Promise<nquads.Value> {
-    const cached = this.cache.get(key);
+    const cached = this.cache().get(key);
 
     if (cached) {
-      console.log("CACHE HIT:", cached);
       return cached;
     }
 
-    return (await this.find(key)) || (await this.create(key));
+    return (await this.find(key)) || this.create(key);
   }
 
   protected async create(key: T): Promise<nquads.Value> {
@@ -32,14 +30,14 @@ export abstract class Cache<T> {
 
   protected abstract async query(key: T): Promise<any>;
   protected abstract build(key: T): nquads.Builder;
+  protected abstract cache(): Map<T, nquads.Value>;
 
   private async find(id: T): Promise<nquads.Value | null> {
     const result = await this.query(id);
     const found = nquads.UID.from(dig(result, "record", 0, "uid"));
 
     if (found) {
-      this.cache.set(id, found);
-      console.log("FOUND:", found);
+      this.cache().set(id, found);
       return found;
     }
 
