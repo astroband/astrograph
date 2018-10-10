@@ -37,11 +37,19 @@ export class OperationWriter extends Writer {
     this.appendRoot();
     this.appendPrev(current, prev);
 
-    await this.appendSourceAccount();
+    await this.appendAccount(current, "account.source", this.sourceAccount(), "operations");
     await this.appendOp();
 
     const created = await this.push("operation");
     return created || current;
+  }
+
+  private sourceAccount(): string {
+    const account = this.xdr.sourceAccount();
+    if (account) {
+      return publicKeyFromBuffer(account.value());
+    }
+    return this.tx.sourceAccount;
   }
 
   private appendRoot() {
@@ -58,15 +66,6 @@ export class OperationWriter extends Writer {
 
     this.b.append(tx, "operations", current);
     this.b.append(ledger, "operations", current);
-  }
-
-  private async appendSourceAccount() {
-    const account = this.xdr.sourceAccount();
-
-    if (account) {
-      const id = publicKeyFromBuffer(account.value()) || this.tx.sourceAccount;
-      await this.appendAccount(this.context.current, "account.source", id, "operations");
-    }
   }
 
   private order(): string {
