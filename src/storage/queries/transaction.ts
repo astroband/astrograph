@@ -3,13 +3,13 @@ import { Connection } from "../connection";
 import * as nquads from "../nquads";
 import { Query } from "./query";
 
-type IQueryResult = {
+type ITransactionQueryResult = {
   current: nquads.UID | null,
   prev: nquads.UID | null,
   memo: nquads.UID | null
 }
 
-export class Tx extends Query<IQueryResult> {
+export class TransactionQuery extends Query<ITransactionQueryResult> {
   private tx: Transaction;
 
   constructor(connection: Connection, tx: Transaction) {
@@ -41,8 +41,9 @@ export class Tx extends Query<IQueryResult> {
     );
   }
 
-  public async results(): Promise<IQueryResult> {
+  public async result(): Promise<ITransactionQueryResult> {
     const r = await this.call();
+
     return {
       current: this.digUID(r, "current", 0, "uid"),
       memo: this.digUID(r, "current", 0, "memo", 0, "uid"),

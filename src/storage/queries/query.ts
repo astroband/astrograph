@@ -11,7 +11,7 @@ export abstract class Query<R> {
   }
 
   protected abstract async call(): Promise<any>;
-  public abstract async results(): Promise<R>;
+  public abstract async result(): Promise<R>;
 
   protected digUID(r: any, ...args: any[]): nquads.UID | null {
     return nquads.UID.from(dig(r, ...args));

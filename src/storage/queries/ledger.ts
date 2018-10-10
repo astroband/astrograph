@@ -3,12 +3,12 @@ import { Connection } from "../connection";
 import * as nquads from "../nquads";
 import { Query } from "./query";
 
-export type IQueryResult = {
+export type ILedgerQueryResult = {
   current: nquads.UID | null,
   prev: nquads.UID | null
 }
 
-export class Ledger extends Query<IQueryResult> {
+export class LedgerQuery extends Query<ILedgerQueryResult> {
   private header: LedgerHeader;
 
   constructor(connection: Connection, header: LedgerHeader) {
@@ -38,8 +38,9 @@ export class Ledger extends Query<IQueryResult> {
     );
   }
 
-  public async results(): Promise<IQueryResult> {
+  public async result(): Promise<ILedgerQueryResult> {
     const r = await this.call();
+
     return {
       current: this.digUID(r, "current", 0, "uid"),
       prev: this.digUID(r, "prev", 0, "uid")

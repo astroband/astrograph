@@ -2,7 +2,9 @@ import { Connection } from "../connection";
 import * as nquads from "../nquads";
 import { Query } from "./query";
 
-export class Account extends Query<nquads.UID | null> {
+export type IAccountQueryResult = nquads.UID | null;
+
+export class AccountQuery extends Query<IAccountQueryResult> {
   private id: string;
 
   constructor(connection: Connection, id: string) {
@@ -23,7 +25,7 @@ export class Account extends Query<nquads.UID | null> {
     );
   }
 
-  public async results() {
+  public async result(): Promise<IAccountQueryResult> {
     const r = await this.call();
     return this.digUID(r, "account", 0, "uid");
   }
