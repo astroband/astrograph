@@ -20,31 +20,9 @@ export abstract class Writer {
     return nquads.UID.from(result.getUidsMap().get(key));
   }
 
-  protected newOrUID(subject: any, name: string) {
-    return subject && (subject.uid || subject[0]) ? `<${subject.uid || subject[0].uid}>` : `_:${name}`;
-  }
-
   protected appendPrev(current: nquads.Value, prev: nquads.Value | null) {
     if (prev) {
       this.b.append(current, "prev", prev).append(prev, "next", current);
     }
-  }
-
-  protected walk(data: any, fn: any): string | null {
-    if (!data) {
-      return null;
-    }
-
-    const { leaf, result } = fn(data);
-
-    if (result) {
-      return result;
-    }
-
-    if (leaf) {
-      return this.walk(leaf, fn);
-    }
-
-    return null;
   }
 }
