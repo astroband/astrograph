@@ -3,6 +3,7 @@ import grpc from "grpc";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
 import { Repo } from "./repo";
+import { Store } from "./store";
 
 const schema = `
   type: string @index(exact) .
@@ -16,14 +17,17 @@ const schema = `
 `;
 
 export class Connection {
+  public repo: Repo;
+  public store: Store;
+
   private stub: any;
   private client: any;
-  public repo: Repo;
 
   constructor() {
     this.stub = new DgraphClientStub(DGRAPH_URL, grpc.credentials.createInsecure());
     this.client = new DgraphClient(this.stub);
     this.repo = new Repo(this);
+    this.store = new Store(this);
   }
 
   public close() {

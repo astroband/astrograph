@@ -4,35 +4,40 @@ import { Writer } from "./writer";
 
 import * as nquads from "../nquads";
 
-interface IContext {
-  current: nquads.Value;
-  prev: nquads.Value | null;
-}
-
 export class LedgerWriter extends Writer {
+  public static async build(connection: Connection, header: LedgerHeader): Promise<LedgerWriter> {
+    const writer = new LedgerWriter(connection, header);
+    await writer.loadContext();
+    return writer;
+  }
+
   private header: LedgerHeader;
-  private context: IContext;
+  private current: nquads.Value = new nquads.Blank("ledger");
+  private prev: nquads.Value | null = null;
 
-  constructor(connection: Connection, header: LedgerHeader, context: IContext) {
+  protected constructor(connection: Connection, header: LedgerHeader) {
     super(connection);
-
     this.header = header;
-    this.context = context;
   }
 
   public async write(): Promise<nquads.Value> {
-    const { current, prev } = this.context;
-
     this.appendRoot();
-    this.appendPrev(current, prev);
+    this.appendPrev(this.current, this.prev);
 
     const created = await this.push("ledger");
-    return created || current;
+    return created || this.current;
+  }
+
+  protected async loadContext() {
+    const { current, prev } = await this.connection.repo.ledger(this.header);
+
+    this.current = current || this.current;
+    this.prev = prev;
   }
 
   private appendRoot() {
     this.b
-      .for(this.context.current)
+      .for(this.current)
       .append("type", "ledger")
       .append("seq", this.header.ledgerSeq)
       .append("order", this.header.ledgerSeq)

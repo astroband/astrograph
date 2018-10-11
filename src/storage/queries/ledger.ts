@@ -3,9 +3,9 @@ import { Connection } from "../connection";
 import * as nquads from "../nquads";
 import { Query } from "./query";
 
-export type ILedgerQueryResult = {
-  current: nquads.UID | null,
-  prev: nquads.UID | null
+export interface ILedgerQueryResult {
+  current: nquads.UID | null;
+  prev: nquads.UID | null;
 }
 
 export class LedgerQuery extends Query<ILedgerQueryResult> {
@@ -14,6 +14,15 @@ export class LedgerQuery extends Query<ILedgerQueryResult> {
   constructor(connection: Connection, header: LedgerHeader) {
     super(connection);
     this.header = header;
+  }
+
+  public async call(): Promise<ILedgerQueryResult> {
+    const r = await this.request();
+
+    return {
+      current: this.digUID(r, "current", 0, "uid"),
+      prev: this.digUID(r, "prev", 0, "uid")
+    };
   }
 
   protected async request(): Promise<any> {
@@ -36,14 +45,5 @@ export class LedgerQuery extends Query<ILedgerQueryResult> {
         $prev: (seq - 1).toString()
       }
     );
-  }
-
-  public async call(): Promise<ILedgerQueryResult> {
-    const r = await this.call();
-
-    return {
-      current: this.digUID(r, "current", 0, "uid"),
-      prev: this.digUID(r, "prev", 0, "uid")
-    };
   }
 }

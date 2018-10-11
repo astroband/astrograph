@@ -3,10 +3,11 @@ import { Connection } from "../connection";
 import * as nquads from "../nquads";
 import { Query } from "./query";
 
-type ITransactionQueryResult = {
-  current: nquads.UID | null,
-  prev: nquads.UID | null,
-  memo: nquads.UID | null
+export interface ITransactionQueryResult {
+  current: nquads.UID | null;
+  prev: nquads.UID | null;
+  memo: nquads.UID | null;
+  ledger: nquads.UID | null;
 }
 
 export class TransactionQuery extends Query<ITransactionQueryResult> {
@@ -15,6 +16,17 @@ export class TransactionQuery extends Query<ITransactionQueryResult> {
   constructor(connection: Connection, tx: Transaction) {
     super(connection);
     this.tx = tx;
+  }
+
+  public async call(): Promise<ITransactionQueryResult> {
+    const r = await this.call();
+
+    return {
+      current: this.digUID(r, "current", 0, "uid"),
+      memo: this.digUID(r, "current", 0, "memo", 0, "uid"),
+      prev: this.digUID(r, "prev", 0, "uid"),
+      ledger: this.digUID(r, "ledger", 0, "uid")
+    };
   }
 
   protected async request(): Promise<any> {
@@ -31,6 +43,10 @@ export class TransactionQuery extends Query<ITransactionQueryResult> {
               uid
             }
           }
+
+          ledger(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $seq)) {
+            uid
+          }
         }
       `,
       {
@@ -39,15 +55,5 @@ export class TransactionQuery extends Query<ITransactionQueryResult> {
         $id: this.tx.id
       }
     );
-  }
-
-  public async call(): Promise<ITransactionQueryResult> {
-    const r = await this.call();
-
-    return {
-      current: this.digUID(r, "current", 0, "uid"),
-      memo: this.digUID(r, "current", 0, "memo", 0, "uid"),
-      prev: this.digUID(r, "prev", 0, "uid")
-    };
   }
 }

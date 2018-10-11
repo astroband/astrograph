@@ -46,7 +46,7 @@ export class OperationQuery extends Query<IOperationQueryResult> {
   }
 
   public async call(): Promise<IOperationQueryResult> {
-    const r = await this.call();
+    const r = await this.request();
 
     return {
       current: this.digUID(r, "current", 0, "uid"),

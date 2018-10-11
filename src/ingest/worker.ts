@@ -3,7 +3,7 @@ import { Cursor } from "./cursor";
 
 import { SubscriptionPayloadCollection } from "./subscription_payload_collection";
 
-import { Connection, Store } from "../storage";
+import { Connection } from "../storage";
 import { DGRAPH_URL } from "../util/secrets";
 
 export class Worker {
@@ -23,21 +23,20 @@ export class Worker {
       await Publisher.publish(header, collection);
 
       if (DGRAPH_URL) {
-        const connection = new Connection();
+        const c = new Connection();
+        const ledger = await c.store.ledger(header);
+        ledger;
 
-        const store = new Store(connection);
-        const ledger = await store.ledger(header);
-
-        for (const transaction of transactions) {
-          const tx = await store.transaction(transaction, { ledger });
-          tx;
-
-          // for (let index = 0; index < transaction.operationsXDR().length; index++) {
-          //   await store.operation(transaction, index, { ledger, tx });
-          // }
-        }
-
-        connection.close();
+        // for (const transaction of transactions) {
+        //   const tx = await c.store.transaction(transaction, { ledger });
+        //   tx;
+        //
+        //   // for (let index = 0; index < transaction.operationsXDR().length; index++) {
+        //   //   await store.operation(transaction, index, { ledger, tx });
+        //   // }
+        // }
+        //
+        // connection.close();
       }
     }
   }

@@ -12,6 +12,11 @@ export class AssetQuery extends Query<IAssetQueryResult> {
     this.asset = asset;
   }
 
+  public async call(): Promise<IAssetQueryResult> {
+    const r = await this.request();
+    return this.digUID(r, "asset", 0, "uid");
+  }
+
   protected async requst(): Promise<any> {
     const asset = this.asset;
 
@@ -29,10 +34,5 @@ export class AssetQuery extends Query<IAssetQueryResult> {
       `,
       { $native: asset.native.toString(), $code: asset.code, $issuer: asset.issuer }
     );
-  }
-
-  public async call(): Promise<IAssetQueryResult> {
-    const r = await this.call();
-    return this.digUID(r, "asset", 0, "uid");
   }
 }

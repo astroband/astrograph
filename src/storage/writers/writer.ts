@@ -17,6 +17,7 @@ export abstract class Writer {
   }
 
   public abstract async write(): Promise<nquads.Value>;
+  protected abstract async loadContext(): Promise<void>;
 
   protected async push(key: string): Promise<nquads.Value | null> {
     const result = await this.connection.push(this.b.nquads);

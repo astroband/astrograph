@@ -1,4 +1,4 @@
-import { LedgerHeader } from "../model";
+import { LedgerHeader, Transaction } from "../model";
 import { Connection } from "./connection";
 
 import * as q from "./queries";
@@ -12,5 +12,9 @@ export class Repo {
 
   public ledger(ledger: LedgerHeader): Promise<q.ILedgerQueryResult> {
     return new q.LedgerQuery(this.connection, ledger).call();
+  }
+
+  public transaction(transaction: Transaction): Promise<q.ITransactionQueryResult> {
+    return new q.TransactionQuery(this.connection, transaction).call();
   }
 }

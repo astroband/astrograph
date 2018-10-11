@@ -1,7 +1,7 @@
 import { Connection } from "../connection";
 
-import * as nquads from "../nquads";
 import dig from "object-dig";
+import * as nquads from "../nquads";
 
 export abstract class Query<R> {
   protected connection: Connection;
@@ -10,8 +10,8 @@ export abstract class Query<R> {
     this.connection = connection;
   }
 
-  protected abstract async request(): Promise<any>;
   public abstract async call(): Promise<R>;
+  protected abstract async request(): Promise<any>;
 
   protected digUID(r: any, ...args: any[]): nquads.UID | null {
     return nquads.UID.from(dig(r, ...args));
