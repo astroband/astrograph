@@ -235,6 +235,51 @@ subscription {
 
 Check out the [examples](examples) folder for more!
 
+## Playing with DGraph
+
+For now, Astrograph supports very basic version of ingestion to [DGraph](https://dgraph.io).
+
+To enable it, pass DGraph server host and port in `DGRAPH_URL` environment variable.
+
+For local development, DGraph can be started by executing `dgraph/start.sh` (needs docker to run, `DGRAPH_URL==localhost:9080` will work).
+
+Example query:
+
+```
+query {
+  # Get all accounts involved in any ledger since ingestion started
+  account(func: eq(type, "account")) {
+    uid
+    id
+  }
+
+  # Get all assets, count involved operations
+  asset(func: eq(type, "asset")) {
+    code
+    type
+    issuer {
+      id
+    }
+    count(operations)
+  }
+
+  # Get first 100 operations
+  all(func: eq(type, "operation"), first: 100) @cascade {
+    uid
+    kind
+    account.source {
+      id
+      uid
+    }
+    account.destination {
+      uid
+      id      
+    }
+  }
+}
+```
+
+
 ## Console
 
 To show all account trust lines:
