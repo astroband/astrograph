@@ -12,14 +12,17 @@ export class TransactionWriter extends Writer {
   }
 
   private tx: Transaction;
-  private current: nquads.Value = new nquads.Blank("transaction");
+  private current: nquads.Value;
   private prev: nquads.Value | null = null;
-  private memo: nquads.Value = new nquads.Blank("memo");
-  private ledger: nquads.Value = new nquads.Blank("ledger");
+  private memo: nquads.Value;
+  private ledger: nquads.Value;
 
   constructor(connection: Connection, tx: Transaction) {
     super(connection);
     this.tx = tx;
+    this.current = new nquads.Blank(`transaction_${tx.id}`);
+    this.memo = new nquads.Blank(`memo_${tx.id}`);
+    this.ledger = new nquads.Blank("ledger");
   }
 
   public async write(): Promise<nquads.Value> {
@@ -30,7 +33,7 @@ export class TransactionWriter extends Writer {
 
     await this.appendAccount(this.current, "account.source", this.tx.sourceAccount, "transactions");
 
-    const created = await this.push("transaction");
+    const created = await this.push(`transaction_${this.tx.id}`);
     return created || this.current;
   }
 

@@ -10,6 +10,10 @@ export class Repo {
     this.connection = connection;
   }
 
+  public account(id: string): Promise<q.IAccountQueryResult> {
+    return new q.AccountQuery(this.connection, id).call();
+  }
+
   public ledger(ledger: LedgerHeader): Promise<q.ILedgerQueryResult> {
     return new q.LedgerQuery(this.connection, ledger).call();
   }

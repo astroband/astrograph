@@ -12,19 +12,20 @@ export class LedgerWriter extends Writer {
   }
 
   private header: LedgerHeader;
-  private current: nquads.Value = new nquads.Blank("ledger");
+  private current: nquads.Value;
   private prev: nquads.Value | null = null;
 
   protected constructor(connection: Connection, header: LedgerHeader) {
     super(connection);
     this.header = header;
+    this.current = new nquads.Blank(`ledger_${header.ledgerSeq}`);
   }
 
   public async write(): Promise<nquads.Value> {
     this.appendRoot();
     this.appendPrev(this.current, this.prev);
 
-    const created = await this.push("ledger");
+    const created = await this.push(`ledger_${this.header.ledgerSeq}`);
     return created || this.current;
   }
 

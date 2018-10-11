@@ -14,14 +14,14 @@ export class AccountQuery extends Query<IAccountQueryResult> {
 
   public async call(): Promise<IAccountQueryResult> {
     const r = await this.request();
-    return this.digUID(r, "account", 0, "uid");
+    return this.digUID(r, "current", 0, "uid");
   }
 
   protected async request(): Promise<any> {
     return this.connection.query(
       `
         query account($id: string) {
-          account(func: eq(type, "account")) @filter(eq(id, $id)) {
+          current(func: eq(type, "account")) @filter(eq(id, $id)) {
             uid
           }
         }

@@ -19,7 +19,7 @@ export class TransactionQuery extends Query<ITransactionQueryResult> {
   }
 
   public async call(): Promise<ITransactionQueryResult> {
-    const r = await this.call();
+    const r = await this.request();
 
     return {
       current: this.digUID(r, "current", 0, "uid"),

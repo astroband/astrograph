@@ -11,6 +11,10 @@ export class Store {
     this.connection = connection;
   }
 
+  public async account(id: string): Promise<nquads.Value> {
+    return (await writers.AccountWriter.build(this.connection, id)).write();
+  }
+
   public async ledger(header: LedgerHeader): Promise<nquads.Value> {
     return (await writers.LedgerWriter.build(this.connection, header)).write();
   }

@@ -31,7 +31,7 @@ export abstract class Writer {
   }
 
   protected async appendAccount(current: nquads.Value, predicate: string, id: string, foreignKey: string) {
-    const account = await this.accountCache.fetch(id);
+    const account = await this.connection.store.account(id);
 
     this.b.append(current, predicate, account);
     this.b.append(account, foreignKey, current);
