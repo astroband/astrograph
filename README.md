@@ -276,6 +276,14 @@ query {
       id      
     }
   }
+
+  # Find all payees of specific account with amount > 1 XLM
+  all(func: eq(type, "operation")) @filter(eq(kind, "payment") AND gt(amount, 10000000)) @cascade {
+		kind
+    amount
+    account.source @filter(eq(id, "GACXLSIFKUNFY53TBDEDOFIUTWV36KMJ66NLZO3EN33S2XNSV46FZTET"))
+    asset @filter(eq(native, true))
+  }
 }
 ```
 
