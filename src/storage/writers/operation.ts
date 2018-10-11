@@ -130,19 +130,21 @@ export class OperationWriter extends Writer {
   }
 
   private async pathPaymentOp() {
-    // const { current } = this.context;
-    // const op = this.xdr.body().pathPaymentOp();
-    //
-    // const sendMax = op.sendMax().toString();
-    // const destAmount = op.destAmount().toString();
-    //
-    // const destination = publicKeyFromBuffer(op.destination().value());
-    //
-    // this.b
-    //   .for(current)
-    //   .append("send_max", sendMax)
-    //   .append("dest_amount", destAmount);
-    //
-    // await this.appendAccount(current, "account.destination", destination, "operations");
+    const op = this.xdr.body().pathPaymentOp();
+
+    const sendMax = op.sendMax().toString();
+    const destAmount = op.destAmount().toString();
+
+    const destination = publicKeyFromBuffer(op.destination().value());
+
+    // await this.appendAsset(this.current, "send.asset", destAsset, "operations");
+    // await this.appendAsset(this.current, "dest.asset", destAsset, "operations");
+
+    this.b
+      .for(this.current)
+      .append("send.max", sendMax)
+      .append("dest.amount", destAmount);
+
+    await this.appendAccount(this.current, "account.destination", destination, "operations");
   }
 }
