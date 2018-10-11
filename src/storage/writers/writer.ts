@@ -1,18 +1,13 @@
 import { Asset } from "../../model";
-import { AccountCache, AssetCache } from "../cache";
 import { Connection } from "../connection";
 import * as nquads from "../nquads";
 
 export abstract class Writer {
   protected connection: Connection;
-  protected accountCache: AccountCache;
-  protected assetCache: AssetCache;
   protected b: nquads.Builder;
 
   constructor(connection: Connection) {
     this.connection = connection;
-    this.accountCache = new AccountCache(connection);
-    this.assetCache = new AssetCache(connection);
     this.b = new nquads.Builder();
   }
 

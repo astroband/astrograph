@@ -24,13 +24,10 @@ export class Worker {
 
       if (DGRAPH_URL) {
         const c = new Connection();
-        //const ledger =
         await c.store.ledger(header);
 
         for (const transaction of transactions) {
-          // const tx =
           await c.store.transaction(transaction);
-          // tx;
 
           for (let index = 0; index < transaction.operationsXDR().length; index++) {
             await c.store.operation(transaction, index);

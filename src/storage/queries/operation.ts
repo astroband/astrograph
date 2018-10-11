@@ -20,6 +20,17 @@ export class OperationQuery extends Query<IOperationQueryResult> {
     this.index = index;
   }
 
+  public async call(): Promise<IOperationQueryResult> {
+    const r = await this.request();
+
+    return {
+      current: this.digUID(r, "current", 0, "uid"),
+      prev: this.digUID(r, "prev", 0, "uid"),
+      transaction: this.digUID(r, "transaction", 0, "uid"),
+      ledger: this.digUID(r, "ledger", 0, "uid")
+    };
+  }
+
   protected async request(): Promise<any> {
     return this.connection.query(
       `
@@ -49,21 +60,10 @@ export class OperationQuery extends Query<IOperationQueryResult> {
       `,
       {
         $id: this.tx.id,
-        $seq: this.tx.ledgerSeq.toString(),        
+        $seq: this.tx.ledgerSeq.toString(),
         $prevIndex: (this.index - 1).toString(),
         $current: this.index.toString()
       }
     );
-  }
-
-  public async call(): Promise<IOperationQueryResult> {
-    const r = await this.request();
-
-    return {
-      current: this.digUID(r, "current", 0, "uid"),
-      prev: this.digUID(r, "prev", 0, "uid"),
-      transaction: this.digUID(r, "transaction", 0, "uid"),
-      ledger: this.digUID(r, "ledger", 0, "uid")
-    };
   }
 }

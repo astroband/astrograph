@@ -120,12 +120,8 @@ export class OperationWriter extends Writer {
 
     const amount = op.amount().toString();
     const destination = publicKeyFromBuffer(op.destination().value());
-    const assetArgs = assetFromXDR(op.asset());
-    const asset = Asset.build(
-      assetArgs.assettype,
-      assetArgs.assetcode,
-      assetArgs.assetissuer
-    );
+    const a = assetFromXDR(op.asset());
+    const asset = Asset.build(a.assettype, a.assetcode, a.assetissuer);
 
     this.b.append(this.current, "amount", amount);
 
