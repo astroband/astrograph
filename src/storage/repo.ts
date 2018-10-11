@@ -21,4 +21,8 @@ export class Repo {
   public transaction(transaction: Transaction): Promise<q.ITransactionQueryResult> {
     return new q.TransactionQuery(this.connection, transaction).call();
   }
+
+  public operation(transaction: Transaction, index: number): Promise<q.IOperationQueryResult> {
+    return new q.OperationQuery(this.connection, transaction, index).call();
+  }
 }

@@ -20,7 +20,10 @@ export class AccountWriter extends Writer {
   }
 
   public async write(): Promise<nquads.Value> {
-    this.b.for(this.current).append("type", "account").append("id", this.id);
+    this.b
+      .for(this.current)
+      .append("type", "account")
+      .append("id", this.id);
 
     const created = await this.push(`account_${this.id}`);
     return created || this.current;

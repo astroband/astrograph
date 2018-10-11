@@ -8,40 +8,61 @@ import { assetFromXDR } from "../../util/xdr/asset";
 import stellar from "stellar-base";
 import * as nquads from "../nquads";
 
-export interface IContext {
-  current: nquads.Value;
-  prev: nquads.Value | null;
-  ledger: nquads.Value;
-  tx: nquads.Value;
-}
-
 export class OperationWriter extends Writer {
-  private tx: Transaction;
-  private xdr: any;
-  private index: number;
-  private context: IContext;
+  public static async build(connection: Connection, tx: Transaction, index: number): Promise<OperationWriter> {
+    const writer = new OperationWriter(connection, tx, index);
+    await writer.loadContext();
+    return writer;
+  }
 
-  constructor(connection: Connection, tx: Transaction, index: number, context: IContext) {
+  private tx: Transaction;
+  private index: number;
+  private current: nquads.Value;
+  private prev: nquads.Value | null = null;
+  private ledger: nquads.Value = new nquads.Blank("ledger");
+  private transaction: nquads.Value = new nquads.Blank("transaction");
+
+  private xdr: any;
+
+  constructor(connection: Connection, tx: Transaction, index: number) {
     super(connection);
 
     this.tx = tx;
     this.index = index;
-    this.context = context;
+
+    this.current = new nquads.Blank(`op_${tx.ledgerSeq}-${tx.index}-${index}`);
 
     this.xdr = tx.operationsXDR()[index];
   }
 
   public async write(): Promise<nquads.Value> {
-    const { current, prev } = this.context;
-
     this.appendRoot();
-    this.appendPrev(current, prev);
+    this.appendPrev(this.current, this.prev);
 
-    await this.appendAccount(current, "account.source", this.sourceAccount(), "operations");
+    await this.appendAccount(this.current, "account.source", this.sourceAccount(), "operations");
     await this.appendOp();
 
     const created = await this.push("operation");
-    return created || current;
+    return created || this.current;
+  }
+
+  protected async loadContext() {
+    const { current, prev, transaction, ledger } = await this.connection.repo.operation(this.tx, this.index);
+
+    this.current = current || this.current;
+    this.prev = prev;
+
+    if (ledger === null) {
+      throw new Error("Ledger not found in transaction writer");
+    }
+
+    this.ledger = ledger;
+
+    if (transaction === null) {
+      throw new Error("Transaction not found in transaction writer");
+    }
+
+    this.transaction = this.transaction;
   }
 
   private sourceAccount(): string {
@@ -53,19 +74,17 @@ export class OperationWriter extends Writer {
   }
 
   private appendRoot() {
-    const { current, ledger, tx } = this.context;
-
     this.b
-      .for(current)
+      .for(this.current)
       .append("type", "operation")
-      .append("ledger", ledger)
+      .append("ledger", this.ledger)
       .append("index", this.index)
       .append("kind", this.xdr.body().switch().name)
       .append("order", this.order())
-      .append("transaction", tx);
+      .append("transaction", this.transaction);
 
-    this.b.append(tx, "operations", current);
-    this.b.append(ledger, "operations", current);
+    this.b.append(this.transaction, "operations", this.current);
+    this.b.append(this.ledger, "operations", this.current);
   }
 
   private order(): string {
@@ -86,19 +105,17 @@ export class OperationWriter extends Writer {
   }
 
   private async appendCreateAccountOp() {
-    const { current } = this.context;
     const op = this.xdr.body().createAccountOp();
 
     const startingBalance = op.startingBalance().toString();
     const destination = publicKeyFromBuffer(op.destination().value());
 
-    this.b.for(current).append("starting_balance", startingBalance);
+    this.b.for(this.current).append("starting_balance", startingBalance);
 
-    await this.appendAccount(current, "account.destination", destination, "operations");
+    await this.appendAccount(this.current, "account.destination", destination, "operations");
   }
 
   private async appendPaymentOp() {
-    const { current } = this.context;
     const op = this.xdr.body().paymentOp();
 
     const amount = op.amount().toString();
@@ -110,10 +127,10 @@ export class OperationWriter extends Writer {
       assetArgs.assetissuer
     );
 
-    this.b.append(current, "amount", amount);
+    this.b.append(this.current, "amount", amount);
 
-    await this.appendAsset(current, "asset", asset, "operations");
-    await this.appendAccount(current, "account.destination", destination, "operations");
+    await this.appendAsset(this.current, "asset", asset, "operations");
+    await this.appendAccount(this.current, "account.destination", destination, "operations");
   }
 
   private async pathPaymentOp() {

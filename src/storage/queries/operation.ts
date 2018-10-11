@@ -3,9 +3,11 @@ import { Connection } from "../connection";
 import * as nquads from "../nquads";
 import { Query } from "./query";
 
-type IOperationQueryResult = {
-  current: nquads.UID | null,
-  prev: nquads.UID | null
+export interface IOperationQueryResult {
+  current: nquads.UID | null;
+  prev: nquads.UID | null;
+  transaction: nquads.UID | null;
+  ledger: nquads.UID | null;
 }
 
 export class OperationQuery extends Query<IOperationQueryResult> {
@@ -21,25 +23,34 @@ export class OperationQuery extends Query<IOperationQueryResult> {
   protected async request(): Promise<any> {
     return this.connection.query(
       `
-        query context($id: string, $prevIndex: int, $current: int) {
-          prev(func: eq(type, "operation")) @filter(eq(index, $prevIndex)) @cascade {
+        query context($id: string, $seq: string, $prevIndex: int, $current: int) {
+          prev(func: eq(type, "operation"), first: 1) @filter(eq(index, $prevIndex)) @cascade {
             uid
             transaction @filter(eq(id, $id)) {
               uid
             }
           }
 
-          current(func: eq(type, "operation")) @filter(eq(index, $current)) @cascade {
+          current(func: eq(type, "operation"), first: 1) @filter(eq(index, $current)) @cascade {
             uid
             transaction @filter(eq(id, $id)) {
               uid
             }
+          }
+
+          transaction(func: eq(type, "transaction"), first: 1) @filter(eq(id, $id)) @cascade {
+            uid
+          }
+
+          ledger(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $seq)) {
+            uid
           }
         }
       `,
       {
         $id: this.tx.id,
         $prevIndex: (this.index - 1).toString(),
+        $seq: this.tx.ledgerSeq,
         $current: this.index.toString()
       }
     );
@@ -50,7 +61,9 @@ export class OperationQuery extends Query<IOperationQueryResult> {
 
     return {
       current: this.digUID(r, "current", 0, "uid"),
-      prev: this.digUID(r, "prev", 0, "uid")
+      prev: this.digUID(r, "prev", 0, "uid"),
+      transaction: this.digUID(r, "transaction", 0, "uid"),
+      ledger: this.digUID(r, "ledger", 0, "uid")
     };
   }
 }

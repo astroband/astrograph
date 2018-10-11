@@ -22,10 +22,8 @@ export class Store {
   public async transaction(transaction: Transaction): Promise<nquads.Value> {
     return (await writers.TransactionWriter.build(this.connection, transaction)).write();
   }
-  //
-  // public async operation(transaction: Transaction, index: number, args: any) {
-  //   const { ledger, tx } = args;
-  //
-  //   return (await OperationFactory.produce(this.connection, transaction, index, { ledger, tx })).write();
-  // }
+
+  public async operation(transaction: Transaction, index: number) {
+    return (await writers.OperationWriter.build(this.connection, transaction, index)).write();
+  }
 }

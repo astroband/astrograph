@@ -32,9 +32,9 @@ export class Worker {
           await c.store.transaction(transaction);
           // tx;
 
-          // for (let index = 0; index < transaction.operationsXDR().length; index++) {
-          //   await store.operation(transaction, index, { ledger, tx });
-          // }
+          for (let index = 0; index < transaction.operationsXDR().length; index++) {
+            await c.store.operation(transaction, index);
+          }
         }
 
         c.close();
