@@ -14,14 +14,12 @@ export class TransactionWriter extends Writer {
   private tx: Transaction;
   private current: nquads.Value;
   private prev: nquads.Value | null = null;
-  private memo: nquads.Value;
   private ledger: nquads.Value;
 
   constructor(connection: Connection, tx: Transaction) {
     super(connection);
     this.tx = tx;
     this.current = new nquads.Blank(`transaction_${tx.id}`);
-    this.memo = new nquads.Blank(`memo_${tx.id}`);
     this.ledger = new nquads.Blank("ledger");
   }
 
@@ -38,11 +36,10 @@ export class TransactionWriter extends Writer {
   }
 
   protected async loadContext() {
-    const { current, prev, memo, ledger } = await this.connection.repo.transaction(this.tx);
+    const { current, prev, ledger } = await this.connection.repo.transaction(this.tx);
 
     this.current = current || this.current;
     this.prev = prev;
-    this.memo = this.memo || memo;
 
     if (ledger === null) {
       throw new Error("Ledger not found in transaction writer");
@@ -84,12 +81,9 @@ export class TransactionWriter extends Writer {
     }
 
     this.b
-      .for(this.memo)
-      .append("type", memo.type.toString())
-      .append("value", memo.value)
-      .append("transaction", this.current);
-
-    this.b.append(this.current, "memo", this.memo);
+      .for(this.current)
+      .append("memo.type", memo.type.toString())
+      .append("memo.value", memo.value);
   }
 
   private order(): string {

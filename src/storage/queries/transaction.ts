@@ -6,7 +6,6 @@ import { Query } from "./query";
 export interface ITransactionQueryResult {
   current: nquads.UID | null;
   prev: nquads.UID | null;
-  memo: nquads.UID | null;
   ledger: nquads.UID | null;
 }
 
@@ -23,7 +22,6 @@ export class TransactionQuery extends Query<ITransactionQueryResult> {
 
     return {
       current: this.digUID(r, "current", 0, "uid"),
-      memo: this.digUID(r, "current", 0, "memo", 0, "uid"),
       prev: this.digUID(r, "prev", 0, "uid"),
       ledger: this.digUID(r, "ledger", 0, "uid")
     };
@@ -39,9 +37,6 @@ export class TransactionQuery extends Query<ITransactionQueryResult> {
 
           current(func: eq(type, "transaction"), first: 1) @filter(eq(id, $id)) {
             uid
-            memo {
-              uid
-            }
           }
 
           ledger(func: eq(type, "ledger"), first: 1) @filter(eq(seq, $seq)) {

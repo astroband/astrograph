@@ -3,7 +3,6 @@ import { Connection } from "../connection";
 import { Writer } from "./writer";
 
 import { publicKeyFromBuffer } from "../../util/xdr/account";
-import { assetFromXDR } from "../../util/xdr/asset";
 
 import stellar from "stellar-base";
 import * as nquads from "../nquads";
@@ -120,8 +119,7 @@ export class OperationWriter extends Writer {
 
     const amount = op.amount().toString();
     const destination = publicKeyFromBuffer(op.destination().value());
-    const a = assetFromXDR(op.asset());
-    const asset = Asset.build(a.assettype, a.assetcode, a.assetissuer);
+    const asset = Asset.buildFromXDR(op.asset());
 
     this.b.append(this.current, "amount", amount);
 
@@ -136,9 +134,11 @@ export class OperationWriter extends Writer {
     const destAmount = op.destAmount().toString();
 
     const destination = publicKeyFromBuffer(op.destination().value());
+    const sendAsset = Asset.buildFromXDR(op.sendAsset());
+    const destAsset = Asset.buildFromXDR(op.destAsset());
 
-    // await this.appendAsset(this.current, "send.asset", destAsset, "operations");
-    // await this.appendAsset(this.current, "dest.asset", destAsset, "operations");
+    await this.appendAsset(this.current, "send.asset", sendAsset, "operations");
+    await this.appendAsset(this.current, "dest.asset", destAsset, "operations");
 
     this.b
       .for(this.current)

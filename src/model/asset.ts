@@ -1,5 +1,6 @@
 import { Keypair } from "stellar-base";
 import { NATIVE_ASSET_CODE } from "../util/stellar";
+import { assetFromXDR } from "../util/xdr/asset";
 
 export class Asset {
   public static buildNative(): Asset {
@@ -12,6 +13,11 @@ export class Asset {
     }
 
     return new Asset(false, assetcode, issuer);
+  }
+
+  public static buildFromXDR(xdr: any): Asset {
+    const { assettype, assetcode, issuer } = assetFromXDR(xdr);
+    return Asset.build(assettype, assetcode, issuer);
   }
 
   public native: boolean; // NOTE: Need to figure out how to work with enum relations
