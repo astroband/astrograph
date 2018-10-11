@@ -38,6 +38,5 @@ export abstract class Writer {
 
     this.b.append(current, predicate, asset);
     this.b.append(asset, foreignKey, current);
-    this.b.append(issuer, "operations.issued", current);
   }
 }
