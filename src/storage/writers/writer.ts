@@ -34,7 +34,6 @@ export abstract class Writer {
 
   protected async appendAsset(current: nquads.Value, predicate: string, a: Asset, foreignKey: string) {
     const asset = await this.connection.store.asset(a);
-    const issuer = await this.connection.store.account(a.issuer);
 
     this.b.append(current, predicate, asset);
     this.b.append(asset, foreignKey, current);
