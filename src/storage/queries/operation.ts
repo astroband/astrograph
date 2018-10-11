@@ -49,8 +49,8 @@ export class OperationQuery extends Query<IOperationQueryResult> {
       `,
       {
         $id: this.tx.id,
+        $seq: this.tx.ledgerSeq.toString(),        
         $prevIndex: (this.index - 1).toString(),
-        $seq: this.tx.ledgerSeq,
         $current: this.index.toString()
       }
     );

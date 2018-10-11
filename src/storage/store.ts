@@ -1,4 +1,4 @@
-import { LedgerHeader, Transaction } from "../model";
+import { Asset, LedgerHeader, Transaction } from "../model";
 import { Connection } from "./connection";
 
 import * as nquads from "./nquads";
@@ -13,6 +13,10 @@ export class Store {
 
   public async account(id: string): Promise<nquads.Value> {
     return (await writers.AccountWriter.build(this.connection, id)).write();
+  }
+
+  public async asset(asset: Asset): Promise<nquads.Value> {
+    return (await writers.AssetWriter.build(this.connection, asset)).write();
   }
 
   public async ledger(header: LedgerHeader): Promise<nquads.Value> {

@@ -1,3 +1,4 @@
+import { Asset } from "../../model";
 import { Connection } from "../connection";
 import * as nquads from "../nquads";
 import { Query } from "./query";
@@ -17,7 +18,7 @@ export class AssetQuery extends Query<IAssetQueryResult> {
     return this.digUID(r, "asset", 0, "uid");
   }
 
-  protected async requst(): Promise<any> {
+  protected async request(): Promise<any> {
     const asset = this.asset;
 
     return this.connection.query(
