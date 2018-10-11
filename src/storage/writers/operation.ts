@@ -30,7 +30,7 @@ export class OperationWriter extends Writer {
     this.tx = tx;
     this.index = index;
 
-    this.current = new nquads.Blank(`op_${tx.ledgerSeq}-${tx.index}-${index}`);
+    this.current = new nquads.Blank(`op_${tx.ledgerSeq}_${tx.index}_${index}`);
 
     this.xdr = tx.operationsXDR()[index];
   }
@@ -42,7 +42,7 @@ export class OperationWriter extends Writer {
     await this.appendAccount(this.current, "account.source", this.sourceAccount(), "operations");
     await this.appendOp();
 
-    const created = await this.push("operation");
+    const created = await this.push(`op_${this.tx.ledgerSeq}_${this.tx.index}_${this.index}`);
     return created || this.current;
   }
 
@@ -62,7 +62,7 @@ export class OperationWriter extends Writer {
       throw new Error("Transaction not found in transaction writer");
     }
 
-    this.transaction = this.transaction;
+    this.transaction = transaction;
   }
 
   private sourceAccount(): string {

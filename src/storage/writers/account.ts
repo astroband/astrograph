@@ -23,7 +23,8 @@ export class AccountWriter extends Writer {
     this.b
       .for(this.current)
       .append("type", "account")
-      .append("id", this.id);
+      .append("id", this.id)
+      .append("deleted", false);
 
     const created = await this.push(`account_${this.id}`);
     return created || this.current;

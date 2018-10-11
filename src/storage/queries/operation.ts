@@ -35,14 +35,14 @@ export class OperationQuery extends Query<IOperationQueryResult> {
     return this.connection.query(
       `
         query context($id: string, $seq: string, $prevIndex: int, $current: int) {
-          prev(func: eq(type, "operation"), first: 1) @filter(eq(index, $prevIndex)) @cascade {
+          prev(func: eq(type, "operation")) @filter(eq(index, $prevIndex)) @cascade {
             uid
             transaction @filter(eq(id, $id)) {
               uid
             }
           }
 
-          current(func: eq(type, "operation"), first: 1) @filter(eq(index, $current)) @cascade {
+          current(func: eq(type, "operation")) @filter(eq(index, $current)) @cascade {
             uid
             transaction @filter(eq(id, $id)) {
               uid
