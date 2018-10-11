@@ -15,6 +15,8 @@ const schema = `
   native: bool @index (bool) .
   deleted: bool @index (bool) .
   kind: string @index(exact) .
+  amount: int @index (int) .
+  starting_balance: int @index (int) .
 `;
 
 export class Connection {
