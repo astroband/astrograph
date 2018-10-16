@@ -7,7 +7,7 @@ import { DGRAPH_URL } from "../src/util/secrets";
 import { setNetwork as setStellarNetwork } from "../src/util/stellar";
 
 if (!DGRAPH_URL) {
-  logger.error("No dgraph url");
+  logger.error("Please, provide DGRAPH_URL env variable");
   process.exit(-1);
 }
 
@@ -32,7 +32,7 @@ setStellarNetwork().then((network: string) => {
       Cursor.build(startSeq || -1).then(async cursor => {
         let data: ICursorResult | null;
 
-        while ((data = await cursor.nextLedger())) {
+        while (data = await cursor.nextLedger()) {
           const { header, transactions } = data;
 
           if (endSeq && header.ledgerSeq > endSeq) {
