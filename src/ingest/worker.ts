@@ -5,6 +5,7 @@ import { SubscriptionPayloadCollection } from "./subscription_payload_collection
 
 import { Connection } from "../storage";
 import { DGRAPH_URL } from "../util/secrets";
+import { DgraphIngestor } from "./dgraph";
 
 export class Worker {
   public cursor: Cursor;
@@ -24,16 +25,8 @@ export class Worker {
 
       if (DGRAPH_URL) {
         const c = new Connection();
-        await c.store.ledger(header);
-
-        for (const transaction of transactions) {
-          await c.store.transaction(transaction);
-
-          for (let index = 0; index < transaction.operationsXDR().length; index++) {
-            await c.store.operation(transaction, index);
-          }
-        }
-
+        const dgraphIngestor = new DgraphIngestor(c);
+        dgraphIngestor.ingestLedger(header, transactions);
         c.close();
       }
     }

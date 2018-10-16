@@ -29,11 +29,11 @@ export class TransactionMemo {
         this.type = MemoType.Text;
         break;
       case memoType.memoHash():
-        this.value = memoValue.toString("utf8");
+        this.value = memoValue.toString("hex");
         this.type = MemoType.Hash;
         break;
       case memoType.memoReturn():
-        this.value = memoValue.toString("utf8");
+        this.value = memoValue.toString("hex");
         this.type = MemoType.Return;
         break;
       default:
