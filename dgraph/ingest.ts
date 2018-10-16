@@ -1,4 +1,4 @@
-import parseArgs from "minimist";
+import parseArgv from "minimist";
 import { DgraphIngestor as Ingestor } from "../src/ingest";
 import { Cursor, ICursorResult } from "../src/ingest/cursor";
 import { Connection } from "../src/storage";
@@ -11,11 +11,13 @@ if (!DGRAPH_URL) {
   process.exit(-1);
 }
 
-const args = parseArgs(process.argv.slice(2));
-const { startSeq = null, endSeq = null } = args;
+let startSeq: number | null;
+let endSeq: number | null;
 
-if (startSeq && endSeq && startSeq > endSeq) {
-  logger.error("Start seq number is greater than the end!");
+try {
+  [startSeq, endSeq] = parseArgs();
+} catch (e) {
+  logger.error(e);
   process.exit(-1);
 }
 
@@ -49,3 +51,22 @@ setStellarNetwork().then((network: string) => {
       process.exit(-1);
     });
 });
+
+function parseArgs(): [number | null, number | null] {
+  const args = parseArgv(process.argv.slice(2));
+  const { start = null, end = null } = args;
+
+  if (start && !Number.isInteger(start)) {
+    throw new Error("Start seq number must be an integer!");
+  }
+
+  if (end && !Number.isInteger(end)) {
+    throw new Error("End seq number must be an integer!");
+  }
+
+  if (start && end && start > end) {
+    throw new Error("Start seq number is greater than the end!");
+  }
+
+  return [start, end];
+}
