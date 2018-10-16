@@ -1,4 +1,5 @@
-import { Asset, LedgerHeader, Transaction } from "../model";
+import { Asset } from "stellar-sdk";
+import { LedgerHeader, Transaction } from "../model";
 import { Connection } from "./connection";
 
 import * as nquads from "./nquads";
@@ -29,5 +30,17 @@ export class Store {
 
   public async operation(transaction: Transaction, index: number) {
     return (await writers.OperationWriter.build(this.connection, transaction, index)).write();
+  }
+
+  public async importLedgerTransactions(header: LedgerHeader, transactions: Transaction[]) {
+    await this.ledger(header);
+
+    for (const transaction of transactions) {
+      await this.transaction(transaction);
+
+      for (let index = 0; index < transaction.operationsXDR().length; index++) {
+        await this.operation(transaction, index);
+      }
+    }
   }
 }
