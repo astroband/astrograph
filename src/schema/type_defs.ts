@@ -7,10 +7,11 @@ export default gql`
   scalar MemoValue
 
   enum MemoType {
-    ID
-    TEXT
-    HASH
-    RETURN
+    id
+    text
+    hash
+    return
+    none
   }
 
   enum MutationType {
@@ -20,7 +21,7 @@ export default gql`
   }
 
   type Memo {
-    value: MemoValue!
+    value: MemoValue
     type: MemoType!
   }
 
@@ -182,6 +183,7 @@ export default gql`
     account(id: AccountID!): Account
     accounts(id: [AccountID!]): [Account]
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
+    accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
     trustLines(id: AccountID!): [TrustLine]

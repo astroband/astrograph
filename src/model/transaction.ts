@@ -1,8 +1,22 @@
 import stellar from "stellar-base";
+import { Memo } from "stellar-sdk";
 import { publicKeyFromBuffer } from "../util/xdr";
-import { TransactionMemo } from "./transaction_memo";
 
-export class Transaction {
+export interface ITransaction {
+  id: string;
+  ledgerSeq: number;
+  index: number;
+  body?: string;
+  result?: string;
+  meta?: string;
+  feeMeta?: string;
+  memo: Memo | null;
+  feeAmount: string;
+  sourceAccount: string;
+  timeBounds: [number, number] | null;
+}
+
+export class Transaction implements ITransaction {
   public id: string;
   public ledgerSeq: number;
   public index: number;
@@ -10,7 +24,7 @@ export class Transaction {
   public result: string;
   public meta: string;
   public feeMeta: string;
-  public memo: TransactionMemo | null = null;
+  public memo: Memo | null = null;
   public feeAmount: string;
   public sourceAccount: string;
   public timeBounds: [number, number] | null = null;
@@ -40,9 +54,9 @@ export class Transaction {
 
     const txBody = this.envelopeXDR.tx();
 
-    const memo = new TransactionMemo(txBody.memo());
+    const memo = Memo.fromXDRObject(txBody.memo());
 
-    if (memo.value !== null) {
+    if (memo.value) {
       this.memo = memo;
     }
 
