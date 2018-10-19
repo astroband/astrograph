@@ -1,9 +1,11 @@
 import dig from "object-dig";
+import { Memo } from "stellar-sdk";
+import { ITransaction } from "../../model/transaction";
 import { Connection } from "../connection";
 import { ITransactionData } from "../types";
 import { Query } from "./query";
 
-export type IAccountTransactionsQueryResult = object[];
+export type IAccountTransactionsQueryResult = ITransaction[];
 
 export class AccountTransactionsQuery extends Query<IAccountTransactionsQueryResult> {
   private id: string;
@@ -54,16 +56,19 @@ export class AccountTransactionsQuery extends Query<IAccountTransactionsQueryRes
     );
   }
 
-  private mapData(dgraphData: ITransactionData): any {
+  private mapData(dgraphData: ITransactionData): ITransaction {
+    let memo: Memo | null = null;
+
+    if (dgraphData["memo.value"]) {
+      memo = new Memo(dgraphData["memo.type"]!, dgraphData["memo.value"]!);
+    }
+
     return {
       id: dgraphData.id,
-      ledgerSeq: dgraphData.seq,
-      index: dgraphData.index,
+      ledgerSeq: parseInt(dgraphData.seq, 10),
+      index: parseInt(dgraphData.index, 10),
       // body
-      memo: {
-        value: dgraphData["memo.value"],
-        type: dgraphData["memo.type"]
-      },
+      memo,
       feeAmount: dgraphData.fee_amount,
       // result
       // meta

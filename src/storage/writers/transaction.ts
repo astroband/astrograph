@@ -82,7 +82,7 @@ export class TransactionWriter extends Writer {
 
     this.b
       .for(this.current)
-      .append("memo.type", memo.type.toString())
+      .append("memo.type", memo.type)
       .append("memo.value", memo.value);
   }
 

@@ -6,6 +6,8 @@ const StellarAmountPrecision = 7;
 
 export const NATIVE_ASSET_CODE = "XLM";
 
+export type MemoType = "hash" | "return" | "text" | "id";
+
 export async function setNetwork(): Promise<string> {
   const promise = db.storeState.getStellarNetworkPassphrase().then((networkPassphrase: string) => {
     Network.use(new Network(networkPassphrase));

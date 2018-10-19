@@ -7,10 +7,11 @@ export default gql`
   scalar MemoValue
 
   enum MemoType {
-    ID
-    TEXT
-    HASH
-    RETURN
+    id
+    text
+    hash
+    return
+    none
   }
 
   enum MutationType {
@@ -20,7 +21,7 @@ export default gql`
   }
 
   type Memo {
-    value: MemoValue!
+    value: MemoValue
     type: MemoType!
   }
 
