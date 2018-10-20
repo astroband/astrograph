@@ -19,12 +19,13 @@ describe("nextLedger", () => {
 
       db.ledgerHeaders.findBySeq = jest.fn(() => {
         return new LedgerHeader({
-          data: "AAAACpu5Wy6XUCesngorpL57yoG0i0dyS/tyXW9/pOHAWB1g/vOvkuTW6sOjQ5J/UfdDxSPOdBzpQHPtxS+aqLYOVIIAAAAAW64lHQAAAAAAAAAA+mOkLoK3Qh4iYwEZhuTJ5UBcnquN2hUbRnlacVuANNfZBUZSKny+MDs/CsEOZBHJYiq2bfw3g29Zfscl1/w5rgCsLMgOeO/1wzZt/AA8ti5WjOMdAAAA3QAAAAAAC4eBAAAAZABMS0AAAAAyLJn/+RKod3TxY2ZLCmeYW+nTf5sMlH4oOTIPSbvRPWbUUe70msqPqxdC84/x0kllEumRFaF4i/sKbwptOoBKhyJ9CWKlXQXHWff9yKUlpaVJJy4TcELJV3w0nlwaNbRzLf+JwGVYb6BnB2GiZESvf1yEibvlU21ZVeEBsccbkg4AAAAA",
-        })
+          data:
+            "AAAACpu5Wy6XUCesngorpL57yoG0i0dyS/tyXW9/pOHAWB1g/vOvkuTW6sOjQ5J/UfdDxSPOdBzpQHPtxS+aqLYOVIIAAAAAW64lHQAAAAAAAAAA+mOkLoK3Qh4iYwEZhuTJ5UBcnquN2hUbRnlacVuANNfZBUZSKny+MDs/CsEOZBHJYiq2bfw3g29Zfscl1/w5rgCsLMgOeO/1wzZt/AA8ti5WjOMdAAAA3QAAAAAAC4eBAAAAZABMS0AAAAAyLJn/+RKod3TxY2ZLCmeYW+nTf5sMlH4oOTIPSbvRPWbUUe70msqPqxdC84/x0kllEumRFaF4i/sKbwptOoBKhyJ9CWKlXQXHWff9yKUlpaVJJy4TcELJV3w0nlwaNbRzLf+JwGVYb6BnB2GiZESvf1yEibvlU21ZVeEBsccbkg4AAAAA"
+        });
       });
 
       db.transactions.findAllBySeq = jest.fn(() => {
-        return [ transactionFactory.build({ ledgerSeq: currentSeq }) ];
+        return [transactionFactory.build({ ledgerSeq: currentSeq })];
       });
 
       nextLedger = await subject.nextLedger();
@@ -61,17 +62,19 @@ describe("nextLedger", () => {
 
       subject = new Cursor(currentSeq);
 
-      db.ledgerHeaders.findBySeq = jest.fn(() => { return null; });
-      db.ledgerHeaders.findMaxSeq = jest.fn(() => { return maxSeq; });
+      db.ledgerHeaders.findBySeq = jest.fn(() => null);
+      db.ledgerHeaders.findMaxSeq = jest.fn(() => maxSeq);
     });
 
     it("returns null", async () => {
       nextLedger = await subject.nextLedger();
-      expect(nextLedger).toBeNull()
+      expect(nextLedger).toBeNull();
     });
 
     describe("when there is gap between max seq and current seq", () => {
-      beforeEach(() => { maxSeq = currentSeq + 20 });
+      beforeEach(() => {
+        maxSeq = currentSeq + 20;
+      });
 
       it("skips the gap", async () => {
         await subject.nextLedger();
@@ -80,7 +83,9 @@ describe("nextLedger", () => {
     });
 
     describe("there is no gap between max seq and current seq", () => {
-      beforeEach(() => { maxSeq = currentSeq });
+      beforeEach(() => {
+        maxSeq = currentSeq;
+      });
 
       it("doesn't increment the seq", async () => {
         await subject.nextLedger();

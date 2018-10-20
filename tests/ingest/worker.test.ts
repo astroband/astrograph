@@ -1,6 +1,6 @@
 import { Cursor, Worker } from "../../src/ingest";
-import { Publisher } from "../../src/pubsub";
 import { SubscriptionPayloadCollection } from "../../src/ingest/subscription_payload_collection";
+import { Publisher } from "../../src/pubsub";
 
 jest.mock("../../src/ingest/subscription_payload_collection");
 jest.mock("../../src/pubsub");
@@ -15,13 +15,13 @@ const cursor = new Cursor(1);
 const header = { foo: 1 };
 const transactions = [1, 2];
 
-let subject = new Worker(cursor);
+const subject = new Worker(cursor);
 
 describe("run", () => {
   describe("when there is new ledger", () => {
     beforeEach(async () => {
-      cursor.nextLedger = jest.fn(() => { return { header, transactions } });
-      await subject.run()
+      cursor.nextLedger = jest.fn(() => ({ header, transactions }));
+      await subject.run();
     });
     it("creates SubscriptionPayloadCollection", async () => {
       expect(SubscriptionPayloadCollection).toHaveBeenCalledWith(transactions);
@@ -34,9 +34,9 @@ describe("run", () => {
 
   describe("when there is no new ledger", () => {
     beforeEach(async () => {
-      cursor.nextLedger = jest.fn(() => { return null });
+      cursor.nextLedger = jest.fn(() => null);
       (Publisher.publish as jest.Mock).mockClear();
-      await subject.run()
+      await subject.run();
     });
 
     it("doesn't publish anything", async () => {
@@ -44,4 +44,3 @@ describe("run", () => {
     });
   });
 });
-

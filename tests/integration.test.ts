@@ -1,23 +1,16 @@
-import { Client as dbClient } from "pg";
-import schema from "../src/schema";
+import { execSync } from "child_process";
 import fs from "fs";
 import { graphql } from "graphql";
-import { Network } from "stellar-base";
 import path from "path";
+import { Client as dbClient } from "pg";
+import { Network } from "stellar-base";
+import schema from "../src/schema";
 import logger from "../src/util/logger";
 import * as secrets from "../src/util/secrets";
-import { execSync } from "child_process";
 
 Network.useTestNetwork();
 
-const testCases = [
-  "Single account query",
-  "Accounts signed by",
-  "Data entries",
-  "Signers",
-  "Ledgers",
-  "Trust lines",
-];
+const testCases = ["Single account query", "Accounts signed by", "Data entries", "Signers", "Ledgers", "Trust lines"];
 
 async function importDbDump() {
   const client = new dbClient({
@@ -28,7 +21,7 @@ async function importDbDump() {
     password: secrets.DBPASSWORD
   });
 
-  const sql = fs.readFileSync(path.join(__dirname, "test_db.sql"), 'utf8');
+  const sql = fs.readFileSync(path.join(__dirname, "test_db.sql"), "utf8");
 
   await client.connect();
 
@@ -42,7 +35,7 @@ describe("Integration tests", () => {
   beforeAll(async () => {
     try {
       await importDbDump();
-    } catch(e) {
+    } catch (e) {
       if (e.message !== `database "${secrets.DB}" does not exist`) {
         throw e;
       }
