@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - "8"
+env:
+  - DB=astrograph_test DBUSER=postgres DBHOST=localhost
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database astrograph_test;' -U postgres
