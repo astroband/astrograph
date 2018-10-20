@@ -8,7 +8,7 @@ const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env";
 if (fs.existsSync(envFile)) {
   logger.log("info", `Using ${envFile} file to supply config environment variables`);
   dotenv.config({ path: envFile });
-} else if (environment === "test") {
+} else if (environment === "test" && !process.env.CI) {
   throw new Error("No .env file found for the test environment. Create `.env.test` file with necessary settings");
 }
 
