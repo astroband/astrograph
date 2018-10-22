@@ -73,7 +73,7 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json --fix",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "test": "NODE_ENV=test yarn run jest",
-    "ingest": "ts-node ./dgraph/ingest.ts"
+    "import-ledgers": "ts-node ./dgraph/import.ts"
   },
   "license": "MIT",
   "private": true

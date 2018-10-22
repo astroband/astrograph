@@ -5,7 +5,6 @@ import { SubscriptionPayloadCollection } from "./subscription_payload_collection
 
 import { Connection } from "../storage";
 import { DGRAPH_URL } from "../util/secrets";
-import { DgraphIngestor } from "./dgraph";
 
 export class Worker {
   public cursor: Cursor;
@@ -25,8 +24,7 @@ export class Worker {
 
       if (DGRAPH_URL) {
         const c = new Connection();
-        const dgraphIngestor = new DgraphIngestor(c);
-        dgraphIngestor.ingestLedger(header, transactions);
+        c.store.importLedgerTransactions(header, transactions);
         c.close();
       }
     }

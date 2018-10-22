@@ -1,5 +1,4 @@
 import parseArgv from "minimist";
-import { DgraphIngestor as Ingestor } from "../src/ingest";
 import { Cursor, ICursorResult } from "../src/ingest/cursor";
 import { Connection } from "../src/storage";
 import logger from "../src/util/logger";
@@ -22,7 +21,6 @@ try {
 }
 
 const c = new Connection();
-const ingestor = new Ingestor(c);
 
 setStellarNetwork().then((network: string) => {
   logger.info(`Using ${network}`);
@@ -40,7 +38,7 @@ setStellarNetwork().then((network: string) => {
           }
 
           logger.info(`ingesting ledger #${header.ledgerSeq}`);
-          await ingestor.ingestLedger(header, transactions);
+          await c.store.importLedgerTransactions(header, transactions);
         }
 
         c.close();
