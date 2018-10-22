@@ -1,4 +1,4 @@
-import { Memo, MemoText, MemoHash, MemoReturn } from "stellar-sdk";
+import { Asset, Memo, MemoText, MemoHash, MemoReturn } from "stellar-sdk";
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Ledger, MutationType } from "../../model";
 
@@ -30,6 +30,15 @@ export function memoResolver(obj: any) {
   return {
     type: memo.type,
     value: value
+  }
+}
+
+export function assetResolver(obj: any) {
+  const asset = obj.asset as Asset;
+  return {
+    code: asset.getCode(),
+    issuer: asset.getIssuer(),
+    native: asset.isNative()
   }
 }
 

@@ -1,4 +1,5 @@
-import { Asset, PaymentOperation, Transaction } from "../../model";
+import { Asset } from "stellar-sdk";
+import { PaymentOperation, Transaction } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
@@ -130,8 +131,8 @@ export class OperationWriter extends Writer {
     const destAmount = op.destAmount().toString();
 
     const destination = publicKeyFromBuffer(op.destination().value());
-    const sendAsset = Asset.buildFromXDR(op.sendAsset());
-    const destAsset = Asset.buildFromXDR(op.destAsset());
+    const sendAsset = Asset.fromOperation(op.sendAsset());
+    const destAsset = Asset.fromOperation(op.destAsset());
 
     await this.appendAsset(this.current, "send.asset", sendAsset, "operations");
     await this.appendAsset(this.current, "dest.asset", destAsset, "operations");

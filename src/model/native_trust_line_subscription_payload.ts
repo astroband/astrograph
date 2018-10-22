@@ -1,4 +1,4 @@
-import { Asset } from "./";
+import { Asset } from "stellar-sdk";
 
 import { FakeNativeTrustLineValues } from "./fake_native_trust_line_values";
 import { IMutationType, MutationType } from "./mutation_type";
@@ -21,6 +21,6 @@ export class NativeTrustLineSubscriptionPayload implements IMutationType {
   }
 
   get asset(): Asset {
-    return Asset.buildNative();
+    return Asset.native();
   }
 }

@@ -1,5 +1,6 @@
 import dig from "object-dig";
-import { Asset, IPaymentOperation } from "../../model";
+import { Asset } from "stellar-sdk";
+import { IPaymentOperation } from "../../model";
 import { Connection } from "../connection";
 import { IPaymentOperationData } from "../types";
 import { Query } from "./query";
@@ -58,12 +59,14 @@ export class AccountPaymentsQuery extends Query<IAccountPaymentsQueryResult> {
   }
 
   private mapData(dgraphData: IPaymentOperationData): IPaymentOperation {
-    const asset = dgraphData.asset[0];
+    const assetData = dgraphData.asset[0];
+    const asset = assetData.native ? Asset.native() : new Asset(assetData.code, assetData.issuer[0].id);
+
     return {
       destination: dgraphData["account.destination"][0].id,
       source: dgraphData["account.source"][0].id,
       amount: dgraphData.amount,
-      asset: new Asset(asset.native, asset.code, asset.issuer[0].id)
+      asset: asset
     };
   }
 }

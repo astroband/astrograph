@@ -41,7 +41,7 @@ export default gql`
 
   type Asset {
     native: Boolean!
-    issuer: AccountID!
+    issuer: AccountID
     code: AssetCode!
   }
 

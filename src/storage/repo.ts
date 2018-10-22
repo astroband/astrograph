@@ -1,4 +1,5 @@
-import { Asset, LedgerHeader, Transaction } from "../model";
+import { Asset } from "stellar-sdk";
+import { LedgerHeader, Transaction } from "../model";
 import { Connection } from "./connection";
 
 import * as q from "./queries";
