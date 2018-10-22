@@ -76,6 +76,13 @@ Astrograph ships with integration tests too.
 You should configure test database connection with `.env.test` file before running them because they are using [database fixture](https://github.com/mobius-network/astrograph/blob/master/tests/test_db.sql). 
 `.env.test` file presence is mandatory to prevent accidental overwriting your stellar-core database with the fixture!
 
+You can run unit and integration tests separately, using the next commands:
+
+```
+yarn run test:unit
+yarn run test:integration
+```
+
 ## Usage
 
 Let's go straight to some example queries:
