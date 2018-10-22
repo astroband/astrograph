@@ -67,6 +67,8 @@
     "prod": "yarn build && yarn tslint && yarn start-prod",
     "tslint": "tslint -c tslint.json -p tsconfig.json --fix",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
+    "test:unit": "NODE_ENV=test yarn run jest tests/unit",
+    "test:integration": "NODE_ENV=test yarn run jest tests/integration",
     "test": "NODE_ENV=test yarn run jest"
   },
   "license": "MIT",

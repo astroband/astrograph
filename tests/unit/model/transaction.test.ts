@@ -1,5 +1,5 @@
-import { MemoType } from "../../src/model";
-import transactionFactory from "../factories/transaction";
+import { MemoType } from "../../../src/model";
+import transactionFactory from "../../factories/transaction";
 
 describe("constructor", () => {
   describe("memo parsing", () => {

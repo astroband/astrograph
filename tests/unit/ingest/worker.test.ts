@@ -1,9 +1,9 @@
-import { Cursor, Worker } from "../../src/ingest";
-import { SubscriptionPayloadCollection } from "../../src/ingest/subscription_payload_collection";
-import { Publisher } from "../../src/pubsub";
+import { Cursor, Worker } from "../../../src/ingest";
+import { SubscriptionPayloadCollection } from "../../../src/ingest/subscription_payload_collection";
+import { Publisher } from "../../../src/pubsub";
 
-jest.mock("../../src/ingest/subscription_payload_collection");
-jest.mock("../../src/pubsub");
+jest.mock("../../../src/ingest/subscription_payload_collection");
+jest.mock("../../../src/pubsub");
 
 const mockSubscriptionPayloadCollection = {};
 

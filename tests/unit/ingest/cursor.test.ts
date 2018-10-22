@@ -1,10 +1,8 @@
-import { Cursor, ICursorResult } from "../../src/ingest/cursor";
-import { Transaction } from "../../src/model";
+import { Cursor, ICursorResult } from "../../../src/ingest/cursor";
+import { LedgerHeader, Transaction } from "../../../src/model";
 
-import db from "../../src/database";
-import transactionFactory from "../factories/transaction";
-
-import { LedgerHeader } from "../../src/model";
+import db from "../../../src/database";
+import transactionFactory from "../../factories/transaction";
 
 let subject: Cursor;
 let currentSeq: number;

@@ -7,3 +7,4 @@ services:
   - postgresql
 before_script:
   - psql -c 'create database astrograph_test;' -U postgres
+script: yarn run test:unit

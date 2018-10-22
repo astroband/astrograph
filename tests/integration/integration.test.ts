@@ -4,9 +4,9 @@ import { graphql } from "graphql";
 import path from "path";
 import { Client as dbClient } from "pg";
 import { Network } from "stellar-base";
-import schema from "../src/schema";
-import logger from "../src/util/logger";
-import * as secrets from "../src/util/secrets";
+import schema from "../../src/schema";
+import logger from "../../src/util/logger";
+import * as secrets from "../../src/util/secrets";
 
 Network.useTestNetwork();
 
