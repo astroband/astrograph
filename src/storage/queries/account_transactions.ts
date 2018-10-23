@@ -33,8 +33,7 @@ export class AccountTransactionsQuery extends Query<IAccountTransactionsQueryRes
             transactions(
               first: $first,
               offset: $offset,
-              orderdesc: seq,
-              orderdesc: index
+              orderdesc: order
             ) {
               account.source { id }
               memo.value
