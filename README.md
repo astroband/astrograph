@@ -27,6 +27,7 @@ Here is the list of available settings:
 * `BIND_ADDRESS` - address to bind ("0.0.0.0" by default)
 * `INGEST_INTERVAL` – database polling interval in milliseconds (2000 by default)
 * `DEBUG_LEDGER` – when set, Astrograph will start ingesting ledgers, starting from that. It's useful for debugging. Pass `-1` to force ingest from first ledger existing in database.
+* `DGRAPH_URL` - when set, Astrograph ingests history to DGraph server.
 
 You can set them all using environmental variables, or you can create the `.env` file in the root of the project, and set them there:
 
@@ -74,7 +75,7 @@ Astrograph uses [jest](https://github.com/facebook/jest) for the tests.
 You can run all available tests with `yarn run test` command.
 
 Astrograph ships with integration tests too.
-You should configure test database connection with `.env.test` file before running them because they are using [database fixture](https://github.com/mobius-network/astrograph/blob/master/tests/test_db.sql). 
+You should configure test database connection with `.env.test` file before running them because they are using [database fixture](https://github.com/mobius-network/astrograph/blob/master/tests/test_db.sql).
 `.env.test` file presence is mandatory to prevent accidental overwriting your stellar-core database with the fixture!
 
 You can run unit and integration tests separately, using the next commands:
@@ -241,6 +242,59 @@ subscription {
 ```
 
 Check out the [examples](examples) folder for more!
+
+## Playing with DGraph
+
+For now, Astrograph supports very basic version of ingestion to [DGraph](https://dgraph.io).
+
+To enable it, pass DGraph server host and port in `DGRAPH_URL` environment variable.
+
+For local development, DGraph can be started by executing `dgraph/start.sh` (needs docker to run, `DGRAPH_URL==localhost:9080` will work).
+
+Example query:
+
+```
+query {
+  # Get all accounts involved in any ledger since ingestion started
+  account(func: eq(type, "account")) {
+    uid
+    id
+  }
+
+  # Get all assets, count involved operations
+  asset(func: eq(type, "asset")) {
+    code
+    type
+    issuer {
+      id
+    }
+    count(operations)
+  }
+
+  # Get first 100 operations
+  all(func: eq(type, "operation"), first: 100) @cascade {
+    uid
+    kind
+    account.source {
+      id
+      uid
+    }
+    account.destination {
+      uid
+      id      
+    }
+  }
+
+  # Find all payees of specific account with amount > 1 XLM
+  all(func: eq(type, "operation")) @filter(eq(kind, "payment") AND gt(amount, 10000000)) @cascade {
+		kind
+    amount
+    account.source @filter(eq(id, "GACXLSIFKUNFY53TBDEDOFIUTWV36KMJ66NLZO3EN33S2XNSV46FZTET"))
+    asset @filter(eq(native, true))
+  }
+}
+```
+
 
 ## Console
 

@@ -56,11 +56,15 @@ export class Transaction {
     }
   }
 
-  public metaFromXDR() {
+  public operationsXDR(): any {
+    return this.envelopeXDR.tx().operations();
+  }
+
+  public metaFromXDR(): any {
     return stellar.xdr.TransactionMeta.fromXDR(Buffer.from(this.meta, "base64"));
   }
 
-  public feeMetaFromXDR() {
+  public feeMetaFromXDR(): any {
     return stellar.xdr.OperationMeta.fromXDR(Buffer.from(this.feeMeta, "base64"));
   }
 }

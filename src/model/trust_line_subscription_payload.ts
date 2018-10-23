@@ -15,7 +15,7 @@ export class TrustLineSubscriptionPayload implements IMutationType {
 
     this.accountID = publicKeyFromXDR(xdr);
 
-    const { assettype, assetcode, issuer } = assetFromXDR(xdr);
+    const { assettype, assetcode, issuer } = assetFromXDR(xdr.asset());
     const asset = new Asset(assettype, assetcode, issuer);
     this.asset = asset;
 
