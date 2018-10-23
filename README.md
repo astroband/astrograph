@@ -1,6 +1,7 @@
+[![Build Status](https://travis-ci.com/mobius-network/astrograph.svg?branch=master)](https://travis-ci.com/mobius-network/astrograph)
+
 # Astrograph
 
-## About the project
 Astrograph is a GraphQL server for the [Stellar](https://www.stellar.org/) network. You can think about it as a GraphQL version of [Horizon](https://github.com/stellar/horizon), the client-facing API server for the Stellar ecosystem. Astrograph allows you to retrieve various data from the blockchain, as well as allowing you to subscribe to particular events using [GraphQL subscriptions](https://github.com/apollographql/graphql-subscriptions) mechanisms.
 
 Astrograph works directly with the [stellar-core](https://github.com/stellar/stellar-core) database. What does that mean?
