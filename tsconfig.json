@@ -45,7 +45,7 @@
     "tests/**/*.ts",
     "examples/**/*.ts",
     "types/**/*.d.ts",
-    "dgraph/ingest.ts"
+    "dgraph/import.ts"
   ],
   "exclude": [
     "node_modules"
