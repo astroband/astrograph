@@ -1,9 +1,8 @@
-import { MemoType } from "../../../src/model";
 import transactionFactory from "../../factories/transaction";
 
 describe("constructor", () => {
   describe("memo parsing", () => {
-    test(MemoType.None, () => {
+    test("none", () => {
       const xdr =
         "AAAAAGL8HQvQkbK2HA3WVjRrKmjX00fG8sLI7m0ERwJW/AX3AAAAZAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAnj+71iuHPvMz3z5b4OhuBG6xCaey+w2TeGT1exLwKIsAAAACVAvkAAAAAAAAAAABVvwF9wAAAEBPmjDcP4OFniA+mYO5QeWnJrZ2OE9eqD9S2zqP4nYy7MEfj7yrp47fYZhkNjbZGlCGB1qIQAGs/BJmaYZlfsgP";
       const tx = transactionFactory.build({ txbody: xdr });
@@ -12,31 +11,31 @@ describe("constructor", () => {
 
     const cases = [
       [
-        MemoType.Text,
+        "text",
         "AAAAAGL8HQvQkbK2HA3WVjRrKmjX00fG8sLI7m0ERwJW/AX3AAAAZAAAAAAAAAACAAAAAAAAAAEAAAAIVGV4dE1lbW8AAAABAAAAAAAAAAEAAAAAnj+71iuHPvMz3z5b4OhuBG6xCaey+w2TeGT1exLwKIsAAAAAAAAAAlQL5AAAAAAAAAAAAVb8BfcAAABA6n883WGzzyl8NZAz5LIQUHJYBHYMdlqc18VMSt+VpOhm8Q5F61Fs2S1CjpZpNy8WtDmOOxW9gVhVFSHYj2U7DA==",
         "TextMemo"
       ],
       [
-        MemoType.Id,
+        "id",
         "AAAAAGL8HQvQkbK2HA3WVjRrKmjX00fG8sLI7m0ERwJW/AX3AAAAZAAAAAAAAAADAAAAAAAAAAIAAAAAAAAADwAAAAEAAAAAAAAAAQAAAACeP7vWK4c+8zPfPlvg6G4EbrEJp7L7DZN4ZPV7EvAoiwAAAAAAAAACVAvkAAAAAAAAAAABVvwF9wAAAEAlWK1EZughrBrCrCFhD8Jiw0oI4cryFgVXKygdBRP8PXmL/S8rZCcpmH8IBCNfkOBdem+KhxvmCGJPeoY0K2wA",
-        15
+        "15"
       ],
       [
-        MemoType.Hash,
+        "hash",
         "AAAAAGL8HQvQkbK2HA3WVjRrKmjX00fG8sLI7m0ERwJW/AX3AAAAZAAAAAAAAAAEAAAAAAAAAANmYzNkM2VmZTk4ZTNkOGM2NDg4M2Q2NjRkNTFkZDAwMAAAAAEAAAAAAAAAAQAAAACeP7vWK4c+8zPfPlvg6G4EbrEJp7L7DZN4ZPV7EvAoiwAAAAAAAAACVAvkAAAAAAAAAAABVvwF9wAAAEB1MPAiOPE3dTXP0ph+banyxSeuaBxeJasyhXf+it7f9vnF98QAGem68Vu4X7VFM45TVPrT+ig/OVM0hQQE5AAE",
-        "fc3d3efe98e3d8c64883d664d51dd000"
+        Buffer.from("fc3d3efe98e3d8c64883d664d51dd000", "utf8")
       ],
       [
-        MemoType.Return,
+        "return",
         "AAAAAGL8HQvQkbK2HA3WVjRrKmjX00fG8sLI7m0ERwJW/AX3AAAAZAAAAAAAAAAFAAAAAAAAAARhNWMyODg0NTg3YzZiMDU4ZDZjMzMyODM4OTBiZjU5MQAAAAEAAAAAAAAAAQAAAACeP7vWK4c+8zPfPlvg6G4EbrEJp7L7DZN4ZPV7EvAoiwAAAAAAAAACVAvkAAAAAAAAAAABVvwF9wAAAEAZmHuTELrEb1UNCxOCqN7UUomYvVq4p+3qH9V/xkAV703nvSNPJyvO/g4PS32ygUUEGMToLTXaAfavY6vaOvUL",
-        "a5c2884587c6b058d6c33283890bf591"
+        Buffer.from("a5c2884587c6b058d6c33283890bf591", "utf8")
       ]
     ];
 
     test.each(cases)("%s", (memoType, xdr, memoValue) => {
       const tx = transactionFactory.build({ txbody: xdr });
       expect(tx.memo!.type).toBe(memoType);
-      expect(tx.memo!.value).toBe(memoValue);
+      expect(tx.memo!.value).toEqual(memoValue);
     });
   });
 
