@@ -8,7 +8,7 @@
     "sourceMap": true,
     "declaration": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noEmitOnError": true,
+    "noEmitOnError": false,
 
     /* Strict Type-Checking Options */
     "strict": true,                        /* Enable all strict type-checking options. */
