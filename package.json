@@ -17,6 +17,7 @@
     "@types/google-protobuf": "^3.2.7",
     "@types/graphql-resolve-batch": "^1.1.1",
     "@types/minimist": "^1.2.0",
+    "@types/protobufjs": "^6.0.0",
     "@udia/graphql-postgres-subscriptions": "^1.0.9",
     "apollo-server": "^2.0.0-rc.8",
     "big.js": "^5.1.2",
