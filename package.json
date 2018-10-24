@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@types/big.js": "^4.0.5",
+    "@types/google-protobuf": "^3.2.7",
     "@types/graphql-resolve-batch": "^1.1.1",
     "@types/minimist": "^1.2.0",
     "@udia/graphql-postgres-subscriptions": "^1.0.9",

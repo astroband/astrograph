@@ -133,6 +133,10 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
+"@types/google-protobuf@^3.2.7":
+  version "3.2.7"
+  resolved "https://registry.yarnpkg.com/@types/google-protobuf/-/google-protobuf-3.2.7.tgz#9576ed5dd62cdb1c9f952522028a03b7cb2b69b5"
+
 "@types/graphql-resolve-batch@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/graphql-resolve-batch/-/graphql-resolve-batch-1.1.1.tgz#54c97b39f82039f385259d250472b8b05e492fa2"
