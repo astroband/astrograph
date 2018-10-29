@@ -1,6 +1,18 @@
 import { AccountFlags } from "./account_flags";
 import { AccountThresholds } from "./account_thresholds";
 
+export interface IAccountRawData {
+  accountid: string;
+  balance: string;
+  seqnum: string;
+  numsubentries: number;
+  inflationdest: string;
+  homedomain: string;
+  thresholds: string;
+  flags: number;
+  lastmodified: number;
+}
+
 export class Account {
   public id: string;
   public balance: string;
@@ -12,17 +24,7 @@ export class Account {
   public flags: AccountFlags;
   public lastModified: number;
 
-  constructor(data: {
-    accountid: string;
-    balance: string;
-    seqnum: string;
-    numsubentries: number;
-    inflationdest: string;
-    homedomain: string;
-    thresholds: string;
-    flags: number;
-    lastmodified: number;
-  }) {
+  constructor(data: IAccountRawData) {
     this.id = data.accountid;
     this.balance = data.balance;
     this.sequenceNumber = data.seqnum;
