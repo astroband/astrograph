@@ -10,7 +10,7 @@ import ws from "ws";
 
 import { ACCOUNT_ID, GRAPHQL_ENDPOINT } from "./args";
 
-const client = new SubscriptionClient(`ws://${GRAPHQL_ENDPOINT}`, { reconnect: true }, ws);
+const client = new SubscriptionClient(GRAPHQL_ENDPOINT, { reconnect: true }, ws);
 
 const link = new WebSocketLink(client);
 const cache = new InMemoryCache();

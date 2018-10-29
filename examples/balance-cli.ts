@@ -9,7 +9,7 @@ import fetch from "node-fetch";
 
 import { ACCOUNT_ID, GRAPHQL_ENDPOINT } from "./args";
 
-const link = createHttpLink({ uri: `http://${GRAPHQL_ENDPOINT}`, fetch });
+const link = createHttpLink({ uri: GRAPHQL_ENDPOINT, fetch });
 const cache = new InMemoryCache();
 const client = new ApolloClient({ link, cache });
 
