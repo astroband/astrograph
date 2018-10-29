@@ -1,11 +1,12 @@
 import db from "../../database";
 import { Connection as DgraphConnection } from "../../storage/connection";
 import { AccountTransactionsQuery } from "../../storage/queries/account_transactions";
-import { ledgerResolver } from "./util";
+import { ledgerResolver, memoResolver } from "./util";
 
 export default {
   Transaction: {
-    ledger: ledgerResolver
+    ledger: ledgerResolver,
+    memo: memoResolver
   },
   Query: {
     transaction(root: any, args: any, ctx: any, info: any) {

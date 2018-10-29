@@ -19,7 +19,7 @@ export default class TransactionsRepo {
   }
 
   // Tries to find a transaction by id;
-  public findByID(id: string): Promise<Transaction> {
+  public findByID(id: string): Promise<Transaction | null> {
     return this.db.oneOrNone(sql.selectTx, id, res => new Transaction(res));
   }
 

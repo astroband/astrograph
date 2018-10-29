@@ -13,7 +13,7 @@ describe("constructor", () => {
       [
         "text",
         "AAAAAGL8HQvQkbK2HA3WVjRrKmjX00fG8sLI7m0ERwJW/AX3AAAAZAAAAAAAAAACAAAAAAAAAAEAAAAIVGV4dE1lbW8AAAABAAAAAAAAAAEAAAAAnj+71iuHPvMz3z5b4OhuBG6xCaey+w2TeGT1exLwKIsAAAAAAAAAAlQL5AAAAAAAAAAAAVb8BfcAAABA6n883WGzzyl8NZAz5LIQUHJYBHYMdlqc18VMSt+VpOhm8Q5F61Fs2S1CjpZpNy8WtDmOOxW9gVhVFSHYj2U7DA==",
-        "TextMemo"
+        Buffer.from("TextMemo", "utf8")
       ],
       [
         "id",
