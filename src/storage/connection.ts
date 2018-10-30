@@ -56,6 +56,9 @@ export class Connection {
     } catch (err) {
       try {
         if (err === ERR_ABORTED) {
+          logger.info("DGraph transaction aborted, retrying...");
+          logger.info(nquads);
+          
           await txn.commit();
           return assigns;
         } else {
