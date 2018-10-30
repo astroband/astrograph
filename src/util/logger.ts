@@ -12,12 +12,16 @@ const PROD_LOG_LEVEL = LoggerLevel.debug;
 const DEV_LOG_LEVEL = LoggerLevel.debug;
 const LOG_FILE = LoggerLevel.error;
 
+let logLevel = process.env.LOG_LEVEL;
+
+if (!logLevel || !LoggerLevel[logLevel]) {
+  logLevel = process.env.NODE_ENV === "production" ? PROD_LOG_LEVEL : DEV_LOG_LEVEL
+}
+
 const logger: Logger = createLogger({
   format: format.combine(format.colorize(), format.splat(), format.simple(), format.timestamp()),
   transports: [
-    new transports.Console({
-      level: process.env.NODE_ENV === "production" ? PROD_LOG_LEVEL : DEV_LOG_LEVEL
-    }),
+    new transports.Console({ level: logLevel }),
     new transports.File({ filename: "error.log", level: LOG_FILE })
   ]
 });
