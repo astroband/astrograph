@@ -1,4 +1,4 @@
-import { DgraphClient, DgraphClientStub, Mutation, Operation } from "dgraph-js";
+import { DgraphClient, DgraphClientStub, Mutation, Operation, ERR_ABORTED } from "dgraph-js";
 import grpc from "grpc";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
@@ -46,18 +46,29 @@ export class Connection {
 
   public async push(nquads: string): Promise<any> {
     const txn = this.client.newTxn();
+    const mu = new Mutation();
+    mu.setSetNquads(nquads);
+    const assigns = await txn.mutate(mu);
 
     try {
-      const mu = new Mutation();
-      mu.setSetNquads(nquads);
-      const assigns = await txn.mutate(mu);
       await txn.commit();
-
       return assigns;
     } catch (err) {
-      await txn.discard();
-      logger.error(err);
-      process.exit(-1);
+      try {
+        if (err === ERR_ABORTED) {
+          await txn.commit();
+          return assigns;
+        } else {
+          throw err;
+        }
+      }
+
+      catch (err) {
+        await txn.discard();
+        logger.error(err);
+        logger.error(nquads);
+        process.exit(-1);
+      }
     }
   }
 
