@@ -42,9 +42,10 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
     logger.info(`Ingesting ledger ${cursor.current}`);
     await (new Worker(cursor)).run();
     logger.info(`Ingesting ledger ${cursor.current} finished!`);
+    setTimeout(tick, INGEST_INTERVAL);
   };
 
-  setInterval(tick, INGEST_INTERVAL);
+  setTimeout(tick, INGEST_INTERVAL);
 });
 
 server.listen({ port: PORT, host: BIND_ADDRESS }).then(({ url }) => {
