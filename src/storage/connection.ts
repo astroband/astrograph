@@ -28,6 +28,7 @@ export class Connection {
 
   constructor() {
     this.stub = new DgraphClientStub(DGRAPH_URL, grpc.credentials.createInsecure());
+
     this.client = new DgraphClient(this.stub);
     this.repo = new Repo(this);
     this.store = new Store(this);
