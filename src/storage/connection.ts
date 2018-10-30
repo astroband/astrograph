@@ -45,8 +45,10 @@ export class Connection {
   }
 
   public async push(nquads: string): Promise<any> {
-    logger.debug("[DGraph] Transaction started...");
-    logger.debug(nquads);
+    const id = Math.floor(Math.random() * Math.floor(65536));
+
+    logger.debug(`[DGraph] Transaction ${id} started...`);
+    // logger.debug(nquads);
 
     const txn = this.client.newTxn();
     const mu = new Mutation();
@@ -54,15 +56,16 @@ export class Connection {
     const assigns = await txn.mutate(mu);
 
     try {
+      logger.debug(`[DGraph] Transaction ${id} commiting...`);
       await txn.commit();
-      logger.debug("[DGraph] Transaction commited...");
+      logger.debug(`[DGraph] Transaction ${id} commited!`);
 
       return assigns;
     } catch (err) {
       try {
         if (err === ERR_ABORTED) {
-          logger.info("[DGraph] Transaction aborted, retrying...");
-          logger.info(nquads);
+          logger.debug(`[DGraph] Transaction ${id} aborted, retrying...`);
+          logger.debug(nquads);
 
           await txn.commit();
           return assigns;

@@ -24,7 +24,7 @@ setStellarNetwork().then((network: string) => {
 });
 
 if (DGRAPH_URL) {
-  logger.info(`Updating DGraph schema...`);
+  logger.info(`[DGraph] Updating schema...`);
   new Connection().migrate().catch((err: any) => {
     logger.error(err);
     process.exit(-1);
@@ -38,9 +38,10 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
     }`
   );
 
-  const tick = () => {
+  const tick = async () => {
     logger.info(`Ingesting ledger ${cursor.current}`);
-    new Worker(cursor).run();
+    await (new Worker(cursor)).run();
+    logger.info(`FINISHED`);
   };
 
   setInterval(tick, INGEST_INTERVAL);
