@@ -41,7 +41,7 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
   const tick = async () => {
     logger.info(`Ingesting ledger ${cursor.current}`);
     await (new Worker(cursor)).run();
-    logger.info(`FINISHED`);
+    logger.info(`Ingesting ledger ${cursor.current} finished!`);
   };
 
   setInterval(tick, INGEST_INTERVAL);
