@@ -29,7 +29,9 @@ export class AssetWriter extends Writer {
       .for(this.current)
       .append("type", "asset")
       .append("native", this.asset.native)
-      .append("code", this.asset.code)
+      // we need to truncate null bytes to avoid breaking DGraph
+      // see https://github.com/dgraph-io/dgraph/issues/2662
+      .append("code", this.asset.code.replace(/\0/g, ""))
       .append("issuer", this.issuer);
 
     const created = await this.push("asset");
