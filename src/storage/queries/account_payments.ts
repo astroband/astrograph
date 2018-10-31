@@ -21,6 +21,9 @@ export class AccountPaymentsQuery extends Query<IAccountPaymentsQueryResult> {
   public async call(): Promise<IAccountPaymentsQueryResult> {
     const r = await this.request();
     const data = dig(r, "ops", 0, "operations");
+    if (!data) {
+      return [];
+    }
     return data.map(this.mapData);
   }
 
