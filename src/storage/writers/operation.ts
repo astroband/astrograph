@@ -1,4 +1,4 @@
-import { Asset, Transaction } from "../../model";
+import { Asset, PaymentOperation, Transaction } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
@@ -115,16 +115,12 @@ export class OperationWriter extends Writer {
   }
 
   private async appendPaymentOp() {
-    const op = this.xdr.body().paymentOp();
+    const op = PaymentOperation.buildFromXDR(this.xdr);
 
-    const amount = op.amount().toString();
-    const destination = publicKeyFromBuffer(op.destination().value());
-    const asset = Asset.buildFromXDR(op.asset());
+    this.b.append(this.current, "amount", op.amount);
 
-    this.b.append(this.current, "amount", amount);
-
-    await this.appendAsset(this.current, "asset", asset, "operations");
-    await this.appendAccount(this.current, "account.destination", destination, "operations");
+    await this.appendAsset(this.current, "asset", op.asset, "operations");
+    await this.appendAccount(this.current, "account.destination", op.destination, "operations");
   }
 
   private async pathPaymentOp() {

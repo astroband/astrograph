@@ -16,6 +16,19 @@ export interface ITransactionData {
   "time_bounds.max": number;
 }
 
+export interface IPaymentOperationData {
+  "account.source": IAccountData[];
+  "account.destination": IAccountData[];
+  amount: string;
+  asset: IAssetData[];
+}
+
+export interface IAssetData {
+  code: string;
+  issuer: IAccountData[];
+  native: boolean;
+}
+
 export interface IAccountData {
   id: string;
   // it's incomplete
