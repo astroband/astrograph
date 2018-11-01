@@ -40,9 +40,23 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
 
   const tick = async () => {
     logger.info(`Ingesting ledger ${cursor.current}`);
-    await (new Worker(cursor)).run();
-    logger.info(`Ingesting ledger ${cursor.current} finished!`);
-    setTimeout(tick, INGEST_INTERVAL);
+
+    const worker = new Worker(cursor);
+    worker
+      .run()
+      .then(() => {
+        logger.info(`Ingesting ledger ${cursor.current} finished!`);
+        setTimeout(tick, INGEST_INTERVAL);
+      })
+      .catch((e) => {
+        logger.error(`Error \`${e.message}\` occured`);
+        if (e.message.includes("Please retry again, server is not ready to accept requests")) {
+          setTimeout(tick, 200);
+          return;
+        }
+
+        throw e;
+      });
   };
 
   setTimeout(tick, INGEST_INTERVAL);
