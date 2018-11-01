@@ -52,13 +52,13 @@ export class OperationWriter extends Writer {
     this.prev = prev;
 
     if (ledger === null) {
-      throw new Error("Ledger not found in transaction writer");
+      throw new Error(`Ledger ${this.tx.ledgerSeq} not found in operation writer`);
     }
 
     this.ledger = ledger;
 
     if (transaction === null) {
-      throw new Error("Transaction not found in transaction writer");
+      throw new Error(`Transaction ${this.tx.id} not found in operation writer`);
     }
 
     this.transaction = transaction;
