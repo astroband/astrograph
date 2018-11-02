@@ -1,5 +1,5 @@
+import { Asset } from "stellar-sdk";
 import { publicKeyFromBuffer } from "../util/xdr/account";
-import { Asset } from "./";
 
 export interface IPaymentOperation {
   source: string | null;
@@ -13,7 +13,7 @@ export class PaymentOperation implements IPaymentOperation {
     const op = xdr.body().paymentOp();
     const amount = op.amount().toString();
     const destination = publicKeyFromBuffer(op.destination().value());
-    const asset = Asset.buildFromXDR(op.asset());
+    const asset = Asset.fromOperation(op.asset());
 
     let source = null;
 

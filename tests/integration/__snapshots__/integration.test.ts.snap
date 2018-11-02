@@ -156,7 +156,7 @@ Object {
           Object {
             "asset": Object {
               "code": "XLM",
-              "issuer": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+              "issuer": null,
               "native": true,
             },
           },
@@ -168,7 +168,7 @@ Object {
           Object {
             "asset": Object {
               "code": "XLM",
-              "issuer": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+              "issuer": null,
               "native": true,
             },
           },
@@ -195,7 +195,7 @@ Object {
         },
         "asset": Object {
           "code": "XLM",
-          "issuer": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+          "issuer": null,
           "native": true,
         },
       },

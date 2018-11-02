@@ -1,27 +1,30 @@
 import stellar from "stellar-base";
+import { Asset } from "stellar-sdk";
 
 import { Account } from "./account";
-import { Asset } from "./asset";
 
 import { MAX_INT64 } from "../util";
-import { NATIVE_ASSET_CODE, toFloatAmountString } from "../util/stellar";
+import { toFloatAmountString } from "../util/stellar";
 
-export class TrustLine {
-  public static buildFakeNativeData(account: Account) {
+export interface ITrustLine {
+  accountID: string;
+  asset: Asset;
+  limit: string;
+  balance: string;
+  authorized: boolean;
+  lastModified: number;
+};
+
+export class TrustLine implements ITrustLine {
+  public static buildFakeNative(account: Account): ITrustLine {
     return {
-      accountid: account.id,
-      assettype: stellar.xdr.AssetType.assetTypeNative().value,
-      assetcode: NATIVE_ASSET_CODE,
-      issuer: stellar.Keypair.master().publicKey(),
-      lastmodified: account.lastModified,
-      tlimit: MAX_INT64,
-      flags: 1,
-      balance: account.balance
-    };
-  }
-
-  public static buildFakeNative(account: Account) {
-    return new TrustLine(this.buildFakeNativeData(account));
+      accountID: account.id,
+      asset: Asset.native(),
+      balance: toFloatAmountString(account.balance),
+      limit: toFloatAmountString(MAX_INT64),
+      authorized: true,
+      lastModified: account.lastModified
+    }
   }
 
   public accountID: string;
@@ -47,12 +50,10 @@ export class TrustLine {
     this.lastModified = data.lastmodified;
     this.authorized = (data.flags & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0;
 
-    this.asset = new Asset(
-      // we want to handle native balance
-      // like a trustline too, for consistency
-      data.assettype === stellar.xdr.AssetType.assetTypeNative().value,
-      data.assetcode,
-      data.issuer
-    );
+    if (data.assettype === stellar.xdr.AssetType.assetTypeNative().value) {
+      this.asset = Asset.native();
+    } else {
+      this.asset = new Asset(data.assetcode, data.issuer);
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { Account, TrustLine } from "../../model";
-import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
+import { createBatchResolver, eventMatches, ledgerResolver, assetResolver } from "./util";
 
 import { withFilter } from "graphql-subscriptions";
 
@@ -28,7 +28,8 @@ const trustLineSubscription = (event: string) => {
 export default {
   TrustLine: {
     account: accountResolver,
-    ledger: ledgerResolver
+    ledger: ledgerResolver,
+    asset: assetResolver
   },
   Subscription: {
     trustLine: trustLineSubscription(TRUST_LINE)

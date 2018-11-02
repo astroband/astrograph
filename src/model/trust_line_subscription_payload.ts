@@ -1,8 +1,8 @@
-import { Asset } from "./asset";
+import { Asset } from "stellar-sdk";
 import { IMutationType, MutationType } from "./mutation_type";
 import { TrustLineValues } from "./trust_line_values";
 
-import { assetFromXDR, publicKeyFromXDR } from "../util/xdr";
+import { publicKeyFromXDR } from "../util/xdr";
 
 export class TrustLineSubscriptionPayload implements IMutationType {
   public accountID: string;
@@ -14,10 +14,7 @@ export class TrustLineSubscriptionPayload implements IMutationType {
     this.mutationType = mutationType;
 
     this.accountID = publicKeyFromXDR(xdr);
-
-    const { assettype, assetcode, issuer } = assetFromXDR(xdr.asset());
-    const asset = new Asset(assettype, assetcode, issuer);
-    this.asset = asset;
+    this.asset = Asset.fromOperation(xdr.asset());
 
     if (this.mutationType !== MutationType.Remove) {
       this.values = TrustLineValues.buildFromXDR(xdr);
