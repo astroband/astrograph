@@ -49,11 +49,6 @@ export class TrustLine implements ITrustLine {
     this.balance = toFloatAmountString(data.balance);
     this.lastModified = data.lastmodified;
     this.authorized = (data.flags & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0;
-
-    if (data.assettype === stellar.xdr.AssetType.assetTypeNative().value) {
-      this.asset = Asset.native();
-    } else {
-      this.asset = new Asset(data.assetcode, data.issuer);
-    }
+    this.asset = new Asset(data.assetcode, data.issuer);
   }
 }
