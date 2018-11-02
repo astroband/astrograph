@@ -7,14 +7,29 @@ import { Query } from "./query";
 
 export type IAccountPaymentsQueryResult = IPaymentOperation[];
 
+interface IAssetParam {
+  code: string;
+  issuer?: string;
+}
+
+interface IAccountPaymentsQueryParams {
+  id: string;
+  asset: IAssetParam | null;
+  destination: string | null;
+}
+
 export class AccountPaymentsQuery extends Query<IAccountPaymentsQueryResult> {
   private id: string;
+  private destination: string | null;
+  private asset: IAssetParam | null;
   private first: number;
   private offset: number;
 
-  constructor(connection: Connection, id: string, first: number, offset?: number) {
+  constructor(connection: Connection, params: IAccountPaymentsQueryParams, first: number, offset?: number) {
     super(connection);
-    this.id = id;
+    this.id = params.id;
+    this.destination = params.destination;
+    this.asset = params.asset;
     this.first = first;
     this.offset = offset || 0;
   }
@@ -29,34 +44,51 @@ export class AccountPaymentsQuery extends Query<IAccountPaymentsQueryResult> {
   }
 
   protected async request(): Promise<any> {
-    return this.connection.query(
-      `
+    const filterStatements = this.prepareFilters();
+    const query = `
         query accountOperations($id: string, $first: int, $offset: int) {
-          ops(func: eq(type, "account")) @filter(eq(id, $id)) {
+          ops(func: eq(type, "account")) @filter(eq(id, $id)) @cascade {
             operations(
               first: $first,
               offset: $offset,
               orderdesc: order
             ) @filter(eq(kind, "payment")) {
               account.source { id }
-              account.destination { id }
-              asset {
+              account.destination ${filterStatements.destination || ""} { id }
+              asset ${dig(filterStatements, "asset", "code") || ""} {
                 code
                 native
-                issuer { id }
+                issuer ${dig(filterStatements, "asset", "issuer") || ""} { id }
               }
               amount
               ledger { close_time }
             }
           }
         }
-      `,
-      {
-        $id: this.id,
-        $first: this.first.toString(),
-        $offset: this.offset.toString()
+      `;
+
+    return this.connection.query(query, {
+      $id: this.id,
+      $first: this.first.toString(),
+      $offset: this.offset.toString()
+    });
+  }
+
+  private prepareFilters() {
+    const filterStatements: { destination?: string | null; asset?: IAssetParam | null } = {};
+
+    if (this.destination) {
+      filterStatements.destination = `@filter(eq(id, "${this.destination}"))`;
+    }
+
+    if (this.asset) {
+      filterStatements.asset = { code: `@filter(eq(code, "${this.asset.code}"))` };
+      if (this.asset.issuer) {
+        filterStatements.asset.issuer = `@filter(eq(id, "${this.asset.issuer}"))`;
       }
-    );
+    }
+
+    return filterStatements;
   }
 
   private mapData(dgraphData: IPaymentOperationData): IPaymentOperation {
