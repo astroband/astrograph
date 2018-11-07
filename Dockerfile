@@ -23,7 +23,7 @@ COPY tsconfig.json .
 COPY package.json .
 COPY yarn.lock .
 
-RUN yarn install --production=false
+RUN yarn install --production=false --verbose
 RUN yarn build
 
 # ====================================================================================================
