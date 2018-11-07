@@ -59,7 +59,6 @@
     "subscriptions-transport-sse": "^0.9.2",
     "subscriptions-transport-ws": "^0.9.14",
     "ts-jest": "^23.10.1",
-    "ts-mockito": "^2.3.1",
     "ts-node": "^6.0.5",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.14.0",
