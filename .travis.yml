@@ -7,4 +7,7 @@ services:
   - postgresql
 before_script:
   - psql -c 'create database astrograph_test;' -U postgres
+  - npm install codecov -g
 script: yarn run test:unit
+after_success:
+  - codecov
