@@ -1,19 +1,20 @@
+import { Asset } from "stellar-sdk";
 import { TrustLine } from "./trust_line";
 
-import { assetFromXDR, publicKeyFromXDR } from "../util/xdr";
+import { publicKeyFromXDR } from "../util/xdr";
 
 export class TrustLineValues extends TrustLine {
   public static buildFromXDR(xdr: any): TrustLineValues {
-    const { assettype, assetcode, issuer } = assetFromXDR(xdr.asset());
+    const asset = Asset.fromOperation(xdr.asset());
 
     return new TrustLineValues({
       accountid: publicKeyFromXDR(xdr),
       balance: xdr.balance().toString(),
       tlimit: xdr.limit().toString(),
       flags: xdr.flags(),
-      assettype,
-      assetcode,
-      issuer,
+      assettype: xdr.asset().switch().value,
+      assetcode: asset.getCode(),
+      issuer: asset.getIssuer(),
       lastmodified: -1
     });
   }
