@@ -1,4 +1,5 @@
-import { Asset, Transaction } from "../../model";
+import { Asset } from "stellar-sdk";
+import { PaymentOperation, Transaction } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
@@ -52,13 +53,13 @@ export class OperationWriter extends Writer {
     this.prev = prev;
 
     if (ledger === null) {
-      throw new Error("Ledger not found in transaction writer");
+      throw new Error(`Ledger ${this.tx.ledgerSeq} not found in operation writer`);
     }
 
     this.ledger = ledger;
 
     if (transaction === null) {
-      throw new Error("Transaction not found in transaction writer");
+      throw new Error(`Transaction ${this.tx.id} not found in operation writer`);
     }
 
     this.transaction = transaction;
@@ -115,16 +116,12 @@ export class OperationWriter extends Writer {
   }
 
   private async appendPaymentOp() {
-    const op = this.xdr.body().paymentOp();
+    const op = PaymentOperation.buildFromXDR(this.xdr);
 
-    const amount = op.amount().toString();
-    const destination = publicKeyFromBuffer(op.destination().value());
-    const asset = Asset.buildFromXDR(op.asset());
+    this.b.append(this.current, "amount", op.amount);
 
-    this.b.append(this.current, "amount", amount);
-
-    await this.appendAsset(this.current, "asset", asset, "operations");
-    await this.appendAccount(this.current, "account.destination", destination, "operations");
+    await this.appendAsset(this.current, "asset", op.asset, "operations");
+    await this.appendAccount(this.current, "account.destination", op.destination, "operations");
   }
 
   private async pathPaymentOp() {
@@ -134,8 +131,8 @@ export class OperationWriter extends Writer {
     const destAmount = op.destAmount().toString();
 
     const destination = publicKeyFromBuffer(op.destination().value());
-    const sendAsset = Asset.buildFromXDR(op.sendAsset());
-    const destAsset = Asset.buildFromXDR(op.destAsset());
+    const sendAsset = Asset.fromOperation(op.sendAsset());
+    const destAsset = Asset.fromOperation(op.destAsset());
 
     await this.appendAsset(this.current, "send.asset", sendAsset, "operations");
     await this.appendAsset(this.current, "dest.asset", destAsset, "operations");

@@ -1,4 +1,4 @@
-import { Asset } from "../../model";
+import { Asset } from "stellar-sdk";
 import { Connection } from "../connection";
 import * as nquads from "../nquads";
 import { Query } from "./query";
@@ -33,7 +33,11 @@ export class AssetQuery extends Query<IAssetQueryResult> {
           }
         }
       `,
-      { $native: asset.native.toString(), $code: asset.code, $issuer: asset.issuer }
+      {
+        $native: asset.isNative().toString(),
+        $code: asset.getCode(),
+        $issuer: asset.getIssuer()
+      }
     );
   }
 }

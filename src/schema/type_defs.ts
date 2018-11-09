@@ -41,7 +41,7 @@ export default gql`
 
   type Asset {
     native: Boolean!
-    issuer: AccountID!
+    issuer: AccountID
     code: AssetCode!
   }
 
@@ -179,11 +179,19 @@ export default gql`
     timeBounds: TimeBounds
   }
 
+  type PaymentOperation {
+    destination: AccountID!
+    asset: Asset!
+    amount: String!
+    source: AccountID!
+  }
+
   type Query {
     account(id: AccountID!): Account
     accounts(id: [AccountID!]): [Account]
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
+    accountPayments(id: AccountID!, first: Int!, offset: Int): [PaymentOperation]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
     trustLines(id: AccountID!): [TrustLine]

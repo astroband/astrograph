@@ -1,4 +1,4 @@
-import { Account } from "./account";
+import { Account, IAccountRawData } from "./account";
 import { AccountThresholds } from "./account_thresholds";
 import { Signer } from "./signer";
 
@@ -36,20 +36,7 @@ export class AccountValues extends Account {
 
   public signers: Signer[];
 
-  constructor(
-    data: {
-      accountid: string;
-      balance: string;
-      seqnum: string;
-      numsubentries: number;
-      inflationdest: string;
-      homedomain: string;
-      thresholds: string;
-      flags: number;
-      lastmodified: number;
-    },
-    signers: any[]
-  ) {
+  constructor(data: IAccountRawData, signers: Signer[]) {
     super(data);
     this.signers = signers.sort((s1, s2) => {
       if (s1.signer < s2.signer) {

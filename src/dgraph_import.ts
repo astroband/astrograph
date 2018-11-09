@@ -1,9 +1,9 @@
-import { setNetwork as setStellarNetwork } from "../src/util/stellar"; // for some weird reason it must be first
+import { setNetwork as setStellarNetwork } from "./util/stellar"; // for some weird reason it must be first
 import parseArgv from "minimist";
-import { Cursor, ICursorResult } from "../src/ingest/cursor";
-import { Connection } from "../src/storage";
-import logger from "../src/util/logger";
-import { DGRAPH_URL } from "../src/util/secrets";
+import { Cursor, ICursorResult } from "./ingest/cursor";
+import { Connection } from "./storage";
+import logger from "./util/logger";
+import { DGRAPH_URL } from "./util/secrets";
 
 if (!DGRAPH_URL) {
   logger.error("Please, provide DGRAPH_URL env variable");

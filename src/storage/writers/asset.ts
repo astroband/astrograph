@@ -1,4 +1,4 @@
-import { Asset } from "../../model";
+import { Asset } from "stellar-sdk";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
 
@@ -14,7 +14,7 @@ export class AssetWriter extends Writer {
   private asset: Asset;
 
   private current: nquads.Value;
-  private issuer: nquads.Value;
+  private issuer: nquads.Value | null = null;
 
   protected constructor(connection: Connection, asset: Asset) {
     super(connection);
@@ -28,8 +28,10 @@ export class AssetWriter extends Writer {
     this.b
       .for(this.current)
       .append("type", "asset")
-      .append("native", this.asset.native)
-      .append("code", this.asset.code)
+      .append("native", this.asset.isNative())
+      // we need to truncate null bytes to avoid breaking DGraph
+      // see https://github.com/dgraph-io/dgraph/issues/2662
+      .append("code", this.asset.getCode().replace(/\0/g, ""))
       .append("issuer", this.issuer);
 
     const created = await this.push("asset");
@@ -40,6 +42,9 @@ export class AssetWriter extends Writer {
     const current = await this.connection.repo.asset(this.asset);
 
     this.current = current || this.current;
-    this.issuer = await this.connection.store.account(this.asset.issuer);
+
+    if (!this.asset.isNative()) {
+      this.issuer = await this.connection.store.account(this.asset.getIssuer());
+    }
   }
 }

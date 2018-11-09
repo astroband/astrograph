@@ -7,4 +7,7 @@ services:
   - postgresql
 before_script:
   - psql -c 'create database astrograph_test;' -U postgres
-script: yarn run test:unit
+script:
+  - yarn run test:unit --coverage
+after_success:
+  - codecov -f coverage/*.json

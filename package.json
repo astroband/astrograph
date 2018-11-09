@@ -46,7 +46,7 @@
     "@types/node-fetch": "^2.1.2",
     "@types/pg": "^7.4.10",
     "@types/rosie": "^0.0.35",
-    "@types/stellar-sdk": "^0.8.5",
+    "@types/stellar-sdk": "^0.10.4",
     "@types/winston": "^2.3.9",
     "apollo-cache-inmemory": "^1.2.9",
     "apollo-client": "^2.4.1",
@@ -78,7 +78,7 @@
     "test:unit": "NODE_ENV=test yarn run jest tests/unit",
     "test:integration": "NODE_ENV=test yarn run jest tests/integration",
     "test": "NODE_ENV=test yarn run jest",
-    "import-ledgers": "ts-node ./dgraph/import.ts"
+    "import-ledgers": "ts-node ./src/dgraph_import.ts"
   },
   "license": "MIT",
   "private": true

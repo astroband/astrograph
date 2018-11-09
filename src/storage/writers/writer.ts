@@ -1,4 +1,4 @@
-import { Asset } from "../../model";
+import { Asset } from "stellar-sdk";
 import { Connection } from "../connection";
 import * as nquads from "../nquads";
 

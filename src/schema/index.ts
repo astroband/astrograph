@@ -7,7 +7,7 @@ const schema = makeExecutableSchema({
   typeDefs,
   resolverValidationOptions: {
     requireResolversForResolveType: false
-  },
+  }
 });
 const schemas = [schema];
 

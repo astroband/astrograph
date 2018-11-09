@@ -1,19 +1,11 @@
 # ====================================================================================================
 
-FROM node:alpine AS build
+FROM node:10-alpine AS build
 
-ENV YARN_VERSION 1.10.1
 ENV NODE_ENV="production"
 
 # Packages
 RUN apk add --no-cache libc6-compat curl python g++ make postgresql-dev
-
-# Yarn
-RUN curl -fSLO --compressed "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz" \
-    && tar -xzf yarn-v$YARN_VERSION.tar.gz -C /opt/ \
-    && ln -snf /opt/yarn-v$YARN_VERSION/bin/yarn /usr/local/bin/yarn \
-    && ln -snf /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg \
-    && rm yarn-v$YARN_VERSION.tar.gz
 
 WORKDIR /root
 
@@ -28,7 +20,7 @@ RUN yarn build
 
 # ====================================================================================================
 
-FROM node:alpine
+FROM node:10-alpine
 
 ENV NODE_ENV="production"
 ENV PORT 4000

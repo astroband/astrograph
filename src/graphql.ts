@@ -6,6 +6,7 @@ import { Connection } from "./storage";
 import logger from "./util/logger";
 import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
+import "./util/memo";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -40,14 +41,27 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
 
   const tick = async () => {
     logger.info(`Ingesting ledger ${cursor.current}`);
-    const done = await (new Worker(cursor)).run();
-    logger.info(`Ingesting ledger ${cursor.current} finished!`);
 
-    if (done) {
-      await tick();
-    } else {
-      setTimeout(tick, INGEST_INTERVAL);
-    }
+    const worker = new Worker(cursor);
+    worker
+      .run()
+      .then(async (done) => {
+        logger.info(`Ingesting ledger ${cursor.current} finished!`);
+        if (done) {
+          await tick();
+        } else {
+          setTimeout(tick, INGEST_INTERVAL);
+        }
+      })
+      .catch((e) => {
+        logger.error(`Error \`${e.message}\` occured`);
+        if (e.message.includes("Please retry again, server is not ready to accept requests")) {
+          setTimeout(tick, 200);
+          return;
+        }
+
+        throw e;
+      });
   };
 
   tick();
