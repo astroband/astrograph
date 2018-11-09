@@ -13,7 +13,7 @@ export class Worker {
     this.cursor = cursor;
   }
 
-  public async run() {
+  public async run(): Promise<boolean> {
     const result = await this.cursor.nextLedger();
 
     if (result) {
@@ -27,6 +27,10 @@ export class Worker {
         await c.store.importLedgerTransactions(header, transactions);
         c.close();
       }
+
+      return true;
     }
+
+    return false;
   }
 }

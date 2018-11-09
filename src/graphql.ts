@@ -40,12 +40,17 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
 
   const tick = async () => {
     logger.info(`Ingesting ledger ${cursor.current}`);
-    await (new Worker(cursor)).run();
+    const done = await (new Worker(cursor)).run();
     logger.info(`Ingesting ledger ${cursor.current} finished!`);
-    setTimeout(tick, INGEST_INTERVAL);
+
+    if (done) {
+      await tick();
+    } else {
+      setTimeout(tick, INGEST_INTERVAL);
+    }
   };
 
-  setTimeout(tick, INGEST_INTERVAL);
+  tick();
 });
 
 server.listen({ port: PORT, host: BIND_ADDRESS }).then(({ url }) => {
