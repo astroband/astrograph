@@ -16,6 +16,7 @@ const schema = `
   deleted: bool @index (bool) .
   kind: string @index(exact) .
   amount: int @index (int) .
+  price: float @index (float) .
   starting_balance: int @index (int) .
 `;
 

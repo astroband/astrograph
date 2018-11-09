@@ -1,4 +1,5 @@
 import { Asset } from "stellar-sdk";
+import { BigNumber } from 'bignumber.js';
 import { PaymentOperation, Transaction } from "../../model";
 import { Connection } from "../connection";
 import { Writer } from "./writer";
@@ -103,6 +104,8 @@ export class OperationWriter extends Writer {
         return this.pathPaymentOp();
       case t.manageOffer():
         return this.manageOfferOp();
+      case t.createPassiveOfferOp():
+        return this.createPassiveOfferOp();
     }
   }
 
@@ -153,8 +156,8 @@ export class OperationWriter extends Writer {
     const sellingAsset = Asset.fromOperation(op.selling());
     const buyingAsset = Asset.fromOperation(op.buying());
     const amount = op.amount().toString();
-    const price = op.price().toString();
-    console.log(price);
+    const price = new BigNumber(op.price().n()).div(new BigNumber(op.price().d())).toString();
+
     const id = op.offerId().toString();
 
     await this.appendAsset(this.current, "selling.asset", sellingAsset, "offers");
@@ -165,5 +168,22 @@ export class OperationWriter extends Writer {
       .append("amount", amount)
       .append("price", price)
       .append("id", id);
+  }
+
+  private async createPassiveOfferOp() {
+    const op = this.xdr.body().createPassiveOfferOp();
+
+    const sellingAsset = Asset.fromOperation(op.selling());
+    const buyingAsset = Asset.fromOperation(op.buying());
+    const amount = op.amount().toString();
+    const price = new BigNumber(op.price().n()).div(new BigNumber(op.price().d())).toString();
+
+    await this.appendAsset(this.current, "selling.asset", sellingAsset, "offers");
+    await this.appendAsset(this.current, "buying.asset", buyingAsset, "offers");
+
+    this.b
+      .for(this.current)
+      .append("amount", amount)
+      .append("price", price);
   }
 }

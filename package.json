@@ -21,6 +21,7 @@
     "@udia/graphql-postgres-subscriptions": "^1.0.9",
     "apollo-server": "^2.0.0-rc.8",
     "big.js": "^5.1.2",
+    "bignumber.js": "^8.0.1",
     "bluebird": "^3.5.1",
     "dgraph-js": "^1.2.1",
     "dotenv": "^6.0.0",
