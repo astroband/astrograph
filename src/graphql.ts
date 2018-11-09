@@ -45,10 +45,10 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
     const worker = new Worker(cursor);
     worker
       .run()
-      .then(async (done) => {
+      .then((done) => {
         logger.info(`Ingesting ledger ${cursor.current} finished!`);
         if (done) {
-          await tick();
+          tick();
         } else {
           setTimeout(tick, INGEST_INTERVAL);
         }
