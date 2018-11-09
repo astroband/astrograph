@@ -45,9 +45,13 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
     const worker = new Worker(cursor);
     worker
       .run()
-      .then(() => {
+      .then((done) => {
         logger.info(`Ingesting ledger ${cursor.current} finished!`);
-        setTimeout(tick, INGEST_INTERVAL);
+        if (done) {
+          tick();
+        } else {
+          setTimeout(tick, INGEST_INTERVAL);
+        }
       })
       .catch((e) => {
         logger.error(`Error \`${e.message}\` occured`);
@@ -60,7 +64,7 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
       });
   };
 
-  setTimeout(tick, INGEST_INTERVAL);
+  tick();
 });
 
 server.listen({ port: PORT, host: BIND_ADDRESS }).then(({ url }) => {
