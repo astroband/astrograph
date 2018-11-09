@@ -160,8 +160,8 @@ export class OperationWriter extends Writer {
 
     const id = op.offerId().toString();
 
-    await this.appendAsset(this.current, "selling.asset", sellingAsset, "offers");
-    await this.appendAsset(this.current, "buying.asset", buyingAsset, "offers");
+    await this.appendAsset(this.current, "selling.asset", sellingAsset, "operations");
+    await this.appendAsset(this.current, "buying.asset", buyingAsset, "operations");
 
     this.b
       .for(this.current)
@@ -178,8 +178,8 @@ export class OperationWriter extends Writer {
     const amount = op.amount().toString();
     const price = new BigNumber(op.price().n()).div(new BigNumber(op.price().d())).toString();
 
-    await this.appendAsset(this.current, "selling.asset", sellingAsset, "offers");
-    await this.appendAsset(this.current, "buying.asset", buyingAsset, "offers");
+    await this.appendAsset(this.current, "selling.asset", sellingAsset, "operations");
+    await this.appendAsset(this.current, "buying.asset", buyingAsset, "operations");
 
     this.b
       .for(this.current)
