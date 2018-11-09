@@ -101,6 +101,8 @@ export class OperationWriter extends Writer {
         return this.appendPaymentOp();
       case t.pathPayment():
         return this.pathPaymentOp();
+      case t.manageOffer():
+        return this.manageOfferOp();
     }
   }
 
@@ -143,5 +145,25 @@ export class OperationWriter extends Writer {
       .append("dest.amount", destAmount);
 
     await this.appendAccount(this.current, "account.destination", destination, "operations");
+  }
+
+  private async manageOfferOp() {
+    const op = this.xdr.body().manageOfferOp();
+
+    const sellingAsset = Asset.fromOperation(op.selling());
+    const buyingAsset = Asset.fromOperation(op.buying());
+    const amount = op.amount().toString();
+    const price = op.price().toString();
+    console.log(price);
+    const id = op.offerId().toString();
+
+    await this.appendAsset(this.current, "selling.asset", sellingAsset, "offers");
+    await this.appendAsset(this.current, "buying.asset", buyingAsset, "offers");
+
+    this.b
+      .for(this.current)
+      .append("amount", amount)
+      .append("price", price)
+      .append("id", id);
   }
 }
