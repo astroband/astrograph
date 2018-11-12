@@ -2,6 +2,9 @@ import { Asset } from "stellar-sdk";
 import { LedgerHeader, Transaction } from "../model";
 import { Connection } from "./connection";
 
+import { LedgerBuilder } from "../storage2/builders/ledger";
+import { Cache } from "../storage2/cache";
+
 import * as nquads from "./nquads";
 import * as writers from "./writers";
 
@@ -33,14 +36,17 @@ export class Store {
   }
 
   public async importLedgerTransactions(header: LedgerHeader, transactions: Transaction[]) {
-    await this.ledger(header);
-
-    for (const transaction of transactions) {
-      await this.transaction(transaction);
-
-      for (let index = 0; index < transaction.operationsXDR().length; index++) {
-        await this.operation(transaction, index);
-      }
-    }
+    console.log(
+      new Cache(new LedgerBuilder(header).build()).populate()
+    );
+    // await this.ledger(header);
+    //
+    // for (const transaction of transactions) {
+    //   await this.transaction(transaction);
+    //
+    //   for (let index = 0; index < transaction.operationsXDR().length; index++) {
+    //     await this.operation(transaction, index);
+    //   }
+    // }
   }
 }

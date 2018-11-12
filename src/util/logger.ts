@@ -15,7 +15,7 @@ const LOG_FILE = LoggerLevel.error;
 let logLevel = process.env.LOG_LEVEL;
 
 if (!logLevel || !LoggerLevel[logLevel]) {
-  logLevel = process.env.NODE_ENV === "production" ? PROD_LOG_LEVEL : DEV_LOG_LEVEL
+  logLevel = process.env.NODE_ENV === "production" ? PROD_LOG_LEVEL : DEV_LOG_LEVEL;
 }
 
 const logger: Logger = createLogger({
