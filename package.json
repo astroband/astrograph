@@ -47,7 +47,6 @@
     "@types/node-fetch": "^2.1.2",
     "@types/pg": "^7.4.10",
     "@types/rosie": "^0.0.35",
-    "@types/stellar-sdk": "^0.10.4",
     "@types/winston": "^2.3.9",
     "apollo-cache-inmemory": "^1.2.9",
     "apollo-client": "^2.4.1",

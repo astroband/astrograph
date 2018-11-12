@@ -261,13 +261,6 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
-"@types/stellar-sdk@^0.10.4":
-  version "0.10.4"
-  resolved "https://registry.yarnpkg.com/@types/stellar-sdk/-/stellar-sdk-0.10.4.tgz#26c80f9f82c33d187e1b4a4643312782f7744e9e"
-  integrity sha512-tbP9ZTflC0IrlVfMxnGR0CuJAk6zkNeFfAkX4SP0OKFYc4LJaDM+zWQ1D/XJsZu7C3L+OmFMwNBhV9c5ziOYUA==
-  dependencies:
-    "@types/node" "*"
-
 "@types/winston@^2.3.9":
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/@types/winston/-/winston-2.4.4.tgz#48cc744b7b42fad74b9a2e8490e0112bd9a3d08d"

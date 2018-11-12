@@ -1,18 +1,23 @@
-import { Memo, MemoText, MemoHash, MemoReturn } from "stellar-sdk";
+import { Memo, MemoText, MemoHash, MemoReturn } from "stellar-base";
 import logger from "./logger";
 
-declare module "stellar-sdk" {
+declare module "stellar-base" {
   interface Memo {
-    getPlainValue(): string | number | null;
+    getPlainValue(): string | null;
   }
 }
 
-// converts Buffer values to strings
+// converts Buffer and array values to strings
 Memo.prototype.getPlainValue = function() {
-  if (!this.value || !(this.value instanceof Buffer)) {
+  if (typeof this.value === "string" || this.value == null) {
     return this.value;
   }
 
+  if (this.value instanceof Array) {
+    return Buffer.from(this.value).toString("utf8");
+  }
+
+  // from here value can be only Buffer
   switch(this.type) {
     case MemoText:
       return this.value.toString("utf8");
