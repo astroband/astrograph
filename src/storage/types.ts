@@ -21,6 +21,7 @@ export interface IPaymentOperationData {
   "account.destination": IAccountData[];
   amount: string;
   asset: IAssetData[];
+  ledger: ILedgerData[];
 }
 
 export interface IAssetData {
@@ -32,4 +33,8 @@ export interface IAssetData {
 export interface IAccountData {
   id: string;
   // it's incomplete
+}
+
+export interface ILedgerData {
+  close_time: string;
 }

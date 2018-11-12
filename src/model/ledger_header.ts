@@ -9,6 +9,7 @@ export class LedgerHeader {
   public baseFee: number;
   public baseReserve: number;
   public maxTxSetSize: number;
+  public closeTime: Date;
 
   constructor(data: { data: string }) {
     this.xdr = data.data;
@@ -20,5 +21,6 @@ export class LedgerHeader {
     this.baseFee = header.baseFee();
     this.baseReserve = header.baseReserve();
     this.maxTxSetSize = header.maxTxSetSize();
+    this.closeTime = new Date(header.scpValue().closeTime() * 1000);
   }
 }

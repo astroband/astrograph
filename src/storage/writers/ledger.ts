@@ -45,6 +45,7 @@ export class LedgerWriter extends Writer {
       .append("version", this.header.ledgerVersion)
       .append("base_fee", this.header.baseFee)
       .append("base_reserve", this.header.baseReserve)
-      .append("max_tx_set_size", this.header.maxTxSetSize);
+      .append("max_tx_set_size", this.header.maxTxSetSize)
+      .append("close_time", this.header.closeTime.toISOString());
   }
 }

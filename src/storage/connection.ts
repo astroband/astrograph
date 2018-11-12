@@ -17,6 +17,7 @@ const schema = `
   kind: string @index(exact) .
   amount: int @index (int) .
   starting_balance: int @index (int) .
+  close_time: dateTime @index (hour) .
 `;
 
 export class Connection {

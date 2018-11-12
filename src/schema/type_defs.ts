@@ -5,6 +5,7 @@ export default gql`
   scalar AccountID
   scalar TimeBounds
   scalar MemoValue
+  scalar DateTime
 
   enum MemoType {
     id
@@ -184,6 +185,7 @@ export default gql`
     asset: Asset!
     amount: String!
     source: AccountID!
+    dateTime: DateTime!
   }
 
   type Query {
