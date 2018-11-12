@@ -18,6 +18,7 @@ const schema = `
   amount: int @index (int) .
   price: float @index (float) .
   starting_balance: int @index (int) .
+  close_time: dateTime @index (hour) .
 `;
 
 export class Connection {

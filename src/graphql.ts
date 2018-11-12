@@ -1,4 +1,5 @@
 import { ApolloServer } from "apollo-server";
+import Honeybadger from "honeybadger";
 
 import { Cursor, Worker } from "./ingest";
 import schema from "./schema";
@@ -28,6 +29,7 @@ if (DGRAPH_URL) {
   logger.info(`[DGraph] Updating schema...`);
   new Connection().migrate().catch((err: any) => {
     logger.error(err);
+    Honeybadger.notify(err);
     process.exit(-1);
   });
 }
@@ -60,7 +62,7 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
           return;
         }
 
-        throw e;
+        Honeybadger.notify(e);
       });
   };
 

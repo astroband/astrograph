@@ -46,6 +46,7 @@ export class AccountPaymentsQuery extends Query<IAccountPaymentsQueryResult> {
                 issuer { id }
               }
               amount
+              ledger { close_time }
             }
           }
         }
@@ -66,7 +67,8 @@ export class AccountPaymentsQuery extends Query<IAccountPaymentsQueryResult> {
       destination: dgraphData["account.destination"][0].id,
       source: dgraphData["account.source"][0].id,
       amount: dgraphData.amount,
-      asset: asset
+      asset: asset,
+      dateTime: new Date(dgraphData.ledger[0].close_time)
     };
   }
 }
