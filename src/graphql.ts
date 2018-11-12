@@ -29,6 +29,7 @@ if (DGRAPH_URL) {
   logger.info(`[DGraph] Updating schema...`);
   new Connection().migrate().catch((err: any) => {
     logger.error(err);
+    Honeybadger.notify(err);
     process.exit(-1);
   });
 }
