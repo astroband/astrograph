@@ -1,4 +1,5 @@
 import { ApolloServer } from "apollo-server";
+import Honeybadger from "honeybadger";
 
 import { Cursor, Worker } from "./ingest";
 import schema from "./schema";
@@ -60,7 +61,7 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
           return;
         }
 
-        throw e;
+        Honeybadger.notify(e);
       });
   };
 
