@@ -4,6 +4,7 @@ import { Cursor, ICursorResult } from "./ingest/cursor";
 import { Connection } from "./storage";
 import logger from "./util/logger";
 import { DGRAPH_URL } from "./util/secrets";
+import "./util/memo";
 
 if (!DGRAPH_URL) {
   logger.error("Please, provide DGRAPH_URL env variable");
