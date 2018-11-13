@@ -1,39 +1,39 @@
 export interface IBlank {
   type: "blank";
   value: string;
-};
+}
 
 export interface ILink {
   type: "link";
   value: string;
-};
+}
 
 export interface IValue {
   type: "value";
   value: string | number | boolean;
-};
+}
 
-export type Subject = IBlank | ILink;
-export type Object = IBlank | ILink | IValue;
+export type Subj = IBlank | ILink;
+export type Obj = IBlank | ILink | IValue;
 
 export class NQuad {
-  public subject: Subject;
-  public predicate: string;
-  public object: Object;
-
   public static blank(value: string): IBlank {
-    return { type: "blank", value: value };
+    return { type: "blank", value };
   }
 
   public static link(value: string): ILink {
-    return { type: "link", value: value };
+    return { type: "link", value };
   }
 
   public static value(value: string | number | boolean): IValue {
-    return { type: "value", value: value };
+    return { type: "value", value };
   }
 
-  public constructor(subject: Subject, predicate: string, object: Object) {
+  public subject: Subj;
+  public predicate: string;
+  public object: Obj;
+
+  public constructor(subject: Subj, predicate: string, object: Obj) {
     this.subject = subject;
     this.predicate = predicate;
     this.object = object;
@@ -45,11 +45,14 @@ export class NQuad {
 
   private interpolate(x: IBlank | ILink | IValue): string {
     switch (x.type) {
-      case "blank": return `_:${x.value}`;
-      case "link": return `<${x.value}>`;
-      case "value": return `"${x.value}"`;
+      case "blank":
+        return `_:${x.value}`;
+      case "link":
+        return `<${x.value}>`;
+      case "value":
+        return `"${x.value}"`;
     }
   }
 }
 
-export type NQuads = Array<NQuad>;
+export type NQuads = NQuad[];

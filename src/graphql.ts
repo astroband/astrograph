@@ -1,3 +1,5 @@
+import "./util/memo";
+
 import { ApolloServer } from "apollo-server";
 import Honeybadger from "honeybadger";
 
@@ -7,7 +9,6 @@ import { Connection } from "./storage";
 import logger from "./util/logger";
 import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
-import "./util/memo";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -47,16 +48,16 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
     const worker = new Worker(cursor);
     worker
       .run()
-      .then((done) => {
+      .then(done => {
         logger.info(`Ingesting ledger ${cursor.current} finished!`);
         if (done) {
-          //tick();
+          // tick();
           setTimeout(tick, INGEST_INTERVAL);
         } else {
           setTimeout(tick, INGEST_INTERVAL);
         }
       })
-      .catch((e) => {
+      .catch(e => {
         logger.error(`Error \`${e.message}\` occured`);
         if (e.message.includes("Please retry again, server is not ready to accept requests")) {
           setTimeout(tick, 200);

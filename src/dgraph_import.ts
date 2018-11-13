@@ -1,10 +1,10 @@
-import { setNetwork as setStellarNetwork } from "./util/stellar"; // for some weird reason it must be first
 import parseArgv from "minimist";
 import { Cursor, ICursorResult } from "./ingest/cursor";
 import { Connection } from "./storage";
 import logger from "./util/logger";
-import { DGRAPH_URL } from "./util/secrets";
 import "./util/memo";
+import { DGRAPH_URL } from "./util/secrets";
+import { setNetwork as setStellarNetwork } from "./util/stellar"; // for some weird reason it must be first
 
 if (!DGRAPH_URL) {
   logger.error("Please, provide DGRAPH_URL env variable");
@@ -29,9 +29,9 @@ setStellarNetwork().then((network: string) => {
   c.migrate()
     .then(async () => {
       Cursor.build(startSeq || -1).then(async cursor => {
-        let data: ICursorResult | null;
+        let data: ICursorResult | null = await cursor.nextLedger();
 
-        while (data = await cursor.nextLedger()) {
+        while (data) {
           const { header, transactions } = data;
 
           if (endSeq && header.ledgerSeq > endSeq) {
@@ -40,6 +40,8 @@ setStellarNetwork().then((network: string) => {
 
           logger.info(`ingesting ledger #${header.ledgerSeq}`);
           await c.store.importLedgerTransactions(header, transactions);
+
+          data = await cursor.nextLedger()
         }
 
         c.close();
