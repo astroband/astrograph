@@ -40,7 +40,7 @@ export class Store {
     const nquads = await c.populate();
     console.log(nquads.join("\n"));
 
-    await this.connection.push(nquads.join("\n"));
+    c.put(await this.connection.push(nquads.join("\n")));
 
     // await this.ledger(header);
     //

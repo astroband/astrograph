@@ -21,6 +21,13 @@ export class Cache {
     return this.update(hits, found);
   }
 
+  // Updates cache with values returned after insert
+  public put(results: any) {
+    results.getUidsMap().forEach((v: string, k: string) => {
+      ___cache.set(k, v);
+    });
+  }
+
   // Replaces _:abcd values cached or stored in database with actual UIDs
   private update(hits: Map<string, string>, found: Map<string, string>): NQuads {
     return this.nquads.map((nquad: NQuad): NQuad => {
