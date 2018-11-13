@@ -9,7 +9,9 @@ export abstract class Builder {
 
   protected pushValues(data: object) {
     for (const key in data) {
-      this.pushValue(key, data[key]);
+      if (data.hasOwnProperty(key)) {
+        this.pushValue(key, data[key]);
+      }
     }
   }
 

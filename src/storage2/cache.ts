@@ -35,7 +35,7 @@ export class Cache {
         let newSubject: ILink | null = null;
         let newObject: ILink | null = null;
 
-        if (nquad.subject.type == "blank") {
+        if (nquad.subject.type === "blank") {
           const value = nquad.subject.value;
           const link = hits.get(value) || found.get(value);
 
@@ -44,7 +44,7 @@ export class Cache {
           }
         }
 
-        if (nquad.object.type == "blank") {
+        if (nquad.object.type === "blank") {
           const value = nquad.object.value;
           const link = hits.get(value) || found.get(value);
 
@@ -68,11 +68,11 @@ export class Cache {
 
     // Important: nodes are extracted either from left and right side of all expressions.
     this.nquads.forEach((nquad: NQuad) => {
-      if (nquad.subject.type == "blank") {
+      if (nquad.subject.type === "blank") {
         blanks.push(nquad.subject.value);
       }
 
-      if (nquad.object.type == "blank") {
+      if (nquad.object.type === "blank") {
         blanks.push(nquad.object.value);
       }
     });
