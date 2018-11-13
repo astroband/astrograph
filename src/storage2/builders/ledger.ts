@@ -7,12 +7,16 @@ import { NQuad, NQuads } from "../nquads";
 // extends Writer
 
 export class LedgerBuilder {
-  constructor(private header: LedgerHeader) { }
-
   public static build(header: LedgerHeader) {
     const builder = new LedgerBuilder(header);
     return builder.build();
   }
+
+  public static key(seq: number) {
+    return makeKey("ledger", seq.toString());
+  }
+
+  constructor(private header: LedgerHeader) {}
 
   public build(): NQuads {
     const seq = this.header.ledgerSeq;
@@ -33,9 +37,5 @@ export class LedgerBuilder {
       new NQuad(current, "max_tx_set_size", NQuad.value(this.header.maxTxSetSize)),
       new NQuad(current, "close_time", NQuad.value(this.header.closeTime.toISOString()))
     ];
-  }
-
-  public static key(seq: number) {
-    return makeKey("ledger", seq.toString());
   }
 }

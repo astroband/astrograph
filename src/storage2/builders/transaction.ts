@@ -1,9 +1,9 @@
+import { Transaction } from "../../model";
 import { makeKey } from "../../util/crypto";
+import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
 import { LedgerBuilder } from "./ledger";
-import { Transaction } from "../../model";
-import { NQuad, NQuads, IBlank } from "../nquads";
 
 interface ITransactionPredicates {
   type: string;
@@ -17,11 +17,19 @@ interface ITransactionPredicates {
   "memo.value"?: string | null;
   "time_bounds.min"?: number;
   "time_bounds.max"?: number;
-};
+}
 
 export class TransactionBuilder extends Builder {
-  private seq: number;
+  public static build(tx: Transaction) {
+    const builder = new TransactionBuilder(tx);
+    return builder.build();
+  }
+
+  public static key(ledgerSeq: number, index: number) {
+    return makeKey("transaction", ledgerSeq, index);
+  }
   protected current: IBlank;
+  private seq: number;
 
   constructor(private tx: Transaction) {
     super();
@@ -34,11 +42,6 @@ export class TransactionBuilder extends Builder {
     }
   }
 
-  public static build(tx: Transaction) {
-    const builder = new TransactionBuilder(tx);
-    return builder.build();
-  }
-
   public build(): NQuads {
     const v: ITransactionPredicates = {
       type: "transaction",
@@ -47,7 +50,7 @@ export class TransactionBuilder extends Builder {
       index: this.tx.index,
       seq: this.seq,
       order: `${this.seq}-${this.tx.index}`,
-      fee_amount: this.tx.feeAmount,
+      fee_amount: this.tx.feeAmount
     };
 
     if (this.tx.timeBounds) {
@@ -69,15 +72,11 @@ export class TransactionBuilder extends Builder {
     return this.nquads;
   }
 
-  public static key(ledgerSeq: number, index: number) {
-    return makeKey("transaction", ledgerSeq, index);
-  }
-
   private pushSourceAccount() {
     const account = NQuad.blank(AccountBuilder.key(this.tx.sourceAccount));
     this.nquads.push(...AccountBuilder.build(this.tx.sourceAccount));
     this.nquads.push(new NQuad(this.current, "account.source", account));
-    this.nquads.push(new NQuad(account, "transactions", this.current),);
+    this.nquads.push(new NQuad(account, "transactions", this.current));
   }
 
   private pushLedger() {

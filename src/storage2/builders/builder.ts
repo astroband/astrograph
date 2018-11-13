@@ -1,22 +1,20 @@
-import { NQuads, NQuad, Subj } from "../nquads";
+import { NQuad, NQuads, Subj } from "../nquads";
 
 export abstract class Builder {
   protected nquads: NQuads = [];
   protected abstract current: Subj;
   protected prev: Subj | null = null;
 
-  abstract build(): NQuads;
+  public abstract build(): NQuads;
 
   protected pushValues(data: object) {
-    for (let key in data) {
+    for (const key in data) {
       this.pushValue(key, data[key]);
     }
   }
 
   protected pushValue(predicate: string, value: any) {
-    this.nquads.push(
-      new NQuad(this.current, predicate, NQuad.value(value))
-    );
+    this.nquads.push(new NQuad(this.current, predicate, NQuad.value(value)));
   }
 
   protected pushPreviousTx() {

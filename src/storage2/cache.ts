@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Connection } from "../storage/connection";
-import { ILink, NQuads, NQuad } from "./nquads";
+import { ILink, NQuad, NQuads } from "./nquads";
 
 const ___cache = new Map<string, string>();
 
@@ -30,34 +30,36 @@ export class Cache {
 
   // Replaces _:abcd values cached or stored in database with actual UIDs
   private update(hits: Map<string, string>, found: Map<string, string>): NQuads {
-    return this.nquads.map((nquad: NQuad): NQuad => {
-      let newSubject: ILink | null = null;
-      let newObject: ILink | null = null;
+    return this.nquads.map(
+      (nquad: NQuad): NQuad => {
+        let newSubject: ILink | null = null;
+        let newObject: ILink | null = null;
 
-      if (nquad.subject.type == "blank") {
-        const value = nquad.subject.value;
-        const link = hits.get(value) || found.get(value);
+        if (nquad.subject.type == "blank") {
+          const value = nquad.subject.value;
+          const link = hits.get(value) || found.get(value);
 
-        if (link) {
-          newSubject = NQuad.link(link);
+          if (link) {
+            newSubject = NQuad.link(link);
+          }
         }
-      }
 
-      if (nquad.object.type == "blank") {
-        const value = nquad.object.value;
-        const link = hits.get(value) || found.get(value);
+        if (nquad.object.type == "blank") {
+          const value = nquad.object.value;
+          const link = hits.get(value) || found.get(value);
 
-        if (link) {
-          newObject = NQuad.link(link);
+          if (link) {
+            newObject = NQuad.link(link);
+          }
         }
-      }
 
-      if (newObject || newSubject) {
-        return new NQuad(newSubject || nquad.subject, nquad.predicate, newObject || nquad.object)
-      }
+        if (newObject || newSubject) {
+          return new NQuad(newSubject || nquad.subject, nquad.predicate, newObject || nquad.object);
+        }
 
-      return nquad;
-    });
+        return nquad;
+      }
+    );
   }
 
   // Extracts all _:abcde (new nodes to be created) from the list of NQuads.
@@ -79,15 +81,15 @@ export class Cache {
   }
 
   // Splits all missing nodes in two groups: found and missing in cache
-  private hitsAndMisses(): { hits: Map<string, string>, misses: string[] } {
+  private hitsAndMisses(): { hits: Map<string, string>; misses: string[] } {
     const hits = new Map<string, string>();
-    const misses:string[] = [];
+    const misses: string[] = [];
 
     this.blanks().forEach((value: string) => {
       const cached = ___cache.get(value);
 
       if (cached) {
-        hits.set(value, cached)
+        hits.set(value, cached);
       } else {
         misses.push(value);
       }
