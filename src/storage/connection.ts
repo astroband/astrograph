@@ -5,8 +5,9 @@ import { DGRAPH_URL } from "../util/secrets";
 import { Repo } from "./repo";
 import { Store } from "./store";
 
-const schema = `
+const SCHEMA = `
   type: string @index(exact) .
+  key: string @index(exact) .
   seq: int @index(int) .
   id: string @index(exact) .
   index: int @index(int) .
@@ -42,7 +43,7 @@ export class Connection {
 
   public async migrate() {
     const op = new Operation();
-    op.setSchema(schema);
+    op.setSchema(SCHEMA);
     await this.client.alter(op);
   }
 
@@ -85,9 +86,10 @@ export class Connection {
     }
   }
 
-  public async query(query: string, vars: any): Promise<any> {
+  public async query(query: string, vars?: any): Promise<any> {
     try {
-      const res = await this.client.newTxn().queryWithVars(query, vars);
+      const txn = this.client.newTxn();
+      const res = vars ? await txn.queryWithVars(query, vars) : await txn.query(query);
       return res.getJson();
     } catch (err) {
       logger.error(err);

@@ -27,7 +27,7 @@ export class LedgerBuilder {
     //     .append("close_time", this.header.closeTime.toISOString());
 
     return [
-      new NQuad(current, "key", current),
+      new NQuad(current, "key", NQuad.value(current.value)),
       new NQuad(current, "prev", prev),
       new NQuad(current, "type", NQuad.value("ledger")),
       new NQuad(current, "seq", NQuad.value(seq)),
