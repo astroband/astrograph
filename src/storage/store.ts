@@ -3,6 +3,7 @@ import { LedgerHeader, Transaction } from "../model";
 import { Connection } from "./connection";
 
 import { LedgerBuilder } from "../storage2/builders/ledger";
+import { TransactionBuilder } from "../storage2/builders/transaction";
 import { Cache } from "../storage2/cache";
 
 import * as nquads from "./nquads";
@@ -36,7 +37,14 @@ export class Store {
   }
 
   public async importLedgerTransactions(header: LedgerHeader, transactions: Transaction[]) {
-    const c = new Cache(this.connection, new LedgerBuilder(header).build());
+    const ledgerNquads = (new LedgerBuilder(header)).build();
+    const transactionsNquads = [];
+
+    for (const transaction of transactions) {
+      transactionsNquads.push(...(new TransactionBuilder(transaction).build()));
+    }
+
+    const c = new Cache(this.connection, ledgerNquads.concat(transactionsNquads));
     const nquads = await c.populate();
     console.log(nquads.join("\n"));
 

@@ -3,7 +3,7 @@ import logger from "./logger";
 
 declare module "stellar-sdk" {
   interface Memo {
-    getPlainValue(): string | number | null;
+    getPlainValue(): string | null;
   }
 }
 

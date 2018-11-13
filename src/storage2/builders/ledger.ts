@@ -1,6 +1,5 @@
-import crypto from "crypto";
-
 import { LedgerHeader } from "../../model";
+import { makeKey } from "../../util/crypto";
 import { NQuad, NQuads } from "../nquads";
 // import { Connection } from "../connection";
 // import { Writer } from "./writer";
@@ -8,17 +7,13 @@ import { NQuad, NQuads } from "../nquads";
 // extends Writer
 
 export class LedgerBuilder {
-  private header: LedgerHeader;
-
-  constructor(header: LedgerHeader) {
-    this.header = header;
-  }
+  constructor(private header: LedgerHeader) { }
 
   public build(): NQuads {
     const seq = this.header.ledgerSeq;
 
-    const current = NQuad.blank(this.key(seq));
-    const prev = NQuad.blank(this.key(seq - 1));
+    const current = NQuad.blank(LedgerBuilder.key(seq));
+    const prev = NQuad.blank(LedgerBuilder.key(seq - 1));
 
     //     .append("version", this.header.ledgerVersion)
     //     .append("base_fee", this.header.baseFee)
@@ -35,14 +30,8 @@ export class LedgerBuilder {
     ];
   }
 
-  protected key(seq: number) {
-    return this.makeKey("ledger", seq.toString());
-  }
-
-  protected makeKey(...args: any[]): string {
-    const h = crypto.createHash("sha256");
-    args.forEach(value => h.update(`${value.toString()}:`));
-    return h.digest("hex");
+  public static key(seq: number) {
+    return makeKey("ledger", seq.toString());
   }
 
   // public static async build(connection: Connection, header: LedgerHeader): Promise<LedgerWriter> {
