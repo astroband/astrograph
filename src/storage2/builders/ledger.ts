@@ -9,6 +9,11 @@ import { NQuad, NQuads } from "../nquads";
 export class LedgerBuilder {
   constructor(private header: LedgerHeader) { }
 
+  public static build(header: LedgerHeader) {
+    const builder = new LedgerBuilder(header);
+    return builder.build();
+  }
+
   public build(): NQuads {
     const seq = this.header.ledgerSeq;
 

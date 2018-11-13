@@ -30,6 +30,11 @@ export class TransactionBuilder {
     this.ledgerSeq = tx.ledgerSeq;
   }
 
+  public static build(tx: Transaction) {
+    const builder = new TransactionBuilder(tx);
+    return builder.build();
+  }
+
   public build(): NQuads {
     const predicateValues: ITransactionPredicates = {
       type: "transaction",
@@ -74,7 +79,7 @@ export class TransactionBuilder {
 
   private attachSourceAccount() {
     const account = NQuad.blank(AccountBuilder.key(this.tx.sourceAccount));
-    this.nquads.push(...(new AccountBuilder(this.tx.sourceAccount)).build());
+    this.nquads.push(...AccountBuilder.build(this.tx.sourceAccount));
     this.nquads.push(
       new NQuad(this.current, "account.source", account)
     );

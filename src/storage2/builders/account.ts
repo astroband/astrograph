@@ -8,6 +8,11 @@ export class AccountBuilder {
     this.current = NQuad.blank(AccountBuilder.key(id));
   }
 
+  public static build(id: string) {
+    const builder = new AccountBuilder(id);
+    return builder.build();
+  }
+
   public build(): NQuads {
     return [
       new NQuad(this.current, "key", NQuad.value(this.current.value)),
