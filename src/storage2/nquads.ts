@@ -10,7 +10,7 @@ export interface ILink {
 
 export interface IValue {
   type: "value";
-  value: string | number;
+  value: string | number | boolean;
 };
 
 export type Subject = IBlank | ILink;
@@ -29,7 +29,7 @@ export class NQuad {
     return { type: "link", value: value };
   }
 
-  public static value(value: string | number): IValue {
+  public static value(value: string | number | boolean): IValue {
     return { type: "value", value: value };
   }
 

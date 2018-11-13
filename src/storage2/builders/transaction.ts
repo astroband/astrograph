@@ -74,6 +74,7 @@ export class TransactionBuilder {
 
   private attachSourceAccount() {
     const account = NQuad.blank(AccountBuilder.key(this.tx.sourceAccount));
+    this.nquads.push(...(new AccountBuilder(this.tx.sourceAccount)).build());
     this.nquads.push(
       new NQuad(this.current, "account.source", account)
     );
