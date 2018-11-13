@@ -1,5 +1,6 @@
 import { makeKey } from "../../util/crypto";
 import { AccountBuilder } from "./account";
+import { Builder } from "./builder";
 import { LedgerBuilder } from "./ledger";
 import { Transaction } from "../../model";
 import { NQuad, NQuads, IBlank } from "../nquads";
@@ -18,16 +19,19 @@ interface ITransactionPredicates {
   "time_bounds.max"?: number;
 };
 
-export class TransactionBuilder {
-  private nquads: NQuads = [];
-  private current: IBlank;
-  private ledgerSeq: number;
+export class TransactionBuilder extends Builder {
+  private seq: number;
+  protected current: IBlank;
 
   constructor(private tx: Transaction) {
-    this.current = NQuad.blank(
-      TransactionBuilder.key(tx.ledgerSeq, tx.index)
-    );
-    this.ledgerSeq = tx.ledgerSeq;
+    super();
+
+    this.seq = tx.ledgerSeq;
+    this.current = NQuad.blank(TransactionBuilder.key(tx.ledgerSeq, tx.index));
+
+    if (tx.index > 0) {
+      this.prev = NQuad.blank(TransactionBuilder.key(tx.ledgerSeq, tx.index - 1));
+    }
   }
 
   public static build(tx: Transaction) {
@@ -36,31 +40,31 @@ export class TransactionBuilder {
   }
 
   public build(): NQuads {
-    const predicateValues: ITransactionPredicates = {
+    const v: ITransactionPredicates = {
       type: "transaction",
       key: this.current.value,
       id: this.tx.id,
       index: this.tx.index,
-      seq: this.ledgerSeq,
-      order: `${this.ledgerSeq}-${this.tx.index}`,
+      seq: this.seq,
+      order: `${this.seq}-${this.tx.index}`,
       fee_amount: this.tx.feeAmount,
     };
 
     if (this.tx.timeBounds) {
-      predicateValues["time_bounds.min"] = this.tx.timeBounds[0];
-      predicateValues["time_bounds.max"] = this.tx.timeBounds[1];
+      v["time_bounds.min"] = this.tx.timeBounds[0];
+      v["time_bounds.max"] = this.tx.timeBounds[1];
     }
 
     if (this.tx.memo) {
-      predicateValues["memo.type"] = this.tx.memo.type;
-      predicateValues["memo.value"] = this.tx.memo.getPlainValue();
+      v["memo.type"] = this.tx.memo.type;
+      v["memo.value"] = this.tx.memo.getPlainValue();
     }
 
-    this.attachValues(predicateValues);
+    this.pushValues(v);
 
-    this.attachPreviousTx();
-    this.attachLedger();
-    this.attachSourceAccount();
+    this.pushPreviousTx();
+    this.pushLedger();
+    this.pushSourceAccount();
 
     return this.nquads;
   }
@@ -69,44 +73,14 @@ export class TransactionBuilder {
     return makeKey("transaction", ledgerSeq, index);
   }
 
-  private attachPreviousTx() {
-    const prev = NQuad.blank(
-      TransactionBuilder.key(this.ledgerSeq, this.tx.index - 1),
-    );
-    this.nquads.push(new NQuad(this.current, "prev", prev));
-    this.nquads.push(new NQuad(prev, "next", this.current));
-  }
-
-  private attachSourceAccount() {
+  private pushSourceAccount() {
     const account = NQuad.blank(AccountBuilder.key(this.tx.sourceAccount));
     this.nquads.push(...AccountBuilder.build(this.tx.sourceAccount));
-    this.nquads.push(
-      new NQuad(this.current, "account.source", account)
-    );
-    this.nquads.push(
-      new NQuad(account, "transactions", this.current),
-    );
+    this.nquads.push(new NQuad(this.current, "account.source", account));
+    this.nquads.push(new NQuad(account, "transactions", this.current),);
   }
 
-  private attachLedger() {
-    this.nquads.push(
-      new NQuad(
-        this.current,
-        "ledger",
-        NQuad.blank(LedgerBuilder.key(this.ledgerSeq)),
-      )
-    )
-  }
-
-  private attachValues(data: ITransactionPredicates) {
-    for (let key in data) {
-      this.attachValue(key, data[key]);
-    }
-  }
-
-  private attachValue(predicate: string, value: any) {
-    this.nquads.push(
-      new NQuad(this.current, predicate, NQuad.value(value))
-    );
+  private pushLedger() {
+    this.nquads.push(new NQuad(this.current, "ledger", NQuad.blank(LedgerBuilder.key(this.seq))));
   }
 }
