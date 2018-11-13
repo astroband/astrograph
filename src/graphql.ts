@@ -50,7 +50,8 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
       .then((done) => {
         logger.info(`Ingesting ledger ${cursor.current} finished!`);
         if (done) {
-          tick();
+          //tick();
+          setTimeout(tick, INGEST_INTERVAL);
         } else {
           setTimeout(tick, INGEST_INTERVAL);
         }

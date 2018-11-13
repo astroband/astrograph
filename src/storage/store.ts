@@ -37,7 +37,11 @@ export class Store {
 
   public async importLedgerTransactions(header: LedgerHeader, transactions: Transaction[]) {
     const c = new Cache(this.connection, new LedgerBuilder(header).build());
-    console.log(await c.populate());
+    const nquads = await c.populate();
+    console.log(nquads.join("\n"));
+
+    await this.connection.push(nquads.join("\n"));
+
     // await this.ledger(header);
     //
     // for (const transaction of transactions) {

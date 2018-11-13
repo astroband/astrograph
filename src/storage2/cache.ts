@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Connection } from "../storage/connection";
-import { NQuads, NQuad } from "./nquads";
+import { ILink, NQuads, NQuad } from "./nquads";
 
 const ___cache = new Map<string, string>();
 
@@ -18,33 +18,38 @@ export class Cache {
   public async populate(): Promise<NQuads> {
     const { hits, misses } = this.hitsAndMisses();
     const found = await this.query(misses);
-
-    return this.replace(hits, found);
+    return this.update(hits, found);
   }
 
-  private replace(hits: Map<string, string>, found: Map<string, string>): NQuads {
+  // Replaces _:abcd values cached or stored in database with actual UIDs
+  private update(hits: Map<string, string>, found: Map<string, string>): NQuads {
     return this.nquads.map((nquad: NQuad): NQuad => {
-      let n = nquad;
+      let newSubject: ILink | null = null;
+      let newObject: ILink | null = null;
 
       if (nquad.subject.type == "blank") {
         const value = nquad.subject.value;
-        const replacement = hits[value] || found[value];
+        const link = hits.get(value) || found.get(value);
 
-        if (replacement) {
-          n = new NQuad(NQuad.link(replacement), n.predicate, n.object);
+        if (link) {
+          newSubject = NQuad.link(link);
         }
       }
 
       if (nquad.object.type == "blank") {
         const value = nquad.object.value;
-        const replacement = hits[value] || found[value];
+        const link = hits.get(value) || found.get(value);
 
-        if (replacement) {
-          n = new NQuad(n.subject, n.predicate, NQuad.link(replacement));
+        if (link) {
+          newObject = NQuad.link(link);
         }
       }
 
-      return n;
+      if (newObject || newSubject) {
+        return new NQuad(newSubject || nquad.subject, nquad.predicate, newObject || nquad.object)
+      }
+
+      return nquad;
     });
   }
 
@@ -105,7 +110,11 @@ export class Cache {
       const value = result[k];
 
       if (value && value[0]) {
-        found.set(k.slice(1, -1), value[0].uid);
+        const uid = value[0].uid;
+        const key = k.slice(1);
+
+        found.set(key, uid);
+        ___cache.set(key, uid); // Save found to cache immediately
       }
     });
 
