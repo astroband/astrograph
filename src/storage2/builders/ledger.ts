@@ -19,19 +19,19 @@ export class LedgerBuilder {
 
     const current = NQuad.blank(LedgerBuilder.key(seq));
     const prev = NQuad.blank(LedgerBuilder.key(seq - 1));
-
-    //     .append("version", this.header.ledgerVersion)
-    //     .append("base_fee", this.header.baseFee)
-    //     .append("base_reserve", this.header.baseReserve)
-    //     .append("max_tx_set_size", this.header.maxTxSetSize)
-    //     .append("close_time", this.header.closeTime.toISOString());
-
+    
     return [
       new NQuad(current, "key", NQuad.value(current.value)),
       new NQuad(current, "prev", prev),
+      new NQuad(prev, "next", current),
       new NQuad(current, "type", NQuad.value("ledger")),
       new NQuad(current, "seq", NQuad.value(seq)),
-      new NQuad(current, "order", NQuad.value(seq))
+      new NQuad(current, "order", NQuad.value(seq)),
+      new NQuad(current, "version", NQuad.value(this.header.ledgerVersion)),
+      new NQuad(current, "base_fee", NQuad.value(this.header.baseFee)),
+      new NQuad(current, "base_reserver", NQuad.value(this.header.baseReserve)),
+      new NQuad(current, "max_tx_set_size", NQuad.value(this.header.maxTxSetSize)),
+      new NQuad(current, "close_time", NQuad.value(this.header.closeTime.toISOString()))
     ];
   }
 
