@@ -210,7 +210,7 @@ export default gql`
   }
 
   input AssetInput {
-    code: AssetCode!
+    code: AssetCode
     issuer: AccountID
   }
 
