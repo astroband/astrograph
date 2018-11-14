@@ -9,7 +9,8 @@ export default {
   Query: {
     accountPayments(root: any, args: any, ctx: any, info: any) {
       const dc = new DgraphConnection();
-      const query = new AccountPaymentsQuery(dc, args.id, args.first, args.offset);
+      const { first, offset, ...params } = args;
+      const query = new AccountPaymentsQuery(dc, params, first, offset);
 
       return query.call();
     }
