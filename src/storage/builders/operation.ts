@@ -7,6 +7,8 @@ import { LedgerBuilder } from "./ledger";
 import { TransactionBuilder } from "./transaction";
 import { CreateAccountOpBuilder } from "./create_account_op";
 import { PaymentOpBuilder } from "./payment_op";
+import { PathPaymentOpBuilder } from "./path_payment_op";
+import { ManageOfferOpBuilder } from "./manage_offer_op";
 
 import stellar from "stellar-base";
 
@@ -57,10 +59,10 @@ export class OperationBuilder extends Builder {
         return new CreateAccountOpBuilder(this.current, this.xdr.body().createAccountOp());
       case t.payment():
         return new PaymentOpBuilder(this.current, this.xdr.body().paymentOp());
-      // case t.pathPayment():
-      //   return this.pathPaymentOp();
-      // case t.manageOffer():
-      //   return this.manageOfferOp();
+      case t.pathPayment():
+        return new PathPaymentOpBuilder(this.current, this.xdr.body().pathPaymentOp());
+      case t.manageOffer():
+        return new ManageOfferOpBuilder(this.current, this.xdr.body().manageOfferOp());
       // case t.createPassiveOfferOp():
       //   return this.createPassiveOfferOp();
     }
