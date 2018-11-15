@@ -200,6 +200,7 @@ export default gql`
       first: Int!
       offset: Int
     ): [PaymentOperation]
+    assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
     trustLines(id: AccountID!): [TrustLine]
