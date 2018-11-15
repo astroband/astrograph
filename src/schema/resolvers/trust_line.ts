@@ -1,5 +1,5 @@
 import { Account, TrustLine } from "../../model";
-import { createBatchResolver, eventMatches, ledgerResolver, assetResolver } from "./util";
+import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 import { withFilter } from "graphql-subscriptions";
 

@@ -41,7 +41,7 @@ setStellarNetwork().then((network: string) => {
           logger.info(`ingesting ledger #${header.ledgerSeq}`);
           await c.store.importLedgerTransactions(header, transactions);
 
-          data = await cursor.nextLedger()
+          data = await cursor.nextLedger();
         }
 
         c.close();

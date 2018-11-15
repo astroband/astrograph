@@ -1,8 +1,8 @@
 import { Asset } from "stellar-sdk";
 import { BigNumber } from 'bignumber.js';
+import { Writer } from "./writer";
 import { Transaction } from "../../model";
 import { Connection } from "../connection";
-import { Writer } from "./writer";
 
 import { publicKeyFromBuffer } from "../../util/xdr/account";
 

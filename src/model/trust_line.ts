@@ -52,6 +52,7 @@ export class TrustLine implements ITrustLine {
 
     this.asset =
       data.assettype === stellar.xdr.AssetType.assetTypeNative().value
-        ? Asset.native() : new Asset(data.assetcode, data.issuer);
+        ? Asset.native()
+        : new Asset(data.assetcode, data.issuer);
   }
 }

@@ -1,4 +1,4 @@
-import { DgraphClient, DgraphClientStub, Mutation, Operation, ERR_ABORTED } from "dgraph-js";
+import { DgraphClient, DgraphClientStub, ERR_ABORTED, Mutation, Operation } from "dgraph-js";
 import grpc from "grpc";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";

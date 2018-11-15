@@ -5,30 +5,12 @@ import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
 import { LedgerBuilder } from "./ledger";
 
-interface ITransactionPredicates {
-  type: string;
-  key: string;
-  id: string;
-  index: number;
-  seq: number;
-  order: string;
-  fee_amount: string;
-  "memo.type"?: string;
-  "memo.value"?: string | null;
-  "time_bounds.min"?: number;
-  "time_bounds.max"?: number;
-}
-
 export class TransactionBuilder extends Builder {
-  public static build(tx: Transaction) {
-    const builder = new TransactionBuilder(tx);
-    return builder.build();
-  }
-
   public static key(ledgerSeq: number, index: number) {
     return makeKey("transaction", ledgerSeq, index);
   }
-  protected current: IBlank;
+
+  public readonly current: IBlank;
   private seq: number;
 
   constructor(private tx: Transaction) {
@@ -43,7 +25,7 @@ export class TransactionBuilder extends Builder {
   }
 
   public build(): NQuads {
-    const v: ITransactionPredicates = {
+    const v = {
       type: "transaction",
       key: this.current.value,
       id: this.tx.id,
@@ -65,7 +47,7 @@ export class TransactionBuilder extends Builder {
 
     this.pushValues(v);
 
-    this.pushPreviousTx();
+    this.pushPrev();
     this.pushLedger();
     this.pushSourceAccount();
 
@@ -73,10 +55,12 @@ export class TransactionBuilder extends Builder {
   }
 
   private pushSourceAccount() {
-    const account = NQuad.blank(AccountBuilder.key(this.tx.sourceAccount));
-    this.nquads.push(...AccountBuilder.build(this.tx.sourceAccount));
-    this.nquads.push(new NQuad(this.current, "account.source", account));
-    this.nquads.push(new NQuad(account, "transactions", this.current));
+    const account = new AccountBuilder(this.tx.sourceAccount);
+
+    //const account = NQuad.blank(AccountBuilder.key(this.tx.sourceAccount));
+    this.nquads.push(...account.build());
+    this.nquads.push(new NQuad(this.current, "account.source", account.current));
+    this.nquads.push(new NQuad(account.current, "transactions", this.current));
   }
 
   private pushLedger() {

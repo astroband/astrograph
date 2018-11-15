@@ -2,7 +2,7 @@ import { NQuad, NQuads, Subj } from "../nquads";
 
 export abstract class Builder {
   protected nquads: NQuads = [];
-  protected abstract current: Subj;
+  public readonly abstract current: Subj;
   protected prev: Subj | null = null;
 
   public abstract build(): NQuads;
@@ -19,7 +19,11 @@ export abstract class Builder {
     this.nquads.push(new NQuad(this.current, predicate, NQuad.value(value)));
   }
 
-  protected pushPreviousTx() {
+  protected pushKey() {
+    this.pushValue("key", this.current.value);
+  }
+
+  protected pushPrev() {
     if (this.prev) {
       this.nquads.push(new NQuad(this.current, "prev", this.prev));
       this.nquads.push(new NQuad(this.prev, "next", this.current));

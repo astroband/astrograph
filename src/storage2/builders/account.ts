@@ -1,27 +1,24 @@
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
+import { Builder } from "./builder";
 
-export class AccountBuilder {
-  public static build(id: string) {
-    const builder = new AccountBuilder(id);
-    return builder.build();
-  }
-
+export class AccountBuilder extends Builder {
   public static key(id: string) {
     return makeKey("account", id);
   }
-  private current: IBlank;
+  public readonly current: IBlank;
 
   constructor(private id: string) {
+    super();
     this.current = NQuad.blank(AccountBuilder.key(id));
   }
 
   public build(): NQuads {
-    return [
-      new NQuad(this.current, "key", NQuad.value(this.current.value)),
-      new NQuad(this.current, "type", NQuad.value("account")),
-      new NQuad(this.current, "deleted", NQuad.value(false)),
-      new NQuad(this.current, "id", NQuad.value(this.id))
-    ];
+    this.pushKey();
+    this.pushValue("id", this.id);
+    this.pushValue("type", "account");
+    this.pushValue("deleted", false);
+
+    return this.nquads;
   }
 }
