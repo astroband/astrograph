@@ -6,6 +6,7 @@ export class AccountBuilder extends Builder {
   public static key(id: string) {
     return makeKey("account", id);
   }
+  
   public readonly current: IBlank;
 
   constructor(private id: string) {

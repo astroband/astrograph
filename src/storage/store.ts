@@ -4,6 +4,7 @@ import { Connection } from "./connection";
 
 import { LedgerBuilder } from "../storage2/builders/ledger";
 import { TransactionBuilder } from "../storage2/builders/transaction";
+import { OperationBuilder } from "../storage2/builders/operation";
 import { Cache } from "../storage2/cache";
 
 import * as nquads from "./nquads";
@@ -40,12 +41,17 @@ export class Store {
     let nquads = new LedgerBuilder(header).build();
 
     for (const transaction of transactions) {
-      nquads.concat(new TransactionBuilder(transaction).build());
+      nquads = nquads.concat(new TransactionBuilder(transaction).build());
+
+      for (let index = 0; index < transaction.operationsXDR().length; index++) {
+        nquads = nquads.concat(new OperationBuilder(transaction, index).build());
+      }
     }
 
     const c = new Cache(this.connection, nquads);
     nquads = await c.populate();
 
+    console.log(nquads.join("\n"));
     const result = await this.connection.push(nquads.join("\n"));
     c.put(result);
 

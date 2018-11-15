@@ -8,6 +8,10 @@ export class LedgerBuilder extends Builder {
     return makeKey("ledger", seq.toString());
   }
 
+  public static keyNQuad(seq: number): IBlank {
+    return NQuad.blank(LedgerBuilder.key(seq));
+  }
+
   public readonly current: IBlank;
   protected seq: number;
 
@@ -15,8 +19,8 @@ export class LedgerBuilder extends Builder {
     super();
 
     this.seq = this.header.ledgerSeq;
-    this.current = NQuad.blank(LedgerBuilder.key(this.seq));
-    this.prev = NQuad.blank(LedgerBuilder.key(this.seq - 1));
+    this.current = LedgerBuilder.keyNQuad(this.seq);
+    this.prev = LedgerBuilder.keyNQuad(this.seq - 1);
   }
 
   public build(): NQuads {

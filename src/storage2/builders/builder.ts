@@ -1,3 +1,4 @@
+import { LedgerBuilder } from "./ledger";
 import { NQuad, NQuads, Subj } from "../nquads";
 
 export abstract class Builder {
@@ -27,6 +28,22 @@ export abstract class Builder {
     if (this.prev) {
       this.nquads.push(new NQuad(this.current, "prev", this.prev));
       this.nquads.push(new NQuad(this.prev, "next", this.current));
+    }
+  }
+
+  protected pushLedger(seq: number) {
+    this.nquads.push(new NQuad(this.current, "ledger", LedgerBuilder.keyNQuad(seq)));
+  }
+
+  protected pushBuilder(builder: Builder, key?: string, foreignKey?: string) {
+    this.nquads.push(...builder.build());
+
+    if (key) {
+      this.nquads.push(new NQuad(this.current, key, builder.current));
+    }
+
+    if (foreignKey) {
+      this.nquads.push(new NQuad(builder.current, foreignKey, this.current));
     }
   }
 }

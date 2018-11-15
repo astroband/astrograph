@@ -3,11 +3,14 @@ import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
-import { LedgerBuilder } from "./ledger";
 
 export class TransactionBuilder extends Builder {
   public static key(ledgerSeq: number, index: number) {
     return makeKey("transaction", ledgerSeq, index);
+  }
+
+  public static keyNQuad(ledgerSeq: number, index: number) {
+    return NQuad.blank(TransactionBuilder.key(ledgerSeq, index));
   }
 
   public readonly current: IBlank;
@@ -17,10 +20,10 @@ export class TransactionBuilder extends Builder {
     super();
 
     this.seq = tx.ledgerSeq;
-    this.current = NQuad.blank(TransactionBuilder.key(tx.ledgerSeq, tx.index));
+    this.current = TransactionBuilder.keyNQuad(tx.ledgerSeq, tx.index);
 
     if (tx.index > 0) {
-      this.prev = NQuad.blank(TransactionBuilder.key(tx.ledgerSeq, tx.index - 1));
+      this.prev = TransactionBuilder.keyNQuad(tx.ledgerSeq, tx.index - 1);
     }
   }
 
@@ -48,7 +51,7 @@ export class TransactionBuilder extends Builder {
     this.pushValues(v);
 
     this.pushPrev();
-    this.pushLedger();
+    this.pushLedger(this.seq);
     this.pushSourceAccount();
 
     return this.nquads;
@@ -56,14 +59,6 @@ export class TransactionBuilder extends Builder {
 
   private pushSourceAccount() {
     const account = new AccountBuilder(this.tx.sourceAccount);
-
-    //const account = NQuad.blank(AccountBuilder.key(this.tx.sourceAccount));
-    this.nquads.push(...account.build());
-    this.nquads.push(new NQuad(this.current, "account.source", account.current));
-    this.nquads.push(new NQuad(account.current, "transactions", this.current));
-  }
-
-  private pushLedger() {
-    this.nquads.push(new NQuad(this.current, "ledger", NQuad.blank(LedgerBuilder.key(this.seq))));
+    this.pushBuilder(account, "account.source", "transactions");
   }
 }
