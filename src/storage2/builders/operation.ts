@@ -6,6 +6,7 @@ import { Builder } from "./builder";
 import { LedgerBuilder } from "./ledger";
 import { TransactionBuilder } from "./transaction";
 import { CreateAccountOpBuilder } from "./create_account_op";
+import { PaymentOpBuilder } from "./payment_op";
 
 import stellar from "stellar-base";
 
@@ -36,7 +37,7 @@ export class OperationBuilder extends Builder {
   }
 
   public build(): NQuads {
-    this.pushKey();    
+    this.pushKey();
     this.pushRoot();
     this.pushPrev();
 
@@ -53,9 +54,9 @@ export class OperationBuilder extends Builder {
 
     switch (this.xdr.body().switch()) {
       case t.createAccount():
-        return new CreateAccountOpBuilder(this.current, this.xdr);
-      // case t.payment():
-      //   return this.appendPaymentOp();
+        return new CreateAccountOpBuilder(this.current, this.xdr.body().createAccountOp());
+      case t.payment():
+        return new PaymentOpBuilder(this.current, this.xdr.body().paymentOp());
       // case t.pathPayment():
       //   return this.pathPaymentOp();
       // case t.manageOffer():

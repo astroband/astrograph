@@ -50,19 +50,8 @@ export class Store {
 
     const c = new Cache(this.connection, nquads);
     nquads = await c.populate();
-
-    console.log(nquads.join("\n"));
+console.log(nquads.join("\n"));
     const result = await this.connection.push(nquads.join("\n"));
     c.put(result);
-
-    // await this.ledger(header);
-    //
-    // for (const transaction of transactions) {
-    //   await this.transaction(transaction);
-    //
-    //   for (let index = 0; index < transaction.operationsXDR().length; index++) {
-    //     await this.operation(transaction, index);
-    //   }
-    // }
   }
 }
