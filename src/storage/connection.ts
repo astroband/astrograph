@@ -2,8 +2,13 @@ import { DgraphClient, DgraphClientStub, ERR_ABORTED, Mutation, Operation } from
 import grpc from "grpc";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
-import { Repo } from "./repo";
-import { Store } from "./store";
+
+import { LedgerBuilder } from "./builders/ledger";
+import { TransactionBuilder } from "./builders/transaction";
+import { OperationBuilder } from "./builders/operation";
+import { Cache } from "./cache";
+
+import { LedgerHeader, Transaction } from "../model";
 
 const SCHEMA = `
   type: string @index(exact) .
@@ -23,9 +28,6 @@ const SCHEMA = `
 `;
 
 export class Connection {
-  public repo: Repo;
-  public store: Store;
-
   private stub: any;
   private client: any;
 
@@ -33,8 +35,6 @@ export class Connection {
     this.stub = new DgraphClientStub(DGRAPH_URL, grpc.credentials.createInsecure());
 
     this.client = new DgraphClient(this.stub);
-    this.repo = new Repo(this);
-    this.store = new Store(this);
   }
 
   public close() {
@@ -97,5 +97,23 @@ export class Connection {
       logger.error("Vars:", vars);
       return null;
     }
+  }
+
+  public async importLedgerTransactions(header: LedgerHeader, transactions: Transaction[]) {
+    let nquads = new LedgerBuilder(header).build();
+
+    for (const transaction of transactions) {
+      nquads = nquads.concat(new TransactionBuilder(transaction).build());
+
+      for (let index = 0; index < transaction.operationsXDR().length; index++) {
+        nquads = nquads.concat(new OperationBuilder(transaction, index).build());
+      }
+    }
+
+    const c = new Cache(this, nquads);
+    nquads = await c.populate();
+
+    const result = await this.push(nquads.join("\n"));
+    c.put(result);
   }
 }

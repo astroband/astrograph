@@ -5,7 +5,7 @@ import Honeybadger from "honeybadger";
 
 import { Cursor, Worker } from "./ingest";
 import schema from "./schema";
-import { Connection } from "./storage";
+import { Connection } from "./storage/connection";
 import logger from "./util/logger";
 import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
