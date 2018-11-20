@@ -10,7 +10,15 @@ import * as secrets from "../../src/util/secrets";
 
 Network.useTestNetwork();
 
-const testCases = ["Single account query", "Accounts signed by", "Data entries", "Signers", "Ledgers", "Trust lines"];
+const testCases = [
+  "Assets",
+  "Single account query",
+  "Accounts signed by",
+  "Data entries",
+  "Signers",
+  "Ledgers",
+  "Trust lines"
+];
 
 async function importDbDump() {
   const client = new dbClient({

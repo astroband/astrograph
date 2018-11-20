@@ -57,6 +57,18 @@ Object {
 }
 `;
 
+exports[`Integration tests Assets 1`] = `
+Object {
+  "assets": Array [
+    Object {
+      "code": "KHL",
+      "issuer": "GBTVGCI5OYBGDMCNKYFVSETXK6TTOQ4DRJBAC5K2PUUNSVB24PPSQ26Q",
+      "native": false,
+    },
+  ],
+}
+`;
+
 exports[`Integration tests Data entries 1`] = `
 Object {
   "dataEntries": Array [

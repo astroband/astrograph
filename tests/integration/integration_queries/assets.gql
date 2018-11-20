@@ -1,0 +1,9 @@
+query {
+  assets(
+    code: "KHL"
+  ) {
+    code
+    issuer
+    native
+  }
+}

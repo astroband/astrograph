@@ -193,7 +193,14 @@ export default gql`
     accounts(id: [AccountID!]): [Account]
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
-    accountPayments(id: AccountID!, first: Int!, offset: Int): [PaymentOperation]
+    accountPayments(
+      id: AccountID!
+      destination: AccountID
+      asset: AssetInput
+      first: Int!
+      offset: Int
+    ): [PaymentOperation]
+    assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
     trustLines(id: AccountID!): [TrustLine]
@@ -201,6 +208,11 @@ export default gql`
     ledgers(seq: [Int!]): [Ledger]!
     transaction(id: String!): Transaction
     transactions(id: [String!]): [Transaction]
+  }
+
+  input AssetInput {
+    code: AssetCode
+    issuer: AccountID
   }
 
   input EventInput {

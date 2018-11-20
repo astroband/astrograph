@@ -1,6 +1,7 @@
 import "./util/memo";
 
-import { ApolloServer } from "apollo-server";
+import { ApolloError, ApolloServer } from "apollo-server";
+import { GraphQLError } from "graphql";
 import Honeybadger from "honeybadger";
 
 import { Cursor, Worker } from "./ingest";
@@ -18,8 +19,25 @@ const server = new ApolloServer({
   introspection: true,
   playground: true,
   mocks: isDev,
-  debug: isDev,
-  cors: true
+  debug: true,
+  cors: true,
+  formatError: (error: ApolloError) => {
+    logger.error(error);
+    Honeybadger.notify(error);
+
+    // FIXME
+    // For an unknown reason, returning standard Error object, as it's written in the docs,
+    // doesn't work. This hack is from https://github.com/apollographql/apollo-server/issues/1504
+    return new GraphQLError(
+      "Internal server error",
+      error.nodes,
+      error.source,
+      error.positions,
+      error.path,
+      undefined,
+      error.extensions,
+    );
+  }
 });
 
 setStellarNetwork().then((network: string) => {
