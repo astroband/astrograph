@@ -4,8 +4,8 @@ import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
 
 import { LedgerBuilder } from "./builders/ledger";
-import { TransactionBuilder } from "./builders/transaction";
 import { OperationBuilder } from "./builders/operation";
+import { TransactionBuilder } from "./builders/transaction";
 import { Cache } from "./cache";
 
 import { LedgerHeader, Transaction } from "../model";
@@ -75,9 +75,7 @@ export class Connection {
         } else {
           throw err;
         }
-      }
-
-      catch (err) {
+      } catch (err) {
         await txn.discard();
         logger.error(err);
         logger.error(nquads);
@@ -108,6 +106,8 @@ export class Connection {
       for (let index = 0; index < transaction.operationsXDR().length; index++) {
         nquads = nquads.concat(new OperationBuilder(transaction, index).build());
       }
+
+      // nquads = nquads.concat(new TransactionResultBuilder(transaction).build());
     }
 
     const c = new Cache(this, nquads);

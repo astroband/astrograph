@@ -35,7 +35,10 @@ export class TransactionBuilder extends Builder {
       index: this.tx.index,
       seq: this.seq,
       order: `${this.seq}-${this.tx.index}`,
-      fee_amount: this.tx.feeAmount
+      fee_amount: this.tx.feeAmount,
+      fee_charged: this.tx.feeCharged,
+      success: this.tx.success,
+      result_code: this.tx.resultCode
     };
 
     if (this.tx.timeBounds) {
@@ -53,6 +56,7 @@ export class TransactionBuilder extends Builder {
     this.pushPrev();
     this.pushLedger(this.seq);
     this.pushSourceAccount();
+    console.log(v);
 
     return this.nquads;
   }

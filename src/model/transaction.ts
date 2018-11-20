@@ -28,8 +28,12 @@ export class Transaction implements ITransaction {
   public feeAmount: string;
   public sourceAccount: string;
   public timeBounds: [number, number] | null = null;
+  public feeCharged: string;
+  public success: boolean = false;
+  public resultCode: number;
 
-  public envelopeXDR: any;
+  public readonly envelopeXDR: any;
+  public readonly resultXDR: any;
 
   constructor(data: {
     txid: string;
@@ -51,6 +55,7 @@ export class Transaction implements ITransaction {
     this.feeMeta = data.txfeemeta;
 
     this.envelopeXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(this.body, "base64"));
+    this.resultXDR = stellar.xdr.TransactionResultPair.fromXDR(Buffer.from(this.result, "base64"));
 
     const txBody = this.envelopeXDR.tx();
 
@@ -60,7 +65,13 @@ export class Transaction implements ITransaction {
       this.memo = memo;
     }
 
-    this.feeAmount = txBody.fee();
+    const result = this.resultXDR.result();
+
+    this.feeAmount = txBody.fee().toString();
+    this.feeCharged = result.feeCharged().toString();
+    this.resultCode = result.result().switch().value;
+    this.success = this.resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
+
     this.sourceAccount = publicKeyFromBuffer(txBody.sourceAccount().value());
 
     const timeBounds = txBody.timeBounds();
@@ -72,6 +83,10 @@ export class Transaction implements ITransaction {
 
   public operationsXDR(): any {
     return this.envelopeXDR.tx().operations();
+  }
+
+  public operationResultsXDR(): any {
+    return this.resultXDR.result().results();
   }
 
   public metaFromXDR(): any {
