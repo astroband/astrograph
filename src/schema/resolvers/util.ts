@@ -21,7 +21,7 @@ export function memoResolver(obj: any) {
   return {
     type: memo.type,
     value: memo.getPlainValue()
-  }
+  };
 }
 
 export function assetResolver(obj: any) {
@@ -30,7 +30,7 @@ export function assetResolver(obj: any) {
     code: asset.getCode(),
     issuer: asset.getIssuer(),
     native: asset.isNative()
-  }
+  };
 }
 
 export function eventMatches(args: any, id: string, mutationType: MutationType): boolean {

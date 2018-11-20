@@ -13,7 +13,7 @@ export interface ITrustLine {
   balance: string;
   authorized: boolean;
   lastModified: number;
-};
+}
 
 export class TrustLine implements ITrustLine {
   public static buildFakeNative(account: Account): ITrustLine {
@@ -24,7 +24,7 @@ export class TrustLine implements ITrustLine {
       limit: toFloatAmountString(MAX_INT64),
       authorized: true,
       lastModified: account.lastModified
-    }
+    };
   }
 
   public accountID: string;
@@ -50,10 +50,9 @@ export class TrustLine implements ITrustLine {
     this.lastModified = data.lastmodified;
     this.authorized = (data.flags & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0;
 
-    if (data.assettype === stellar.xdr.AssetType.assetTypeNative().value) {
-      this.asset = Asset.native();
-    } else {
-      this.asset = new Asset(data.assetcode, data.issuer);
-    }
+    this.asset =
+      data.assettype === stellar.xdr.AssetType.assetTypeNative().value
+        ? Asset.native()
+        : new Asset(data.assetcode, data.issuer);
   }
 }

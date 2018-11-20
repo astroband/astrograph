@@ -1,7 +1,8 @@
 import { Asset } from "stellar-sdk";
+import { BigNumber } from 'bignumber.js';
+import { Writer } from "./writer";
 import { Transaction } from "../../model";
 import { Connection } from "../connection";
-import { Writer } from "./writer";
 
 import { publicKeyFromBuffer } from "../../util/xdr/account";
 
@@ -101,6 +102,10 @@ export class OperationWriter extends Writer {
         return this.appendPaymentOp();
       case t.pathPayment():
         return this.pathPaymentOp();
+      case t.manageOffer():
+        return this.manageOfferOp();
+      case t.createPassiveOfferOp():
+        return this.createPassiveOfferOp();
     }
   }
 
@@ -146,5 +151,42 @@ export class OperationWriter extends Writer {
       .append("dest.amount", destAmount);
 
     await this.appendAccount(this.current, "account.destination", destination, "operations");
+  }
+
+  private async manageOfferOp() {
+    const op = this.xdr.body().manageOfferOp();
+
+    const sellingAsset = Asset.fromOperation(op.selling());
+    const buyingAsset = Asset.fromOperation(op.buying());
+    const amount = op.amount().toString();
+    const price = new BigNumber(op.price().n()).div(new BigNumber(op.price().d())).toString();
+
+    const id = op.offerId().toString();
+
+    await this.appendAsset(this.current, "selling.asset", sellingAsset, "operations");
+    await this.appendAsset(this.current, "buying.asset", buyingAsset, "operations");
+
+    this.b
+      .for(this.current)
+      .append("amount", amount)
+      .append("price", price)
+      .append("id", id);
+  }
+
+  private async createPassiveOfferOp() {
+    const op = this.xdr.body().createPassiveOfferOp();
+
+    const sellingAsset = Asset.fromOperation(op.selling());
+    const buyingAsset = Asset.fromOperation(op.buying());
+    const amount = op.amount().toString();
+    const price = new BigNumber(op.price().n()).div(new BigNumber(op.price().d())).toString();
+
+    await this.appendAsset(this.current, "selling.asset", sellingAsset, "operations");
+    await this.appendAsset(this.current, "buying.asset", buyingAsset, "operations");
+
+    this.b
+      .for(this.current)
+      .append("amount", amount)
+      .append("price", price);
   }
 }

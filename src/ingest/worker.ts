@@ -3,7 +3,7 @@ import { Cursor } from "./cursor";
 
 import { SubscriptionPayloadCollection } from "./subscription_payload_collection";
 
-import { Connection } from "../storage";
+import { Connection } from "../storage/connection";
 import { DGRAPH_URL } from "../util/secrets";
 
 export class Worker {
@@ -24,7 +24,7 @@ export class Worker {
 
       if (DGRAPH_URL) {
         const c = new Connection();
-        await c.store.importLedgerTransactions(header, transactions);
+        await c.importLedgerTransactions(header, transactions);
         c.close();
       }
 

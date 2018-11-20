@@ -1,12 +1,18 @@
-import { DgraphClient, DgraphClientStub, Mutation, Operation, ERR_ABORTED } from "dgraph-js";
+import { DgraphClient, DgraphClientStub, ERR_ABORTED, Mutation, Operation } from "dgraph-js";
 import grpc from "grpc";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
-import { Repo } from "./repo";
-import { Store } from "./store";
 
-const schema = `
+import { LedgerBuilder } from "./builders/ledger";
+import { TransactionBuilder } from "./builders/transaction";
+import { OperationBuilder } from "./builders/operation";
+import { Cache } from "./cache";
+
+import { LedgerHeader, Transaction } from "../model";
+
+const SCHEMA = `
   type: string @index(exact) .
+  key: string @index(exact) .
   seq: int @index(int) .
   id: string @index(exact) .
   index: int @index(int) .
@@ -16,14 +22,12 @@ const schema = `
   deleted: bool @index (bool) .
   kind: string @index(exact) .
   amount: int @index (int) .
+  price: float @index (float) .
   starting_balance: int @index (int) .
   close_time: dateTime @index (hour) .
 `;
 
 export class Connection {
-  public repo: Repo;
-  public store: Store;
-
   private stub: any;
   private client: any;
 
@@ -31,8 +35,6 @@ export class Connection {
     this.stub = new DgraphClientStub(DGRAPH_URL, grpc.credentials.createInsecure());
 
     this.client = new DgraphClient(this.stub);
-    this.repo = new Repo(this);
-    this.store = new Store(this);
   }
 
   public close() {
@@ -41,7 +43,7 @@ export class Connection {
 
   public async migrate() {
     const op = new Operation();
-    op.setSchema(schema);
+    op.setSchema(SCHEMA);
     await this.client.alter(op);
   }
 
@@ -84,9 +86,10 @@ export class Connection {
     }
   }
 
-  public async query(query: string, vars: any): Promise<any> {
+  public async query(query: string, vars?: any): Promise<any> {
     try {
-      const res = await this.client.newTxn().queryWithVars(query, vars);
+      const txn = this.client.newTxn();
+      const res = vars ? await txn.queryWithVars(query, vars) : await txn.query(query);
       return res.getJson();
     } catch (err) {
       logger.error(err);
@@ -94,5 +97,23 @@ export class Connection {
       logger.error("Vars:", vars);
       return null;
     }
+  }
+
+  public async importLedgerTransactions(header: LedgerHeader, transactions: Transaction[]) {
+    let nquads = new LedgerBuilder(header).build();
+
+    for (const transaction of transactions) {
+      nquads = nquads.concat(new TransactionBuilder(transaction).build());
+
+      for (let index = 0; index < transaction.operationsXDR().length; index++) {
+        nquads = nquads.concat(new OperationBuilder(transaction, index).build());
+      }
+    }
+
+    const c = new Cache(this, nquads);
+    nquads = await c.populate();
+
+    const result = await this.push(nquads.join("\n"));
+    c.put(result);
   }
 }
