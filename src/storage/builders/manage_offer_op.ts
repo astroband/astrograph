@@ -17,9 +17,9 @@ export class ManageOfferOpBuilder extends Builder {
     };
     const priceNquad = NQuad.blank(`${this.current.value}_price`);
 
-    this.nquads.push(new NQuad(this.current, "price", priceNquad));
-    this.nquads.push(new NQuad(priceNquad, "n", price.n));
-    this.nquads.push(new NQuad(priceNquad, "p", price.d));
+    this.nquads.push(new NQuad(this.current, "offer_price", priceNquad));
+    this.nquads.push(new NQuad(priceNquad, "n", NQuad.value(price.n)));
+    this.nquads.push(new NQuad(priceNquad, "d", NQuad.value(price.d)));
 
     this.pushValue("amount", this.xdr.amount().toString());
     this.pushValue("offer_id", this.xdr.offerId().toString());
