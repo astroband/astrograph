@@ -85,6 +85,7 @@ export class OperationBuilder extends Builder {
 
     this.pushValues(values);
     this.pushLedger(this.seq);
+    this.pushResult();
 
     this.nquads.push(new NQuad(this.current, "transaction", tx));
     this.nquads.push(new NQuad(tx, "operations", this.current));
@@ -99,5 +100,10 @@ export class OperationBuilder extends Builder {
       return publicKeyFromBuffer(account.value());
     }
     return this.tx.sourceAccount;
+  }
+
+  private pushResult() {
+    this.pushValue("resultCode", this.resultXDR.switch().value);
+    this.pushValue("success", this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner());
   }
 }
