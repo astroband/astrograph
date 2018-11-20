@@ -1,9 +1,10 @@
-import { LedgerBuilder } from "./ledger";
 import { NQuad, NQuads, Subj } from "../nquads";
+import { LedgerBuilder } from "./ledger";
 
 export abstract class Builder {
+  public abstract readonly current: Subj;
+
   protected nquads: NQuads = [];
-  public readonly abstract current: Subj;
   protected prev: Subj | null = null;
 
   public abstract build(): NQuads;
