@@ -86,7 +86,10 @@ export class Transaction implements ITransaction {
   }
 
   public operationResultsXDR(): any {
-    return this.resultXDR.result().results();
+    return this.resultXDR
+      .result()
+      .result()
+      .results();
   }
 
   public metaFromXDR(): any {

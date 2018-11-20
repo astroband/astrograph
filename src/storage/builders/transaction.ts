@@ -56,7 +56,6 @@ export class TransactionBuilder extends Builder {
     this.pushPrev();
     this.pushLedger(this.seq);
     this.pushSourceAccount();
-    console.log(v);
 
     return this.nquads;
   }

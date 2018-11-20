@@ -3,12 +3,12 @@ import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
-import { LedgerBuilder } from "./ledger";
-import { TransactionBuilder } from "./transaction";
 import { CreateAccountOpBuilder } from "./create_account_op";
-import { PaymentOpBuilder } from "./payment_op";
-import { PathPaymentOpBuilder } from "./path_payment_op";
+import { LedgerBuilder } from "./ledger";
 import { ManageOfferOpBuilder } from "./manage_offer_op";
+import { PathPaymentOpBuilder } from "./path_payment_op";
+import { PaymentOpBuilder } from "./payment_op";
+import { TransactionBuilder } from "./transaction";
 
 import stellar from "stellar-base";
 
@@ -23,6 +23,7 @@ export class OperationBuilder extends Builder {
   private seq: number;
   private index: number;
   private xdr: any;
+  private resultXDR: any;
 
   constructor(private tx: Transaction, private n: number) {
     super();
@@ -36,6 +37,7 @@ export class OperationBuilder extends Builder {
     }
 
     this.xdr = tx.operationsXDR()[n];
+    this.resultXDR = tx.operationResultsXDR()[n];
   }
 
   public build(): NQuads {
@@ -78,8 +80,8 @@ export class OperationBuilder extends Builder {
       type: "operation",
       index: this.n,
       kind: this.xdr.body().switch().name,
-      order: `${this.seq}-${this.index}-${this.n}`,
-    }
+      order: `${this.seq}-${this.index}-${this.n}`
+    };
 
     this.pushValues(values);
     this.pushLedger(this.seq);
