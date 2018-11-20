@@ -58,7 +58,7 @@ export class OperationBuilder extends Builder {
 
     switch (this.xdr.body().switch()) {
       case t.createAccount():
-        return new CreateAccountOpBuilder(this.current, this.xdr.body().createAccountOp());
+        return new CreateAccountOpBuilder(this.current, this.xdr.body().createAccountOp(), this.resultXDR);
       case t.payment():
         return new PaymentOpBuilder(this.current, this.xdr.body().paymentOp());
       case t.pathPayment():
@@ -103,7 +103,7 @@ export class OperationBuilder extends Builder {
   }
 
   private pushResult() {
-    this.pushValue("resultCode", this.resultXDR.switch().value);
+    this.pushValue("result_code", this.resultXDR.switch().value);
     this.pushValue("success", this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner());
   }
 }
