@@ -1,12 +1,16 @@
+import { Asset } from "stellar-sdk";
+
+import { publicKeyFromBuffer } from "../../util/xdr/account";
+import { IBlank, NQuads } from "../nquads";
+
 import { AccountBuilder } from "./account";
 import { AssetBuilder } from "./asset_builder";
 import { Builder } from "./builder";
-import { IBlank, NQuads } from "../nquads";
-import { publicKeyFromBuffer } from "../../util/xdr/account";
-import { Asset } from "stellar-sdk";
 
 export class PaymentOpBuilder extends Builder {
-  constructor(public readonly current: IBlank, private xdr: any) { super(); }
+  constructor(public readonly current: IBlank, private xdr: any) {
+    super();
+  }
 
   public build(): NQuads {
     const asset = Asset.fromOperation(this.xdr.asset());

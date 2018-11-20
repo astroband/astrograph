@@ -1,20 +1,14 @@
-import stellar from "stellar-base";
-
 import { publicKeyFromBuffer } from "../../util/xdr/account";
-import { IBlank, NQuads } from "../nquads";
+import { NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
-import { Builder } from "./builder";
+import { SpecificOperationBuilder } from "./specific_operation";
 
-export class CreateAccountOpBuilder extends Builder {
-  constructor(public readonly current: IBlank, private xdr: any, private resultXDR: any) {
-    super();
-  }
-
+export class CreateAccountOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
+    super.build();
+
     const startingBalance = this.xdr.startingBalance().toString();
     const destination = publicKeyFromBuffer(this.xdr.destination().value());
-
-    this.pushResult();
 
     this.pushValue("starting_balance", startingBalance);
     this.pushBuilder(new AccountBuilder(destination), "account.destination", "operations");
@@ -22,16 +16,8 @@ export class CreateAccountOpBuilder extends Builder {
     return this.nquads;
   }
 
-  private pushResult() {
-    if (this.resultXDR.switch() !== stellar.xdr.OperationResultCode.opInner()) {
-      return;
-    }
-
-    const code = this.resultXDR
-      .tr()
-      .createAccountResult()
-      .switch().value;
-
+  protected pushResult() {
+    const code = this.trXDR.createAccountResult().switch().value;
     this.pushValue("create_account_result_code", code);
   }
 }
