@@ -3,6 +3,7 @@ import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
+import { ChangeTrustOpBuilder } from "./change_trust_op";
 import { CreateAccountOpBuilder } from "./create_account_op";
 import { LedgerBuilder } from "./ledger";
 import { ManageOfferOpBuilder } from "./manage_offer_op";
@@ -68,6 +69,8 @@ export class OperationBuilder extends Builder {
         return new ManageOfferOpBuilder(this.current, this.xdr.body().manageOfferOp());
       case t.setOption():
         return new SetOptionsOpBuilder(this.current, this.xdr.body().setOptionsOp(), this.resultXDR);
+      case t.changeTrust():
+        return new ChangeTrustOpBuilder(this.current, this.xdr.body().changeTrustOp(), this.resultXDR);
       // case t.createPassiveOfferOp():
       //   return this.createPassiveOfferOp();
     }

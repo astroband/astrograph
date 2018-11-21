@@ -4,7 +4,7 @@ import { publicKeyFromBuffer } from "../../util/xdr/account";
 import { IBlank, NQuads } from "../nquads";
 
 import { AccountBuilder } from "./account";
-import { AssetBuilder } from "./asset_builder";
+import { AssetBuilder } from "./asset";
 import { Builder } from "./builder";
 
 export class PaymentOpBuilder extends Builder {

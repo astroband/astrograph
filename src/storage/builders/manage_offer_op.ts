@@ -1,6 +1,6 @@
 import { Asset } from "stellar-sdk";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { AssetBuilder } from "./asset_builder";
+import { AssetBuilder } from "./asset";
 import { Builder } from "./builder";
 
 export class ManageOfferOpBuilder extends Builder {
