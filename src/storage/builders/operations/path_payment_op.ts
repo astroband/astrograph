@@ -1,31 +1,28 @@
-import { Asset } from "stellar-sdk";
-import { publicKeyFromBuffer } from "../../../util/xdr/account";
-import { IBlank, NQuads } from "../../nquads";
+import { NQuads } from "../../nquads";
 import { AccountBuilder } from "../account";
 import { AssetBuilder } from "../asset";
-import { Builder } from "../builder";
+import { PathPaymentResultBuilder } from "../path_payment_result";
+import { SpecificOperationBuilder } from "../specific_operation";
 
-export class PathPaymentOpBuilder extends Builder {
-  constructor(public readonly current: IBlank, private xdr: any) {
-    super();
-  }
-
+export class PathPaymentOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
-    const destAsset = Asset.fromOperation(this.xdr.destAsset());
-    const srcAsset = Asset.fromOperation(this.xdr.sendAsset());
-    const destination = publicKeyFromBuffer(this.xdr.destination().value());
-
+    super.build();
     this.pushValue("send_max", this.xdr.sendMax().toString());
     this.pushValue("dest_amount", this.xdr.destAmount().toString());
-    this.pushBuilder(new AccountBuilder(destination), "account.destination", "operations");
-    this.pushBuilder(new AssetBuilder(destAsset), "asset.destination", "operations");
-    this.pushBuilder(new AssetBuilder(srcAsset), "asset.source", "operations");
+    this.pushBuilder(AccountBuilder.fromXDR(this.xdr.destination()), "account.destination", "operations");
+    this.pushBuilder(AssetBuilder.fromXDR(this.xdr.destAsset()), "asset.destination", "operations");
+    this.pushBuilder(AssetBuilder.fromXDR(this.xdr.sendAsset()), "asset.source", "operations");
 
     (this.xdr.path() as any[]).forEach(xdr => {
-      const asset = Asset.fromOperation(xdr);
-      this.pushBuilder(new AssetBuilder(asset), "assets.path", "operations");
+      this.pushBuilder(AssetBuilder.fromXDR(xdr), "assets.path", "operations");
     });
 
     return this.nquads;
+  }
+
+  protected pushResult() {
+    const resultBuilder = new PathPaymentResultBuilder(this.current.value, this.trXDR.pathPaymentResult());
+
+    this.pushBuilder(resultBuilder, "result");
   }
 }

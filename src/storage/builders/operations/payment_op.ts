@@ -1,18 +1,15 @@
 import { Asset } from "stellar-sdk";
 
 import { publicKeyFromBuffer } from "../../../util/xdr/account";
-import { IBlank, NQuads } from "../../nquads";
+import { NQuads } from "../../nquads";
 
 import { AccountBuilder } from "../account";
 import { AssetBuilder } from "../asset";
-import { Builder } from "../builder";
+import { SpecificOperationBuilder } from "../specific_operation";
 
-export class PaymentOpBuilder extends Builder {
-  constructor(public readonly current: IBlank, private xdr: any) {
-    super();
-  }
-
+export class PaymentOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
+    super.build();
     const asset = Asset.fromOperation(this.xdr.asset());
     const amount = this.xdr.amount().toString();
     const destination = publicKeyFromBuffer(this.xdr.destination().value());
@@ -22,5 +19,10 @@ export class PaymentOpBuilder extends Builder {
     this.pushBuilder(new AssetBuilder(asset), "asset", "operations");
 
     return this.nquads;
+  }
+
+  protected pushResult() {
+    const code = this.trXDR.paymentResult().switch().value;
+    this.pushValue("payment_result_code", code);
   }
 }
