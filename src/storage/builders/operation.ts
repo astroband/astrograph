@@ -9,6 +9,7 @@ import {
   BumpSequenceOpBuilder,
   ChangeTrustOpBuilder,
   CreateAccountOpBuilder,
+  ManageDataOpBuilder,
   ManageOfferOpBuilder,
   PathPaymentOpBuilder,
   PaymentOpBuilder,
@@ -78,6 +79,8 @@ export class OperationBuilder extends Builder {
       // case t.createPassiveOfferOp():
       //   return this.createPassiveOfferOp();
       // ---
+      case t.manageDatum():
+        return new ManageDataOpBuilder(this.current, this.xdr.body().manageDataOp(), this.resultXDR);
       case t.allowTrust():
         return new AllowTrustOpBuilder(this.current, this.xdr.body().allowTrustOp(), this.resultXDR);
       case t.bumpSequence():
