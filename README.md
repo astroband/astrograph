@@ -322,9 +322,9 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/mobius
 
 ## Contributors
 
-Victor Sokolov (@gzigzigzeo)
-Timur Ramazanov (@charlie-wasp)
-Sergey Nebolsin (@nebolsin)
+* Victor Sokolov (@gzigzigzeo)
+* Timur Ramazanov (@charlie-wasp)
+* Sergey Nebolsin (@nebolsin)
 
 ## License
 

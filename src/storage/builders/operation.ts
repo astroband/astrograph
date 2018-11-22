@@ -64,6 +64,7 @@ export class OperationBuilder extends Builder {
   protected buildBuilder(): Builder | null {
     const t = stellar.xdr.OperationType;
 
+    // See comments for examples https://github.com/mobius-network/astrograph/pull/84
     switch (this.xdr.body().switch()) {
       case t.createAccount():
         return new CreateAccountOpBuilder(this.current, this.xdr.body().createAccountOp(), this.resultXDR);
