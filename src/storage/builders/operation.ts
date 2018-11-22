@@ -2,6 +2,7 @@ import { Transaction } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
+import { AllowTrustOpBuilder } from "./allow_trust_op";
 import { Builder } from "./builder";
 import { BumpSequenceOpBuilder } from "./bump_sequence_op";
 import { ChangeTrustOpBuilder } from "./change_trust_op";
@@ -75,6 +76,8 @@ export class OperationBuilder extends Builder {
       // case t.createPassiveOfferOp():
       //   return this.createPassiveOfferOp();
       // ---
+      case t.allowTrust():
+        return new AllowTrustOpBuilder(this.current, this.xdr.body().allowTrustOp(), this.resultXDR);
       case t.bumpSequence():
         return new BumpSequenceOpBuilder(this.current, this.xdr.body().bumpSequenceOp(), this.resultXDR);
     }
