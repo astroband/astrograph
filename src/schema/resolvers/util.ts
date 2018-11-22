@@ -1,5 +1,5 @@
-import { Asset, Memo } from "stellar-sdk";
 import { createBatchResolver as create } from "graphql-resolve-batch";
+import { Asset, Memo } from "stellar-sdk";
 import { Ledger, MutationType } from "../../model";
 
 export function createBatchResolver<T, R>(loadFn: any) {
