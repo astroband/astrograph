@@ -1,3 +1,4 @@
+export * from "./account_merge_op";
 export * from "./allow_trust_op";
 export * from "./bump_sequence_op";
 export * from "./change_trust_op";

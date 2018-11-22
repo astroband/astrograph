@@ -5,6 +5,7 @@ import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
 import { LedgerBuilder } from "./ledger";
 import {
+  AccountMergeOpBuilder,
   AllowTrustOpBuilder,
   BumpSequenceOpBuilder,
   ChangeTrustOpBuilder,
@@ -76,6 +77,8 @@ export class OperationBuilder extends Builder {
         return new SetOptionsOpBuilder(this.current, this.xdr.body().setOptionsOp(), this.resultXDR);
       case t.changeTrust():
         return new ChangeTrustOpBuilder(this.current, this.xdr.body().changeTrustOp(), this.resultXDR);
+      case t.accountMerge():
+        return new AccountMergeOpBuilder(this.current, this.xdr.body(), this.resultXDR);
       // case t.createPassiveOfferOp():
       //   return this.createPassiveOfferOp();
       // ---
