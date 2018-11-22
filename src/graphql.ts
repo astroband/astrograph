@@ -35,7 +35,7 @@ const server = new ApolloServer({
       error.positions,
       error.path,
       undefined,
-      error.extensions,
+      error.extensions
     );
   }
 });

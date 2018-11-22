@@ -1,5 +1,5 @@
-import { NQuads } from "../nquads";
-import { SpecificOperationBuilder } from "./specific_operation";
+import { NQuads } from "../../nquads";
+import { SpecificOperationBuilder } from "../specific_operation";
 
 export class BumpSequenceOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {

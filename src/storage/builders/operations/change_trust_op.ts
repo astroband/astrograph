@@ -1,7 +1,7 @@
 import { Asset } from "stellar-sdk";
-import { NQuads } from "../nquads";
-import { AssetBuilder } from "./asset";
-import { SpecificOperationBuilder } from "./specific_operation";
+import { NQuads } from "../../nquads";
+import { AssetBuilder } from "../asset";
+import { SpecificOperationBuilder } from "../specific_operation";
 
 export class ChangeTrustOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
