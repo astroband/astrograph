@@ -19,7 +19,7 @@ import { publicKeyFromBuffer } from "../../util/xdr/account";
 
 export class OperationBuilder extends Builder {
   public static key(ledgerSeq: number, index: number, n: number) {
-    return makeKey("transaction", ledgerSeq, index, n);
+    return makeKey("operation", ledgerSeq, index, n);
   }
 
   public readonly current: IBlank;
