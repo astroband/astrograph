@@ -3,6 +3,7 @@ import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
+import { BumpSequenceOpBuilder } from "./bump_sequence_op";
 import { ChangeTrustOpBuilder } from "./change_trust_op";
 import { CreateAccountOpBuilder } from "./create_account_op";
 import { LedgerBuilder } from "./ledger";
@@ -73,6 +74,9 @@ export class OperationBuilder extends Builder {
         return new ChangeTrustOpBuilder(this.current, this.xdr.body().changeTrustOp(), this.resultXDR);
       // case t.createPassiveOfferOp():
       //   return this.createPassiveOfferOp();
+      // ---
+      case t.bumpSequence():
+        return new BumpSequenceOpBuilder(this.current, this.xdr.body().bumpSequenceOp(), this.resultXDR);
     }
 
     return null;
