@@ -3,14 +3,16 @@ import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
-import { BumpSequenceOpBuilder } from "./bump_sequence_op";
-import { ChangeTrustOpBuilder } from "./change_trust_op";
-import { CreateAccountOpBuilder } from "./create_account_op";
 import { LedgerBuilder } from "./ledger";
-import { ManageOfferOpBuilder } from "./manage_offer_op";
-import { PathPaymentOpBuilder } from "./path_payment_op";
-import { PaymentOpBuilder } from "./payment_op";
-import { SetOptionsOpBuilder } from "./set_options_op";
+import {
+  BumpSequenceOpBuilder,
+  CreateAccountOpBuilder,
+  ChangeTrustOpBuilder,
+  ManageOfferOpBuilder,
+  PathPaymentOpBuilder,
+  PaymentOpBuilder,
+  SetOptionsOpBuilder
+} from "./operations";
 import { TransactionBuilder } from "./transaction";
 
 import stellar from "stellar-base";

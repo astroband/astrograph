@@ -1,8 +1,8 @@
 import _ from "lodash";
-import { publicKeyFromBuffer, signerKeyFromXDR } from "../../util/xdr";
-import { NQuad, NQuads } from "../nquads";
-import { AccountBuilder } from "./account";
-import { SpecificOperationBuilder } from "./specific_operation";
+import { publicKeyFromBuffer, signerKeyFromXDR } from "../../../util/xdr";
+import { NQuad, NQuads } from "../../nquads";
+import { AccountBuilder } from "../account";
+import { SpecificOperationBuilder } from "../specific_operation";
 
 export class SetOptionsOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
@@ -33,7 +33,13 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
       low: this.xdr.lowThreshold()
     };
 
-    if (!_.chain(thresholds).values().some().value()) {
+    if (
+      !_
+        .chain(thresholds)
+        .values()
+        .some()
+        .value()
+    ) {
       return;
     }
 
