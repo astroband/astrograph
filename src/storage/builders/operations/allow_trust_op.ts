@@ -1,7 +1,7 @@
-import { publicKeyFromBuffer } from "../../util/xdr/account";
-import { NQuads } from "../nquads";
-import { AccountBuilder } from "./account";
-import { SpecificOperationBuilder } from "./specific_operation";
+import { publicKeyFromBuffer } from "../../../util/xdr/account";
+import { NQuads } from "../../nquads";
+import { AccountBuilder } from "../account";
+import { SpecificOperationBuilder } from "../specific_operation";
 
 export class AllowTrustOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
