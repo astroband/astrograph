@@ -7,12 +7,15 @@ export class AllowTrustOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
 
-    this.pushBuilder(
-      new AccountBuilder(publicKeyFromBuffer(this.xdr.trustor().value())),
-      "trustor",
-      "operations"
-    );
-    this.pushValue("asset_code", this.xdr.asset().value().toString().replace(/\0/g, ""));
+    const id = publicKeyFromBuffer(this.xdr.trustor().value());
+    const assetCode = this.xdr
+      .asset()
+      .value()
+      .toString()
+      .replace(/\0/g, "");
+
+    this.pushBuilder(new AccountBuilder(id), "trustor", "operations");
+    this.pushValue("asset_code", assetCode);
     this.pushValue("authorize", this.xdr.authorize());
 
     return this.nquads;
