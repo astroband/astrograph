@@ -3,11 +3,19 @@ import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
-import { CreateAccountOpBuilder } from "./create_account_op";
 import { LedgerBuilder } from "./ledger";
-import { ManageOfferOpBuilder } from "./manage_offer_op";
-import { PathPaymentOpBuilder } from "./path_payment_op";
-import { PaymentOpBuilder } from "./payment_op";
+import {
+  AccountMergeOpBuilder,
+  AllowTrustOpBuilder,
+  BumpSequenceOpBuilder,
+  ChangeTrustOpBuilder,
+  CreateAccountOpBuilder,
+  ManageDataOpBuilder,
+  ManageOfferOpBuilder,
+  PathPaymentOpBuilder,
+  PaymentOpBuilder,
+  SetOptionsOpBuilder
+} from "./operations";
 import { TransactionBuilder } from "./transaction";
 
 import stellar from "stellar-base";
@@ -16,7 +24,7 @@ import { publicKeyFromBuffer } from "../../util/xdr/account";
 
 export class OperationBuilder extends Builder {
   public static key(ledgerSeq: number, index: number, n: number) {
-    return makeKey("transaction", ledgerSeq, index, n);
+    return makeKey("operation", ledgerSeq, index, n);
   }
 
   public readonly current: IBlank;
@@ -65,8 +73,21 @@ export class OperationBuilder extends Builder {
         return new PathPaymentOpBuilder(this.current, this.xdr.body().pathPaymentOp());
       case t.manageOffer():
         return new ManageOfferOpBuilder(this.current, this.xdr.body().manageOfferOp());
+      case t.setOption():
+        return new SetOptionsOpBuilder(this.current, this.xdr.body().setOptionsOp(), this.resultXDR);
+      case t.changeTrust():
+        return new ChangeTrustOpBuilder(this.current, this.xdr.body().changeTrustOp(), this.resultXDR);
+      case t.accountMerge():
+        return new AccountMergeOpBuilder(this.current, this.xdr.body(), this.resultXDR);
       // case t.createPassiveOfferOp():
       //   return this.createPassiveOfferOp();
+      // ---
+      case t.manageDatum():
+        return new ManageDataOpBuilder(this.current, this.xdr.body().manageDataOp(), this.resultXDR);
+      case t.allowTrust():
+        return new AllowTrustOpBuilder(this.current, this.xdr.body().allowTrustOp(), this.resultXDR);
+      case t.bumpSequence():
+        return new BumpSequenceOpBuilder(this.current, this.xdr.body().bumpSequenceOp(), this.resultXDR);
     }
 
     return null;

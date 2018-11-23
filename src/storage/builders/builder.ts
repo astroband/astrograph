@@ -18,6 +18,10 @@ export abstract class Builder {
   }
 
   protected pushValue(predicate: string, value: any) {
+    if (value === undefined || value === null) {
+      return;
+    }
+
     this.nquads.push(new NQuad(this.current, predicate, NQuad.value(value)));
   }
 
