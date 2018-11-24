@@ -23,11 +23,7 @@ export class AccountMergeOpBuilder extends SpecificOperationBuilder {
     const resultNQuad = NQuad.blank(`${this.current.value}_result`);
 
     this.nquads.push(
-      new NQuad(
-        resultNQuad,
-        "source_account_balance",
-        NQuad.value(result.sourceAccountBalance().toString())
-      )
+      new NQuad(resultNQuad, "source_account_balance", NQuad.value(result.sourceAccountBalance().toString()));
     );
 
     this.nquads.push(new NQuad(this.current, "result", resultNQuad));
