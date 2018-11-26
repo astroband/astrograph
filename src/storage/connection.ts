@@ -2,10 +2,11 @@ import { DgraphClient, DgraphClientStub, ERR_ABORTED, Mutation, Operation } from
 import grpc from "grpc";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
-
+import { NQuads } from "./nquads";
 import { LedgerBuilder } from "./builders/ledger";
 import { OperationBuilder } from "./builders/operation";
 import { TransactionBuilder } from "./builders/transaction";
+import { LedgerStateBuilder } from "./builders/ledger_state_builder";
 import { Cache } from "./cache";
 
 import { LedgerHeader, Transaction } from "../model";
@@ -95,6 +96,36 @@ export class Connection {
       logger.error("Vars:", vars);
       return null;
     }
+  }
+
+  public async importLedgerState(header: LedgerHeader, transactions: Transaction[]) {
+    let nquads: NQuads = [];
+    let builder: LedgerStateBuilder;
+
+    for (const tx of transactions) {
+      const xdr = tx.metaFromXDR();
+
+      switch (xdr.switch()) {
+        case 0:
+          for (const op of xdr.operations()) {
+            console.log("Branch 0");
+            console.log(op.changes());
+          }
+          break;
+        case 1:
+          for (const op of xdr.v1().operations()) {
+            builder = new LedgerStateBuilder(op.changes());
+            nquads.push(...builder.build());
+          }
+          break;
+      }
+    }
+
+    const c = new Cache(this, nquads);
+    nquads = await c.populate();
+
+    const result = await this.push(nquads.join("\n"));
+    c.put(result);
   }
 
   public async importLedgerTransactions(header: LedgerHeader, transactions: Transaction[]) {
