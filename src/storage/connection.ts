@@ -6,7 +6,7 @@ import { NQuads } from "./nquads";
 import { LedgerBuilder } from "./builders/ledger";
 import { OperationBuilder } from "./builders/operation";
 import { TransactionBuilder } from "./builders/transaction";
-import { LedgerStateBuilder } from "./builders/ledger_state_builder";
+import { LedgerStateBuilder } from "./builders/ledger_state";
 import { Cache } from "./cache";
 
 import { LedgerHeader, Transaction } from "../model";
@@ -115,10 +115,15 @@ export class Connection {
         case 1:
           for (const op of xdr.v1().operations()) {
             builder = new LedgerStateBuilder(op.changes());
-            nquads.push(...builder.build());
+            const n = await builder.build();
+            nquads.push(...n);
           }
           break;
       }
+    }
+
+    if (nquads.length === 0) {
+      return;
     }
 
     const c = new Cache(this, nquads);

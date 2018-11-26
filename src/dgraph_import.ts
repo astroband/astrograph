@@ -1,10 +1,10 @@
+import { setNetwork as setStellarNetwork } from "./util/stellar"; // for some weird reason it must be first
 import parseArgv from "minimist";
 import { Cursor, ICursorResult } from "./ingest/cursor";
 import { Connection } from "./storage/connection";
 import logger from "./util/logger";
 import "./util/memo";
 import { DGRAPH_URL } from "./util/secrets";
-import { setNetwork as setStellarNetwork } from "./util/stellar"; // for some weird reason it must be first
 
 if (!DGRAPH_URL) {
   logger.error("Please, provide DGRAPH_URL env variable");
@@ -40,6 +40,7 @@ setStellarNetwork().then((network: string) => {
 
           logger.info(`ingesting ledger #${header.ledgerSeq}`);
           await c.importLedgerTransactions(header, transactions);
+          await c.importLedgerState(header, transactions);
 
           data = await cursor.nextLedger();
         }
