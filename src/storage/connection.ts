@@ -114,7 +114,7 @@ export class Connection {
           break;
         case 1:
           for (const op of xdr.v1().operations()) {
-            builder = new LedgerStateBuilder(op.changes());
+            builder = new LedgerStateBuilder(op.changes(), tx);
             const n = await builder.build();
             nquads.push(...n);
           }

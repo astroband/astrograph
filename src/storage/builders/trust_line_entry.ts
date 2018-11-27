@@ -18,7 +18,7 @@ export class TrustLineEntryBuilder extends Builder {
 
   public readonly current: IBlank;
 
-  constructor(private trustLine: ITrustLine, prevKey?: string) {
+  constructor(private trustLine: ITrustLine, prevKey?: string | null) {
     super();
     this.current = NQuad.blank(TrustLineEntryBuilder.key(trustLine));
 
@@ -31,9 +31,15 @@ export class TrustLineEntryBuilder extends Builder {
     this.pushKey();
     this.pushBuilder(new AccountBuilder(this.trustLine.accountID), "account");
     this.pushBuilder(new AssetBuilder(this.trustLine.asset), "asset");
-    this.pushValue("balance", this.trustLine.balance);
-    this.pushValue("ledger_seq", this.trustLine.lastModified);
-    this.pushValue("type", "trust_line_entry");
+    this.pushValues({
+      type: "trust_line_entry",
+      balance: this.trustLine.balance,
+      // we use ledger seq to order changes.
+      // it's easier than try to sort by nested attribute ledger.seq
+      // (I am not sure it's possible in dgraph at all)
+      order: this.trustLine.lastModified
+    });
+    this.pushLedger(this.trustLine.lastModified);
     this.pushPrev();
     return this.nquads;
   }

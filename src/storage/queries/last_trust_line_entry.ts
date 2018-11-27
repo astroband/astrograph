@@ -29,7 +29,7 @@ export class LastTrustLineEntryQuery extends Query<ILastTrustLineEntryQueryResul
           account @filter(eq(id, $id)) { account: id }
         }
 
-        last_entry(func: uid(A), first: 1, orderdesc: ledger_seq) {
+        last_entry(func: uid(A), first: 1, orderdesc: order) {
           key
         }
       }
