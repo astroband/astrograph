@@ -1,5 +1,6 @@
 import { DgraphClient, DgraphClientStub, ERR_ABORTED, Mutation, Operation } from "dgraph-js";
 import grpc from "grpc";
+import { ChangesExtractor } from "../changes_extractor";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
 import { NQuads } from "./nquads";
@@ -103,22 +104,12 @@ export class Connection {
     let builder: LedgerStateBuilder;
 
     for (const tx of transactions) {
-      const xdr = tx.metaFromXDR();
+      const changes = (new ChangesExtractor(tx)).call()
 
-      switch (xdr.switch()) {
-        case 0:
-          for (const op of xdr.operations()) {
-            console.log("Branch 0");
-            console.log(op.changes());
-          }
-          break;
-        case 1:
-          for (const op of xdr.v1().operations()) {
-            builder = new LedgerStateBuilder(op.changes(), tx);
-            const n = await builder.build();
-            nquads.push(...n);
-          }
-          break;
+      for (const group of changes) {
+        builder = new LedgerStateBuilder(group, tx);
+        const n = await builder.build();
+        nquads.push(...n);
       }
     }
 
