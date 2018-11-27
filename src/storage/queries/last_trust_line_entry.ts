@@ -1,5 +1,6 @@
 import dig from "object-dig";
 import { Asset } from "stellar-sdk";
+import { buildAssetFilter } from "../../util/queries/asset_filter";
 import { Connection } from "../connection";
 import { Query } from "./query";
 
@@ -21,11 +22,9 @@ export class LastTrustLineEntryQuery extends Query<ILastTrustLineEntryQueryResul
 
   protected async request(): Promise<any> {
     const query = `
-      query lastTrustLineEntry($id: string, $assetCode: string, $assetIssuer: string) {
+      query lastTrustLineEntry($id: string) {
         A as var(func: eq(type, "trust_line_entry")) @cascade {
-          asset @filter(eq(code, $assetCode)) {
-            issuer @filter(eq(id, $assetIssuer))
-          }
+          ${buildAssetFilter(this.asset.getCode(), this.asset.getIssuer())}
           account @filter(eq(id, $id)) { account: id }
         }
 
@@ -35,10 +34,6 @@ export class LastTrustLineEntryQuery extends Query<ILastTrustLineEntryQueryResul
       }
     `;
 
-    return this.connection.query(query, {
-      $id: this.accountID,
-      $assetCode: this.asset.getCode(),
-      $assetIssuer: this.asset.getIssuer()
-    });
+    return this.connection.query(query, { $id: this.accountID });
   }
 }

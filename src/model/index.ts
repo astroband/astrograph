@@ -16,3 +16,4 @@ export * from "./transaction";
 export * from "./trust_line";
 export * from "./trust_line_subscription_payload";
 export * from "./trust_line_values";
+export * from "./fake_native_trust_line_values";
