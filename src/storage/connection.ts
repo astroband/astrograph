@@ -3,12 +3,12 @@ import grpc from "grpc";
 import { ChangesExtractor } from "../changes_extractor";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
-import { NQuads } from "./nquads";
 import { LedgerBuilder } from "./builders/ledger";
+import { LedgerStateBuilder } from "./builders/ledger_state";
 import { OperationBuilder } from "./builders/operation";
 import { TransactionBuilder } from "./builders/transaction";
-import { LedgerStateBuilder } from "./builders/ledger_state";
 import { Cache } from "./cache";
+import { NQuads } from "./nquads";
 
 import { LedgerHeader, Transaction } from "../model";
 
@@ -104,12 +104,11 @@ export class Connection {
     let builder: LedgerStateBuilder;
 
     for (const tx of transactions) {
-      const changes = (new ChangesExtractor(tx)).call()
+      const changes = ChangesExtractor.call(tx);
 
       for (const group of changes) {
         builder = new LedgerStateBuilder(group, tx);
-        const n = await builder.build();
-        nquads.push(...n);
+        nquads.push(...(await builder.build()));
       }
     }
 
