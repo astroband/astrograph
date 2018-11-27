@@ -82,6 +82,8 @@ export class ChangesExtractor {
         break;
     }
 
+    rawChanges.push(this.tx.feeMetaFromXDR().changes());
+
     return rawChanges;
   }
 
