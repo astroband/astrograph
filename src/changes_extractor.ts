@@ -8,7 +8,20 @@ type EntryType = "account" | "trustline" | "datum";
 const changeType = stellar.xdr.LedgerEntryChangeType;
 const ledgerEntryType = stellar.xdr.LedgerEntryType;
 
+interface IChange {
+  type: string;
+  entry: string;
+  data: any;
+  seq: number;
+  tx: Transaction;
+  accountChanges?: string[];
+}
+
 export class ChangesExtractor {
+  public static call(tx: Transaction) {
+    return new ChangesExtractor(tx).call();
+  }
+
   constructor(private tx: Transaction) {}
 
   public call() {
@@ -21,10 +34,10 @@ export class ChangesExtractor {
           const data = changeType === "removed" ? change.removed() : change[type]().data();
           const entry = this.determineEntryType(data);
 
-          const result = { type, entry, data, seq: this.tx.ledgerSeq, tx: this.tx };
+          const result: IChange = { type, entry, data, seq: this.tx.ledgerSeq, tx: this.tx };
 
           if (entry === "account") {
-            result["accountChanges"] = this.getAccountChanges(data.account(), group.slice(0, i));
+            result.accountChanges = this.getAccountChanges(data.account(), group.slice(0, i));
           }
 
           return result;
@@ -34,7 +47,6 @@ export class ChangesExtractor {
       });
     });
   }
-
 
   private determineChangeType(changeXDR: any): ChangeType {
     switch (changeXDR.switch()) {
@@ -64,7 +76,7 @@ export class ChangesExtractor {
     }
   }
 
-  private getRawChanges(): Array<any[]> {
+  private getRawChanges(): any[][] {
     const txMetaXDR = this.tx.metaFromXDR();
     const rawChanges = [];
 
