@@ -5,16 +5,20 @@ import { AssetBuilder } from "./asset_builder";
 import { Builder } from "./builder";
 
 export class PathPaymentResultBuilder extends Builder {
-  public static key(id: string) {
-    return makeKey("path_payment_result", id);
+  public static key(args: any[]): string {
+    return makeKey("path_payment_result", ...args);
+  }
+
+  public static keyNQuad(args: any[]): IBlank {
+    return NQuad.blank(PathPaymentResultBuilder.key(args));
   }
 
   public current: IBlank;
   private success: any;
 
-  constructor(operationKey: string, private xdr: any) {
+  constructor(baseKey: any[], private xdr: any) {
     super();
-    this.current = NQuad.blank(PathPaymentResultBuilder.key(operationKey));
+    this.current = PathPaymentResultBuilder.keyNQuad(baseKey);
     this.success = xdr.success();
   }
 
