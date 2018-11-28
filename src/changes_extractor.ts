@@ -44,8 +44,8 @@ export class ChangesExtractor {
         } catch (e) {
           return;
         }
-      });
-    });
+      }).filter(el => el !== undefined);
+    })
   }
 
   private determineChangeType(changeXDR: any): ChangeType {
