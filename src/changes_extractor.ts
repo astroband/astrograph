@@ -2,13 +2,23 @@ import stellar from "stellar-base";
 import { Transaction } from "./model";
 import { diffAccountsXDR, publicKeyFromXDR } from "./util/xdr";
 
-type ChangeType = "created" | "updated" | "removed" | "state";
-type EntryType = "account" | "trustline" | "datum";
+export enum ChangeType {
+  Created = "created",
+  Updated = "updated",
+  Removed = "removed",
+  State = "state"
+}
+
+export enum EntryType {
+  Account = "account",
+  Trustline = "trustline",
+  Data = "datum"
+}
 
 const changeType = stellar.xdr.LedgerEntryChangeType;
 const ledgerEntryType = stellar.xdr.LedgerEntryType;
 
-interface IChange {
+export interface IChange {
   type: string;
   entry: string;
   data: any;
@@ -24,7 +34,7 @@ export class ChangesExtractor {
 
   constructor(private tx: Transaction) {}
 
-  public call() {
+  public call(): IChange[][] {
     const rawChanges = this.getRawChanges();
 
     return rawChanges.map(group => {
@@ -46,20 +56,20 @@ export class ChangesExtractor {
             return;
           }
         })
-        .filter(el => el !== undefined);
+        .filter(el => el !== undefined) as IChange[];
     });
   }
 
   private determineChangeType(changeXDR: any): ChangeType {
     switch (changeXDR.switch()) {
       case changeType.ledgerEntryCreated():
-        return "created";
+        return ChangeType.Created;
       case changeType.ledgerEntryUpdated():
-        return "updated";
+        return ChangeType.Updated;
       case changeType.ledgerEntryRemoved():
-        return "removed";
+        return ChangeType.Removed;
       case changeType.ledgerEntryState():
-        return "state";
+        return ChangeType.State;
       default:
         throw new Error(`Unknown change type ${changeXDR.switch().name}`);
     }
@@ -68,11 +78,11 @@ export class ChangesExtractor {
   private determineEntryType(changeDataXDR: any): EntryType {
     switch (changeDataXDR.switch()) {
       case ledgerEntryType.account():
-        return "account";
+        return EntryType.Account;
       case ledgerEntryType.trustline():
-        return "trustline";
+        return EntryType.Trustline;
       case ledgerEntryType.datum():
-        return "datum";
+        return EntryType.Data;
       default:
         throw new Error(`Unknown change entry type ${changeDataXDR.switch().name}`);
     }
