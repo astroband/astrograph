@@ -28,24 +28,26 @@ export class ChangesExtractor {
     const rawChanges = this.getRawChanges();
 
     return rawChanges.map(group => {
-      return group.map((change, i) => {
-        try {
-          const type = this.determineChangeType(change);
-          const data = changeType === "removed" ? change.removed() : change[type]().data();
-          const entry = this.determineEntryType(data);
+      return group
+        .map((change, i) => {
+          try {
+            const type = this.determineChangeType(change);
+            const data = changeType === "removed" ? change.removed() : change[type]().data();
+            const entry = this.determineEntryType(data);
 
-          const result: IChange = { type, entry, data, seq: this.tx.ledgerSeq, tx: this.tx };
+            const result: IChange = { type, entry, data, seq: this.tx.ledgerSeq, tx: this.tx };
 
-          if (entry === "account") {
-            result.accountChanges = this.getAccountChanges(data.account(), group.slice(0, i));
+            if (entry === "account") {
+              result.accountChanges = this.getAccountChanges(data.account(), group.slice(0, i));
+            }
+
+            return result;
+          } catch (e) {
+            return;
           }
-
-          return result;
-        } catch (e) {
-          return;
-        }
-      }).filter(el => el !== undefined);
-    })
+        })
+        .filter(el => el !== undefined);
+    });
   }
 
   private determineChangeType(changeXDR: any): ChangeType {
