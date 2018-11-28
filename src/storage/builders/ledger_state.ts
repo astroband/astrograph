@@ -13,26 +13,29 @@ export class LedgerStateBuilder {
   constructor(private changes: any[], private tx: Transaction) {}
 
   public async build(): Promise<NQuads> {
+    if (this.changes.length === 0) {
+      return [];
+    }
+
     const txBuilder = new TransactionBuilder(this.tx);
     let builder: Builder | null;
 
+    this.nquads.push(...txBuilder.build());
+
     for (const change of this.changes) {
-      if (!change) {
-        continue;
-      }
       switch (change.type) {
         case "created":
-          builder = this.pushCreated(change);
+          builder = this.buildCreatedBuilder(change);
           break;
         case "updated":
-          builder = await this.pushUpdated(change);
+          builder = await this.buildUpdatedBuilder(change);
           break;
         default:
           continue;
       }
 
       if (builder) {
-        this.nquads.push(...txBuilder.build());
+        this.nquads.push(...builder.build());
         this.nquads.push(new NQuad(builder.current, "transaction", txBuilder.current));
       }
     }
@@ -40,8 +43,8 @@ export class LedgerStateBuilder {
     return this.nquads;
   }
 
-  private pushCreated(change: any) {
-    let builder: Builder;
+  // returns builder for ingesting event of creating account or trustline
+  private buildCreatedBuilder(change: any): TrustLineEntryBuilder | null {
     let data: ITrustLine;
 
     switch (change.entry) {
@@ -56,15 +59,12 @@ export class LedgerStateBuilder {
     }
 
     data.lastModified = change.seq;
-    builder = new TrustLineEntryBuilder(data);
 
-    this.nquads.push(...builder.build());
-
-    return builder;
+    return new TrustLineEntryBuilder(data);
   }
 
-  private async pushUpdated(change: any): Promise<Builder | null> {
-    let builder: Builder;
+  // returns builder for ingesting event of trustline update or account balance update
+  private async buildUpdatedBuilder(change: any): Promise<TrustLineEntryBuilder | null> {
     let prevQuery: LastTrustLineEntryQuery;
     let data: ITrustLine;
 
@@ -77,12 +77,10 @@ export class LedgerStateBuilder {
         }
         data = FakeNativeTrustLineValues.buildFromXDR(change.data.account());
         prevQuery = new LastTrustLineEntryQuery(c, Asset.native(), data.accountID);
-
         break;
       case "trustline":
         data = TrustLineValues.buildFromXDR(change.data.trustLine());
         prevQuery = new LastTrustLineEntryQuery(c, data.asset, data.accountID);
-
         break;
       default:
         return null;
@@ -90,10 +88,7 @@ export class LedgerStateBuilder {
 
     const prev = await prevQuery.call();
     data.lastModified = change.seq;
-    builder = new TrustLineEntryBuilder(data, prev);
 
-    this.nquads.push(...builder.build());
-
-    return builder;
+    return new TrustLineEntryBuilder(data, prev);
   }
 }
