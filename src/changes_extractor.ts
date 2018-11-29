@@ -42,7 +42,7 @@ export class ChangesExtractor {
       return group
         .map((change, i) => {
           const type = this.determineChangeType(change);
-          const data = changeType === ChangeType.Removed ? change.removed() : change[type]().data();
+          const data = type === ChangeType.Removed ? change.removed() : change[type]().data();
           const entry = this.determineEntryType(data);
 
           const result: IChange = { type, entry, data, seq: this.tx.ledgerSeq, tx: this.tx };
