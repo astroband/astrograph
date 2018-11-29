@@ -12,10 +12,6 @@ export class AccountBuilder extends Builder {
     return makeKey("account", id);
   }
 
-  public static fromXDR(xdr: any) {
-    return new AccountBuilder(publicKeyFromBuffer(xdr.value()));
-  }
-
   public readonly current: IBlank;
 
   constructor(private id: string) {
