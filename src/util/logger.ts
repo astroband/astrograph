@@ -17,9 +17,22 @@ let logLevel = process.env.LOG_LEVEL;
 if (!logLevel || !LoggerLevel[logLevel]) {
   logLevel = process.env.NODE_ENV === "production" ? PROD_LOG_LEVEL : DEV_LOG_LEVEL;
 }
+const errorWithStacktraceFormat = format(info => {
+  if (info instanceof Error) {
+    return Object.assign({ message: info.message, stack: info.stack }, info);
+  }
+
+  return info;
+});
 
 const logger: Logger = createLogger({
-  format: format.combine(format.colorize(), format.splat(), format.simple(), format.timestamp()),
+  format: format.combine(
+    errorWithStacktraceFormat(),
+    format.colorize(),
+    format.splat(),
+    format.simple(),
+    format.timestamp()
+  ),
   transports: [
     new transports.Console({ level: logLevel }),
     new transports.File({ filename: "error.log", level: LOG_FILE })

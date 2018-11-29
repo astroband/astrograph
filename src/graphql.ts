@@ -75,7 +75,7 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
         }
       })
       .catch(e => {
-        logger.error(`Error \`${e.message}\` occured`);
+        logger.error(e);
         if (e.message.includes("Please retry again, server is not ready to accept requests")) {
           setTimeout(tick, 200);
           return;
