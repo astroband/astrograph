@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 import { Transaction } from "./model";
-import { diffAccountsXDR, publicKeyFromXDR } from "./util/xdr";
+import { diffAccountsXDR } from "./util/xdr";
 
 export enum ChangeType {
   Created = "created",
@@ -12,7 +12,8 @@ export enum ChangeType {
 export enum EntryType {
   Account = "account",
   Trustline = "trustline",
-  Data = "datum"
+  Data = "datum",
+  Offer = "offer"
 }
 
 const changeType = stellar.xdr.LedgerEntryChangeType;
@@ -40,21 +41,21 @@ export class ChangesExtractor {
     return rawChanges.map(group => {
       return group
         .map((change, i) => {
-          try {
-            const type = this.determineChangeType(change);
-            const data = changeType === "removed" ? change.removed() : change[type]().data();
-            const entry = this.determineEntryType(data);
+          const type = this.determineChangeType(change);
+          const data = changeType === ChangeType.Removed ? change.removed() : change[type]().data();
+          const entry = this.determineEntryType(data);
 
-            const result: IChange = { type, entry, data, seq: this.tx.ledgerSeq, tx: this.tx };
+          const result: IChange = { type, entry, data, seq: this.tx.ledgerSeq, tx: this.tx };
 
-            if (entry === "account") {
-              result.accountChanges = this.getAccountChanges(data.account(), group.slice(0, i));
-            }
-
-            return result;
-          } catch (e) {
-            return;
+          if (
+            entry === EntryType.Account &&
+            type === ChangeType.Updated &&
+            group[i - 1].switch() === changeType.ledgerEntryState()
+          ) {
+            result.accountChanges = this.getAccountChanges(data.account(), group[i - 1]);
           }
+
+          return result;
         })
         .filter(el => el !== undefined) as IChange[];
     });
@@ -83,6 +84,8 @@ export class ChangesExtractor {
         return EntryType.Trustline;
       case ledgerEntryType.datum():
         return EntryType.Data;
+      case ledgerEntryType.offer():
+        return EntryType.Offer;
       default:
         throw new Error(`Unknown change entry type ${changeDataXDR.switch().name}`);
     }
@@ -111,37 +114,16 @@ export class ChangesExtractor {
     return rawChanges;
   }
 
-  private getAccountChanges(accountData: any, prevChanges: any[]) {
-    const updateAccount = this.findUpdateOrState(prevChanges, publicKeyFromXDR(accountData));
+  private getAccountChanges(accountData: any, stateXDR: any) {
+    const accountState = stateXDR
+      .state()
+      .data()
+      .account();
 
-    if (!updateAccount) {
+    if (!accountState) {
       return [];
     }
 
-    return diffAccountsXDR(accountData, updateAccount);
-  }
-
-  private findUpdateOrState(xdrArray: any[], accountId: string): any {
-    return xdrArray
-      .reverse()
-      .reduce((accumulator: any[], x: any) => {
-        let data: any;
-
-        switch (x.switch()) {
-          case changeType.ledgerEntryUpdated():
-            data = x.updated().data();
-            break;
-          case changeType.ledgerEntryState():
-            data = x.state().data();
-            break;
-        }
-
-        if (data && data.switch() === ledgerEntryType.account()) {
-          accumulator.push(data.account());
-        }
-
-        return accumulator;
-      }, [])
-      .find((account: any) => publicKeyFromXDR(account) === accountId);
+    return diffAccountsXDR(accountData, accountState);
   }
 }

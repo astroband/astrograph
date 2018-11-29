@@ -1,4 +1,5 @@
 import { Asset } from "stellar-sdk";
+import { IChange } from "../../changes_extractor";
 import { FakeNativeTrustLineValues, ITrustLine, Transaction, TrustLineValues } from "../../model";
 import { Connection } from "../connection";
 import { NQuad, NQuads } from "../nquads";
@@ -10,7 +11,7 @@ import { TrustLineEntryBuilder } from "./trust_line_entry";
 export class LedgerStateBuilder {
   private nquads: NQuads = [];
 
-  constructor(private changes: any[], private tx: Transaction) {}
+  constructor(private changes: IChange[], private tx: Transaction) {}
 
   public async build(): Promise<NQuads> {
     if (this.changes.length === 0) {
@@ -72,7 +73,7 @@ export class LedgerStateBuilder {
 
     switch (change.entry) {
       case "account":
-        if (!change.accountChanges.includes("balance")) {
+        if (change.accountChanges && !change.accountChanges.includes("balance")) {
           return null;
         }
         data = FakeNativeTrustLineValues.buildFromXDR(change.data.account());

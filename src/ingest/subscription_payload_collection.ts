@@ -29,12 +29,16 @@ export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
             continue;
           }
 
-          if (change.accountChanges!.includes("balance")) {
+          if (!change.accountChanges) {
+            continue;
+          }
+
+          if (change.accountChanges.includes("balance")) {
             this.push(new NativeTrustLineSubscriptionPayload(MutationType.Update, change.data.account()));
           }
 
           // if there are some changes besides balance
-          if (change.accountChanges!.some(c => c !== "balance")) {
+          if (change.accountChanges.some(c => c !== "balance")) {
             this.pushChanges(change);
           }
         }
