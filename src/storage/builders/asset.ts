@@ -13,6 +13,10 @@ export class AssetBuilder extends Builder {
     return makeKey("asset", asset.isNative().toString(), asset.getCode(), asset.getIssuer() || "");
   }
 
+  public static fromXDR(xdr: any) {
+    return new AssetBuilder(Asset.fromOperation(xdr));
+  }
+
   public readonly current: IBlank;
 
   constructor(private asset: Asset) {
