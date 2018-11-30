@@ -26,6 +26,7 @@ export interface IChange {
   seq: number;
   tx: Transaction;
   accountChanges?: string[];
+  prevState?: any;
 }
 
 export class ChangesExtractor {
@@ -47,12 +48,24 @@ export class ChangesExtractor {
 
           const result: IChange = { type, entry, data, seq: this.tx.ledgerSeq, tx: this.tx };
 
-          if (
-            entry === EntryType.Account &&
-            type === ChangeType.Updated &&
-            group[i - 1].switch() === changeType.ledgerEntryState()
-          ) {
-            result.accountChanges = this.getAccountChanges(data.account(), group[i - 1]);
+          if (type === ChangeType.Updated && group[i - 1].switch() === changeType.ledgerEntryState()) {
+            const prevState = group[i - 1].state();
+            result.prevState = { ledgerSeq: prevState.lastModifiedLedgerSeq() };
+
+            if (entry === EntryType.Account) {
+              result.accountChanges = this.getAccountChanges(data.account(), prevState);
+              result.prevState.balance = prevState
+                .data()
+                .account()
+                .balance()
+                .toString();
+            } else if (entry === EntryType.Trustline) {
+              result.prevState.balance = prevState
+                .data()
+                .trustLine()
+                .balance()
+                .toString();
+            }
           }
 
           return result;
@@ -115,10 +128,7 @@ export class ChangesExtractor {
   }
 
   private getAccountChanges(accountData: any, stateXDR: any) {
-    const accountState = stateXDR
-      .state()
-      .data()
-      .account();
+    const accountState = stateXDR.data().account();
 
     if (!accountState) {
       return [];

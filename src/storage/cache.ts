@@ -7,13 +7,7 @@ const ___cache = new Map<string, string>();
 // An idea is simple: every node in DGraph database has unique string key, which we use either to distinguish
 // it in in-memory cache and to load uid from DGraph.
 export class Cache {
-  private nquads: NQuads;
-  private connection: Connection;
-
-  constructor(connection: Connection, nquads: NQuads) {
-    this.nquads = nquads;
-    this.connection = connection;
-  }
+  constructor(private connection: Connection, private nquads: NQuads) {}
 
   public async populate(): Promise<NQuads> {
     const { hits, misses } = this.hitsAndMisses();
