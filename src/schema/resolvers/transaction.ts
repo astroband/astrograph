@@ -1,4 +1,4 @@
-import db from "../../database";
+import { db } from "../../database";
 import { Connection as DgraphConnection } from "../../storage/connection";
 import { AccountTransactionsQuery } from "../../storage/queries/account_transactions";
 import { ledgerResolver, memoResolver } from "./util";

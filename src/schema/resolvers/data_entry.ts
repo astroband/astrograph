@@ -3,7 +3,7 @@ import { Account, DataEntry } from "../../model";
 import { withFilter } from "graphql-subscriptions";
 import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
-import db from "../../database";
+import { db } from "../../database";
 
 import { DATA_ENTRY, pubsub } from "../../pubsub";
 
