@@ -1,4 +1,4 @@
-import db from "../../database";
+import { db } from "../../database";
 import { Account, Signer } from "../../model";
 import { createBatchResolver } from "./util";
 

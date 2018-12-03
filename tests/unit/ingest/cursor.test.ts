@@ -1,7 +1,7 @@
 import { Cursor, ICursorResult } from "../../../src/ingest/cursor";
 import { LedgerHeader, Transaction } from "../../../src/model";
 
-import db from "../../../src/database";
+import { db } from "../../../src/database";
 import transactionFactory from "../../factories/transaction";
 
 let subject: Cursor;

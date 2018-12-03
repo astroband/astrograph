@@ -1,6 +1,6 @@
 import Big from "big.js";
 import { Network } from "stellar-base";
-import db from "../database";
+import { db } from "../database";
 
 const StellarAmountPrecision = 7;
 

@@ -3,7 +3,7 @@ import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from
 
 import { withFilter } from "graphql-subscriptions";
 
-import db from "../../database";
+import { db } from "../../database";
 import { pubsub, TRUST_LINE } from "../../pubsub";
 
 const accountResolver = createBatchResolver<TrustLine, Account | null>((source: ReadonlyArray<TrustLine>) =>
