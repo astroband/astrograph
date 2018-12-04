@@ -1,5 +1,6 @@
+import BigNumber from "bignumber.js";
 import { Asset } from "stellar-sdk";
-import { IBlank, NQuad, NQuads } from "../../nquads";
+import { IBlank, NQuads } from "../../nquads";
 import { AssetBuilder } from "../asset";
 import { Builder } from "../builder";
 
@@ -15,11 +16,11 @@ export class ManageOfferOpBuilder extends Builder {
       n: this.xdr.price().n(),
       d: this.xdr.price().d()
     };
-    const priceNquad = NQuad.blank(`${this.current.value}_price`);
+    // const priceNquad = NQuad.blank(`${this.current.value}_price`);
 
-    this.nquads.push(new NQuad(this.current, "offer_price", priceNquad));
-    this.nquads.push(new NQuad(priceNquad, "n", NQuad.value(price.n)));
-    this.nquads.push(new NQuad(priceNquad, "d", NQuad.value(price.d)));
+    this.pushValue("price_n", price.n);
+    this.pushValue("price_d", price.d);
+    this.pushValue("price", new BigNumber(price.n).div(price.d).toString());
 
     this.pushValue("amount", this.xdr.amount().toString());
     this.pushValue("offer_id", this.xdr.offerId().toString());
