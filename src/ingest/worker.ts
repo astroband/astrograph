@@ -25,6 +25,7 @@ export class Worker {
       if (DGRAPH_URL) {
         const c = new Connection();
         await c.importLedgerTransactions(header, transactions);
+        await c.importLedgerState(header, transactions);
         c.close();
       }
 

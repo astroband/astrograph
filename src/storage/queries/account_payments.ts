@@ -1,6 +1,7 @@
 import dig from "object-dig";
 import { Asset } from "stellar-sdk";
 import { IPaymentOperation } from "../../model";
+import { buildAssetFilter } from "../../util/queries/asset_filter";
 import { Connection } from "../connection";
 import { IPaymentOperationData } from "../types";
 import { Query } from "./query";
@@ -44,12 +45,11 @@ export class AccountPaymentsQuery extends Query<IAccountPaymentsQueryResult> {
   }
 
   protected async request(): Promise<any> {
-    const filterStatements = this.prepareFilters();
     const query = `
       query accountOperations($id: string, $first: int, $offset: int) {
         A as var(func: eq(type, "operation")) @filter(eq(kind, "payment")) @cascade {
-          ${filterStatements.asset || ""}
-          ${filterStatements.destination || ""}
+          ${this.asset ? buildAssetFilter(this.asset.code, this.asset.issuer) : ""}
+          ${this.destinationFilter()}
         }
 
         ops(func: eq(type, "account")) @filter(eq(id, $id)) {
@@ -75,22 +75,12 @@ export class AccountPaymentsQuery extends Query<IAccountPaymentsQueryResult> {
     });
   }
 
-  private prepareFilters() {
-    const filterStatements: { destination?: string | null; asset?: string | null } = {};
-
-    if (this.destination) {
-      filterStatements.destination = `account.destination @filter(eq(id, "${this.destination}"))`;
+  private destinationFilter() {
+    if (!this.destination) {
+      return "";
     }
 
-    if (this.asset) {
-      filterStatements.asset = `
-        asset ${this.asset.code ? `@filter(eq(code, "${this.asset.code}"))` : ""} {
-          ${this.asset.issuer ? `issuer @filter(eq(id, "${this.asset.issuer}"))` : ""}
-        }
-      `;
-    }
-
-    return filterStatements;
+    return `account.destination @filter(eq(id, "${this.destination}"))`;
   }
 
   private mapData(dgraphData: IPaymentOperationData): IPaymentOperation {
