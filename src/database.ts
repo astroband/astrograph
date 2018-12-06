@@ -11,6 +11,7 @@ import AccountsRepo from "./repo/accounts";
 import AssetsRepo from "./repo/assets";
 import DataEntriesRepo from "./repo/data_entries";
 import LedgerHeadersRepo from "./repo/ledger_headers";
+import OffersRepo from "./repo/offers";
 import SignersRepo from "./repo/signers";
 import StoreStateRepo from "./repo/store_state";
 import TransactionsRepo from "./repo/transactions";
@@ -22,6 +23,7 @@ interface IExtensions {
   assets: AssetsRepo;
   dataEntries: DataEntriesRepo;
   ledgerHeaders: LedgerHeadersRepo;
+  offers: OffersRepo;
   signers: SignersRepo;
   transactions: TransactionsRepo;
   trustLines: TrustLinesRepo;
@@ -39,6 +41,7 @@ const initOptions: IOptions<IExtensions> = {
     obj.assets = new AssetsRepo(obj);
     obj.dataEntries = new DataEntriesRepo(obj);
     obj.ledgerHeaders = new LedgerHeadersRepo(obj);
+    obj.offers = new OffersRepo(obj);
     obj.signers = new SignersRepo(obj);
     obj.transactions = new TransactionsRepo(obj);
     obj.trustLines = new TrustLinesRepo(obj);

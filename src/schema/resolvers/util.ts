@@ -24,8 +24,9 @@ export function memoResolver(obj: any) {
   };
 }
 
-export function assetResolver(obj: any) {
-  const asset = obj.asset as Asset;
+export function assetResolver(obj: any, args: any, ctx: any, info: any) {
+  const field = info.fieldName || "asset";
+  const asset = obj[field] as Asset;
   return {
     code: asset.getCode(),
     issuer: asset.getIssuer(),
