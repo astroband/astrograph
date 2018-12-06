@@ -1,7 +1,8 @@
+import { UserInputError } from "apollo-server";
 import { IDatabase } from "pg-promise";
 import squel from "squel";
-import { Offer } from "../model";
-import Asset from "../util/asset";
+import stellar from "stellar-base";
+import { IAssetInput, Offer } from "../model";
 
 export default class OffersRepo {
   private db: IDatabase<any>;
@@ -10,7 +11,7 @@ export default class OffersRepo {
     this.db = db;
   }
 
-  public async findAll(seller?: string, selling?: Asset, buying?: Asset, limit?: number, offset?: number) {
+  public async findAll(seller?: string, selling?: IAssetInput, buying?: IAssetInput, limit?: number, offset?: number) {
     const queryBuilder = squel
       .select()
       .field("*")
@@ -22,12 +23,14 @@ export default class OffersRepo {
     }
 
     if (selling) {
-      if (selling.code) {
-        queryBuilder.where("sellingassetcode = ?", selling.code);
-      }
-
-      if (selling.issuer) {
+      if (selling.issuer && selling.code) {
         queryBuilder.where("sellingissuer = ?", selling.issuer);
+        queryBuilder.where("sellingassetcode = ?", selling.code);
+      } else {
+        if (selling.code.toUpperCase() !== "XLM") {
+          throw new UserInputError("Set issuer or use code XLM");
+        }
+        queryBuilder.where("sellingassettype = ?", stellar.xdr.AssetType.assetTypeNative().value);
       }
     }
 
