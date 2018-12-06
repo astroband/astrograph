@@ -1,7 +1,6 @@
 import BigNumber from "bignumber.js";
 import stellar from "stellar-base";
-import { Asset } from "stellar-sdk";
-import { buildAsset } from "../util/asset";
+import Asset from "../util/asset";
 
 export class Offer {
   public id: string;
@@ -31,8 +30,8 @@ export class Offer {
   }) {
     this.id = data.offerid;
     this.seller = data.sellerid;
-    this.selling = buildAsset(data.sellingassettype, data.sellingassetcode, data.sellingissuer);
-    this.buying = buildAsset(data.buyingassettype, data.buyingassetcode, data.buyingissuer);
+    this.selling = Asset.build(data.sellingassettype, data.sellingassetcode, data.sellingissuer);
+    this.buying = Asset.build(data.buyingassettype, data.buyingassetcode, data.buyingissuer);
     this.amount = data.amount;
     this.pricen = data.pricen;
     this.priced = data.priced;
