@@ -22,17 +22,8 @@ export default class OffersRepo {
       queryBuilder.where("sellerid = ?", seller);
     }
 
-    if (selling) {
-      if (selling.issuer && selling.code) {
-        queryBuilder.where("sellingissuer = ?", selling.issuer);
-        queryBuilder.where("sellingassetcode = ?", selling.code);
-      } else {
-        if (selling.code.toUpperCase() !== "XLM") {
-          throw new UserInputError("Set issuer or use code XLM");
-        }
-        queryBuilder.where("sellingassettype = ?", stellar.xdr.AssetType.assetTypeNative().value);
-      }
-    }
+    this.appendAsset(queryBuilder, "selling", selling);
+    this.appendAsset(queryBuilder, "buying", buying);
 
     if (limit) {
       queryBuilder.limit(limit);
@@ -45,5 +36,19 @@ export default class OffersRepo {
     const res = await this.db.manyOrNone(queryBuilder.toString());
 
     return res.map(a => new Offer(a));
+  }
+
+  private appendAsset(queryBuilder: any, prefix: string, asset?: IAssetInput) {
+    if (asset) {
+      if (asset.issuer && asset.code) {
+        queryBuilder.where(`${prefix}issuer = ?`, asset.issuer);
+        queryBuilder.where(`${prefix}assetcode = ?`, asset.code);
+      } else {
+        if (asset.code.toUpperCase() !== "XLM") {
+          throw new UserInputError("Set issuer or use code XLM");
+        }
+        queryBuilder.where(`${prefix}assettype = ?`, stellar.xdr.AssetType.assetTypeNative().value);
+      }
+    }
   }
 }
