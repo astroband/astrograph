@@ -188,6 +188,17 @@ export default gql`
     dateTime: DateTime!
   }
 
+  type Offer {
+    id: String!
+    seller: Account!
+    buyer: Account!
+    selling: Asset!
+    buying: Asset!
+    amount: Int!
+    price: String!
+    passive: Boolean!
+  }
+
   type Query {
     account(id: AccountID!): Account
     accounts(id: [AccountID!]): [Account]
@@ -208,6 +219,7 @@ export default gql`
     ledgers(seq: [Int!]): [Ledger]!
     transaction(id: String!): Transaction
     transactions(id: [String!]): [Transaction]
+    offers(seller: AccountID, buyer: AccountID, selling: AssetInput, buying: AssetInput): [Offer!]
   }
 
   input AssetInput {
