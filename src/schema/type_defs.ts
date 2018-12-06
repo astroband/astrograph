@@ -1,6 +1,6 @@
 import { gql } from "apollo-server";
 
-export default gql`
+export const typeDefs = gql`
   scalar AssetCode
   scalar AccountID
   scalar TimeBounds
@@ -180,14 +180,6 @@ export default gql`
     timeBounds: TimeBounds
   }
 
-  type PaymentOperation {
-    destination: AccountID!
-    asset: Asset!
-    amount: String!
-    source: AccountID!
-    dateTime: DateTime!
-  }
-
   type Offer {
     id: String!
     seller: Account!
@@ -203,13 +195,7 @@ export default gql`
     accounts(id: [AccountID!]): [Account]
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
-    accountPayments(
-      id: AccountID!
-      destination: AccountID
-      asset: AssetInput
-      first: Int!
-      offset: Int
-    ): [PaymentOperation]
+    operations(account: AccountID, filters: OperationsFilter, first: Int!, offset: Int): [IOperation]
     assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]
@@ -241,5 +227,3 @@ export default gql`
   }
 
 `;
-//
-// transactionCreated(id: AccountID): Transaction

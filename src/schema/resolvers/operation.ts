@@ -1,16 +1,28 @@
-import { Connection as DgraphConnection } from "../../storage/connection";
-import { AccountPaymentsQuery } from "../../storage/queries/account_payments";
-import { assetResolver } from "./util";
+import _ from "lodash";
+import { Connection } from "../../storage/connection";
+import { OperationsQuery } from "../../storage/queries/operations";
+import { OperationKinds } from "../../storage/queries/operations/types";
 
 export default {
-  PaymentOperation: {
-    asset: assetResolver
+  IOperation: {
+    __resolveType(obj: any, context: any, info: any) {
+      if (obj.kind === OperationKinds.Payment) {
+        return "PaymentOperation";
+      }
+
+      if (obj.kind === OperationKinds.SetOption) {
+        return "SetOptionsOperation";
+      }
+
+      return null;
+    }
   },
   Query: {
-    accountPayments(root: any, args: any, ctx: any, info: any) {
-      const dc = new DgraphConnection();
-      const { first, offset, ...params } = args;
-      const query = new AccountPaymentsQuery(dc, params, first, offset);
+    operations(root: any, args: any, ctx: any, info: any) {
+      const { account, first, offset, filters } = args;
+      const conn = new Connection();
+
+      const query = new OperationsQuery(conn, account, filters, first, offset);
 
       return query.call();
     }
