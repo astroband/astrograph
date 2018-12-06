@@ -1,22 +1,22 @@
-// import { Account, Offer } from "../../model";
+import { Account, Offer } from "../../model";
 
-// import { createBatchResolver } from "./util";
+import { assetResolver, createBatchResolver } from "./util";
 
-// import { db } from "../../database";
+import { db } from "../../database";
 
-// const accountResolver = createBatchResolver<Offer, Account>((source: any) =>
-//   db.accounts.findAllByIDs(source.map((r: Offer) => r.sellerid))
-// );
+const accountResolver = createBatchResolver<Offer, Account>((source: any) =>
+  db.accounts.findAllByIDs(source.map((r: Offer) => r.sellerid))
+);
 
 export default {
-  // Offer: {
-  //   seller: accountResolver
-  // },
+  Offer: {
+    seller: accountResolver,
+    selling: assetResolver,
+    buying: assetResolver
+  },
   Query: {
     offers(root: any, args: any, ctx: any, info: any) {
-      // return db.offers.findAll(args.seller, args.selling, args.buying, args.limit, args.offset);
-      process.exit(-1);
-      return [];
+      return db.offers.findAll(args.seller, args.selling, args.buying, args.first, args.limit);
     }
   }
 };
