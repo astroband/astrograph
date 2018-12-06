@@ -21,9 +21,15 @@ export default class OffersRepo {
       queryBuilder.where("sellerid = ?", seller);
     }
 
-    // if (selling) {
-    // queryBuilder.having("issuer = ?", issuer);
-    // }
+    if (selling) {
+      if (selling.code) {
+        queryBuilder.where("sellingassetcode = ?", selling.code);
+      }
+
+      if (selling.issuer) {
+        queryBuilder.where("sellingissuer = ?", selling.issuer);
+      }
+    }
 
     if (limit) {
       queryBuilder.limit(limit);
@@ -33,7 +39,6 @@ export default class OffersRepo {
       queryBuilder.offset(offset);
     }
 
-    console.log(queryBuilder.toString());
     const res = await this.db.manyOrNone(queryBuilder.toString());
 
     return res.map(a => new Offer(a));

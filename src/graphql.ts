@@ -11,7 +11,7 @@ import logger from "./util/logger";
 import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
 
-// NOTE: We DO NOT need explicit mocking in development environment.
+// NOTE: We DO NOT need explicit mocking in development environment, as it replaces all real resolvers by mocks.
 // const isDev = process.env.NODE_ENV === "development";
 // mocks: isDev,
 
