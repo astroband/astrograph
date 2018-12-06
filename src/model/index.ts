@@ -11,6 +11,7 @@ export * from "./ledger";
 export * from "./ledger_header";
 export * from "./mutation_type";
 export * from "./native_trust_line_subscription_payload";
+export * from "./offer";
 export * from "./payment_operation";
 export * from "./transaction";
 export * from "./trust_line";

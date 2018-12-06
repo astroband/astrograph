@@ -1,4 +1,4 @@
-import { Memo, MemoText, MemoHash, MemoReturn } from "stellar-sdk";
+import { Memo, MemoHash, MemoReturn, MemoText } from "stellar-sdk";
 import logger from "./logger";
 
 declare module "stellar-sdk" {
@@ -13,7 +13,7 @@ Memo.prototype.getPlainValue = function() {
     return this.value;
   }
 
-  switch(this.type) {
+  switch (this.type) {
     case MemoText:
       return this.value.toString("utf8");
     case MemoHash:
