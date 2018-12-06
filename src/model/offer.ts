@@ -4,7 +4,7 @@ import Asset from "../util/asset";
 
 export class Offer {
   public id: string;
-  public seller: string;
+  public sellerid: string;
   public selling: Asset;
   public buying: Asset;
   public amount: string;
@@ -29,7 +29,7 @@ export class Offer {
     flags: number;
   }) {
     this.id = data.offerid;
-    this.seller = data.sellerid;
+    this.sellerid = data.sellerid;
     this.selling = Asset.build(data.sellingassettype, data.sellingassetcode, data.sellingissuer);
     this.buying = Asset.build(data.buyingassettype, data.buyingassetcode, data.buyingissuer);
     this.amount = data.amount;

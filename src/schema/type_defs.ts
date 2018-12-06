@@ -218,7 +218,7 @@ export default gql`
     ledgers(seq: [Int!]): [Ledger]!
     transaction(id: String!): Transaction
     transactions(id: [String!]): [Transaction]
-    offers(seller: AccountID, selling: AssetInput, buying: AssetInput): [Offer!]
+    offers(seller: AccountID, selling: AssetInput, buying: AssetInput): [Offer]
   }
 
   input AssetInput {
