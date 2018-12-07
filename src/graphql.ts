@@ -26,16 +26,13 @@ const server = new ApolloServer({
     logger.error(error);
     Honeybadger.notify(error);
 
-    // FIXME
-    // For an unknown reason, returning standard Error object, as it's written in the docs,
-    // doesn't work. This hack is from https://github.com/apollographql/apollo-server/issues/1504
     return new GraphQLError(
-      "Internal server error",
+      error.message,
       error.nodes,
       error.source,
       error.positions,
       error.path,
-      undefined,
+      error,
       error.extensions
     );
   }
