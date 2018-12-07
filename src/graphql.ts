@@ -24,7 +24,10 @@ const server = new ApolloServer({
   cors: true,
   formatError: (error: ApolloError) => {
     logger.error(error);
-    Honeybadger.notify(error);
+
+    if (!error.originalError || error.originalError.constructor.name !== "UserInputError") {
+      Honeybadger.notify(error);
+    }
 
     return new GraphQLError(
       error.message,
