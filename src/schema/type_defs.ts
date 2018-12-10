@@ -166,6 +166,37 @@ export default gql`
     values: TrustLineValues
   }
 
+  interface IOffer {
+    id: String!
+    seller: Account!
+    selling: Asset!
+    buying: Asset!
+    amount: Int!
+    price: String!
+    passive: Boolean!
+  }
+
+  type OfferValues implements IOffer {
+  }
+
+  type OfferSubscriptionPayload {
+    seller: AccountID!
+    selling: Asset!
+    buying: Asset!
+    mutationType: MutationType!
+    values: OfferValues
+  }
+
+  type OfferValues implements IOffer {
+    id: String!
+    seller: Account!
+    selling: Asset!
+    buying: Asset!
+    amount: Int!
+    price: String!
+    passive: Boolean!
+  }
+
   type Transaction {
     id: String!
     ledger: Ledger!
@@ -186,16 +217,6 @@ export default gql`
     amount: String!
     source: AccountID!
     dateTime: DateTime!
-  }
-
-  type Offer {
-    id: String!
-    seller: Account!
-    selling: Asset!
-    buying: Asset!
-    amount: Int!
-    price: String!
-    passive: Boolean!
   }
 
   type Query {
