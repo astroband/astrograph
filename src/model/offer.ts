@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import stellar from "stellar-base";
 import Asset from "../util/asset";
+import { toFloatAmountString } from "../util/stellar";
 
 export class Offer {
   public id: string;
@@ -32,7 +33,7 @@ export class Offer {
     this.sellerid = data.sellerid;
     this.selling = Asset.build(data.sellingassettype, data.sellingassetcode, data.sellingissuer);
     this.buying = Asset.build(data.buyingassettype, data.buyingassetcode, data.buyingissuer);
-    this.amount = data.amount;
+    this.amount = toFloatAmountString(data.amount);
     this.pricen = data.pricen;
     this.priced = data.priced;
     this.price = new BigNumber(data.pricen).div(data.priced).toString();
