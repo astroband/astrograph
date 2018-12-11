@@ -1,5 +1,5 @@
 import { buildAssetFilter } from "../../../util/queries/asset_filter";
-import { IPaymentsQueryParams, ISetOptionsOpsQueryParams, OperationKinds } from "./types";
+import { IAccountMergeQueryParams, IPaymentsQueryParams, ISetOptionsOpsQueryParams, OperationKinds } from "./types";
 
 type Params = IPaymentsQueryParams | ISetOptionsOpsQueryParams;
 
@@ -10,6 +10,8 @@ export class FiltersBuilder {
         return buildPaymentsFilters(params as IPaymentsQueryParams);
       case OperationKinds.SetOption:
         return buildSetOptionsFilters(params as ISetOptionsOpsQueryParams);
+      case OperationKinds.AccountMerge:
+        return buildAccountMergeFilters(params as IAccountMergeQueryParams);
     }
   }
 }
@@ -35,5 +37,12 @@ function buildPaymentsFilters(params: IPaymentsQueryParams) {
       params.destination ? `account.destination @filter(eq(id, "${params.destination}"))` : "",
       params.source ? `account.source @filter(eq(id, "${params.source}"))` : ""
     ].join("\n")
+  };
+}
+
+function buildAccountMergeFilters(params: IAccountMergeQueryParams) {
+  return {
+    root: "",
+    nested: params.destination ? `account.destination @filter(eq(id, "${params.destination}"))` : ""
   };
 }

@@ -14,6 +14,10 @@ export default {
         return "SetOptionsOperation";
       }
 
+      if (obj.kind === OperationKinds.AccountMerge) {
+        return "AccountMergeOperation";
+      }
+
       return null;
     }
   },

@@ -3,23 +3,25 @@
 // of data that is stored in Dgraph
 import { Asset } from "stellar-sdk";
 import { IAssetInput } from "../../../model/asset_input";
+import { AccountID } from "../../../util/types";
 
 export enum OperationKinds {
   Payment = "payment",
-  SetOption = "setOption"
+  SetOption = "setOption",
+  AccountMerge = "accountMerge"
 }
 
 export interface IBaseOperation {
   kind: OperationKinds;
-  account: string;
+  account: AccountID;
   transactionId: string;
   index: number;
   dateTime: Date;
 }
 
 export interface IPaymentOperation extends IBaseOperation {
-  source: string | null;
-  destination: string;
+  source: AccountID | null;
+  destination: AccountID;
   asset: Asset;
   amount: string;
 }
@@ -34,23 +36,31 @@ export interface ISetOptionsOperation extends IBaseOperation {
     medium: number;
     low: number;
   };
-  inflationDestination: string;
+  inflationDestination: AccountID;
   signer: {
-    account: string;
+    account: AccountID;
     weight: number;
   };
 }
 
-export type Operation = IPaymentOperation | ISetOptionsOperation;
+export interface IAccountMergeOperation extends IBaseOperation {
+  destination: AccountID;
+}
+
+export type Operation = IPaymentOperation | ISetOptionsOperation | IAccountMergeOperation;
 
 // What filters for different operations we provide
 export interface ISetOptionsOpsQueryParams {
   masterWeight: number;
-  account: string;
+  account: AccountID;
 }
 
 export interface IPaymentsQueryParams {
   asset: IAssetInput | null;
-  destination: string | null;
-  source: string | null;
+  destination: AccountID | null;
+  source: AccountID | null;
+}
+
+export interface IAccountMergeQueryParams {
+  destination: AccountID | null;
 }

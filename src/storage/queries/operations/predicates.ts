@@ -25,5 +25,8 @@ export const queryPredicates = {
     signer {
       account { id }
       weight
-    }`
+    }`,
+  [OperationKinds.AccountMerge]: `
+    account.destination { id }
+  `
 };

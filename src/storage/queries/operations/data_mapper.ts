@@ -1,6 +1,13 @@
 import { Asset } from "stellar-sdk";
 import { DgraphOperationsData } from "../../types";
-import { IBaseOperation, IPaymentOperation, ISetOptionsOperation, Operation, OperationKinds } from "./types";
+import {
+  IAccountMergeOperation,
+  IBaseOperation,
+  IPaymentOperation,
+  ISetOptionsOperation,
+  Operation,
+  OperationKinds
+} from "./types";
 
 export class DataMapper {
   public static call(data: DgraphOperationsData) {
@@ -25,6 +32,8 @@ export class DataMapper {
         return this.mapPayment();
       case OperationKinds.SetOption:
         return this.mapSetOption();
+      case OperationKinds.AccountMerge:
+        return this.mapAccountMerge();
     }
   }
 
@@ -39,6 +48,15 @@ export class DataMapper {
         source: this.data["account.source"][0].id,
         amount: this.data.amount,
         asset
+      }
+    };
+  }
+
+  private mapAccountMerge(): IAccountMergeOperation {
+    return {
+      ...this.baseData,
+      ...{
+        destination: this.data["account.destination"][0].id
       }
     };
   }

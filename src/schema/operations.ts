@@ -4,6 +4,7 @@ export const typeDefs = gql`
   enum OperationKind {
     payment
     setOption
+    accountMerge
   }
 
   interface IOperation {
@@ -41,6 +42,15 @@ export const typeDefs = gql`
     inflationDestination: AccountID
   }
 
+  type AccountMergeOperation implements IOperation {
+    kind: OperationKind!
+    account: AccountID!
+    transaction: Transaction!
+    index: Int!
+    dateTime: DateTime!
+    destination: AccountID!
+  }
+
   type SetOptionsThresholds {
     low: Int
     medium: Int
@@ -62,9 +72,14 @@ export const typeDefs = gql`
     masterWeight: Int
   }
 
+  input AccountMergeOpFilter {
+    destination: AccountID
+  }
+
   input OperationsFilter {
     payment: PaymentOpFilter
     setOption: SetOptionsOpFilter
+    accountMerge: AccountMergeOpFilter
   }
 
 `;

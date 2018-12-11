@@ -1,6 +1,7 @@
 // This module holds definitions of data types for "raw" objects,
 // which are returned from Dgraph storage
 import { MemoType } from "../util/stellar";
+import { AccountID } from "../util/types";
 import { OperationKinds } from "./queries/operations/types";
 
 export interface ITransactionData {
@@ -50,7 +51,11 @@ export interface ISetOptionsOperationData extends IOperationData {
   };
 }
 
-export type DgraphOperationsData = IPaymentOperationData & ISetOptionsOperationData;
+export interface IAccountMergeOperationData extends IOperationData {
+  "account.destination": IAccountData[];
+}
+
+export type DgraphOperationsData = IPaymentOperationData & ISetOptionsOperationData & IAccountMergeOperationData;
 
 export interface IAssetData {
   code: string;
@@ -59,7 +64,7 @@ export interface IAssetData {
 }
 
 export interface IAccountData {
-  id: string;
+  id: AccountID;
   // it's incomplete
 }
 
