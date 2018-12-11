@@ -3,12 +3,13 @@
 // of data that is stored in Dgraph
 import { Asset } from "stellar-sdk";
 import { IAssetInput } from "../../../model/asset_input";
-import { AccountID } from "../../../util/types";
+import { AccountID, AssetCode } from "../../../util/types";
 
 export enum OperationKinds {
   Payment = "payment",
   SetOption = "setOption",
-  AccountMerge = "accountMerge"
+  AccountMerge = "accountMerge",
+  AllowTrust = "allowTrust"
 }
 
 export interface IBaseOperation {
@@ -47,7 +48,13 @@ export interface IAccountMergeOperation extends IBaseOperation {
   destination: AccountID;
 }
 
-export type Operation = IPaymentOperation | ISetOptionsOperation | IAccountMergeOperation;
+export interface IAllowTrustOperation extends IBaseOperation {
+  assetCode: AssetCode;
+  trustor: AccountID;
+  authorize: boolean;
+}
+
+export type Operation = IPaymentOperation | ISetOptionsOperation | IAccountMergeOperation | IAllowTrustOperation;
 
 // What filters for different operations we provide
 export interface ISetOptionsOpsQueryParams {
@@ -63,4 +70,10 @@ export interface IPaymentsQueryParams {
 
 export interface IAccountMergeQueryParams {
   destination: AccountID | null;
+}
+
+export interface IAllowTrustQueryParams {
+  authorize: boolean;
+  assetCode: AssetCode;
+  trustor: AccountID;
 }

@@ -2,6 +2,7 @@ import { Asset } from "stellar-sdk";
 import { DgraphOperationsData } from "../../types";
 import {
   IAccountMergeOperation,
+  IAllowTrustOperation,
   IBaseOperation,
   IPaymentOperation,
   ISetOptionsOperation,
@@ -34,6 +35,8 @@ export class DataMapper {
         return this.mapSetOption();
       case OperationKinds.AccountMerge:
         return this.mapAccountMerge();
+      case OperationKinds.AllowTrust:
+        return this.mapAllowTrust();
     }
   }
 
@@ -84,5 +87,16 @@ export class DataMapper {
         }
       }
     };
+  }
+
+  private mapAllowTrust(): IAllowTrustOperation {
+    return {
+      ...this.baseData,
+      ...{
+        trustor: this.data.trustor[0].id,
+        authorize: this.data.authorize,
+        assetCode: this.data.asset_code
+      }
+    }
   }
 }

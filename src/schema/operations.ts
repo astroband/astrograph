@@ -5,6 +5,7 @@ export const typeDefs = gql`
     payment
     setOption
     accountMerge
+    allowTrust
   }
 
   interface IOperation {
@@ -51,6 +52,17 @@ export const typeDefs = gql`
     destination: AccountID!
   }
 
+  type AllowTrustOperation implements IOperation {
+    kind: OperationKind!
+    account: AccountID!
+    transaction: Transaction!
+    index: Int!
+    dateTime: DateTime!
+    trustor: AccountID
+    authorize: Boolean
+    assetCode: AssetCode
+  }
+
   type SetOptionsThresholds {
     low: Int
     medium: Int
@@ -76,10 +88,17 @@ export const typeDefs = gql`
     destination: AccountID
   }
 
+  input AllowTrustOpFilter {
+    trustor: AccountID
+    assetCode: AssetCode
+    authorize: Boolean
+  }
+
   input OperationsFilter {
     payment: PaymentOpFilter
     setOption: SetOptionsOpFilter
     accountMerge: AccountMergeOpFilter
+    allowTrust: AllowTrustOpFilter
   }
 
 `;

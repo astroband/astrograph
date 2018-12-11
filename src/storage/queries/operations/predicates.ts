@@ -28,5 +28,10 @@ export const queryPredicates = {
     }`,
   [OperationKinds.AccountMerge]: `
     account.destination { id }
+  `,
+  [OperationKinds.AllowTrust]: `
+    trustor { id }
+    asset_code
+    authorize
   `
 };

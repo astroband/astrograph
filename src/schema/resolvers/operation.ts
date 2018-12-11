@@ -18,6 +18,10 @@ export default {
         return "AccountMergeOperation";
       }
 
+      if (obj.kind === OperationKinds.AllowTrust) {
+        return "AllowTrustOperation";
+      }
+
       return null;
     }
   },

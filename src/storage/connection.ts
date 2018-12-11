@@ -27,6 +27,7 @@ const SCHEMA = `
   price: float @index (float) .
   starting_balance: int @index (int) .
   close_time: dateTime @index (hour) .
+  authorize: bool @index (bool) .
 `;
 
 export class Connection {

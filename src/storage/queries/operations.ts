@@ -4,12 +4,21 @@ import { DgraphOperationsData } from "../types";
 import { DataMapper } from "./operations/data_mapper";
 import { FiltersBuilder } from "./operations/filters_builder";
 import { queryPredicates } from "./operations/predicates";
-import { IPaymentsQueryParams, ISetOptionsOpsQueryParams, Operation, OperationKinds } from "./operations/types";
+import {
+  IAccountMergeQueryParams,
+  IAllowTrustQueryParams,
+  IPaymentsQueryParams,
+  ISetOptionsOpsQueryParams,
+  Operation,
+  OperationKinds
+} from "./operations/types";
 import { Query } from "./query";
 
 interface IOperationsQueryParams {
   [OperationKinds.Payment]?: IPaymentsQueryParams;
   [OperationKinds.SetOption]?: ISetOptionsOpsQueryParams;
+  [OperationKinds.AccountMerge]?: IAccountMergeQueryParams;
+  [OperationKinds.AllowTrust]?: IAllowTrustQueryParams;
 }
 
 type IOperationsQueryResult = Operation[];

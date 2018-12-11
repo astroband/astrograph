@@ -1,7 +1,13 @@
 import { buildAssetFilter } from "../../../util/queries/asset_filter";
-import { IAccountMergeQueryParams, IPaymentsQueryParams, ISetOptionsOpsQueryParams, OperationKinds } from "./types";
+import {
+  IAccountMergeQueryParams,
+  IAllowTrustQueryParams,
+  IPaymentsQueryParams,
+  ISetOptionsOpsQueryParams,
+  OperationKinds
+} from "./types";
 
-type Params = IPaymentsQueryParams | ISetOptionsOpsQueryParams;
+type Params = IPaymentsQueryParams | ISetOptionsOpsQueryParams | IAccountMergeQueryParams | IAllowTrustQueryParams;
 
 export class FiltersBuilder {
   public static build(kind: OperationKinds, params: Params): { root: string; nested: string } {
@@ -12,6 +18,8 @@ export class FiltersBuilder {
         return buildSetOptionsFilters(params as ISetOptionsOpsQueryParams);
       case OperationKinds.AccountMerge:
         return buildAccountMergeFilters(params as IAccountMergeQueryParams);
+      case OperationKinds.AllowTrust:
+        return buildAllowTrustFilters(params as IAllowTrustQueryParams);
     }
   }
 }
@@ -44,5 +52,22 @@ function buildAccountMergeFilters(params: IAccountMergeQueryParams) {
   return {
     root: "",
     nested: params.destination ? `account.destination @filter(eq(id, "${params.destination}"))` : ""
+  };
+}
+
+function buildAllowTrustFilters(params: IAllowTrustQueryParams) {
+  const filters: string[] = [];
+
+  if (params.authorize) {
+    filters.push(`eq(authorize, ${params.authorize})`);
+  }
+
+  if (params.assetCode) {
+    filters.push(`eq(asset_code, ${params.assetCode})`);
+  }
+
+  return {
+    root: filters.length > 0 ? `@filter(${filters.join(" AND ")})` : "",
+    nested: params.trustor ? `trustor @filter(eq(id, "${params.trustor}"))` : ""
   };
 }
