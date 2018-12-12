@@ -30,6 +30,7 @@ const SCHEMA = `
   authorize: bool @index (bool) .
   asset_code: string @index (exact) .
   bump_to: int @index (int) .
+  limit: int @index (int) .
 `;
 
 export class Connection {

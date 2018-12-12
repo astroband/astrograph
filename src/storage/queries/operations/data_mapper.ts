@@ -5,6 +5,7 @@ import {
   IAllowTrustOperation,
   IBaseOperation,
   IBumpSequenceOperation,
+  IChangeTrustOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
@@ -40,6 +41,8 @@ export class DataMapper {
         return this.mapAllowTrust();
       case OperationKinds.BumpSequence:
         return this.mapBumpSequence();
+      case OperationKinds.ChangeTrust:
+        return this.mapChangeTrust();
     }
   }
 
@@ -107,6 +110,15 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{ bumpTo: this.data.bump_to }
+    };
+  }
+
+  private mapChangeTrust(): IChangeTrustOperation {
+    const asset = new Asset(this.data.asset[0].code, this.data.asset[0].issuer[0].id);
+
+    return {
+      ...this.baseData,
+      ...{ limit: this.data.limit, asset }
     };
   }
 }

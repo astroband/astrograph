@@ -65,11 +65,17 @@ export interface IBumpSequenceOperationData extends IOperationData {
   bump_to: number;
 }
 
+export interface IChangeTrustOperationData extends IOperationData {
+  limit: string;
+  asset: IAssetData[];
+}
+
 export type DgraphOperationsData = IPaymentOperationData &
   ISetOptionsOperationData &
   IAccountMergeOperationData &
   IAllowTrustOperationData &
-  IBumpSequenceOperationData;
+  IBumpSequenceOperationData &
+  IChangeTrustOperationData;
 
 export interface IAssetData {
   code: AssetCode;

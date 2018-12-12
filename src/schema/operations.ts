@@ -7,6 +7,7 @@ export const typeDefs = gql`
     accountMerge
     allowTrust
     bumpSequence
+    changeTrust
   }
 
   interface IOperation {
@@ -73,6 +74,16 @@ export const typeDefs = gql`
     bumpTo: Int!
   }
 
+  type ChangeTrustOperation implements IOperation {
+    kind: OperationKind!
+    account: AccountID!
+    transaction: Transaction!
+    index: Int!
+    dateTime: DateTime!
+    limit: String!
+    asset: Asset!
+  }
+
   type SetOptionsThresholds {
     low: Int
     medium: Int
@@ -108,12 +119,18 @@ export const typeDefs = gql`
     bumpTo: Int
   }
 
+  input ChangeTrustOpFilter {
+    limit: String
+    asset: AssetInput
+  }
+
   input OperationsFilter {
     payment: PaymentOpFilter
     setOption: SetOptionsOpFilter
     accountMerge: AccountMergeOpFilter
     allowTrust: AllowTrustOpFilter
     bumpSequence: BumpSequenceOpFilter
+    changeTrust: ChangeTrustOpFilter
   }
 
 `;

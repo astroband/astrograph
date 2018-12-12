@@ -10,7 +10,8 @@ export enum OperationKinds {
   SetOption = "setOption",
   AccountMerge = "accountMerge",
   AllowTrust = "allowTrust",
-  BumpSequence = "bumpSequence"
+  BumpSequence = "bumpSequence",
+  ChangeTrust = "changeTrust"
 }
 
 export interface IBaseOperation {
@@ -59,7 +60,18 @@ export interface IBumpSequenceOperation extends IBaseOperation {
   bumpTo: number;
 }
 
-export type Operation = IPaymentOperation | ISetOptionsOperation | IAccountMergeOperation | IAllowTrustOperation | IBumpSequenceOperation
+export interface IChangeTrustOperation extends IBaseOperation {
+  limit: string;
+  asset: Asset;
+}
+
+export type Operation =
+  | IPaymentOperation
+  | ISetOptionsOperation
+  | IAccountMergeOperation
+  | IAllowTrustOperation
+  | IBumpSequenceOperation
+  | IChangeTrustOperation;
 
 // What filters for different operations we provide
 export interface ISetOptionsOpsQueryParams {
@@ -85,4 +97,9 @@ export interface IAllowTrustQueryParams {
 
 export interface IBumpSequenceQueryParams {
   bumpTo: number;
+}
+
+export interface IChangeTrustQueryParams {
+  limit: string;
+  asset: IAssetInput;
 }

@@ -26,6 +26,10 @@ export default {
         return "BumpSequenceOperation";
       }
 
+      if (obj.kind === OperationKinds.ChangeTrust) {
+        return "ChangeTrustOperation";
+      }
+
       return null;
     }
   },

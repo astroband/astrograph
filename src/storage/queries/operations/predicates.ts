@@ -36,5 +36,12 @@ export const queryPredicates = {
   `,
   [OperationKinds.BumpSequence]: `
     bump_to
+  `,
+  [OperationKinds.ChangeTrust]: `
+    limit
+    asset {
+      code
+      issuer { id }
+    }
   `
 };
