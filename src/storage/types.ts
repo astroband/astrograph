@@ -70,12 +70,18 @@ export interface IChangeTrustOperationData extends IOperationData {
   asset: IAssetData[];
 }
 
+export interface ICreateAccountOperationData extends IOperationData {
+  starting_balance: string;
+  "account.destination": IAccountData[];
+}
+
 export type DgraphOperationsData = IPaymentOperationData &
   ISetOptionsOperationData &
   IAccountMergeOperationData &
   IAllowTrustOperationData &
   IBumpSequenceOperationData &
-  IChangeTrustOperationData;
+  IChangeTrustOperationData &
+  ICreateAccountOperationData;
 
 export interface IAssetData {
   code: AssetCode;

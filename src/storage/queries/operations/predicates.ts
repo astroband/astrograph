@@ -3,45 +3,43 @@
 import { OperationKinds } from "./types";
 
 export const queryPredicates = {
-  [OperationKinds.Payment]: `
-    account.destination { id }
-    amount
-    asset {
+  [OperationKinds.Payment]: [
+    "account.destination { id }",
+    "amount",
+    `asset {
       native
       code
       issuer { id }
-    }`,
-  [OperationKinds.SetOption]: `
-    master_weight
-    home_domain
-    clear_flags
-    set_flags
-    thresholds {
+    }`
+  ],
+  [OperationKinds.SetOption]: [
+    "master_weight",
+    "home_domain",
+    "clear_flags",
+    "set_flags",
+    `thresholds {
       high
       med
       low
-    }
-    account.inflation_dest { id }
-    signer {
+    }`,
+    "account.inflation_dest { id }",
+    `signer {
       account { id }
       weight
-    }`,
-  [OperationKinds.AccountMerge]: `
-    account.destination { id }
-  `,
-  [OperationKinds.AllowTrust]: `
-    trustor { id }
-    asset_code
-    authorize
-  `,
-  [OperationKinds.BumpSequence]: `
-    bump_to
-  `,
-  [OperationKinds.ChangeTrust]: `
-    limit
-    asset {
+    }`
+  ],
+  [OperationKinds.AccountMerge]: ["account.destination { id }"],
+  [OperationKinds.AllowTrust]: ["trustor { id }", "asset_code", "authorize"],
+  [OperationKinds.BumpSequence]: ["bump_to"],
+  [OperationKinds.ChangeTrust]: [
+    "limit",
+    `asset {
       code
       issuer { id }
-    }
-  `
+    }`
+  ],
+  [OperationKinds.CreateAccount]: [
+    "starting_balance",
+    "account.destination { id }"
+  ]
 };

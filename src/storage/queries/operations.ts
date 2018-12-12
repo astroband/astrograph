@@ -68,7 +68,13 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
           ledger { close_time }
           transaction { id }
           account.source { id }
-          ${opKinds.map(opKind => queryPredicates[opKind]).join("\n")}
+          ${_
+            .chain(opKinds)
+            .map(opKind => queryPredicates[opKind])
+            .flatten()
+            .uniq()
+            .value()
+            .join("\n")}
         }
       }
     `;

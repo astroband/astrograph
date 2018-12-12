@@ -30,6 +30,10 @@ export default {
         return "ChangeTrustOperation";
       }
 
+      if (obj.kind === OperationKinds.CreateAccount) {
+        return "CreateAccountOperation";
+      }
+
       return null;
     }
   },

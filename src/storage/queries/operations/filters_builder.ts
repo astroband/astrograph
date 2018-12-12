@@ -4,6 +4,7 @@ import {
   IAllowTrustQueryParams,
   IBumpSequenceQueryParams,
   IChangeTrustQueryParams,
+  ICreateAccountQueryParams,
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams,
   OperationKinds
@@ -15,7 +16,8 @@ type Params =
   | IAccountMergeQueryParams
   | IAllowTrustQueryParams
   | IBumpSequenceQueryParams
-  | IChangeTrustQueryParams;
+  | IChangeTrustQueryParams
+  | ICreateAccountQueryParams;
 
 export class FiltersBuilder {
   public static build(kind: OperationKinds, params: Params): { root: string; nested: string } {
@@ -32,6 +34,8 @@ export class FiltersBuilder {
         return buildBumpSequenceFilters(params as IBumpSequenceQueryParams);
       case OperationKinds.ChangeTrust:
         return buildChangeTrustFilters(params as IChangeTrustQueryParams);
+      case OperationKinds.CreateAccount:
+        return buildCreateAccountFilters(params as ICreateAccountQueryParams);
     }
   }
 }
@@ -95,5 +99,12 @@ function buildChangeTrustFilters(params: IChangeTrustQueryParams) {
   return {
     root: params.limit ? `@filter(eq(limit, "${params.limit}"))` : "",
     nested: params.asset ? buildAssetFilter(params.asset.code, params.asset.issuer) : ""
+  };
+}
+
+function buildCreateAccountFilters(params: ICreateAccountQueryParams) {
+  return {
+    root: "",
+    nested: params.destination ? `account.destination @filter(eq(id, "${params.destination}"))` : ""
   };
 }
