@@ -28,6 +28,8 @@ const SCHEMA = `
   starting_balance: int @index (int) .
   close_time: dateTime @index (hour) .
   authorize: bool @index (bool) .
+  asset_code: string @index (exact) .
+  bump_to: int @index (int) .
 `;
 
 export class Connection {

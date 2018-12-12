@@ -61,10 +61,15 @@ export interface IAllowTrustOperationData extends IOperationData {
   authorize: boolean;
 }
 
+export interface IBumpSequenceOperationData extends IOperationData {
+  bump_to: number;
+}
+
 export type DgraphOperationsData = IPaymentOperationData &
   ISetOptionsOperationData &
   IAccountMergeOperationData &
-  IAllowTrustOperationData;
+  IAllowTrustOperationData &
+  IBumpSequenceOperationData;
 
 export interface IAssetData {
   code: AssetCode;

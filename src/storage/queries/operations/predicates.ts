@@ -33,5 +33,8 @@ export const queryPredicates = {
     trustor { id }
     asset_code
     authorize
+  `,
+  [OperationKinds.BumpSequence]: `
+    bump_to
   `
 };

@@ -4,10 +4,11 @@ import {
   IAllowTrustQueryParams,
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams,
-  OperationKinds
+  OperationKinds,
+  IBumpSequenceQueryParams
 } from "./types";
 
-type Params = IPaymentsQueryParams | ISetOptionsOpsQueryParams | IAccountMergeQueryParams | IAllowTrustQueryParams;
+type Params = IPaymentsQueryParams | ISetOptionsOpsQueryParams | IAccountMergeQueryParams | IAllowTrustQueryParams | IBumpSequenceQueryParams;
 
 export class FiltersBuilder {
   public static build(kind: OperationKinds, params: Params): { root: string; nested: string } {
@@ -20,6 +21,8 @@ export class FiltersBuilder {
         return buildAccountMergeFilters(params as IAccountMergeQueryParams);
       case OperationKinds.AllowTrust:
         return buildAllowTrustFilters(params as IAllowTrustQueryParams);
+      case OperationKinds.BumpSequence:
+        return buildBumpSequenceFilters(params as IBumpSequenceQueryParams);
     }
   }
 }
@@ -69,5 +72,12 @@ function buildAllowTrustFilters(params: IAllowTrustQueryParams) {
   return {
     root: filters.length > 0 ? `@filter(${filters.join(" AND ")})` : "",
     nested: params.trustor ? `trustor @filter(eq(id, "${params.trustor}"))` : ""
+  };
+}
+
+function buildBumpSequenceFilters(params: IBumpSequenceQueryParams) {
+  return {
+    root: params.bumpTo ? `@filter(eq(bump_to, ${params.bumpTo}))` : "",
+    nested: ""
   };
 }

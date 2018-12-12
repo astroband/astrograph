@@ -4,6 +4,7 @@ import {
   IAccountMergeOperation,
   IAllowTrustOperation,
   IBaseOperation,
+  IBumpSequenceOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
@@ -37,6 +38,8 @@ export class DataMapper {
         return this.mapAccountMerge();
       case OperationKinds.AllowTrust:
         return this.mapAllowTrust();
+      case OperationKinds.BumpSequence:
+        return this.mapBumpSequence();
     }
   }
 
@@ -97,6 +100,13 @@ export class DataMapper {
         authorize: this.data.authorize,
         assetCode: this.data.asset_code
       }
-    }
+    };
+  }
+
+  private mapBumpSequence(): IBumpSequenceOperation {
+    return {
+      ...this.baseData,
+      ...{ bumpTo: this.data.bump_to }
+    };
   }
 }
