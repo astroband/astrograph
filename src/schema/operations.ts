@@ -9,6 +9,7 @@ export const typeDefs = gql`
     bumpSequence
     changeTrust
     createAccount
+    manageDatum
   }
 
   interface IOperation {
@@ -95,6 +96,16 @@ export const typeDefs = gql`
     destination: AccountID!
   }
 
+  type ManageDatumOperation implements IOperation {
+    kind: OperationKind!
+    account: AccountID!
+    transaction: Transaction!
+    index: Int!
+    dateTime: DateTime!
+    name: String!
+    value: String
+  }
+
   type SetOptionsThresholds {
     low: Int
     medium: Int
@@ -139,6 +150,11 @@ export const typeDefs = gql`
     destination: AccountID
   }
 
+  input ManageDataOpFilter {
+    name: String
+    value: String
+  }
+
   input OperationsFilter {
     payment: PaymentOpFilter
     setOption: SetOptionsOpFilter
@@ -147,6 +163,7 @@ export const typeDefs = gql`
     bumpSequence: BumpSequenceOpFilter
     changeTrust: ChangeTrustOpFilter
     createAccount: CreateAccountOpFilter
+    manageDatum: ManageDataOpFilter
   }
 
 `;

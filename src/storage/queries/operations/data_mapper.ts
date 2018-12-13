@@ -7,6 +7,7 @@ import {
   IBumpSequenceOperation,
   IChangeTrustOperation,
   ICreateAccountOperation,
+  IManageDataOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
@@ -46,6 +47,8 @@ export class DataMapper {
         return this.mapChangeTrust();
       case OperationKinds.CreateAccount:
         return this.mapCreateAccount();
+      case OperationKinds.ManageData:
+        return this.mapManageData();
     }
   }
 
@@ -132,6 +135,13 @@ export class DataMapper {
         startingBalance: this.data.starting_balance,
         destination: this.data["account.destination"][0].id
       }
+    };
+  }
+
+  private mapManageData(): IManageDataOperation {
+    return {
+      ...this.baseData,
+      ...{ name: this.data.name, value: this.data.value }
     };
   }
 }

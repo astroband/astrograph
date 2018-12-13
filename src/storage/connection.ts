@@ -31,6 +31,8 @@ const SCHEMA = `
   asset_code: string @index (exact) .
   bump_to: int @index (int) .
   limit: int @index (int) .
+  name: string @index (exact) .
+  value: string @index (exact) .
 `;
 
 export class Connection {

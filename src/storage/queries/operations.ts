@@ -7,6 +7,9 @@ import { queryPredicates } from "./operations/predicates";
 import {
   IAccountMergeQueryParams,
   IAllowTrustQueryParams,
+  IChangeTrustQueryParams,
+  ICreateAccountQueryParams,
+  IManageDataQueryParams,
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams,
   Operation,
@@ -19,6 +22,9 @@ interface IOperationsQueryParams {
   [OperationKinds.SetOption]?: ISetOptionsOpsQueryParams;
   [OperationKinds.AccountMerge]?: IAccountMergeQueryParams;
   [OperationKinds.AllowTrust]?: IAllowTrustQueryParams;
+  [OperationKinds.ChangeTrust]?: IChangeTrustQueryParams;
+  [OperationKinds.CreateAccount]?: ICreateAccountQueryParams;
+  [OperationKinds.ManageData]?: IManageDataQueryParams;
 }
 
 type IOperationsQueryResult = Operation[];

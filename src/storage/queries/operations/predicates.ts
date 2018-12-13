@@ -38,8 +38,6 @@ export const queryPredicates = {
       issuer { id }
     }`
   ],
-  [OperationKinds.CreateAccount]: [
-    "starting_balance",
-    "account.destination { id }"
-  ]
+  [OperationKinds.CreateAccount]: ["starting_balance", "account.destination { id }"],
+  [OperationKinds.ManageData]: ["name", "value"]
 };

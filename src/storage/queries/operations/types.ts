@@ -12,7 +12,8 @@ export enum OperationKinds {
   AllowTrust = "allowTrust",
   BumpSequence = "bumpSequence",
   ChangeTrust = "changeTrust",
-  CreateAccount = "createAccount"
+  CreateAccount = "createAccount",
+  ManageData = "manageDatum"
 }
 
 export interface IBaseOperation {
@@ -71,6 +72,11 @@ export interface ICreateAccountOperation extends IBaseOperation {
   destination: AccountID;
 }
 
+export interface IManageDataOperation extends IBaseOperation {
+  name: string;
+  value: string;
+}
+
 export type Operation =
   | IPaymentOperation
   | ISetOptionsOperation
@@ -78,7 +84,8 @@ export type Operation =
   | IAllowTrustOperation
   | IBumpSequenceOperation
   | IChangeTrustOperation
-  | ICreateAccountOperation;
+  | ICreateAccountOperation
+  | IManageDataOperation;
 
 // What filters for different operations we provide
 export interface ISetOptionsOpsQueryParams {
@@ -113,4 +120,9 @@ export interface IChangeTrustQueryParams {
 
 export interface ICreateAccountQueryParams {
   destination: AccountID;
+}
+
+export interface IManageDataQueryParams {
+  name: string;
+  value: string;
 }

@@ -74,6 +74,10 @@ export interface ICreateAccountOperationData extends IOperationData {
   starting_balance: string;
   "account.destination": IAccountData[];
 }
+export interface IManageDataOperationData extends IOperationData {
+  name: string;
+  value: string;
+}
 
 export type DgraphOperationsData = IPaymentOperationData &
   ISetOptionsOperationData &
@@ -81,7 +85,8 @@ export type DgraphOperationsData = IPaymentOperationData &
   IAllowTrustOperationData &
   IBumpSequenceOperationData &
   IChangeTrustOperationData &
-  ICreateAccountOperationData;
+  ICreateAccountOperationData &
+  IManageDataOperationData;
 
 export interface IAssetData {
   code: AssetCode;

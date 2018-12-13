@@ -5,6 +5,7 @@ import {
   IBumpSequenceQueryParams,
   IChangeTrustQueryParams,
   ICreateAccountQueryParams,
+  IManageDataQueryParams,
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams,
   OperationKinds
@@ -17,7 +18,8 @@ type Params =
   | IAllowTrustQueryParams
   | IBumpSequenceQueryParams
   | IChangeTrustQueryParams
-  | ICreateAccountQueryParams;
+  | ICreateAccountQueryParams
+  | IManageDataQueryParams;
 
 export class FiltersBuilder {
   public static build(kind: OperationKinds, params: Params): { root: string; nested: string } {
@@ -36,6 +38,8 @@ export class FiltersBuilder {
         return buildChangeTrustFilters(params as IChangeTrustQueryParams);
       case OperationKinds.CreateAccount:
         return buildCreateAccountFilters(params as ICreateAccountQueryParams);
+      case OperationKinds.ManageData:
+        return buildManageDataFilters(params as IManageDataQueryParams);
     }
   }
 }
@@ -106,5 +110,24 @@ function buildCreateAccountFilters(params: ICreateAccountQueryParams) {
   return {
     root: "",
     nested: params.destination ? `account.destination @filter(eq(id, "${params.destination}"))` : ""
+  };
+}
+
+function buildManageDataFilters(params: IManageDataQueryParams) {
+  const filters: string[] = [];
+
+  if (params.name) {
+    filters.push(`eq(name, "${params.name}")`);
+  }
+
+  if (params.value) {
+    filters.push(`eq(value, "${params.value}")`);
+  } else if (params.value === null) {
+    filters.push("NOT has(value)");
+  }
+
+  return {
+    root: filters.length > 0 ? `@filter(${filters.join(" AND ")})` : "",
+    nested: ""
   };
 }
