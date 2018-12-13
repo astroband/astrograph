@@ -17,10 +17,10 @@ export class Offer {
   constructor(data: {
     offerid: string;
     sellerid: string;
-    sellingassettype: number;
+    sellingassettype: number | string;
     sellingassetcode: string;
     sellingissuer: string;
-    buyingassettype: number;
+    buyingassettype: number | string;
     buyingassetcode: string;
     buyingissuer: string;
     amount: string;
@@ -28,21 +28,11 @@ export class Offer {
     priced: number;
     price: string;
     flags: number;
-  });
-  constructor(data: {
-    offerid: string;
-    sellerid: string;
-    selling: Asset;
-    buying: Asset;
-    amount: string;
-    pricen: number;
-    priced: number;
-    flags: number;
   }) {
     this.id = data.offerid;
     this.sellerid = data.sellerid;
-    this.selling = data.selling || Asset.build(data.sellingassettype, data.sellingassetcode, data.sellingissuer);
-    this.buying = data.buying || Asset.build(data.buyingassettype, data.buyingassetcode, data.buyingissuer);
+    this.selling = Asset.build(data.sellingassettype, data.sellingassetcode, data.sellingissuer);
+    this.buying = Asset.build(data.buyingassettype, data.buyingassetcode, data.buyingissuer);
     this.amount = toFloatAmountString(data.amount);
     this.pricen = data.pricen;
     this.priced = data.priced;

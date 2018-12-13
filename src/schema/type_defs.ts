@@ -197,6 +197,8 @@ export default gql`
   }
 
   type OfferSubscriptionPayload {
+    accountID: AccountID!
+    offerID: String!
     mutationType: MutationType!
     values: OfferValues
   }
