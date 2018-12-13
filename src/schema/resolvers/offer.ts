@@ -1,7 +1,7 @@
 import { Account, Offer } from "../../model";
 
 import { withFilter } from "graphql-subscriptions";
-import { assetResolver, createBatchResolver, eventMatches } from "./util";
+import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 import { db } from "../../database";
 
@@ -30,7 +30,8 @@ export default {
   Offer: {
     seller: accountResolver,
     selling: assetResolver,
-    buying: assetResolver
+    buying: assetResolver,
+    ledger: ledgerResolver
   },
   Query: {
     offers(root: any, args: any, ctx: any, info: any) {

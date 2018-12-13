@@ -22,7 +22,8 @@ export class OfferValues extends Offer {
       price: xdr.price().toString(),
       pricen: xdr.price().n(),
       priced: xdr.price().d(),
-      flags: xdr.flags()
+      flags: xdr.flags(),
+      lastmodified: -1
     });
   }
 }

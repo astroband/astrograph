@@ -184,6 +184,7 @@ export default gql`
     amount: Int!
     price: String!
     passive: Boolean!
+    ledger: Ledger!
   }
 
   type OfferValues implements IOffer {
