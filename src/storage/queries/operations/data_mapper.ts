@@ -152,8 +152,12 @@ export class DataMapper {
     const assetBuyingData = this.data["asset.buying"][0];
     const assetSellingData = this.data["asset.selling"][0];
 
-    const assetBuying = assetBuyingData.native ? Asset.native() : new Asset(assetBuyingData.code, assetBuyingData.issuer[0].id);
-    const assetSelling = assetSellingData.native ? Asset.native() : new Asset(assetSellingData.code, assetSellingData.issuer[0].id);
+    const assetBuying = assetBuyingData.native
+      ? Asset.native()
+      : new Asset(assetBuyingData.code, assetBuyingData.issuer[0].id);
+    const assetSelling = assetSellingData.native
+      ? Asset.native()
+      : new Asset(assetSellingData.code, assetSellingData.issuer[0].id);
 
     return {
       ...this.baseData,

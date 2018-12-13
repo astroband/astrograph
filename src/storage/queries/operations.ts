@@ -14,7 +14,7 @@ import {
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams,
   Operation,
-  OperationKinds,
+  OperationKinds
 } from "./operations/types";
 import { Query } from "./query";
 
