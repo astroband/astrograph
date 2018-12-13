@@ -176,15 +176,14 @@ export default gql`
     passive: Boolean!
   }
 
-  type OfferValues implements IOffer {
-  }
-
-  type OfferSubscriptionPayload {
-    seller: AccountID!
+  type Offer implements IOffer {
+    id: String!
+    seller: Account!
     selling: Asset!
     buying: Asset!
-    mutationType: MutationType!
-    values: OfferValues
+    amount: Int!
+    price: String!
+    passive: Boolean!
   }
 
   type OfferValues implements IOffer {
@@ -195,6 +194,11 @@ export default gql`
     amount: Int!
     price: String!
     passive: Boolean!
+  }
+
+  type OfferSubscriptionPayload {
+    mutationType: MutationType!
+    values: OfferValues
   }
 
   type Transaction {
