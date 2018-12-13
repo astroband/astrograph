@@ -265,6 +265,7 @@ export default gql`
     account(args: EventInput): AccountSubscriptionPayload
     trustLine(args: EventInput): TrustLineSubscriptionPayload
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
+    offer(args: EventInput): OfferSubscriptionPayload
   }
 
 `;
