@@ -17,10 +17,10 @@ export class Offer {
   constructor(data: {
     offerid: string;
     sellerid: string;
-    sellingassettype: number | string;
+    sellingassettype: number;
     sellingassetcode: string;
     sellingissuer: string;
-    buyingassettype: number | string;
+    buyingassettype: number;
     buyingassetcode: string;
     buyingissuer: string;
     amount: string;

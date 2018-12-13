@@ -12,10 +12,10 @@ export class OfferValues extends Offer {
     return new OfferValues({
       offerid: xdr.offerId(),
       sellerid,
-      sellingassettype: selling.getAssetType(),
+      sellingassettype: selling.getAssetType() === "native" ? 0 : 1,
       sellingassetcode: selling.getCode(),
       sellingissuer: selling.getIssuer(),
-      buyingassettype: buying.getAssetType(),
+      buyingassettype: buying.getAssetType() === "native" ? 0 : 1,
       buyingassetcode: buying.getCode(),
       buyingissuer: buying.getIssuer(),
       amount: xdr.amount(),
