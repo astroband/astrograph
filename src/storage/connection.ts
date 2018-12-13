@@ -33,6 +33,7 @@ const SCHEMA = `
   limit: int @index (int) .
   name: string @index (exact) .
   value: string @index (exact) .
+  offer_id: string @index (exact) .
 `;
 
 export class Connection {

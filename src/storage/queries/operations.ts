@@ -10,10 +10,11 @@ import {
   IChangeTrustQueryParams,
   ICreateAccountQueryParams,
   IManageDataQueryParams,
+  IManageOfferQueryParams,
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams,
   Operation,
-  OperationKinds
+  OperationKinds,
 } from "./operations/types";
 import { Query } from "./query";
 
@@ -25,6 +26,7 @@ interface IOperationsQueryParams {
   [OperationKinds.ChangeTrust]?: IChangeTrustQueryParams;
   [OperationKinds.CreateAccount]?: ICreateAccountQueryParams;
   [OperationKinds.ManageData]?: IManageDataQueryParams;
+  [OperationKinds.ManageOffer]?: IManageOfferQueryParams;
 }
 
 type IOperationsQueryResult = Operation[];

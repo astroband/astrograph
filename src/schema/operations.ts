@@ -10,6 +10,7 @@ export const typeDefs = gql`
     changeTrust
     createAccount
     manageDatum
+    manageOffer
   }
 
   interface IOperation {
@@ -106,6 +107,25 @@ export const typeDefs = gql`
     value: String
   }
 
+  type ManageOfferOperation implements IOperation {
+    kind: OperationKind!
+    account: AccountID!
+    transaction: Transaction!
+    index: Int!
+    dateTime: DateTime!
+    priceComponents: OfferPriceComponents!
+    price: String!
+    offerId: String!
+    amount: String!
+    assetSelling: Asset!
+    assetBuying: Asset!
+  }
+
+  type OfferPriceComponents {
+    n: Int!
+    d: Int!
+  }
+
   type SetOptionsThresholds {
     low: Int
     medium: Int
@@ -155,6 +175,12 @@ export const typeDefs = gql`
     value: String
   }
 
+  input ManageOfferOpFilter {
+    assetSelling: AssetInput
+    assetBuying: AssetInput
+    offerId: String
+  }
+
   input OperationsFilter {
     payment: PaymentOpFilter
     setOption: SetOptionsOpFilter
@@ -164,6 +190,7 @@ export const typeDefs = gql`
     changeTrust: ChangeTrustOpFilter
     createAccount: CreateAccountOpFilter
     manageDatum: ManageDataOpFilter
+    manageOffer: ManageOfferOpFilter
   }
 
 `;

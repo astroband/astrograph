@@ -13,7 +13,8 @@ export enum OperationKinds {
   BumpSequence = "bumpSequence",
   ChangeTrust = "changeTrust",
   CreateAccount = "createAccount",
-  ManageData = "manageDatum"
+  ManageData = "manageDatum",
+  ManageOffer = "manageOffer"
 }
 
 export interface IBaseOperation {
@@ -77,6 +78,13 @@ export interface IManageDataOperation extends IBaseOperation {
   value: string;
 }
 
+export interface IManageOfferOperation extends IBaseOperation {
+  amount: string;
+  offerId: string;
+  price: number;
+  priceComponents: { n: string; d: string };
+}
+
 export type Operation =
   | IPaymentOperation
   | ISetOptionsOperation
@@ -85,7 +93,8 @@ export type Operation =
   | IBumpSequenceOperation
   | IChangeTrustOperation
   | ICreateAccountOperation
-  | IManageDataOperation;
+  | IManageDataOperation
+  | IManageOfferOperation;
 
 // What filters for different operations we provide
 export interface ISetOptionsOpsQueryParams {
@@ -125,4 +134,10 @@ export interface ICreateAccountQueryParams {
 export interface IManageDataQueryParams {
   name: string;
   value: string;
+}
+
+export interface IManageOfferQueryParams {
+  offerId: string;
+  assetSelling: IAssetInput;
+  assetBuying: IAssetInput;
 }

@@ -8,6 +8,7 @@ import {
   IChangeTrustOperation,
   ICreateAccountOperation,
   IManageDataOperation,
+  IManageOfferOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
@@ -49,6 +50,8 @@ export class DataMapper {
         return this.mapCreateAccount();
       case OperationKinds.ManageData:
         return this.mapManageData();
+      case OperationKinds.ManageOffer:
+        return this.mapManageOffer();
     }
   }
 
@@ -142,6 +145,29 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{ name: this.data.name, value: this.data.value }
+    };
+  }
+
+  private mapManageOffer(): IManageOfferOperation {
+    const assetBuyingData = this.data["asset.buying"][0];
+    const assetSellingData = this.data["asset.selling"][0];
+
+    const assetBuying = assetBuyingData.native ? Asset.native() : new Asset(assetBuyingData.code, assetBuyingData.issuer[0].id);
+    const assetSelling = assetSellingData.native ? Asset.native() : new Asset(assetSellingData.code, assetSellingData.issuer[0].id);
+
+    return {
+      ...this.baseData,
+      ...{
+        offerId: this.data.offer_id,
+        amount: this.data.amount,
+        price: this.data.price,
+        priceComponents: {
+          n: this.data.price_n,
+          d: this.data.price_d
+        },
+        assetBuying,
+        assetSelling
+      }
     };
   }
 }

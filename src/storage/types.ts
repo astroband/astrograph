@@ -79,6 +79,16 @@ export interface IManageDataOperationData extends IOperationData {
   value: string;
 }
 
+export interface IManageOfferOperationData extends IOperationData {
+  price_n: string;
+  price_d: string;
+  price: number;
+  offer_id: string;
+  "asset.selling": IAssetData[];
+  "asset.buying": IAssetData[];
+  amount: number;
+}
+
 export type DgraphOperationsData = IPaymentOperationData &
   ISetOptionsOperationData &
   IAccountMergeOperationData &
@@ -86,7 +96,8 @@ export type DgraphOperationsData = IPaymentOperationData &
   IBumpSequenceOperationData &
   IChangeTrustOperationData &
   ICreateAccountOperationData &
-  IManageDataOperationData;
+  IManageDataOperationData &
+  IManageOfferOperationData;
 
 export interface IAssetData {
   code: AssetCode;

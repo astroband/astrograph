@@ -6,6 +6,7 @@ import {
   IChangeTrustQueryParams,
   ICreateAccountQueryParams,
   IManageDataQueryParams,
+  IManageOfferQueryParams,
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams,
   OperationKinds
@@ -19,7 +20,8 @@ type Params =
   | IBumpSequenceQueryParams
   | IChangeTrustQueryParams
   | ICreateAccountQueryParams
-  | IManageDataQueryParams;
+  | IManageDataQueryParams
+  | IManageOfferQueryParams;
 
 export class FiltersBuilder {
   public static build(kind: OperationKinds, params: Params): { root: string; nested: string } {
@@ -40,6 +42,8 @@ export class FiltersBuilder {
         return buildCreateAccountFilters(params as ICreateAccountQueryParams);
       case OperationKinds.ManageData:
         return buildManageDataFilters(params as IManageDataQueryParams);
+      case OperationKinds.ManageOffer:
+        return buildManageOfferFilters(params as IManageOfferQueryParams);
     }
   }
 }
@@ -129,5 +133,15 @@ function buildManageDataFilters(params: IManageDataQueryParams) {
   return {
     root: filters.length > 0 ? `@filter(${filters.join(" AND ")})` : "",
     nested: ""
+  };
+}
+
+function buildManageOfferFilters(params: IManageOfferQueryParams) {
+  return {
+    root: params.offerId ? `@filter(eq(offer_id, "${params.offerId}"))` : "",
+    nested: [
+      params.assetBuying ? buildAssetFilter(params.assetBuying.code, params.assetBuying.issuer, "asset.buying") : "",
+      params.assetSelling ? buildAssetFilter(params.assetSelling.code, params.assetSelling.issuer, "asset.selling") : ""
+    ].join("\n")
   };
 }

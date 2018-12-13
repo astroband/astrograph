@@ -39,5 +39,22 @@ export const queryPredicates = {
     }`
   ],
   [OperationKinds.CreateAccount]: ["starting_balance", "account.destination { id }"],
-  [OperationKinds.ManageData]: ["name", "value"]
+  [OperationKinds.ManageData]: ["name", "value"],
+  [OperationKinds.ManageOffer]: [
+    "offer_id",
+    "price_n",
+    "price_d",
+    "price",
+    `asset.buying {
+      native
+      code
+      issuer { id }
+    }`,
+    `asset.selling {
+      native
+      code
+      issuer { id }
+    }`,
+    "amount"
+  ]
 };

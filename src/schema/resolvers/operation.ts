@@ -23,6 +23,8 @@ export default {
           return "CreateAccountOperation";
         case OperationKinds.ManageData:
           return "ManageDatumOperation";
+        case OperationKinds.ManageOffer:
+          return "ManageOfferOperation";
       }
 
       return null;
