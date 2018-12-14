@@ -27,7 +27,7 @@ export interface IAccountTableRow {
 
 export class Account implements IAccount {
   public static fromDb(row: IAccountTableRow): Account {
-    const data: IAccoutn = {
+    const data: IAccount = {
       id: row.accountid,
       balance: row.balance,
       sequenceNumber: row.seqnum,

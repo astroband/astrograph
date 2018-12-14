@@ -8,13 +8,15 @@ export interface IAccountThresholds {
 }
 
 export class AccountThresholds implements IAccountThresholds {
-  public static fromValue(value: number): AccountThresholds {
-    const fl = stellar.xdr.AccountFlags;
+  public static fromValue(value: string): AccountThresholds {
+    const t = Buffer.from(value, "base64");
+    const ti = stellar.xdr.ThresholdIndices;
 
     const data: IAccountThresholds = {
-      authRequired: (value & fl.authRequiredFlag().value) > 0,
-      authRevokable: (value & fl.authRevocableFlag().value) > 0,
-      authImmutable: (value & fl.authImmutableFlag().value) > 0
+      masterWeight: t[ti.thresholdMasterWeight().value],
+      low: t[ti.thresholdLow().value],
+      medium: t[ti.thresholdMed().value],
+      high: t[ti.thresholdHigh().value]
     };
 
     return new AccountThresholds(data);

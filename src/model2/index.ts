@@ -1,4 +1,4 @@
-// This models represent GraphQL types from schema.
+// Models represent GraphQL types from schema.
 //
 // Conventions:
 //
@@ -12,3 +12,4 @@
 export * from "./account";
 export * from "./account_thresholds";
 export * from "./account_flags";
+export * from "./transaction";

@@ -14,12 +14,12 @@ export interface ITransaction {
   metaXDR?: any;
   feeMeta?: string;
   feeMetaXDR?: any;
-  memo: Memo | null = null;
+  memo?: Memo;
   feeAmount: string;
   sourceAccount: string;
-  timeBounds: [number, number] | null = null;
+  timeBounds?: [number, number];
   feeCharged: string;
-  success: boolean = false;
+  success: boolean;
   resultCode: number;
 }
 
@@ -35,40 +35,40 @@ export interface ITransactionTableRow {
 
 export class Transaction implements ITransaction {
   public static fromDb(row: ITransactionTableRow): Transaction {
+    const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(row.txbody, "base64"));
+    const resultXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(row.txresult, "base64"));
+    const metaXDR = stellar.xdr.TransactionMeta.fromXDR(Buffer.from(row.txmeta, "base64"));
+    const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(Buffer.from(row.txfeemeta, "base64"));
+
+    const body = bodyXDR.tx();
+    const result = resultXDR.result();
+
+    const memo = Memo.fromXDRObject(body.memo());
+    const timeBoundsXDR = body.timeBounds();
+    const resultCode = result.result().switch().value;
+
     const data: ITransaction = {
       id: row.txid,
       ledgerSeq: row.ledgerseq,
       index: row.txindex,
       body: row.txbody,
-      bodyXDR: stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(this.body, "base64")),
+      bodyXDR,
       result: row.txresult,
-      resultXDR: stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(this.body, "base64")),
+      resultXDR,
       meta: row.txmeta,
-      metaXDR: stellar.xdr.TransactionMeta.fromXDR(Buffer.from(this.meta, "base64")),
+      metaXDR,
       feeMeta: row.txfeemeta,
-      feeMetaXDR: stellar.xdr.OperationMeta.fromXDR(Buffer.from(this.feeMeta, "base64"))
+      feeMetaXDR,
+      memo: memo.value ? memo : undefined,
+      timeBounds: timeBoundsXDR ? [timeBoundsXDR.minTime().toInt(), timeBoundsXDR.maxTime().toInt()] : undefined,
+      feeAmount: body.fee().toString(),
+      feeCharged: result.feeCharged.toString(),
+      resultCode,
+      success: resultCode === stellar.xdr.TransactionResultCode.txSuccess().value,
+      sourceAccount: publicKeyFromBuffer(body.sourceAccount().value())
     };
 
-    const body = data.bodyXDR.tx();
-    const result = data.resultXDR.result();
-
-    const memo = Memo.fromXDRObject(body.memo());
-    const timeBounds = body.timeBounds();
-
-    if (memo.value) {
-      data.memo = memo;
-    }
-
-    if (timeBounds) {
-      data.timeBounds = [timeBounds.minTime().toInt(), timeBounds.maxTime().toInt()];
-    }
-
-    data.result = result.result();
-    data.feeAmount = body.fee().toString();
-    data.feeCharged = result.feeCharged.toString();
-    data.resultCode = result.result().switch().value;
-    data.success = data.resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
-    data.sourceAccount = publicKeyFromBuffer(body.sourceAccount().value());
+    return new Transaction(data);
   }
 
   public id: string;
@@ -89,9 +89,6 @@ export class Transaction implements ITransaction {
   public feeCharged: string;
   public success: boolean;
   public resultCode: number;
-
-  // public readonly envelopeXDR: any;
-  // public readonly resultXDR: any;
 
   constructor(data: ITransaction) {
     this.id = data.id;
