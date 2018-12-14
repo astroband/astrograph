@@ -18,3 +18,5 @@ export * from "./mutation_type";
 export * from "./transaction";
 export * from "./transaction_with_xdr";
 export * from "./signer";
+
+export * from "./factories";

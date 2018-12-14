@@ -1,4 +1,4 @@
-import { AccountFlags, AccountThresholds, IAccountBase, Signer } from "./index";
+import { AccountFlags, AccountFlagsFactory, AccountThresholds, IAccountBase, Signer } from "./index";
 
 import { publicKeyFromXDR } from "../util/xdr";
 
@@ -28,7 +28,7 @@ export class AccountValues implements IAccountValues {
       inflationDest: xdr.inflationDest() || null,
       homeDomain: xdr.homeDomain(),
       thresholds,
-      flags: AccountFlags.fromValue(xdr.flags()),
+      flags: AccountFlagsFactory.fromValue(xdr.flags()),
       signers
     };
 
