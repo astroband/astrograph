@@ -6,4 +6,5 @@ export interface IPaymentOperation {
   asset: Asset;
   amount: string;
   dateTime: Date;
+  transactionId: string;
 }

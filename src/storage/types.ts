@@ -1,4 +1,8 @@
+// This module holds definitions of data types for "raw" objects,
+// which are returned from Dgraph storage
 import { MemoType } from "../util/stellar";
+import { AccountID, AssetCode } from "../util/types";
+import { OperationKinds } from "./queries/operations/types";
 
 export interface ITransactionData {
   id: string;
@@ -16,22 +20,103 @@ export interface ITransactionData {
   "time_bounds.max": number;
 }
 
-export interface IPaymentOperationData {
+interface IOperationData {
+  kind: OperationKinds;
+  ledger: ILedgerData[];
+  index: string;
+  transaction: ITransactionData[];
+}
+
+export interface IPaymentOperationData extends IOperationData {
   "account.source": IAccountData[];
   "account.destination": IAccountData[];
   amount: string;
   asset: IAssetData[];
-  ledger: ILedgerData[];
 }
 
+export interface ISetOptionsOperationData extends IOperationData {
+  master_weight: string;
+  home_domain: string;
+  clear_flags: string;
+  set_flags: string;
+  thresholds: {
+    high: string;
+    med: string;
+    low: string;
+  };
+  "account.inflation_dest": IAccountData[];
+  signer: {
+    account: IAccountData[];
+    weight: string;
+  };
+}
+
+export interface IAccountMergeOperationData extends IOperationData {
+  "account.destination": IAccountData[];
+}
+
+export interface IAllowTrustOperationData extends IOperationData {
+  trustor: IAccountData[];
+  asset_code: AssetCode;
+  authorize: boolean;
+}
+
+export interface IBumpSequenceOperationData extends IOperationData {
+  bump_to: number;
+}
+
+export interface IChangeTrustOperationData extends IOperationData {
+  limit: string;
+  asset: IAssetData[];
+}
+
+export interface ICreateAccountOperationData extends IOperationData {
+  starting_balance: string;
+  "account.destination": IAccountData[];
+}
+export interface IManageDataOperationData extends IOperationData {
+  name: string;
+  value: string;
+}
+
+export interface IManageOfferOperationData extends IOperationData {
+  price_n: string;
+  price_d: string;
+  price: number;
+  offer_id: string;
+  "asset.selling": IAssetData[];
+  "asset.buying": IAssetData[];
+  amount: number;
+}
+
+export interface IPathPaymentOperationData extends IOperationData {
+  send_max: string;
+  dest_amount: string;
+  "account.destination": IAccountData[];
+  "asset.destination": IAssetData[];
+  "asset.source": IAssetData[];
+  "assets.path": IAssetData[];
+}
+
+export type DgraphOperationsData = IPaymentOperationData &
+  ISetOptionsOperationData &
+  IAccountMergeOperationData &
+  IAllowTrustOperationData &
+  IBumpSequenceOperationData &
+  IChangeTrustOperationData &
+  ICreateAccountOperationData &
+  IManageDataOperationData &
+  IManageOfferOperationData &
+  IPathPaymentOperationData;
+
 export interface IAssetData {
-  code: string;
+  code: AssetCode;
   issuer: IAccountData[];
   native: boolean;
 }
 
 export interface IAccountData {
-  id: string;
+  id: AccountID;
   // it's incomplete
 }
 
