@@ -1,4 +1,4 @@
-import { AccountFlags, AccountFlagsFactory, AccountThresholds, AccountThresholdsFactory } from "./index";
+import { AccountFlags, AccountThresholds } from "./index";
 
 export interface IAccountBase {
   id: string;
@@ -15,35 +15,7 @@ export interface IAccount extends IAccountBase {
   lastModified: number;
 }
 
-export interface IAccountTableRow {
-  accountid: string;
-  balance: string;
-  seqnum: string;
-  numsubentries: number;
-  inflationdest: string;
-  homedomain: string;
-  thresholds: string;
-  flags: number;
-  lastmodified: number;
-}
-
 export class Account implements IAccount {
-  public static fromDb(row: IAccountTableRow): Account {
-    const data: IAccount = {
-      id: row.accountid,
-      balance: row.balance,
-      sequenceNumber: row.seqnum,
-      numSubentries: row.numsubentries,
-      inflationDest: row.inflationdest,
-      homeDomain: row.homedomain,
-      lastModified: row.lastmodified,
-      thresholds: AccountThresholdsFactory.fromValue(row.thresholds),
-      flags: AccountFlagsFactory.fromValue(row.flags)
-    };
-
-    return new Account(data);
-  }
-
   public id: string;
   public balance: string;
   public sequenceNumber: string;
