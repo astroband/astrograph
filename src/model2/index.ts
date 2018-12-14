@@ -13,3 +13,4 @@ export * from "./account";
 export * from "./account_thresholds";
 export * from "./account_flags";
 export * from "./transaction";
+export * from "./signer";

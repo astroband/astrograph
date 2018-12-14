@@ -4,6 +4,8 @@ import { publicKeyFromBuffer } from "../util/xdr";
 
 export type TimeBounds = [number, number];
 
+// NOTE!!! ITransaction and Transaction should implement interface for GraphQL only
+// CoreTransaction must have all that XDR stuff, reiterate here.
 export interface ITransaction {
   id: string;
   ledgerSeq: number;
