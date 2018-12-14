@@ -11,6 +11,7 @@ export const LEDGER_CREATED = "LEDGER_CREATED";
 export const ACCOUNT = "ACCOUNT";
 export const TRUST_LINE = "TRUST_LINE";
 export const DATA_ENTRY = "DATA_ENTRY";
+export const OFFER = "OFFER";
 
 export class Publisher {
   public static async publish(header: LedgerHeader, collection: SubscriptionPayloadCollection) {
@@ -31,6 +32,7 @@ export class Publisher {
     { payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT },
     { payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE },
     { payloadClassName: "NativeTrustLineSubscriptionPayload", event: TRUST_LINE },
-    { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY }
+    { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY },
+    { payloadClassName: "OfferSubscriptionPayload", event: OFFER }
   ];
 }

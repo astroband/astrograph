@@ -4,6 +4,7 @@ import {
   DataEntrySubscriptionPayload,
   MutationType,
   NativeTrustLineSubscriptionPayload,
+  OfferSubscriptionPayload,
   Transaction,
   TrustLineSubscriptionPayload
 } from "../model";
@@ -12,7 +13,8 @@ export type SubscriptionPayload =
   | AccountSubscriptionPayload
   | TrustLineSubscriptionPayload
   | NativeTrustLineSubscriptionPayload
-  | DataEntrySubscriptionPayload;
+  | DataEntrySubscriptionPayload
+  | OfferSubscriptionPayload;
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
 export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
@@ -72,6 +74,9 @@ export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
         break;
       case EntryType.Data:
         this.push(new DataEntrySubscriptionPayload(mutationType, change.data.data()));
+        break;
+      case EntryType.Offer:
+        this.push(new OfferSubscriptionPayload(mutationType, change.data.offer()));
         break;
     }
   }
