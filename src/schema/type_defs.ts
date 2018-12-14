@@ -170,14 +170,13 @@ export const typeDefs = gql`
     id: String!
     ledger: Ledger!
     index: Int!
-    body: String!
     memo: Memo
-    feeAmount: Int!
-    result: String!
-    meta: String!
-    feeMeta: String!
+    feeAmount: String!
     sourceAccount: String!
     timeBounds: TimeBounds
+    feeCharged: String!
+    success: Boolean!
+    resultCode: Int!
   }
 
   type Offer {
