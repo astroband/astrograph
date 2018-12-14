@@ -1,0 +1,106 @@
+import { AccountFlags, AccountThresholds, IAccountBase, Signer } from "./index";
+
+import { publicKeyFromXDR } from "../util/xdr";
+
+export interface IAccountValues extends IAccountBase {
+  signers: Signer[];
+}
+
+export class AccountValues implements IAccountValues {
+  public static fromXDR(xdr: any): AccountValues {
+    const id = publicKeyFromXDR(xdr);
+    const signers = xdr.signers().map((s: any) => Signer.fromXDR(s, id));
+    const thresholds = AccountThresholds.fromValue(xdr.thresholds());
+
+    signers.unshift(
+      new Signer({
+        accountID: id,
+        signer: id,
+        weight: thresholds.masterWeight
+      })
+    );
+
+    const data: IAccountValues = {
+      id,
+      balance: xdr.balance().toString(),
+      sequenceNumber: xdr.seqNum().toString(),
+      numSubentries: xdr.numSubEntries(),
+      inflationDest: xdr.inflationDest() || null,
+      homeDomain: xdr.homeDomain(),
+      thresholds,
+      flags: AccountFlags.fromValue(xdr.flags()),
+      signers
+    };
+
+    return new AccountValues(data);
+  }
+
+  public id: string;
+  public balance: string;
+  public sequenceNumber: string;
+  public numSubentries: number;
+  public inflationDest: string;
+  public homeDomain: string;
+  public thresholds: AccountThresholds;
+  public flags: AccountFlags;
+  public signers: Signer[];
+
+  constructor(data: IAccountValues) {
+    this.id = data.id;
+    this.balance = data.balance;
+    this.sequenceNumber = data.sequenceNumber;
+    this.numSubentries = data.numSubentries;
+    this.inflationDest = data.inflationDest;
+    this.homeDomain = data.homeDomain;
+    this.thresholds = data.thresholds;
+    this.flags = data.flags;
+
+    this.signers = data.signers.sort((s1, s2) => {
+      if (s1.signer < s2.signer) {
+        return -1;
+      } else if (s1.signer === s2.signer) {
+        return 0;
+      } else {
+        return 1;
+      }
+    });
+  }
+
+  public diffAttrs(other: AccountValues): string[] {
+    if (this.id !== other.id) {
+      throw new Error("Cannot compare AccountValues for different accounts");
+    }
+
+    const changedAttrs: string[] = [];
+
+    const easyToCompareAttrs = ["balance", "sequenceNumber", "numSubentries", "inflationDest", "homeDomain"];
+
+    for (const attr of easyToCompareAttrs) {
+      if (this[attr] !== other[attr]) {
+        changedAttrs.push(attr);
+      }
+    }
+
+    if (!this.flags.equals(other.flags)) {
+      changedAttrs.push("flags");
+    }
+
+    if (!this.thresholds.equals(other.thresholds)) {
+      changedAttrs.push("thresholds");
+    }
+
+    if (this.signers.length !== other.signers.length) {
+      changedAttrs.push("signers");
+    } else {
+      const allSignersAreEqual = this.signers.every((s: Signer, i: number) => {
+        return s.signer === other.signers[i].signer && s.weight === other.signers[i].weight;
+      });
+
+      if (!allSignersAreEqual) {
+        changedAttrs.push("signers");
+      }
+    }
+
+    return changedAttrs;
+  }
+}

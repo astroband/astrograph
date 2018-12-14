@@ -1,7 +1,6 @@
-import { AccountFlags } from "./account_flags";
-import { AccountThresholds } from "./account_thresholds";
+import { AccountFlags, AccountThresholds } from "./index";
 
-export interface IAccount {
+export interface IAccountBase {
   id: string;
   balance: string;
   sequenceNumber: string;
@@ -10,6 +9,9 @@ export interface IAccount {
   homeDomain: string;
   thresholds: AccountThresholds;
   flags: AccountFlags;
+}
+
+export interface IAccount extends IAccountBase {
   lastModified: number;
 }
 
