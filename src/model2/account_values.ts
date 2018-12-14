@@ -57,15 +57,7 @@ export class AccountValues implements IAccountValues {
     this.thresholds = data.thresholds;
     this.flags = data.flags;
 
-    this.signers = data.signers.sort((s1, s2) => {
-      if (s1.signer < s2.signer) {
-        return -1;
-      } else if (s1.signer === s2.signer) {
-        return 0;
-      } else {
-        return 1;
-      }
-    });
+    this.signers = Signer.sortSigners(data.signers);
   }
 
   public diffAttrs(other: AccountValues): string[] {
