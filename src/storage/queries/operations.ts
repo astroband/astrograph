@@ -11,6 +11,7 @@ import {
   ICreateAccountQueryParams,
   IManageDataQueryParams,
   IManageOfferQueryParams,
+  IPathPaymentsQueryParams,
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams,
   Operation,
@@ -27,6 +28,7 @@ interface IOperationsQueryParams {
   [OperationKinds.CreateAccount]?: ICreateAccountQueryParams;
   [OperationKinds.ManageData]?: IManageDataQueryParams;
   [OperationKinds.ManageOffer]?: IManageOfferQueryParams;
+  [OperationKinds.PathPayment]?: IPathPaymentsQueryParams;
 }
 
 type IOperationsQueryResult = Operation[];

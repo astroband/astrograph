@@ -1,3 +1,4 @@
+import stellar from "stellar-base";
 import { Asset } from "stellar-sdk";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
@@ -21,7 +22,7 @@ export class AssetBuilder extends Builder {
   }
 
   public build(): NQuads {
-    const issuer = this.asset.getIssuer();
+    const issuer = this.asset.getIssuer() || stellar.Keypair.master().publicKey();
 
     this.pushKey();
 
@@ -29,9 +30,7 @@ export class AssetBuilder extends Builder {
     this.pushValue("native", this.asset.isNative().toString());
     this.pushValue("code", this.asset.getCode());
 
-    if (issuer) {
-      this.pushBuilder(new AccountBuilder(issuer), "issuer", "assets.issued");
-    }
+    this.pushBuilder(new AccountBuilder(issuer), "issuer", "assets.issued");
 
     return this.nquads;
   }

@@ -11,6 +11,7 @@ export const typeDefs = gql`
     createAccount
     manageDatum
     manageOffer
+    pathPayment
   }
 
   interface IOperation {
@@ -121,6 +122,21 @@ export const typeDefs = gql`
     assetBuying: Asset!
   }
 
+  type PathPaymentOperation implements IOperation {
+    kind: OperationKind!
+    account: AccountID!
+    transaction: Transaction!
+    index: Int!
+    dateTime: DateTime!
+    sendMax: String!
+    destinationAmount: String!
+    destinationAsset: Asset!
+    sourceAsset: Asset!
+    destinationAccount: AccountID!
+    sourceAccount: AccountID!
+    path: [Asset]
+  }
+
   type OfferPriceComponents {
     n: Int!
     d: Int!
@@ -181,6 +197,14 @@ export const typeDefs = gql`
     offerId: String
   }
 
+  input PathPaymentOpFilter {
+    sourceAccount: AccountID
+    destinationAccount: AccountID
+    destinationAsset: AssetInput
+    sourceAsset: AssetInput
+    pathContains: AssetInput
+  }
+
   input OperationsFilter {
     payment: PaymentOpFilter
     setOption: SetOptionsOpFilter
@@ -191,6 +215,7 @@ export const typeDefs = gql`
     createAccount: CreateAccountOpFilter
     manageDatum: ManageDataOpFilter
     manageOffer: ManageOfferOpFilter
+    pathPayment: PathPaymentOpFilter
   }
 
 `;

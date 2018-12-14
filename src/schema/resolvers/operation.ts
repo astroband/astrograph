@@ -25,6 +25,8 @@ export default {
           return "ManageDatumOperation";
         case OperationKinds.ManageOffer:
           return "ManageOfferOperation";
+        case OperationKinds.PathPayment:
+          return "PathPaymentOperation";
       }
 
       return null;

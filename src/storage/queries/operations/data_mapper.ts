@@ -1,5 +1,5 @@
 import { Asset } from "stellar-sdk";
-import { DgraphOperationsData } from "../../types";
+import { DgraphOperationsData, IAssetData } from "../../types";
 import {
   IAccountMergeOperation,
   IAllowTrustOperation,
@@ -9,6 +9,7 @@ import {
   ICreateAccountOperation,
   IManageDataOperation,
   IManageOfferOperation,
+  IPathPaymentOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
@@ -52,6 +53,8 @@ export class DataMapper {
         return this.mapManageData();
       case OperationKinds.ManageOffer:
         return this.mapManageOffer();
+      case OperationKinds.PathPayment:
+        return this.mapPathPayment();
     }
   }
 
@@ -171,6 +174,33 @@ export class DataMapper {
         },
         assetBuying,
         assetSelling
+      }
+    };
+  }
+
+  private mapPathPayment(): IPathPaymentOperation {
+    const destinationAssetData = this.data["asset.destination"][0];
+    const sourceAssetData = this.data["asset.source"][0];
+
+    const destinationAsset = destinationAssetData.native
+      ? Asset.native()
+      : new Asset(destinationAssetData.code, destinationAssetData.issuer[0].id);
+    const sourceAsset = sourceAssetData.native
+      ? Asset.native()
+      : new Asset(sourceAssetData.code, sourceAssetData.issuer[0].id);
+
+    return {
+      ...this.baseData,
+      ...{
+        sendMax: this.data.send_max,
+        destinationAmount: this.data.dest_amount,
+        destinationAccount: this.data["account.destination"][0].id,
+        destinationAsset,
+        sourceAccount: this.data["account.source"][0].id,
+        sourceAsset,
+        path: this.data["assets.path"].map((assetData: IAssetData) => {
+          return assetData.native ? Asset.native() : new Asset(assetData.code, assetData.issuer[0].id);
+        })
       }
     };
   }

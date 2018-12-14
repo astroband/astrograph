@@ -89,6 +89,15 @@ export interface IManageOfferOperationData extends IOperationData {
   amount: number;
 }
 
+export interface IPathPaymentOperationData extends IOperationData {
+  send_max: string;
+  dest_amount: string;
+  "account.destination": IAccountData[];
+  "asset.destination": IAssetData[];
+  "asset.source": IAssetData[];
+  "assets.path": IAssetData[];
+}
+
 export type DgraphOperationsData = IPaymentOperationData &
   ISetOptionsOperationData &
   IAccountMergeOperationData &
@@ -97,7 +106,8 @@ export type DgraphOperationsData = IPaymentOperationData &
   IChangeTrustOperationData &
   ICreateAccountOperationData &
   IManageDataOperationData &
-  IManageOfferOperationData;
+  IManageOfferOperationData &
+  IPathPaymentOperationData;
 
 export interface IAssetData {
   code: AssetCode;

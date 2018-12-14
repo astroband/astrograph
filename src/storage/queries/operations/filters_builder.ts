@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { buildAssetFilter } from "../../../util/queries/asset_filter";
 import {
   IAccountMergeQueryParams,
@@ -7,6 +8,7 @@ import {
   ICreateAccountQueryParams,
   IManageDataQueryParams,
   IManageOfferQueryParams,
+  IPathPaymentsQueryParams,
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams,
   OperationKinds
@@ -21,7 +23,8 @@ type Params =
   | IChangeTrustQueryParams
   | ICreateAccountQueryParams
   | IManageDataQueryParams
-  | IManageOfferQueryParams;
+  | IManageOfferQueryParams
+  | IPathPaymentsQueryParams;
 
 export class FiltersBuilder {
   public static build(kind: OperationKinds, params: Params): { root: string; nested: string } {
@@ -44,6 +47,8 @@ export class FiltersBuilder {
         return buildManageDataFilters(params as IManageDataQueryParams);
       case OperationKinds.ManageOffer:
         return buildManageOfferFilters(params as IManageOfferQueryParams);
+      case OperationKinds.PathPayment:
+        return buildPathPaymentsFilters(params as IPathPaymentsQueryParams);
     }
   }
 }
@@ -142,6 +147,21 @@ function buildManageOfferFilters(params: IManageOfferQueryParams) {
     nested: [
       params.assetBuying ? buildAssetFilter(params.assetBuying.code, params.assetBuying.issuer, "asset.buying") : "",
       params.assetSelling ? buildAssetFilter(params.assetSelling.code, params.assetSelling.issuer, "asset.selling") : ""
+    ].join("\n")
+  };
+}
+
+function buildPathPaymentsFilters(params: IPathPaymentsQueryParams) {
+  return {
+    root: "",
+    nested: [
+      params.destinationAsset
+        ? buildAssetFilter(params.destinationAsset.code, params.destinationAsset.issuer, "asset.destination")
+        : "",
+      params.sourceAsset ? buildAssetFilter(params.sourceAsset.code, params.sourceAsset.issuer, "asset.source") : "",
+      params.destinationAccount ? `account.destination @filter(eq(id, "${params.destinationAccount}"))` : "",
+      params.sourceAccount ? `account.source @filter(eq(id, "${params.sourceAccount}"))` : "",
+      params.pathContains ? buildAssetFilter(params.pathContains.code, params.pathContains.issuer, "assets.path") : ""
     ].join("\n")
   };
 }

@@ -14,7 +14,8 @@ export enum OperationKinds {
   ChangeTrust = "changeTrust",
   CreateAccount = "createAccount",
   ManageData = "manageDatum",
-  ManageOffer = "manageOffer"
+  ManageOffer = "manageOffer",
+  PathPayment = "pathPayment"
 }
 
 export interface IBaseOperation {
@@ -85,6 +86,15 @@ export interface IManageOfferOperation extends IBaseOperation {
   priceComponents: { n: string; d: string };
 }
 
+export interface IPathPaymentOperation extends IBaseOperation {
+  sendMax: string;
+  destinationAmount: string;
+  destinationAccount: AccountID;
+  destinationAsset: Asset;
+  sourceAsset: Asset;
+  path: Asset[];
+}
+
 export type Operation =
   | IPaymentOperation
   | ISetOptionsOperation
@@ -94,7 +104,8 @@ export type Operation =
   | IChangeTrustOperation
   | ICreateAccountOperation
   | IManageDataOperation
-  | IManageOfferOperation;
+  | IManageOfferOperation
+  | IPathPaymentOperation;
 
 // What filters for different operations we provide
 export interface ISetOptionsOpsQueryParams {
@@ -140,4 +151,12 @@ export interface IManageOfferQueryParams {
   offerId: string;
   assetSelling: IAssetInput;
   assetBuying: IAssetInput;
+}
+
+export interface IPathPaymentsQueryParams {
+  sourceAccount: AccountID;
+  destinationAccount: AccountID;
+  destinationAsset: IAssetInput;
+  sourceAsset: IAssetInput;
+  pathContains: IAssetInput;
 }
