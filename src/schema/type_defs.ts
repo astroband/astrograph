@@ -3,6 +3,7 @@ import { gql } from "apollo-server";
 export default gql`
   scalar AssetCode
   scalar AccountID
+  scalar OfferID  
   scalar TimeBounds
   scalar MemoValue
   scalar DateTime
@@ -167,7 +168,7 @@ export default gql`
   }
 
   interface IOffer {
-    id: String!
+    id: OfferID!
     seller: Account!
     selling: Asset!
     buying: Asset!
@@ -177,7 +178,7 @@ export default gql`
   }
 
   type Offer implements IOffer {
-    id: String!
+    id: OfferID!
     seller: Account!
     selling: Asset!
     buying: Asset!
@@ -188,7 +189,7 @@ export default gql`
   }
 
   type OfferValues implements IOffer {
-    id: String!
+    id: OfferID!
     seller: Account!
     selling: Asset!
     buying: Asset!
@@ -200,6 +201,7 @@ export default gql`
   type OfferSubscriptionPayload {
     accountID: AccountID!
     mutationType: MutationType!
+    offerID: OfferID!
     values: OfferValues
   }
 
