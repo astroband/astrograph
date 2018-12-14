@@ -1,42 +1,10 @@
-import {
-  AccountFlags,
-  AccountFlagsFactory,
-  AccountThresholds,
-  AccountThresholdsFactory,
-  IAccountBase,
-  Signer,
-  SignerFactory
-} from "./index";
-
-import { publicKeyFromXDR } from "../util/xdr";
+import { AccountFlags, AccountThresholds, IAccountBase, Signer } from "./index";
 
 export interface IAccountValues extends IAccountBase {
   signers: Signer[];
 }
 
 export class AccountValues implements IAccountValues {
-  public static fromXDR(xdr: any): AccountValues {
-    const id = publicKeyFromXDR(xdr);
-    const signers = xdr.signers().map((s: any) => SignerFactory.fromXDR(s, id));
-    const thresholds = AccountThresholdsFactory.fromValue(xdr.thresholds());
-
-    signers.unshift(SignerFactory.self(id, thresholds.masterWeight));
-
-    const data: IAccountValues = {
-      id,
-      balance: xdr.balance().toString(),
-      sequenceNumber: xdr.seqNum().toString(),
-      numSubentries: xdr.numSubEntries(),
-      inflationDest: xdr.inflationDest() || null,
-      homeDomain: xdr.homeDomain(),
-      thresholds,
-      flags: AccountFlagsFactory.fromValue(xdr.flags()),
-      signers
-    };
-
-    return new AccountValues(data);
-  }
-
   public id: string;
   public balance: string;
   public sequenceNumber: string;
