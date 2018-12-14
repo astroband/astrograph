@@ -3,7 +3,7 @@ import { gql } from "apollo-server";
 export default gql`
   scalar AssetCode
   scalar AccountID
-  scalar OfferID  
+  scalar OfferID
   scalar TimeBounds
   scalar MemoValue
   scalar DateTime
