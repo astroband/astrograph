@@ -13,7 +13,35 @@ export interface IAccount {
   lastModified: number;
 }
 
+export interface IAccountTableRow {
+  accountid: string;
+  balance: string;
+  seqnum: string;
+  numsubentries: number;
+  inflationdest: string;
+  homedomain: string;
+  thresholds: string;
+  flags: number;
+  lastmodified: number;
+}
+
 export class Account implements IAccount {
+  public static fromDb(row: IAccountTableRow): Account {
+    const data: IAccoutn = {
+      id: row.accountid,
+      balance: row.balance,
+      sequenceNumber: row.seqnum,
+      numSubentries: row.numsubentries,
+      inflationDest: row.inflationdest,
+      homeDomain: row.homedomain,
+      lastModified: row.lastmodified,
+      thresholds: AccountThresholds.fromValue(data.thresholds),
+      flags: AccountFlags.fromValue(data.flags)
+    };
+
+    return new Account(data);
+  }
+
   public id: string;
   public balance: string;
   public sequenceNumber: string;
