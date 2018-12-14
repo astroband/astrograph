@@ -2,6 +2,8 @@ import stellar from "stellar-base";
 import { Memo } from "stellar-sdk";
 import { publicKeyFromBuffer } from "../util/xdr";
 
+export type TimeBounds = [number, number];
+
 export interface ITransaction {
   id: string;
   ledgerSeq: number;
@@ -17,7 +19,7 @@ export interface ITransaction {
   memo?: Memo;
   feeAmount: string;
   sourceAccount: string;
-  timeBounds?: [number, number];
+  timeBounds?: TimeBounds;
   feeCharged: string;
   success: boolean;
   resultCode: number;
@@ -45,7 +47,16 @@ export class Transaction implements ITransaction {
 
     const memo = Memo.fromXDRObject(body.memo());
     const timeBoundsXDR = body.timeBounds();
+
+    const timeBounds: TimeBounds | undefined = timeBoundsXDR
+      ? [timeBoundsXDR.minTime().toInt(), timeBoundsXDR.maxTime().toInt()]
+      : undefined;
+
     const resultCode = result.result().switch().value;
+    const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
+    const feeAmount = body.fee().toString();
+    const feeCharged = result.feeCharged.toString();
+    const sourceAccount = publicKeyFromBuffer(body.sourceAccount().value());
 
     const data: ITransaction = {
       id: row.txid,
@@ -60,12 +71,12 @@ export class Transaction implements ITransaction {
       feeMeta: row.txfeemeta,
       feeMetaXDR,
       memo: memo.value ? memo : undefined,
-      timeBounds: timeBoundsXDR ? [timeBoundsXDR.minTime().toInt(), timeBoundsXDR.maxTime().toInt()] : undefined,
-      feeAmount: body.fee().toString(),
-      feeCharged: result.feeCharged.toString(),
+      timeBounds,
+      feeAmount,
+      feeCharged,
       resultCode,
-      success: resultCode === stellar.xdr.TransactionResultCode.txSuccess().value,
-      sourceAccount: publicKeyFromBuffer(body.sourceAccount().value())
+      success,
+      sourceAccount
     };
 
     return new Transaction(data);
@@ -85,7 +96,7 @@ export class Transaction implements ITransaction {
   public memo?: Memo;
   public feeAmount: string;
   public sourceAccount: string;
-  public timeBounds?: [number, number];
+  public timeBounds?: TimeBounds;
   public feeCharged: string;
   public success: boolean;
   public resultCode: number;
