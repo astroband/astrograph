@@ -13,6 +13,7 @@ export interface ITransactionTableRow {
   txfeemeta: string;
 }
 
+// NOTE: Might use some instantiation from static method here
 export class TransactionWithXDRFactory {
   public static fromDb(row: ITransactionTableRow): Transaction {
     const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(row.txbody, "base64"));

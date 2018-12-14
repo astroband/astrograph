@@ -14,6 +14,7 @@ export * from "./account";
 export * from "./account_thresholds";
 export * from "./account_flags";
 export * from "./account_values";
+export * from "./ledger";
 export * from "./mutation_type";
 export * from "./transaction";
 export * from "./transaction_with_xdr";
