@@ -39,15 +39,4 @@ export class Transaction implements ITransaction {
     this.success = data.success;
     this.resultCode = data.resultCode;
   }
-
-  // public operationsXDR(): any {
-  //   return this.envelopeXDR.tx().operations();
-  // }
-  //
-  // public operationResultsXDR(): any {
-  //   return this.resultXDR
-  //     .result()
-  //     .result()
-  //     .results();
-  // }
 }

@@ -24,6 +24,8 @@ export interface ITransactionWithXDR extends ITransaction {
   feeMetaXDR: any;
 }
 
+// This is used for internal purposes only for now, if we decide to store XDR in DGraph, two models will rejoined.
+// It probably must be moved to repos layer.
 export class TransactionWithXDR extends Transaction {
   public static fromDb(row: ITransactionTableRow): Transaction {
     const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(row.txbody, "base64"));
@@ -93,3 +95,14 @@ export class TransactionWithXDR extends Transaction {
     this.feeMetaXDR = data.feeMetaXDR;
   }
 }
+
+// public operationsXDR(): any {
+//   return this.envelopeXDR.tx().operations();
+// }
+//
+// public operationResultsXDR(): any {
+//   return this.resultXDR
+//     .result()
+//     .result()
+//     .results();
+// }

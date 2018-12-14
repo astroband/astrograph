@@ -40,11 +40,13 @@ export class Signer implements ISigner {
 
       case stellar.xdr.SignerKeyType.signerKeyTypePreAuthTx():
         return stellar.StrKey.encodePreAuthTx(xdr.preAuthTx());
-
-      // case stellar.xdr.SignerKeyType.signerKeyTypeHashX()
-      default:
-        return stellar.StrKey.encodeSha256Hash(xdr.hashX());
     }
+
+    if (xdr.switch() !== stellar.xdr.SignerKeyType.signerKeyTypeHashX()) {
+      throw new Error("We've encountered unknown XDR signer type");
+    }
+
+    return stellar.StrKey.encodeSha256Hash(xdr.hashX());
   }
 
   public accountID: string;
