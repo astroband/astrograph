@@ -265,8 +265,8 @@ export default gql`
     mutationTypeIn: [MutationType!]
     idEq: AccountID
     idIn: [AccountID!]
-    buyingAssetEq: Asset
-    sellingAssetEq: Asset
+    buyingAssetEq: AssetInput
+    sellingAssetEq: AssetInput
   }
 
   type Subscription {

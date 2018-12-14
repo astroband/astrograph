@@ -8,17 +8,17 @@ export class OfferSubscriptionPayload implements IMutationType {
   public values: OfferValues | null = null;
   public accountID: string;
   public offerId: string;
-  public selling: Asset;
-  public buying: Asset;
+  public selling: Asset | null = null;
+  public buying: Asset | null = null;
 
   constructor(mutationType: MutationType, xdr: any) {
     this.mutationType = mutationType;
     this.offerId = xdr.offerId();
     this.accountID = publicKeyFromBuffer(xdr.sellerId().value());
-    this.selling = Asset.fromOperation(xdr.selling());
-    this.buying = Asset.fromOperation(xdr.buying());
 
     if (mutationType !== MutationType.Remove) {
+      this.selling = Asset.fromOperation(xdr.selling());
+      this.buying = Asset.fromOperation(xdr.buying());
       this.values = OfferValues.buildFromXDR(xdr);
     }
   }
