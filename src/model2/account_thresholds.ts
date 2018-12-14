@@ -1,3 +1,5 @@
+import stellar from "stellar-base";
+
 export interface IAccountThresholds {
   masterWeight: number;
   low: number;
@@ -6,6 +8,18 @@ export interface IAccountThresholds {
 }
 
 export class AccountThresholds implements IAccountThresholds {
+  public static fromValue(value: number): AccountThresholds {
+    const fl = stellar.xdr.AccountFlags;
+
+    const data: IAccountThresholds = {
+      authRequired: (value & fl.authRequiredFlag().value) > 0,
+      authRevokable: (value & fl.authRevocableFlag().value) > 0,
+      authImmutable: (value & fl.authImmutableFlag().value) > 0
+    };
+
+    return new AccountThresholds(data);
+  }
+
   public masterWeight: number;
   public low: number;
   public medium: number;

@@ -11,9 +11,9 @@ export class AccountFlags implements IAccountFlags {
     const fl = stellar.xdr.AccountFlags;
 
     const data: IAccountFlags = {
-      this.authRequired = (value & fl.authRequiredFlag().value) > 0;
-      this.authRevokable = (value & fl.authRevocableFlag().value) > 0;
-      this.authImmutable = (value & fl.authImmutableFlag().value) > 0;
+      authRequired: (value & fl.authRequiredFlag().value) > 0,
+      authRevokable: (value & fl.authRevocableFlag().value) > 0,
+      authImmutable: (value & fl.authImmutableFlag().value) > 0
     };
 
     return new AccountFlags(data);
