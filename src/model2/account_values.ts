@@ -4,7 +4,8 @@ import {
   AccountThresholds,
   AccountThresholdsFactory,
   IAccountBase,
-  Signer
+  Signer,
+  SignerFactory
 } from "./index";
 
 import { publicKeyFromXDR } from "../util/xdr";
@@ -16,16 +17,10 @@ export interface IAccountValues extends IAccountBase {
 export class AccountValues implements IAccountValues {
   public static fromXDR(xdr: any): AccountValues {
     const id = publicKeyFromXDR(xdr);
-    const signers = xdr.signers().map((s: any) => Signer.fromXDR(s, id));
+    const signers = xdr.signers().map((s: any) => SignerFactory.fromXDR(s, id));
     const thresholds = AccountThresholdsFactory.fromValue(xdr.thresholds());
 
-    signers.unshift(
-      new Signer({
-        accountID: id,
-        signer: id,
-        weight: thresholds.masterWeight
-      })
-    );
+    signers.unshift(SignerFactory.self(id, thresholds.masterWeight));
 
     const data: IAccountValues = {
       id,
