@@ -1,4 +1,11 @@
-import { AccountFlags, AccountFlagsFactory, AccountThresholds, IAccountBase, Signer } from "./index";
+import {
+  AccountFlags,
+  AccountFlagsFactory,
+  AccountThresholds,
+  AccountThresholdsFactory,
+  IAccountBase,
+  Signer
+} from "./index";
 
 import { publicKeyFromXDR } from "../util/xdr";
 
@@ -10,7 +17,7 @@ export class AccountValues implements IAccountValues {
   public static fromXDR(xdr: any): AccountValues {
     const id = publicKeyFromXDR(xdr);
     const signers = xdr.signers().map((s: any) => Signer.fromXDR(s, id));
-    const thresholds = AccountThresholds.fromValue(xdr.thresholds());
+    const thresholds = AccountThresholdsFactory.fromValue(xdr.thresholds());
 
     signers.unshift(
       new Signer({

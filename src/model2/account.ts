@@ -1,4 +1,4 @@
-import { AccountFlags, AccountFlagsFactory, AccountThresholds } from "./index";
+import { AccountFlags, AccountFlagsFactory, AccountThresholds, AccountThresholdsFactory } from "./index";
 
 export interface IAccountBase {
   id: string;
@@ -37,7 +37,7 @@ export class Account implements IAccount {
       inflationDest: row.inflationdest,
       homeDomain: row.homedomain,
       lastModified: row.lastmodified,
-      thresholds: AccountThresholds.fromValue(row.thresholds),
+      thresholds: AccountThresholdsFactory.fromValue(row.thresholds),
       flags: AccountFlagsFactory.fromValue(row.flags)
     };
 
