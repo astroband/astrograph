@@ -27,6 +27,13 @@ const SCHEMA = `
   price: float @index (float) .
   starting_balance: int @index (int) .
   close_time: dateTime @index (hour) .
+  authorize: bool @index (bool) .
+  asset_code: string @index (exact) .
+  bump_to: int @index (int) .
+  limit: int @index (int) .
+  name: string @index (exact) .
+  value: string @index (exact) .
+  offer_id: string @index (exact) .
 `;
 
 export class Connection {

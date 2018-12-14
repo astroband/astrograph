@@ -1,6 +1,6 @@
-export function buildAssetFilter(code: string | null, issuer?: string | null) {
+export function buildAssetFilter(code: string | null, issuer?: string | null, predicate?: string) {
   return `
-    asset ${code ? `@filter(eq(code, "${code}"))` : ""} {
+    ${predicate || "asset"} ${code ? `@filter(eq(code, "${code}"))` : ""} {
       ${issuer ? `issuer @filter(eq(id, "${issuer}"))` : ""}
     }
   `;
