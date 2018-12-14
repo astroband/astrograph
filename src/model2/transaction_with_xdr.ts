@@ -13,7 +13,7 @@ export interface ITransactionTableRow {
   txfeemeta: string;
 }
 
-export interface ICoreTransaction extends ITransaction {
+export interface ITransactionWithXDR extends ITransaction {
   body: string;
   bodyXDR: any;
   result: string;
@@ -24,7 +24,7 @@ export interface ICoreTransaction extends ITransaction {
   feeMetaXDR: any;
 }
 
-export class CoreTransaction extends Transaction {
+export class TransactionWithXDR extends Transaction {
   public static fromDb(row: ITransactionTableRow): Transaction {
     const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(row.txbody, "base64"));
     const resultXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(row.txresult, "base64"));
@@ -47,7 +47,7 @@ export class CoreTransaction extends Transaction {
     const feeCharged = result.feeCharged.toString();
     const sourceAccount = publicKeyFromBuffer(body.sourceAccount().value());
 
-    const data: ICoreTransaction = {
+    const data: ITransactionWithXDR = {
       id: row.txid,
       ledgerSeq: row.ledgerseq,
       index: row.txindex,
@@ -80,7 +80,7 @@ export class CoreTransaction extends Transaction {
   public feeMeta: string;
   public feeMetaXDR: any;
 
-  constructor(data: ICoreTransaction) {
+  constructor(data: ITransactionWithXDR) {
     super(data);
 
     this.body = data.body;

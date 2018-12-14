@@ -13,5 +13,5 @@ export * from "./account";
 export * from "./account_thresholds";
 export * from "./account_flags";
 export * from "./transaction";
-export * from "./core_transaction";
+export * from "./transaction_with_xdr";
 export * from "./signer";
