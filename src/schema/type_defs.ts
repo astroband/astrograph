@@ -199,7 +199,6 @@ export default gql`
 
   type OfferSubscriptionPayload {
     accountID: AccountID!
-    offerID: String!
     mutationType: MutationType!
     values: OfferValues
   }
@@ -260,13 +259,21 @@ export default gql`
     idIn: [AccountID!]
   }
 
+  input OfferEventInput {
+    mutationTypeIn: [MutationType!]
+    idEq: AccountID
+    idIn: [AccountID!]
+    buyingAssetEq: Asset
+    sellingAssetEq: Asset
+  }
+
   type Subscription {
     ledgerCreated: Ledger
 
     account(args: EventInput): AccountSubscriptionPayload
     trustLine(args: EventInput): TrustLineSubscriptionPayload
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
-    offer(args: EventInput): OfferSubscriptionPayload
+    offer(args: OfferEventInput): OfferSubscriptionPayload
   }
 
 `;
