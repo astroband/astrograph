@@ -35,8 +35,8 @@ export class Account implements IAccount {
       inflationDest: row.inflationdest,
       homeDomain: row.homedomain,
       lastModified: row.lastmodified,
-      thresholds: AccountThresholds.fromValue(data.thresholds),
-      flags: AccountFlags.fromValue(data.flags)
+      thresholds: AccountThresholds.fromValue(row.thresholds),
+      flags: AccountFlags.fromValue(row.flags)
     };
 
     return new Account(data);
