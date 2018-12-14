@@ -6,10 +6,14 @@ export interface ITransaction {
   id: string;
   ledgerSeq: number;
   index: number;
-  body: string;
-  result: string;
-  meta: string;
-  feeMeta: string;
+  body?: string;
+  bodyXDR?: any;
+  result?: string;
+  resultXDR?: any;
+  meta?: string;
+  metaXDR?: any;
+  feeMeta?: string;
+  feeMetaXDR?: any;
   memo: Memo | null = null;
   feeAmount: string;
   sourceAccount: string;
@@ -36,13 +40,17 @@ export class Transaction implements ITransaction {
       ledgerSeq: row.ledgerseq,
       index: row.txindex,
       body: row.txbody,
+      bodyXDR: stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(this.body, "base64")),
       result: row.txresult,
+      resultXDR: stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(this.body, "base64")),
       meta: row.txmeta,
-      feeMeta: row.txfeemeta
+      metaXDR: stellar.xdr.TransactionMeta.fromXDR(Buffer.from(this.meta, "base64")),
+      feeMeta: row.txfeemeta,
+      feeMetaXDR: stellar.xdr.OperationMeta.fromXDR(Buffer.from(this.feeMeta, "base64"))
     };
 
-    const body = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(this.body, "base64")).tx();
-    const result = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(this.body, "base64")).result();
+    const body = data.bodyXDR.tx();
+    const result = data.resultXDR.result();
 
     const memo = Memo.fromXDRObject(body.memo());
     const timeBounds = body.timeBounds();
@@ -66,10 +74,14 @@ export class Transaction implements ITransaction {
   public id: string;
   public ledgerSeq: number;
   public index: number;
-  public body: string;
-  public result: string;
+  public body?: string;
+  public bodyXDR?: any;
+  public result?: string;
+  public resultXDR?: any;
   public meta?: string;
+  public metaXDR?: any;
   public feeMeta?: string;
+  public feeMetaXDR?: any;
   public memo?: Memo;
   public feeAmount: string;
   public sourceAccount: string;
@@ -86,9 +98,13 @@ export class Transaction implements ITransaction {
     this.ledgerSeq = data.ledgerSeq;
     this.index = data.index;
     this.body = data.body;
+    this.bodyXDR = data.bodyXDR;
     this.result = data.result;
+    this.resultXDR = data.resultXDR;
     this.meta = data.meta;
+    this.metaXDR = data.metaXDR;
     this.feeMeta = data.feeMeta;
+    this.feeMetaXDR = data.feeMetaXDR;
     this.memo = data.memo;
     this.feeAmount = data.feeAmount;
     this.sourceAccount = data.sourceAccount;
@@ -98,22 +114,14 @@ export class Transaction implements ITransaction {
     this.resultCode = data.resultCode;
   }
 
-  public operationsXDR(): any {
-    return this.envelopeXDR.tx().operations();
-  }
-
-  public operationResultsXDR(): any {
-    return this.resultXDR
-      .result()
-      .result()
-      .results();
-  }
-
-  public metaFromXDR(): any {
-    return stellar.xdr.TransactionMeta.fromXDR(Buffer.from(this.meta, "base64"));
-  }
-
-  public feeMetaFromXDR(): any {
-    return stellar.xdr.OperationMeta.fromXDR(Buffer.from(this.feeMeta, "base64"));
-  }
+  // public operationsXDR(): any {
+  //   return this.envelopeXDR.tx().operations();
+  // }
+  //
+  // public operationResultsXDR(): any {
+  //   return this.resultXDR
+  //     .result()
+  //     .result()
+  //     .results();
+  // }
 }
