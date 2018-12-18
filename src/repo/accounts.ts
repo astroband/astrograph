@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { IDatabase } from "pg-promise";
-import { Account } from "../model";
+import { Account } from "../model2";
 import { AccountFactory, IAccountTableRow } from "../model2/factories";
 
 const sql = {
