@@ -221,7 +221,7 @@ export const typeDefs = gql`
 
   type Query {
     account(id: AccountID!): Account
-    accounts(id: [AccountID!]): [Account]
+    accounts(id: [AccountID!]!): [Account]
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
     operations(account: AccountID, filters: OperationsFilter, first: Int!, offset: Int): [IOperation]
