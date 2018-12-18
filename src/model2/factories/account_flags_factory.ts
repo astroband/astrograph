@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { AccountFlags, IAccountFlags } from "..";
+import { AccountFlags, IAccountFlags } from "../account_flags";
 
 export class AccountFlagsFactory {
   public static fromValue(value: number): AccountFlags {

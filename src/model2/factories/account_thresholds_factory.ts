@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { AccountThresholds, IAccountThresholds } from "..";
+import { AccountThresholds, IAccountThresholds } from "../account_thresholds";
 
 export class AccountThresholdsFactory {
   public static fromValue(value: string): AccountThresholds {

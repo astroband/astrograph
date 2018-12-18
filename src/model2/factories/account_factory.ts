@@ -1,4 +1,6 @@
-import { Account, AccountFlagsFactory, AccountThresholdsFactory, IAccount } from "..";
+import { Account, IAccount } from "../account";
+import { AccountFlagsFactory } from "./account_flags_factory";
+import { AccountThresholdsFactory } from "./account_thresholds_factory";
 
 export interface IAccountTableRow {
   accountid: string;
