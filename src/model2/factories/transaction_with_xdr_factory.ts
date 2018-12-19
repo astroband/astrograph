@@ -1,6 +1,8 @@
 import stellar from "stellar-base";
 import { Memo } from "stellar-sdk";
-import { ITransactionWithXDR, TimeBounds, Transaction } from "..";
+import { TimeBounds, Transaction } from "../transaction";
+import { ITransactionWithXDR } from "../transaction_with_xdr";
+
 import { publicKeyFromBuffer } from "../../util/xdr";
 
 export interface ITransactionTableRow {

@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { ISigner, Signer } from "..";
+import { ISigner, Signer } from "../signer";
 
 export interface ISignerTableRow {
   accountid: string;

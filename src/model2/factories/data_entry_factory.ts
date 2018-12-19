@@ -1,4 +1,4 @@
-import { DataEntry, IDataEntry } from "..";
+import { DataEntry, IDataEntry } from "../data_entry";
 
 export interface IDataEntryTableRow {
   accountid: string;

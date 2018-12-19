@@ -1,4 +1,7 @@
-import { AccountFlags, AccountThresholds, IAccountBase, Signer } from "./index";
+import { IAccountBase } from "./account";
+import { AccountFlags } from "./account_flags";
+import { AccountThresholds } from "./account_thresholds";
+import { Signer } from "./signer";
 
 export interface IAccountValues extends IAccountBase {
   signers: Signer[];
