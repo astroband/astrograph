@@ -1,31 +1,18 @@
 import { Asset } from "stellar-sdk";
 import { toFloatAmountString } from "../util/stellar";
+import { ITrustLineBase } from "./trust_line";
 
-export interface ITrustLineBase {
-  accountID: string;
-  asset: Asset;
-  limit: string;
-  balance: string;
-  authorized: boolean;
-}
-
-export interface ITrustLine extends ITrustLineBase {
-  lastModified: number;
-}
-
-export class TrustLine implements ITrustLine {
+export class TrustLineValues implements ITrustLineBase {
   public accountID: string;
   public asset: Asset;
   public limit: string;
   public balance: string;
   public authorized: boolean;
-  public lastModified: number;
 
-  constructor(data: ITrustLine) {
+  constructor(data: ITrustLineBase) {
     this.accountID = data.accountID;
     this.limit = toFloatAmountString(data.limit);
     this.balance = toFloatAmountString(data.balance);
-    this.lastModified = data.lastModified;
     this.authorized = data.authorized;
     this.asset = data.asset;
   }
