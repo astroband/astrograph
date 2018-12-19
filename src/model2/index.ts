@@ -19,6 +19,7 @@ export * from "./ledger";
 export * from "./mutation_type";
 export * from "./transaction";
 export * from "./transaction_with_xdr";
+export * from "./trust_line";
 export * from "./signer";
 
 export * from "./factories";
