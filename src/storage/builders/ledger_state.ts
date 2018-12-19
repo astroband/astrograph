@@ -1,5 +1,7 @@
 import { IChange } from "../../changes_extractor";
-import { FakeNativeTrustLineValues, ITrustLine, Transaction, TrustLineValues } from "../../model";
+import { Transaction } from "../../model";
+import { ITrustLineBase } from "../../model2";
+import { TrustLineValuesFactory } from "../../model2/factories/trust_line_values_factory";
 import { NQuad, NQuads } from "../nquads";
 import { Builder } from "./builder";
 import { TransactionBuilder } from "./transaction";
@@ -43,44 +45,40 @@ export class LedgerStateBuilder {
 
   // returns builder for ingesting event of creating account or trustline
   private buildCreatedBuilder(change: any, n: number): TrustLineEntryBuilder | null {
-    let data: ITrustLine;
+    let data: ITrustLineBase;
 
     switch (change.entry) {
       case "account":
-        data = FakeNativeTrustLineValues.buildFromXDR(change.data.account());
+        data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
         break;
       case "trustline":
-        data = TrustLineValues.buildFromXDR(change.data.trustLine());
+        data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
         break;
       default:
         return null;
     }
 
-    data.lastModified = change.seq;
-
-    return new TrustLineEntryBuilder(data, change, n);
+    return new TrustLineEntryBuilder({ ...data, lastModified: change.seq }, change, n);
   }
 
   // returns builder for ingesting event of trustline update or account balance update
   private buildUpdatedBuilder(change: any, n: number): TrustLineEntryBuilder | null {
-    let data: ITrustLine;
+    let data: ITrustLineBase;
 
     switch (change.entry) {
       case "account":
         if (change.accountChanges && !change.accountChanges.includes("balance")) {
           return null;
         }
-        data = FakeNativeTrustLineValues.buildFromXDR(change.data.account());
+        data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
         break;
       case "trustline":
-        data = TrustLineValues.buildFromXDR(change.data.trustLine());
+        data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
         break;
       default:
         return null;
     }
 
-    data.lastModified = change.seq;
-
-    return new TrustLineEntryBuilder(data, change, n);
+    return new TrustLineEntryBuilder({ ...data, lastModified: change.seq }, change, n);
   }
 }
