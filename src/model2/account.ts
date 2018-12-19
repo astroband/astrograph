@@ -1,4 +1,5 @@
-import { AccountFlags, AccountThresholds } from "./index";
+import { AccountFlags } from "./account_flags";
+import { AccountThresholds } from "./account_thresholds";
 
 export interface IAccountBase {
   id: string;
