@@ -31,12 +31,10 @@ export default class AccountsRepo {
       return new Array<Account | null>();
     }
 
-    const uniqIds = _.uniq(ids);
-
-    const res = await this.db.manyOrNone(sql.selectAccountsIn, [uniqIds]);
+    const res = await this.db.manyOrNone(sql.selectAccountsIn, [_.uniq(ids)]);
     const accounts = res.map((v: IAccountTableRow) => AccountFactory.fromDb(v));
 
-    return uniqIds.map<Account | null>(id => accounts.find(a => a.id === id) || null);
+    return ids.map<Account | null>(id => accounts.find(a => a.id === id) || null);
   }
 
   public async findAllBySigner(id: string, limit: number): Promise<Account[]> {

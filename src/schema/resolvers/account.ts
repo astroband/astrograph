@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { Account, DataEntry, Signer, TrustLine } from "../../model";
 
 import { withFilter } from "graphql-subscriptions";
@@ -8,10 +9,8 @@ import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
 
-const fetchIDs = (r: any) => r.id;
-
 const signersResolver = createBatchResolver<Account, Signer[]>(async (source: any) => {
-  const accountIDs = source.map(fetchIDs);
+  const accountIDs = _.map(source, "id");
   const signers = await db.signers.findAllByAccountIDs(accountIDs);
 
   const map = joinToMap(accountIDs, signers);
@@ -31,11 +30,11 @@ const signersResolver = createBatchResolver<Account, Signer[]>(async (source: an
 });
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
-  db.dataEntries.findAllByAccountIDs(source.map(fetchIDs))
+  db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
 );
 
 const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: any) => {
-  const accountIDs = source.map(fetchIDs);
+  const accountIDs = _.map(source, "id");
   const trustLines = await db.trustLines.findAllByAccountIDs(accountIDs);
 
   const map = joinToMap(accountIDs, trustLines);
