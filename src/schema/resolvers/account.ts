@@ -1,5 +1,7 @@
 import _ from "lodash";
-import { Account, DataEntry, Signer, TrustLine } from "../../model";
+import { Account, DataEntry, Signer } from "../../model";
+import { TrustLine } from "../../model2";
+import { TrustLineFactory } from "../../model2/factories";
 
 import { withFilter } from "graphql-subscriptions";
 import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
@@ -41,7 +43,7 @@ const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (sour
 
   for (const [accountID, accountTrustLines] of map) {
     const account = source.find((acc: Account) => acc.id === accountID);
-    accountTrustLines.unshift(TrustLine.buildFakeNative(account));
+    accountTrustLines.unshift(TrustLineFactory.nativeForAccount(account));
   }
 
   return trustLines;
