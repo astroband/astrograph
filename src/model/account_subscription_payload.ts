@@ -1,5 +1,6 @@
+import { AccountValues } from "../model2";
+import { AccountValuesFactory } from "../model2/factories";
 import { publicKeyFromXDR } from "../util/xdr";
-import { AccountValues } from "./account_values";
 import { IMutationType, MutationType } from "./mutation_type";
 
 export class AccountSubscriptionPayload implements IMutationType {
@@ -12,7 +13,7 @@ export class AccountSubscriptionPayload implements IMutationType {
     this.id = publicKeyFromXDR(xdr);
 
     if (this.mutationType !== MutationType.Remove) {
-      this.values = AccountValues.buildFromXDR(xdr);
+      this.values = AccountValuesFactory.fromXDR(xdr);
     }
   }
 
