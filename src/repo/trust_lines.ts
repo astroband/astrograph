@@ -1,6 +1,8 @@
+import _ from "lodash";
 import { IDatabase } from "pg-promise";
-import { ITrustLine, TrustLine } from "../model/trust_line";
-import { joinToMap, unique } from "../util/array";
+import { ITrustLine } from "../model2";
+import { ITrustLineTableRow, TrustLineFactory } from "../model2/factories";
+import { joinToMap } from "../util/array";
 
 const sql = {
   selectTrustLines: "SELECT * FROM trustlines WHERE accountid = $1 ORDER BY assettype, assetcode",
@@ -16,12 +18,14 @@ export default class TrustLinesRepo {
 
   public async findAllByAccountID(id: string): Promise<ITrustLine[]> {
     const res = await this.db.manyOrNone(sql.selectTrustLines, id);
-    return res.map(e => new TrustLine(e));
+    return res.map((r: ITrustLineTableRow) => TrustLineFactory.fromDb(r));
   }
 
   public async findAllByAccountIDs(ids: string[]): Promise<ITrustLine[][]> {
-    const res = await this.db.manyOrNone(sql.selectTrustLinesIn, [ids.filter(unique)]);
-    return ids.map(id => res.filter(r => r.accountid === id).map(s => new TrustLine(s)));
+    const res = await this.db.manyOrNone(sql.selectTrustLinesIn, [_.uniq(ids)]);
+    return ids.map(id =>
+      res.filter(r => r.accountid === id).map((s: ITrustLineTableRow) => TrustLineFactory.fromDb(s))
+    );
   }
 
   public async findAllMapByAccountIDs(ids: string[]): Promise<Map<string, ITrustLine[]>> {
