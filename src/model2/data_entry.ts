@@ -1,7 +1,10 @@
-export interface IDataEntry {
+export interface IDataEntryBase {
   accountID: string;
   name: string;
   value: string;
+}
+
+export interface IDataEntry extends IDataEntryBase {
   lastModified: number;
 }
 
