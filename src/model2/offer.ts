@@ -1,6 +1,6 @@
 import Asset from "../util/asset";
 
-export interface IOffer {
+export interface IOfferBase {
   id: string;
   sellerID: string;
   selling: Asset;
@@ -10,6 +10,10 @@ export interface IOffer {
   priceN: number;
   priceD: number;
   passive: boolean;
+}
+
+export interface IOffer extends IOfferBase {
+  lastModified: string;
 }
 
 export class Offer implements IOffer {
@@ -22,6 +26,7 @@ export class Offer implements IOffer {
   public priceN: number;
   public priceD: number;
   public passive: boolean;
+  public lastModified: string;
 
   constructor(data: IOffer) {
     this.id = data.id;
@@ -33,5 +38,6 @@ export class Offer implements IOffer {
     this.priceD = data.priceD;
     this.price = data.price;
     this.passive = data.passive;
+    this.lastModified = data.lastModified;
   }
 }

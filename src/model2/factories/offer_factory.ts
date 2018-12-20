@@ -18,6 +18,7 @@ export interface IOfferTableRow {
   priced: number;
   price: string;
   flags: number;
+  lastmodified: string;
 }
 
 export class OfferFactory {
@@ -31,7 +32,8 @@ export class OfferFactory {
       priceN: row.pricen,
       priceD: row.priced,
       price: new BigNumber(row.pricen).div(row.priced).toString(),
-      passive: (row.flags && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0
+      passive: (row.flags && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0,
+      lastModified: row.lastmodified
     };
 
     return new Offer(data);
