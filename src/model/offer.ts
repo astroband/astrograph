@@ -13,6 +13,7 @@ export class Offer {
   public pricen: number;
   public priced: number;
   public passive: boolean;
+  public lastModified: number;
 
   constructor(data: {
     offerid: string;
@@ -28,6 +29,7 @@ export class Offer {
     priced: number;
     price: string;
     flags: number;
+    lastmodified: number;
   }) {
     this.id = data.offerid;
     this.sellerid = data.sellerid;
@@ -38,5 +40,6 @@ export class Offer {
     this.priced = data.priced;
     this.price = new BigNumber(data.pricen).div(data.priced).toString();
     this.passive = (data.flags && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0;
+    this.lastModified = data.lastmodified;
   }
 }

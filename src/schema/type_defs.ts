@@ -3,6 +3,7 @@ import { gql } from "apollo-server";
 export const typeDefs = gql`
   scalar AssetCode
   scalar AccountID
+  scalar OfferID
   scalar TimeBounds
   scalar MemoValue
   scalar DateTime
@@ -166,6 +167,44 @@ export const typeDefs = gql`
     values: TrustLineValues
   }
 
+  interface IOffer {
+    id: OfferID!
+    seller: Account!
+    selling: Asset!
+    buying: Asset!
+    amount: Int!
+    price: String!
+    passive: Boolean!
+  }
+
+  type Offer implements IOffer {
+    id: OfferID!
+    seller: Account!
+    selling: Asset!
+    buying: Asset!
+    amount: Int!
+    price: String!
+    passive: Boolean!
+    ledger: Ledger!
+  }
+
+  type OfferValues implements IOffer {
+    id: OfferID!
+    seller: Account!
+    selling: Asset!
+    buying: Asset!
+    amount: Int!
+    price: String!
+    passive: Boolean!
+  }
+
+  type OfferSubscriptionPayload {
+    accountID: AccountID!
+    mutationType: MutationType!
+    offerID: OfferID!
+    values: OfferValues
+  }
+
   type Transaction {
     id: String!
     ledger: Ledger!
@@ -179,19 +218,9 @@ export const typeDefs = gql`
     resultCode: Int!
   }
 
-  type Offer {
-    id: String!
-    seller: Account!
-    selling: Asset!
-    buying: Asset!
-    amount: Int!
-    price: String!
-    passive: Boolean!
-  }
-
   type Query {
     account(id: AccountID!): Account
-    accounts(id: [AccountID!]): [Account]
+    accounts(id: [AccountID!]!): [Account]
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
     operations(account: AccountID, filters: OperationsFilter, first: Int!, offset: Int): [IOperation]
@@ -217,12 +246,21 @@ export const typeDefs = gql`
     idIn: [AccountID!]
   }
 
+  input OfferEventInput {
+    mutationTypeIn: [MutationType!]
+    idEq: AccountID
+    idIn: [AccountID!]
+    buyingAssetEq: AssetInput
+    sellingAssetEq: AssetInput
+  }
+
   type Subscription {
     ledgerCreated: Ledger
 
     account(args: EventInput): AccountSubscriptionPayload
     trustLine(args: EventInput): TrustLineSubscriptionPayload
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
+    offer(args: OfferEventInput): OfferSubscriptionPayload
   }
 
 `;
