@@ -1,14 +1,13 @@
 import { Asset } from "stellar-sdk";
-
-import { FakeNativeTrustLineValues } from "./fake_native_trust_line_values";
-import { IMutationType, MutationType } from "./mutation_type";
-
+import { TrustLineValuesFactory } from "../model2/factories/trust_line_values_factory";
+import { TrustLineValues } from "../model2/trust_line_values";
 import { publicKeyFromXDR } from "../util/xdr";
+import { IMutationType, MutationType } from "./mutation_type";
 
 export class NativeTrustLineSubscriptionPayload implements IMutationType {
   public mutationType: MutationType = MutationType.Update;
   public accountID: string;
-  public values: FakeNativeTrustLineValues | null = null;
+  public values: TrustLineValues | null = null;
 
   constructor(mutationType: MutationType, xdr: any) {
     this.mutationType = mutationType;
@@ -16,7 +15,7 @@ export class NativeTrustLineSubscriptionPayload implements IMutationType {
     this.accountID = publicKeyFromXDR(xdr);
 
     if (this.mutationType !== MutationType.Remove) {
-      this.values = FakeNativeTrustLineValues.buildFromXDR(xdr);
+      this.values = TrustLineValuesFactory.fakeNativeFromXDR(xdr);
     }
   }
 

@@ -1,5 +1,7 @@
 import _ from "lodash";
-import { Account, DataEntry, Signer, TrustLine } from "../../model";
+import { Account, DataEntry } from "../../model";
+import { Signer, TrustLine } from "../../model2";
+import { SignerFactory, TrustLineFactory } from "../../model2/factories";
 
 import { withFilter } from "graphql-subscriptions";
 import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
@@ -17,13 +19,7 @@ const signersResolver = createBatchResolver<Account, Signer[]>(async (source: an
 
   for (const [accountID, accountSigners] of map) {
     const account = source.find((acc: Account) => acc.id === accountID);
-    accountSigners.unshift(
-      new Signer({
-        accountid: account.id,
-        publickey: account.id,
-        weight: account.thresholds.masterWeight
-      })
-    );
+    accountSigners.unshift(SignerFactory.self(account.id, account.thresholds.masterWeight));
   }
 
   return signers;
@@ -41,7 +37,7 @@ const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (sour
 
   for (const [accountID, accountTrustLines] of map) {
     const account = source.find((acc: Account) => acc.id === accountID);
-    accountTrustLines.unshift(TrustLine.buildFakeNative(account));
+    accountTrustLines.unshift(TrustLineFactory.nativeForAccount(account));
   }
 
   return trustLines;
