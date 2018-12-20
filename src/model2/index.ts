@@ -22,6 +22,7 @@ export * from "./ledger";
 export * from "./ledger_header";
 export * from "./mutation_type";
 export * from "./offer";
+export * from "./offer_values";
 export * from "./transaction";
 export * from "./transaction_with_xdr";
 export * from "./trust_line";

@@ -7,7 +7,7 @@ export class DataEntryValues implements IDataEntryBase {
   public name: string;
   public value: string;
 
-  constructor(data: IDataEntryBase) {
+  constructor(data: IDataEntryValues) {
     this.accountID = data.accountID;
     this.name = data.name;
     this.value = data.value;
