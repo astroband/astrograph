@@ -7,3 +7,4 @@ export * from "./signer_factory";
 export * from "./transaction_with_xdr_factory";
 export * from "./trust_line_factory";
 export * from "./trust_line_values_factory";
+export * from "./offer_factory";

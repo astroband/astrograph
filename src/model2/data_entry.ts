@@ -5,7 +5,7 @@ export interface IDataEntry {
   lastModified: number;
 }
 
-export class DataEntry {
+export class DataEntry implements IDataEntry {
   public accountID: string;
   public name: string;
   public value: string;

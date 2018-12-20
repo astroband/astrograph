@@ -17,6 +17,7 @@ export * from "./account_values";
 export * from "./data_entry";
 export * from "./ledger";
 export * from "./mutation_type";
+export * from "./offer";
 export * from "./transaction";
 export * from "./transaction_with_xdr";
 export * from "./trust_line";
