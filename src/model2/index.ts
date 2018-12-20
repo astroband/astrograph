@@ -19,6 +19,7 @@ export * from "./data_entry";
 export * from "./data_entry_values";
 // export * from "./data_entry_subscription_payload";
 export * from "./ledger";
+export * from "./ledger_header";
 export * from "./mutation_type";
 export * from "./offer";
 export * from "./transaction";
