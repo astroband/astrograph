@@ -14,6 +14,7 @@ export * from "./account";
 export * from "./account_thresholds";
 export * from "./account_flags";
 export * from "./account_values";
+export * from "./asset_input";
 export * from "./data_entry";
 export * from "./ledger";
 export * from "./mutation_type";
