@@ -1,9 +1,10 @@
 import { db } from "../database";
-import { LedgerHeader, Transaction } from "../model";
+import { LedgerHeader } from "../model2";
+import { TransactionWithXDR } from "../model2/transaction_with_xdr";
 
 export interface ICursorResult {
   header: LedgerHeader;
-  transactions: Transaction[];
+  transactions: TransactionWithXDR[];
 }
 
 // Walks through ledgers in ledgerheaders table.

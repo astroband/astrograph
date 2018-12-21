@@ -1,6 +1,5 @@
 import { IChange } from "../../changes_extractor";
-import { Transaction } from "../../model";
-import { ITrustLineBase } from "../../model2";
+import { ITransaction, ITrustLineBase } from "../../model2";
 import { TrustLineValuesFactory } from "../../model2/factories/trust_line_values_factory";
 import { NQuad, NQuads } from "../nquads";
 import { Builder } from "./builder";
@@ -10,7 +9,7 @@ import { TrustLineEntryBuilder } from "./trust_line_entry";
 export class LedgerStateBuilder {
   private nquads: NQuads = [];
 
-  constructor(private changes: IChange[], private tx: Transaction) {}
+  constructor(private changes: IChange[], private tx: ITransaction) {}
 
   public async build(): Promise<NQuads> {
     if (this.changes.length === 0) {

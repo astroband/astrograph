@@ -1,4 +1,4 @@
-import { Transaction } from "../../model";
+import { TransactionWithXDR } from "../../model2";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
@@ -33,7 +33,7 @@ export class OperationBuilder extends Builder {
   private xdr: any;
   private resultXDR: any;
 
-  constructor(private tx: Transaction, private n: number) {
+  constructor(private tx: TransactionWithXDR, private n: number) {
     super();
 
     this.seq = tx.ledgerSeq;
@@ -44,8 +44,8 @@ export class OperationBuilder extends Builder {
       this.prev = NQuad.blank(OperationBuilder.key(tx.ledgerSeq, tx.index, n - 1));
     }
 
-    this.xdr = tx.operationsXDR()[n];
-    this.resultXDR = tx.operationResultsXDR()[n];
+    this.xdr = tx.operationsXDR[n];
+    this.resultXDR = tx.operationResultsXDR[n];
   }
 
   public build(): NQuads {

@@ -1,6 +1,7 @@
+import _ from "lodash";
 import { IDatabase } from "pg-promise";
-import { Transaction } from "../model";
-import { unique } from "../util/array";
+import { Transaction, TransactionWithXDR } from "../model2";
+import { ITransactionTableRow, TransactionFactory, TransactionWithXDRFactory } from "../model2/factories";
 
 const sql = {
   selectTx:
@@ -20,7 +21,7 @@ export default class TransactionsRepo {
 
   // Tries to find a transaction by id;
   public findByID(id: string): Promise<Transaction | null> {
-    return this.db.oneOrNone(sql.selectTx, id, res => new Transaction(res));
+    return this.db.oneOrNone(sql.selectTx, id, (res: ITransactionTableRow) => res ? TransactionFactory.fromDb(res) : null);
   }
 
   // TODO: Must be DRYed
@@ -29,15 +30,15 @@ export default class TransactionsRepo {
       return new Array<Transaction | null>();
     }
 
-    const res = await this.db.manyOrNone(sql.selectTxIn, [ids.filter(unique)]);
-    const txs = res.map(v => new Transaction(v));
+    const res = await this.db.manyOrNone(sql.selectTxIn, [_.uniq(ids)]);
+    const txs = res.map((v: ITransactionTableRow) => TransactionFactory.fromDb(v));
 
     return ids.map<Transaction | null>(id => txs.find(a => a.id === id) || null);
   }
 
   // Fetches all transactions by ledger seq;
-  public async findAllBySeq(seq: number): Promise<Transaction[]> {
+  public async findAllBySeq(seq: number): Promise<TransactionWithXDR[]> {
     const res = await this.db.manyOrNone(sql.selectTxInSeq, seq);
-    return res.map(t => new Transaction(t));
+    return res.map(t => TransactionWithXDRFactory.fromDb(t));
   }
 }

@@ -9,6 +9,8 @@ export interface ITransactionWithXDR extends ITransaction {
   metaXDR: any;
   feeMeta: string;
   feeMetaXDR: any;
+  operationsXDR: any[];
+  operationResultsXDR: any[];
 }
 
 // This is used for internal purposes only for now. Probably must be moved to repos layer.
@@ -21,6 +23,8 @@ export class TransactionWithXDR extends Transaction {
   public metaXDR: any;
   public feeMeta: string;
   public feeMetaXDR: any;
+  public operationsXDR: any[];
+  public operationResultsXDR: any[];
 
   constructor(data: ITransactionWithXDR) {
     super(data);
@@ -33,6 +37,8 @@ export class TransactionWithXDR extends Transaction {
     this.metaXDR = data.metaXDR;
     this.feeMeta = data.feeMeta;
     this.feeMetaXDR = data.feeMetaXDR;
+    this.operationsXDR = data.operationsXDR;
+    this.operationResultsXDR = data.operationResultsXDR;
   }
 }
 

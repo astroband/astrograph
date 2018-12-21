@@ -5,9 +5,10 @@ import {
   MutationType,
   NativeTrustLineSubscriptionPayload,
   OfferSubscriptionPayload,
-  Transaction,
   TrustLineSubscriptionPayload
 } from "../model";
+
+import { Transaction } from "../model2";
 
 export type SubscriptionPayload =
   | AccountSubscriptionPayload

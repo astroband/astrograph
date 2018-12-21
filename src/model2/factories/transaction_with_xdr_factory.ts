@@ -1,25 +1,15 @@
 import stellar from "stellar-base";
 import { Memo } from "stellar-sdk";
-import { TimeBounds, Transaction } from "../transaction";
-import { ITransactionWithXDR } from "../transaction_with_xdr";
-
 import { publicKeyFromBuffer } from "../../util/xdr";
-
-export interface ITransactionTableRow {
-  txid: string;
-  ledgerseq: number;
-  txindex: number;
-  txbody: string;
-  txresult: string;
-  txmeta: string;
-  txfeemeta: string;
-}
+import { TimeBounds } from "../transaction";
+import { ITransactionWithXDR, TransactionWithXDR } from "../transaction_with_xdr";
+import { ITransactionTableRow } from "./transaction_factory";
 
 // NOTE: Might use some instantiation from static method here
 export class TransactionWithXDRFactory {
-  public static fromDb(row: ITransactionTableRow): Transaction {
+  public static fromDb(row: ITransactionTableRow): TransactionWithXDR {
     const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(row.txbody, "base64"));
-    const resultXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(row.txresult, "base64"));
+    const resultXDR = stellar.xdr.TransactionResultPair.fromXDR(Buffer.from(row.txresult, "base64"));
     const metaXDR = stellar.xdr.TransactionMeta.fromXDR(Buffer.from(row.txmeta, "base64"));
     const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(Buffer.from(row.txfeemeta, "base64"));
 
@@ -57,9 +47,11 @@ export class TransactionWithXDRFactory {
       feeCharged,
       resultCode,
       success,
-      sourceAccount
+      sourceAccount,
+      operationsXDR: body.operations(),
+      operationResultsXDR: result.result().results()
     };
 
-    return new Transaction(data);
+    return new TransactionWithXDR(data);
   }
 }
