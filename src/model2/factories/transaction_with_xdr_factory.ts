@@ -26,7 +26,7 @@ export class TransactionWithXDRFactory {
     const resultCode = result.result().switch().value;
     const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
     const feeAmount = body.fee().toString();
-    const feeCharged = result.feeCharged.toString();
+    const feeCharged = result.feeCharged().toString();
     const sourceAccount = publicKeyFromBuffer(body.sourceAccount().value());
 
     const data: ITransactionWithXDR = {
