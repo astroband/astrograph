@@ -41,14 +41,3 @@ export class TransactionWithXDR extends Transaction {
     this.operationResultsXDR = data.operationResultsXDR;
   }
 }
-
-// public operationsXDR(): any {
-//   return this.envelopeXDR.tx().operations();
-// }
-//
-// public operationResultsXDR(): any {
-//   return this.resultXDR
-//     .result()
-//     .result()
-//     .results();
-// }

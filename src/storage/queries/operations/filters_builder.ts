@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { OperationKinds } from "../../../model2/operation";
 import { buildAssetFilter } from "../../../util/queries/asset_filter";
 import {
   IAccountMergeQueryParams,
@@ -10,9 +11,8 @@ import {
   IManageOfferQueryParams,
   IPathPaymentsQueryParams,
   IPaymentsQueryParams,
-  ISetOptionsOpsQueryParams,
-  OperationKinds
-} from "./types";
+  ISetOptionsOpsQueryParams
+} from "../operations";
 
 type Params =
   | IPaymentsQueryParams

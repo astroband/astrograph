@@ -1,6 +1,6 @@
 // This module stores all predicates we query from Dgraph
 // for all different types of Stellar operations
-import { OperationKinds } from "./types";
+import { OperationKinds } from "../../../model2/operation";
 
 export const queryPredicates = {
   [OperationKinds.Payment]: [
