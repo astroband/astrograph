@@ -1,7 +1,7 @@
 import dig from "object-dig";
 import { Memo } from "stellar-sdk";
 import { ITransaction } from "../../model/transaction";
-import { Connection } from "../connection";
+import { Dgraph } from "../dgraph";
 import { ITransactionData } from "../types";
 import { Query } from "./query";
 
@@ -12,7 +12,7 @@ export class AccountTransactionsQuery extends Query<IAccountTransactionsQueryRes
   private first: number;
   private offset: number;
 
-  constructor(connection: Connection, id: string, first: number, offset?: number) {
+  constructor(connection: Dgraph, id: string, first: number, offset?: number) {
     super(connection);
     this.id = id;
     this.first = first;

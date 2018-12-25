@@ -1,6 +1,6 @@
 import parseArgv from "minimist";
 import { Cursor, ICursorResult } from "./ingest/cursor";
-import { Connection } from "./storage/connection";
+import { Dgraph } from "./storage/dgraph";
 import logger from "./util/logger";
 import "./util/memo";
 import { DGRAPH_URL } from "./util/secrets";
@@ -21,7 +21,7 @@ try {
   process.exit(-1);
 }
 
-const c = new Connection();
+const c = new Dgraph();
 
 setStellarNetwork().then((network: string) => {
   logger.info(`Using ${network}`);

@@ -1,9 +1,9 @@
-import { Connection } from "../connection";
+import { Dgraph } from "../dgraph";
 
 export abstract class Query<R> {
-  protected connection: Connection;
+  protected connection: Dgraph;
 
-  constructor(connection: Connection) {
+  constructor(connection: Dgraph) {
     this.connection = connection;
   }
 

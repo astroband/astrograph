@@ -1,9 +1,9 @@
-import { db } from "../../database";
+import { IApolloContext } from "../../util/types";
 
 export default {
   Query: {
-    async assets(root: any, args: any, ctx: any, info: any) {
-      const data = await db.assets.findAll(args.code, args.issuer, args.first, args.offset);
+    async assets(root: any, args: any, ctx: IApolloContext, info: any) {
+      const data = await ctx.db.assets.findAll(args.code, args.issuer, args.first, args.offset);
 
       return data.map(asset => {
         return {

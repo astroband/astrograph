@@ -4,12 +4,11 @@ import Asset from "../../util/asset";
 import { withFilter } from "graphql-subscriptions";
 import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
-import { db } from "../../database";
-
 import { OFFER, pubsub } from "../../pubsub";
+import { IApolloContext } from "../../util/types";
 
-const accountResolver = createBatchResolver<Offer, Account>((source: any) =>
-  db.accounts.findAllByIDs(source.map((r: Offer) => r.sellerid))
+const accountResolver = createBatchResolver<Offer, Account>((source: any, args: any, ctx: IApolloContext) =>
+  ctx.db.accounts.findAllByIDs(source.map((r: Offer) => r.sellerid))
 );
 
 const assetFromArg = (arg: IAssetInput): Asset | null => {
@@ -51,7 +50,7 @@ const offerSubscription = (event: string) => {
       (payload, variables) => offerMatches(variables, payload)
     ),
 
-    resolve(payload: any, args: any, ctx: any, info: any) {
+    resolve(payload: any, args: any, ctx: IApolloContext, info: any) {
       return payload;
     }
   };
@@ -65,8 +64,8 @@ export default {
     ledger: ledgerResolver
   },
   Query: {
-    offers(root: any, args: any, ctx: any, info: any) {
-      return db.offers.findAll(args.seller, args.selling, args.buying, args.first, args.limit);
+    offers(root: any, args: any, ctx: IApolloContext, info: any) {
+      return ctx.db.offers.findAll(args.seller, args.selling, args.buying, args.first, args.limit);
     }
   },
   Subscription: {

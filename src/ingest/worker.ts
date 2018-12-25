@@ -3,7 +3,7 @@ import { Cursor } from "./cursor";
 
 import { SubscriptionPayloadCollection } from "./subscription_payload_collection";
 
-import { Connection } from "../storage/connection";
+import { Dgraph } from "../storage/dgraph";
 import { DGRAPH_URL } from "../util/secrets";
 
 export class Worker {
@@ -23,7 +23,7 @@ export class Worker {
       await Publisher.publish(header, collection);
 
       if (DGRAPH_URL) {
-        const c = new Connection();
+        const c = new Dgraph();
         await c.importLedgerTransactions(header, transactions);
         await c.importLedgerState(header, transactions);
         c.close();

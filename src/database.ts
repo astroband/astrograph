@@ -30,6 +30,8 @@ interface IExtensions {
   storeState: StoreStateRepo;
 }
 
+export type DatabaseClient = IDatabase<IExtensions> & IExtensions & IMain;
+
 // pg-promise initialization options:
 const initOptions: IOptions<IExtensions> = {
   promiseLib: promise,
@@ -60,7 +62,7 @@ const config = {
 const pgp: IMain = pgPromise(initOptions);
 
 // Create the database instance with extensions:
-const db = pgp(config) as IDatabase<IExtensions> & IExtensions & IMain;
+const db = pgp(config) as DatabaseClient;
 
 // Load and initialize optional diagnostics:
 import diagnostics = require("./util/db/diagnostics");

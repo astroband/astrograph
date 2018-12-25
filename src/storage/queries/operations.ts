@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Connection } from "../connection";
+import { Dgraph } from "../dgraph";
 import { DgraphOperationsData } from "../types";
 import { DataMapper } from "./operations/data_mapper";
 import { FiltersBuilder } from "./operations/filters_builder";
@@ -37,7 +37,7 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
   private offset: number;
 
   constructor(
-    connection: Connection,
+    connection: Dgraph,
     private accountID: string,
     private filters: IOperationsQueryParams,
     private first: number,
@@ -89,6 +89,7 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
       }
     `;
 
+    console.log(query);
     return this.connection.query(query, {
       $first: this.first.toString(),
       $offset: this.offset.toString()

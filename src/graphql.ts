@@ -4,9 +4,10 @@ import { ApolloError, ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 import Honeybadger from "honeybadger";
 
+import { db } from "./database";
 import { Cursor, Worker } from "./ingest";
 import schema from "./schema";
-import { Connection } from "./storage/connection";
+import { Dgraph } from "./storage/dgraph";
 import logger from "./util/logger";
 import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
@@ -18,6 +19,7 @@ const server = new ApolloServer({
   playground: true,
   debug: true,
   cors: true,
+  context: () => ({ dgraph: new Dgraph(), db }),
   formatError: (error: ApolloError) => {
     logger.error(error);
 
@@ -43,7 +45,7 @@ setStellarNetwork().then((network: string) => {
 
 if (DGRAPH_URL) {
   logger.info(`[DGraph] Updating schema...`);
-  new Connection().migrate().catch((err: any) => {
+  new Dgraph().migrate().catch((err: any) => {
     logger.error(err);
     Honeybadger.notify(err);
     process.exit(-1);

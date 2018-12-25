@@ -36,7 +36,7 @@ const SCHEMA = `
   offer_id: string @index (exact) .
 `;
 
-export class Connection {
+export class Dgraph {
   private stub: any;
   private client: any;
 
@@ -44,6 +44,7 @@ export class Connection {
     this.stub = new DgraphClientStub(DGRAPH_URL, grpc.credentials.createInsecure());
 
     this.client = new DgraphClient(this.stub);
+    this.client.setDebugMode();
   }
 
   public close() {

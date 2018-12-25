@@ -1,6 +1,5 @@
-import { db } from "../../database";
-import { Connection as DgraphConnection } from "../../storage/connection";
 import { AccountTransactionsQuery } from "../../storage/queries/account_transactions";
+import { IApolloContext } from "../../util/types";
 import { ledgerResolver, memoResolver } from "./util";
 
 export default {
@@ -9,15 +8,14 @@ export default {
     memo: memoResolver
   },
   Query: {
-    transaction(root: any, args: any, ctx: any, info: any) {
-      return db.transactions.findByID(args.id);
+    transaction(root: any, args: any, ctx: IApolloContext, info: any) {
+      return ctx.db.transactions.findByID(args.id);
     },
-    transactions(root: any, args: any, ctx: any, info: any) {
-      return db.transactions.findAllByID(args.id);
+    transactions(root: any, args: any, ctx: IApolloContext, info: any) {
+      return ctx.db.transactions.findAllByID(args.id);
     },
-    accountTransactions(root: any, args: any, ctx: any, info: any) {
-      const dc = new DgraphConnection();
-      const query = new AccountTransactionsQuery(dc, args.id, args.first, args.offset);
+    accountTransactions(root: any, args: any, ctx: IApolloContext, info: any) {
+      const query = new AccountTransactionsQuery(ctx.dgraph, args.id, args.first, args.offset);
 
       return query.call();
     }

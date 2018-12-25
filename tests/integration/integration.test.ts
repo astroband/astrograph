@@ -4,6 +4,7 @@ import { graphql } from "graphql";
 import path from "path";
 import { Client as dbClient } from "pg";
 import { Network } from "stellar-base";
+import { db } from "../../src/database";
 import schema from "../../src/schema";
 import logger from "../../src/util/logger";
 import * as secrets from "../../src/util/secrets";
@@ -58,7 +59,11 @@ describe("Integration tests", () => {
     const queryFile = caseName.toLowerCase().replace(/ /g, "_");
     const query = fs.readFileSync(`${__dirname}/integration_queries/${queryFile}.gql`, "utf8");
 
-    const { data } = await graphql(schema, query);
+    const { data } = await graphql({
+      schema,
+      source: query,
+      contextValue: { db }
+    });
 
     expect(data).toMatchSnapshot();
   });

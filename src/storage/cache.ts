@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Connection } from "../storage/connection";
+import { Dgraph } from "../storage/dgraph";
 import { ILink, NQuad, NQuads } from "./nquads";
 
 const ___cache = new Map<string, string>();
@@ -7,7 +7,7 @@ const ___cache = new Map<string, string>();
 // An idea is simple: every node in DGraph database has unique string key, which we use either to distinguish
 // it in in-memory cache and to load uid from DGraph.
 export class Cache {
-  constructor(private connection: Connection, private nquads: NQuads) {}
+  constructor(private connection: Dgraph, private nquads: NQuads) {}
 
   public async populate(): Promise<NQuads> {
     const { hits, misses } = this.hitsAndMisses();
