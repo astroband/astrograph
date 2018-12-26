@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { IDatabase } from "pg-promise";
 import { Transaction } from "../model";
 import { unique } from "../util/array";
@@ -7,7 +6,9 @@ const sql = {
   selectTx:
     "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid = $1",
   selectTxIn:
-    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid IN ($1:csv) ORDER BY t.ledgerseq, t.txindex"
+    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid IN ($1:csv) ORDER BY t.ledgerseq, t.txindex",
+  selectTxInSeq:
+    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.ledgerseq = $1 ORDER BY t.txindex"
 };
 
 export default class TransactionsRepo {
@@ -36,27 +37,7 @@ export default class TransactionsRepo {
 
   // Fetches all transactions by ledger seq;
   public async findAllBySeq(seq: number): Promise<Transaction[]> {
-    const txSelect = "SELECT * FROM txhistory WHERE ledgerseq = $1 ORDER BY txindex";
-    const txs = await this.db.manyOrNone(txSelect, seq);
-
-    if (txs.length === 0) {
-      return [];
-    }
-
-    const feeMetaSelect = "SELECT txid, txchanges FROM txfeehistory WHERE txid IN ($1:list)";
-    const feeMetas = await this.db.many(feeMetaSelect, [_.map(txs, "txid")]);
-
-    return _
-      .chain(txs)
-      .map(tx => {
-        const meta = _.find(feeMetas, { txid: tx.txid }) as { txchanges: string };
-        if (!meta) {
-          return;
-        }
-        return {...tx, txfeemeta: meta.txchanges};
-      })
-      .filter()
-      .map(t => new Transaction(t))
-      .value();
+    const res = await this.db.manyOrNone(sql.selectTxInSeq, seq);
+    return res.map(t => new Transaction(t));
   }
 }
