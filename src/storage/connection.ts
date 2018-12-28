@@ -137,7 +137,17 @@ export class Connection {
       nquads = nquads.concat(new TransactionBuilder(transaction).build());
 
       for (let index = 0; index < transaction.operationsXDR().length; index++) {
-        nquads = nquads.concat(new OperationBuilder(transaction, index).build());
+        try {
+          nquads = nquads.concat(new OperationBuilder(transaction, index).build());
+        } catch(err) {
+          logger.log(
+            "error",
+            "Failed to ingest operation with XDR \"%s\" on transaction %s",
+            transaction.operationsXDR()[index],
+            transaction.id
+          );
+          throw err;
+        }
       }
 
       // nquads = nquads.concat(new TransactionResultBuilder(transaction).build());
