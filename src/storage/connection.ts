@@ -143,7 +143,7 @@ export class Connection {
           logger.log(
             "error",
             "Failed to ingest operation with XDR \"%s\" on transaction %s",
-            transaction.operationsXDR()[index],
+            transaction.operationsXDR()[index].toXDR().toString("base64"),
             transaction.id
           );
           throw err;
