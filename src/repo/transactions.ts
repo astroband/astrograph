@@ -43,7 +43,7 @@ export default class TransactionsRepo {
       return [];
     }
 
-    const feeMetaSelect = "SELECT txid, txchanges FROM txfeehistory WHERE ledgerseq = $1 AND txindex IN ($2:list)";
+    const feeMetaSelect = "SELECT txindex, txchanges FROM txfeehistory WHERE ledgerseq = $1 AND txindex IN ($2:list)";
     const feeMetas = await this.db.many(feeMetaSelect, [seq, _.map(txs, "txindex")]);
 
     return _
