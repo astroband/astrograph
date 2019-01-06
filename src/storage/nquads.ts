@@ -50,8 +50,15 @@ export class NQuad {
       case "link":
         return `<${x.value}>`;
       case "value":
-        return `"${x.value}"`;
+        return `"${this.escape(x.value)}"`;
     }
+  }
+
+  private escape(v: string | number | boolean): string {
+    return v
+      .toString()
+      .replace(/\n/g, "\\n")
+      .replace(/\\([\s\S])|(")/g, "\\$1$2") // escapes all not-escaped double quotes
   }
 }
 
