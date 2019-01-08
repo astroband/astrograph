@@ -51,7 +51,7 @@ setStellarNetwork().then((network: string) => {
             ingest(header, transactions)
             .then(work)
             .catch((e) => {
-              if (e.message.includes("Please try later")) {
+              if (e.message.includes("Please retry later")) {
                 logger.info("Server is unavailable, retrying...");
                 if (!operation.retry(e)) {
                   // because e is present, it means we don't have retry attempts left
