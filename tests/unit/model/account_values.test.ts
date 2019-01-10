@@ -1,19 +1,20 @@
 import stellar from "stellar-base";
-import { AccountValues } from "../../../src/model";
+import { AccountValues } from "../../../src/model2";
+import { AccountFlagsFactory, AccountThresholdsFactory } from "../../../src/model2/factories";
 import AccountValuesFactory from "../../factories/account_values";
 import SignerFactory from "../../factories/signer";
 
 let subject: AccountValues;
 
 describe("constructor", () => {
-  const rawData = AccountValuesFactory.data();
   const signers = [SignerFactory.build(), SignerFactory.build(), SignerFactory.build()];
+  const rawData = AccountValuesFactory.build({ signers });
 
   it("sorts passed signers list", () => {
-    subject = new AccountValues(rawData, signers);
+    subject = new AccountValues(rawData);
 
-    const assignedSigners = subject.signers.map(s => { return s.signer });
-    expect(assignedSigners).toEqual(signers.map(s => { return s.signer }).sort());
+    const assignedSigners = subject.signers.map(s => s.signer);
+    expect(assignedSigners).toEqual(signers.map(s => s.signer).sort());
   });
 });
 
@@ -25,38 +26,39 @@ describe("diffAttrs(other)", () => {
       subject = AccountValuesFactory.build();
       other = AccountValuesFactory.build();
 
-      expect(() => { subject.diffAttrs(other) }).toThrow();
+      expect(() => subject.diffAttrs(other)).toThrow();
     });
   });
 
   it("returns the names of attributes whose values differ", () => {
     const accountId = stellar.Keypair.random().publicKey();
     const subjectData = {
-      accountid: accountId,
+      id: accountId,
       balance: "19729999500",
-      seqnum: "12884901893",
-      numsubentries: 1,
-      inflationdest: "",
-      homedomain: "",
-      thresholds: "AQAAAA==",
-      flags: 0,
-      lastmodified: 6
+      sequenceNumber: "12884901893",
+      numSubentries: 1,
+      inflationDest: "",
+      homeDomain: "",
+      thresholds: AccountThresholdsFactory.fromValue("AQAAAA=="),
+      flags: AccountFlagsFactory.fromValue(0),
+      lastModified: 6,
+      signers: []
     };
     const otherData = {
-      accountid: accountId,
+      id: accountId,
       balance: "19729999510",
-      seqnum: "12884901993",
-      numsubentries: 2,
-      inflationdest: "some_inflation_dest",
-      homedomain: "example.com",
-      thresholds: "AQEBAQ==",
-      flags: 2,
-      lastmodified: 5
+      sequenceNumber: "12884901993",
+      numSubentries: 2,
+      inflationDest: "some_inflation_dest",
+      homeDomain: "example.com",
+      thresholds: AccountThresholdsFactory.fromValue("AQEBAQ=="),
+      flags: AccountFlagsFactory.fromValue(2),
+      lastModified: 5,
+      signers: [SignerFactory.build()]
     };
-    const signer = SignerFactory.build();
 
-    subject = new AccountValues(subjectData, []);
-    other = new AccountValues(otherData, [signer]);
+    subject = new AccountValues(subjectData);
+    other = new AccountValues(otherData);
     expect(subject.diffAttrs(other)).toEqual([
       "balance",
       "sequenceNumber",

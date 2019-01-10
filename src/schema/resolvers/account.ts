@@ -1,6 +1,5 @@
 import _ from "lodash";
-import { Account, DataEntry } from "../../model";
-import { Signer, TrustLine } from "../../model2";
+import { Account, DataEntry, Signer, TrustLine } from "../../model2";
 import { SignerFactory, TrustLineFactory } from "../../model2/factories";
 
 import { withFilter } from "graphql-subscriptions";

@@ -1,4 +1,4 @@
-import { Account, DataEntry } from "../../model";
+import { Account, DataEntry } from "../../model2";
 
 import { withFilter } from "graphql-subscriptions";
 import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
