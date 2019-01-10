@@ -7,7 +7,7 @@ export class Asset extends AssetBase {
     return type === stellar.xdr.AssetType.assetTypeNative().value ? Asset.native() : new Asset(code, issuer);
   }
 
-  public static fromAssetInput(arg: IAssetInput): Asset | null {
+  public static fromInput(arg: IAssetInput): Asset | null {
     if (!arg) {
       return null;
     }
