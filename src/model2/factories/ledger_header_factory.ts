@@ -1,6 +1,15 @@
 import stellar from "stellar-base";
 import { ILedgerHeader, LedgerHeader } from "../ledger_header";
 
+export interface ILedgerHeaderTableRow {
+  ledgerhash: string;
+  prevhash: string;
+  bucketlisthash: string;
+  ledgerseq: string;
+  closetime: string;
+  data: string;
+}
+
 export class LedgerHeaderFactory {
   public static fromXDR(base64: string): LedgerHeader {
     const header = stellar.xdr.LedgerHeader.fromXDR(Buffer.from(base64, "base64"));
@@ -17,5 +26,9 @@ export class LedgerHeaderFactory {
     };
 
     return new LedgerHeader(data);
+  }
+
+  public static fromDb(data: ILedgerHeaderTableRow): LedgerHeader {
+    return LedgerHeaderFactory.fromXDR(data.data);
   }
 }

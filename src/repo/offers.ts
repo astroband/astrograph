@@ -2,7 +2,8 @@ import { UserInputError } from "apollo-server";
 import { IDatabase } from "pg-promise";
 import squel from "squel";
 import stellar from "stellar-base";
-import { IAssetInput, Offer } from "../model";
+import { IAssetInput } from "../model2"; //, Offer
+import { OfferFactory } from "../model2/factories";
 
 export default class OffersRepo {
   private db: IDatabase<any>;
@@ -35,7 +36,7 @@ export default class OffersRepo {
 
     const res = await this.db.manyOrNone(queryBuilder.toString());
 
-    return res.map(a => new Offer(a));
+    return res.map(a => OfferFactory.fromDb(a));
   }
 
   private appendAsset(queryBuilder: any, prefix: string, asset?: IAssetInput) {

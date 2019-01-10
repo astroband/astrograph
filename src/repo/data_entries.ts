@@ -1,5 +1,6 @@
 import { IDatabase } from "pg-promise";
-import { DataEntry } from "../model";
+import { DataEntry } from "../model2";
+import { DataEntryFactory } from "../model2/factories";
 import { unique } from "../util/array";
 
 const sql = {
@@ -16,11 +17,11 @@ export default class DataEntriesRepo {
 
   public async findAllByAccountID(id: string): Promise<DataEntry[]> {
     const res = await this.db.manyOrNone(sql.selectAccountData, id);
-    return res.map(e => new DataEntry(e));
+    return res.map(e => DataEntryFactory.fromDb(e));
   }
 
   public async findAllByAccountIDs(ids: string[]): Promise<DataEntry[][]> {
     const res = await this.db.manyOrNone(sql.selectAccountsDataIn, [ids.filter(unique)]);
-    return ids.map(id => res.filter(r => r.accountid === id).map(s => new DataEntry(s)));
+    return ids.map(id => res.filter(r => r.accountid === id).map(s => DataEntryFactory.fromDb(s)));
   }
 }
