@@ -1,9 +1,10 @@
 import { db } from "../database";
-import { LedgerHeader, Transaction } from "../model";
+import { LedgerHeader } from "../model2";
+import { TransactionWithXDR } from "../model2/transaction_with_xdr";
 
 export interface ICursorResult {
   header: LedgerHeader;
-  transactions: Transaction[];
+  transactions: TransactionWithXDR[];
 }
 
 // Walks through ledgers in ledgerheaders table.
@@ -34,7 +35,7 @@ export class Cursor {
 
       // And there is a ledger somewhere forward in history (it is the gap)
       if (this.seq < maxSeq) {
-        this.seq = maxSeq; // Fast-rewing to lastest ledger
+        this.seq = maxSeq; // Fast-rewind to lastest ledger
       }
 
       return null;

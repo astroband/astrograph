@@ -1,4 +1,4 @@
-import { LedgerHeader } from "../../model";
+import { LedgerHeader } from "../../model2";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { Builder } from "./builder";

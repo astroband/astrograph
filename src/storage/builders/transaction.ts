@@ -1,4 +1,4 @@
-import { Transaction } from "../../model";
+import { ITransaction } from "../../model2";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
@@ -16,7 +16,7 @@ export class TransactionBuilder extends Builder {
   public readonly current: IBlank;
   private seq: number;
 
-  constructor(private tx: Transaction) {
+  constructor(private tx: ITransaction) {
     super();
 
     this.seq = tx.ledgerSeq;

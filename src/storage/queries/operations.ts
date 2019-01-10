@@ -1,23 +1,66 @@
 import _ from "lodash";
 import { Connection } from "../connection";
-import { DgraphOperationsData } from "../types";
-import { DataMapper } from "./operations/data_mapper";
 import { FiltersBuilder } from "./operations/filters_builder";
 import { queryPredicates } from "./operations/predicates";
-import {
-  IAccountMergeQueryParams,
-  IAllowTrustQueryParams,
-  IChangeTrustQueryParams,
-  ICreateAccountQueryParams,
-  IManageDataQueryParams,
-  IManageOfferQueryParams,
-  IPathPaymentsQueryParams,
-  IPaymentsQueryParams,
-  ISetOptionsOpsQueryParams,
-  Operation,
-  OperationKinds
-} from "./operations/types";
+import { IAssetInput } from "../../model/asset_input";
+import { OperationFactory } from "../../model2/factories/operation_factory";
+import { Operation, OperationKinds } from "../../model2/operation";
+import { AccountID, AssetCode } from "../../util/types";
 import { Query } from "./query";
+
+// What filters for different operations we provide
+export interface ISetOptionsOpsQueryParams {
+  masterWeight: number;
+  account: AccountID;
+}
+
+export interface IPaymentsQueryParams {
+  asset: IAssetInput | null;
+  destination: AccountID | null;
+  source: AccountID | null;
+}
+
+export interface IAccountMergeQueryParams {
+  destination: AccountID | null;
+}
+
+export interface IAllowTrustQueryParams {
+  authorize: boolean;
+  assetCode: AssetCode;
+  trustor: AccountID;
+}
+
+export interface IBumpSequenceQueryParams {
+  bumpTo: number;
+}
+
+export interface IChangeTrustQueryParams {
+  limit: string;
+  asset: IAssetInput;
+}
+
+export interface ICreateAccountQueryParams {
+  destination: AccountID;
+}
+
+export interface IManageDataQueryParams {
+  name: string;
+  value: string;
+}
+
+export interface IManageOfferQueryParams {
+  offerId: string;
+  assetSelling: IAssetInput;
+  assetBuying: IAssetInput;
+}
+
+export interface IPathPaymentsQueryParams {
+  sourceAccount: AccountID;
+  destinationAccount: AccountID;
+  destinationAsset: IAssetInput;
+  sourceAsset: IAssetInput;
+  pathContains: IAssetInput;
+}
 
 interface IOperationsQueryParams {
   [OperationKinds.Payment]?: IPaymentsQueryParams;
@@ -52,7 +95,7 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
     if (!r.ops) {
       return [];
     }
-    return r.ops.map((op: DgraphOperationsData) => DataMapper.call(op));
+    return r.ops.map(OperationFactory.fromDgraph);
   }
 
   protected async request(): Promise<any> {

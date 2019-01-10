@@ -10,7 +10,7 @@ import { TransactionBuilder } from "./builders/transaction";
 import { Cache } from "./cache";
 import { NQuads } from "./nquads";
 
-import { LedgerHeader, Transaction } from "../model";
+import { LedgerHeader, TransactionWithXDR } from "../model2";
 
 const SCHEMA = `
   type: string @index(exact) .
@@ -106,7 +106,7 @@ export class Connection {
     }
   }
 
-  public async importLedgerState(header: LedgerHeader, transactions: Transaction[]) {
+  public async importLedgerState(header: LedgerHeader, transactions: TransactionWithXDR[]) {
     let nquads: NQuads = [];
     let builder: LedgerStateBuilder;
 
@@ -130,13 +130,13 @@ export class Connection {
     c.put(result);
   }
 
-  public async importLedgerTransactions(header: LedgerHeader, transactions: Transaction[]) {
+  public async importLedgerTransactions(header: LedgerHeader, transactions: TransactionWithXDR[]) {
     let nquads = new LedgerBuilder(header).build();
 
     for (const transaction of transactions) {
       nquads = nquads.concat(new TransactionBuilder(transaction).build());
 
-      for (let index = 0; index < transaction.operationsXDR().length; index++) {
+      for (let index = 0; index < transaction.operationsXDR.length; index++) {
         nquads = nquads.concat(new OperationBuilder(transaction, index).build());
       }
 
