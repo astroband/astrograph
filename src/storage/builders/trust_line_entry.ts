@@ -1,5 +1,5 @@
 import { IChange } from "../../changes_extractor";
-import { ITrustLine } from "../../model";
+import { ITrustLine } from "../../model2";
 import { makeKey } from "../../util/crypto";
 import { toFloatAmountString } from "../../util/stellar";
 import { IBlank, NQuad, NQuads } from "../nquads";
