@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { IDatabase } from "pg-promise";
-import { TransactionWithXDR } from "../model2";
-import { ITransactionTableRow, TransactionWithXDRFactory } from "../model2/factories";
+import { TransactionWithXDR } from "../model";
+import { ITransactionTableRow, TransactionWithXDRFactory } from "../model/factories";
 
 const sql = {
   selectTx:

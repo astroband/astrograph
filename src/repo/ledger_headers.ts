@@ -1,6 +1,6 @@
 import { IDatabase } from "pg-promise";
-import { LedgerHeader } from "../model2";
-import { LedgerHeaderFactory } from "../model2/factories";
+import { LedgerHeader } from "../model";
+import { LedgerHeaderFactory } from "../model/factories";
 import { unique } from "../util/array";
 
 const sql = {

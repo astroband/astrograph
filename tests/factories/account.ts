@@ -1,6 +1,6 @@
 import { Factory } from "rosie";
 import stellar from "stellar-base";
-import { Account } from "../../src/model2";
+import { Account } from "../../src/model";
 
 Factory.define("account")
   .attr("id", () => stellar.Keypair.random().publicKey())

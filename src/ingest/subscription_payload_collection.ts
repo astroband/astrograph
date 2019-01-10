@@ -7,7 +7,7 @@ import {
   OfferSubscriptionPayload,
   TransactionWithXDR,
   TrustLineSubscriptionPayload
-} from "../model2";
+} from "../model";
 
 export type SubscriptionPayload =
   | AccountSubscriptionPayload

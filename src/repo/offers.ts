@@ -2,8 +2,8 @@ import { UserInputError } from "apollo-server";
 import { IDatabase } from "pg-promise";
 import squel from "squel";
 import stellar from "stellar-base";
-import { IAssetInput } from "../model2"; //, Offer
-import { OfferFactory } from "../model2/factories";
+import { IAssetInput } from "../model"; //, Offer
+import { OfferFactory } from "../model/factories";
 
 export default class OffersRepo {
   private db: IDatabase<any>;

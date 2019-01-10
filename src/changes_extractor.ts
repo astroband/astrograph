@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { Transaction, TransactionWithXDR } from "./model2";
+import { Transaction, TransactionWithXDR } from "./model";
 import { diffAccountsXDR } from "./util/xdr";
 
 export enum ChangeType {

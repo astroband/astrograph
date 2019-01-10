@@ -1,4 +1,4 @@
-import { TransactionWithXDR } from "../../model2";
+import { TransactionWithXDR } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";

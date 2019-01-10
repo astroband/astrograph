@@ -1,52 +1,34 @@
-import { Account, IAccountRawData } from "./account";
+import { IAccountBase } from "./account";
+import { AccountFlags } from "./account_flags";
 import { AccountThresholds } from "./account_thresholds";
 import { Signer } from "./signer";
 
-import { publicKeyFromXDR } from "../util/xdr";
+export interface IAccountValues extends IAccountBase {
+  signers: Signer[];
+}
 
-export class AccountValues extends Account {
-  public static buildFromXDR(xdr: any): AccountValues {
-    const accountid = publicKeyFromXDR(xdr);
-    const signers = xdr.signers().map((s: any) => Signer.buildFromXDR(s, accountid));
-    const thresholds = new AccountThresholds(xdr.thresholds());
-
-    signers.unshift(
-      new Signer({
-        accountid,
-        publickey: accountid,
-        weight: thresholds.masterWeight
-      })
-    );
-
-    return new AccountValues(
-      {
-        accountid,
-        balance: xdr.balance().toString(),
-        seqnum: xdr.seqNum().toString(),
-        numsubentries: xdr.numSubEntries(),
-        inflationdest: xdr.inflationDest() || null,
-        homedomain: xdr.homeDomain(),
-        thresholds: xdr.thresholds(),
-        flags: xdr.flags(),
-        lastmodified: -1
-      },
-      signers
-    );
-  }
-
+export class AccountValues implements IAccountValues {
+  public id: string;
+  public balance: string;
+  public sequenceNumber: string;
+  public numSubentries: number;
+  public inflationDest: string;
+  public homeDomain: string;
+  public thresholds: AccountThresholds;
+  public flags: AccountFlags;
   public signers: Signer[];
 
-  constructor(data: IAccountRawData, signers: Signer[]) {
-    super(data);
-    this.signers = signers.sort((s1, s2) => {
-      if (s1.signer < s2.signer) {
-        return -1;
-      } else if (s1.signer === s2.signer) {
-        return 0;
-      } else {
-        return 1;
-      }
-    });
+  constructor(data: IAccountValues) {
+    this.id = data.id;
+    this.balance = data.balance;
+    this.sequenceNumber = data.sequenceNumber;
+    this.numSubentries = data.numSubentries;
+    this.inflationDest = data.inflationDest;
+    this.homeDomain = data.homeDomain;
+    this.thresholds = data.thresholds;
+    this.flags = data.flags;
+
+    this.signers = Signer.sortArray(data.signers);
   }
 
   public diffAttrs(other: AccountValues): string[] {

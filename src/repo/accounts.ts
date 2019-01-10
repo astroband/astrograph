@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { IDatabase } from "pg-promise";
-import { Account } from "../model2";
-import { AccountFactory, IAccountTableRow } from "../model2/factories";
+import { Account } from "../model";
+import { AccountFactory, IAccountTableRow } from "../model/factories";
 
 const sql = {
   selectAccount: "SELECT * FROM accounts WHERE accountid = $1",

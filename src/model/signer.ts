@@ -1,23 +1,29 @@
-import { signerKeyFromXDR } from "../util/xdr";
+export interface ISigner {
+  accountID: string;
+  signer: string;
+  weight: number;
+}
 
-export class Signer {
-  public static buildFromXDR(xdr: any, accountID: string) {
-    const data = {
-      accountid: accountID,
-      publickey: signerKeyFromXDR(xdr.key()),
-      weight: xdr.weight()
-    };
-
-    return new Signer(data);
+export class Signer implements ISigner {
+  public static sortArray(signers: Signer[]): Signer[] {
+    return signers.sort((s1, s2) => {
+      if (s1.signer < s2.signer) {
+        return -1;
+      } else if (s1.signer === s2.signer) {
+        return 0;
+      } else {
+        return 1;
+      }
+    });
   }
 
   public accountID: string;
   public signer: string;
   public weight: number;
 
-  constructor(data: { accountid: string; publickey: string; weight: number }) {
-    this.accountID = data.accountid;
-    this.signer = data.publickey;
+  constructor(data: ISigner) {
+    this.accountID = data.accountID;
+    this.signer = data.signer;
     this.weight = data.weight;
   }
 }

@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { IDatabase } from "pg-promise";
-import { ITrustLine } from "../model2";
-import { ITrustLineTableRow, TrustLineFactory } from "../model2/factories";
+import { ITrustLine } from "../model";
+import { ITrustLineTableRow, TrustLineFactory } from "../model/factories";
 import { joinToMap } from "../util/array";
 
 const sql = {

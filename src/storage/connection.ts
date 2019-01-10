@@ -10,7 +10,7 @@ import { TransactionBuilder } from "./builders/transaction";
 import { Cache } from "./cache";
 import { NQuads } from "./nquads";
 
-import { LedgerHeader, TransactionWithXDR } from "../model2";
+import { LedgerHeader, TransactionWithXDR } from "../model";
 
 const SCHEMA = `
   type: string @index(exact) .

@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { db } from "../../database";
-import { Account, Signer } from "../../model2";
-import { SignerFactory } from "../../model2/factories";
+import { Account, Signer } from "../../model";
+import { SignerFactory } from "../../model/factories";
 import { createBatchResolver } from "./util";
 
 const accountResolver = createBatchResolver<Signer, Account>((source: any) =>

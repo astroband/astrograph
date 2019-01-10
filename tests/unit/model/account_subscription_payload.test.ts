@@ -1,8 +1,8 @@
-import { AccountSubscriptionPayload, MutationType } from "../../../src/model2";
-import { AccountValuesFactory } from "../../../src/model2/factories";
+import { AccountSubscriptionPayload, MutationType } from "../../../src/model";
+import { AccountValuesFactory } from "../../../src/model/factories";
 import stellar from "stellar-base";
 
-jest.mock("../../../src/model2/factories/account_values_factory");
+jest.mock("../../../src/model/factories/account_values_factory");
 
 const rawXDR = "AAAAAQAAAAIAAAADAAAABAAAAAAAAAAAnNaDsWrrYf58AZ/37vPsUpwk0kqEGflGNc9yFOmOyFYAAAAEqBfHnAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAAABAAAAAAAAAAAnNaDsWrrYf58AZ/37vPsUpwk0kqEGflGNc9yFOmOyFYAAAAEqBfHnAAAAAMAAAABAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAAAAwAAAAAAAAAEAAAAAQAAAACc1oOxauth/nwBn/fu8+xSnCTSSoQZ+UY1z3IU6Y7IVgAAAAFLSEwAAAAAAP8RoqirLHHNQiYBsPxJ/OylDilni/4gIJ9wmzoeAiE9AAAAAAAAAAB//////////wAAAAEAAAAAAAAAAAAAAAMAAAAEAAAAAAAAAACc1oOxauth/nwBn/fu8+xSnCTSSoQZ+UY1z3IU6Y7IVgAAAASoF8ecAAAAAwAAAAEAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAEAAAAEAAAAAAAAAACc1oOxauth/nwBn/fu8+xSnCTSSoQZ+UY1z3IU6Y7IVgAAAASoF8ecAAAAAwAAAAEAAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA==";
 const txMeta = stellar.xdr.TransactionMeta.fromXDR(Buffer.from(rawXDR, "base64"));

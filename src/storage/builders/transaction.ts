@@ -1,4 +1,4 @@
-import { ITransaction } from "../../model2";
+import { ITransaction } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";

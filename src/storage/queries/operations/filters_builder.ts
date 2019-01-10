@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { OperationKinds } from "../../../model2/operation";
+import { OperationKinds } from "../../../model/operation";
 import { buildAssetFilter } from "../../../util/queries/asset_filter";
 import {
   IAccountMergeQueryParams,

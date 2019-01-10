@@ -1,5 +1,6 @@
 import { publicKeyFromXDR } from "../util/xdr";
 import { DataEntryValues } from "./data_entry_values";
+import { DataEntryValuesFactory } from "./factories/data_entry_values_factory";
 import { IMutationType, MutationType } from "./mutation_type";
 
 export class DataEntrySubscriptionPayload implements IMutationType {
@@ -14,7 +15,7 @@ export class DataEntrySubscriptionPayload implements IMutationType {
     this.name = xdr.dataName().toString();
 
     if (mutationType !== MutationType.Remove) {
-      this.values = DataEntryValues.buildFromXDR(xdr);
+      this.values = DataEntryValuesFactory.fromXDR(xdr);
     }
   }
 }

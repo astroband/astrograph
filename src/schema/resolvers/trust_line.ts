@@ -1,6 +1,6 @@
 import _ from "lodash";
-import { Account, TrustLine } from "../../model2";
-import { TrustLineFactory } from "../../model2/factories/trust_line_factory";
+import { Account, TrustLine } from "../../model";
+import { TrustLineFactory } from "../../model/factories/trust_line_factory";
 import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 import { withFilter } from "graphql-subscriptions";

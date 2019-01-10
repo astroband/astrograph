@@ -1,6 +1,6 @@
 import { Cursor, ICursorResult } from "../../../src/ingest/cursor";
-import { LedgerHeader, TransactionWithXDR } from "../../../src/model2";
-import { LedgerHeaderFactory } from "../../../src/model2/factories";
+import { LedgerHeader, TransactionWithXDR } from "../../../src/model";
+import { LedgerHeaderFactory } from "../../../src/model/factories";
 
 import { db } from "../../../src/database";
 import transactionWithXDRFactory from "../../factories/transaction_with_xdr";

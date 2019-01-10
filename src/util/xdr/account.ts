@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { AccountValuesFactory } from "../../model2/factories";
+import { AccountValuesFactory } from "../../model/factories";
 
 export function publicKeyFromBuffer(value: Buffer): string {
   return stellar.StrKey.encodeEd25519PublicKey(value);

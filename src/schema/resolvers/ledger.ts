@@ -1,5 +1,5 @@
 import { db } from "../../database";
-import { Ledger, LedgerHeader } from "../../model2";
+import { Ledger, LedgerHeader } from "../../model";
 import { pubsub } from "../../pubsub";
 import { createBatchResolver } from "./util";
 

@@ -1,16 +1,15 @@
-import { DataEntry } from "./data_entry";
+import { IDataEntryBase } from "./data_entry";
 
-import { publicKeyFromXDR } from "../util/xdr";
+export type IDataEntryValues = IDataEntryBase;
 
-export class DataEntryValues extends DataEntry {
-  public static buildFromXDR(xdr: any): DataEntryValues {
-    const accountid = publicKeyFromXDR(xdr);
+export class DataEntryValues implements IDataEntryBase {
+  public accountID: string;
+  public name: string;
+  public value: string;
 
-    return new DataEntryValues({
-      accountid,
-      dataname: xdr.dataName().toString(),
-      datavalue: xdr.dataValue(),
-      lastmodified: -1 // Just placeholder, will not be projected down to payload
-    });
+  constructor(data: IDataEntryValues) {
+    this.accountID = data.accountID;
+    this.name = data.name;
+    this.value = data.value;
   }
 }

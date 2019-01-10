@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 import { Factory } from "rosie";
-import { Signer } from "../../src/model2/signer";
+import { Signer } from "../../src/model/signer";
 
 Factory.define("signer")
   .attr("accountID", () => stellar.Keypair.random().publicKey())

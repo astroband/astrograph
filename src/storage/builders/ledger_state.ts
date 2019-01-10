@@ -1,6 +1,6 @@
 import { IChange } from "../../changes_extractor";
-import { ITransaction, ITrustLineBase } from "../../model2";
-import { TrustLineValuesFactory } from "../../model2/factories/trust_line_values_factory";
+import { ITransaction, ITrustLineBase } from "../../model";
+import { TrustLineValuesFactory } from "../../model/factories/trust_line_values_factory";
 import { NQuad, NQuads } from "../nquads";
 import { Builder } from "./builder";
 import { TransactionBuilder } from "./transaction";

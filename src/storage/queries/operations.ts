@@ -3,8 +3,8 @@ import { Connection } from "../connection";
 import { FiltersBuilder } from "./operations/filters_builder";
 import { queryPredicates } from "./operations/predicates";
 
-import { IAssetInput, Operation, OperationKinds } from "../../model2";
-import { OperationFactory } from "../../model2/factories";
+import { IAssetInput, Operation, OperationKinds } from "../../model";
+import { OperationFactory } from "../../model/factories";
 
 import { AccountID, AssetCode } from "../../util/types";
 import { Query } from "./query";

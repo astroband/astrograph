@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { IDatabase } from "pg-promise";
-import { Signer } from "../model2";
-import { ISignerTableRow, SignerFactory } from "../model2/factories/signer_factory";
+import { Signer } from "../model";
+import { ISignerTableRow, SignerFactory } from "../model/factories/signer_factory";
 
 const sql = {
   selectSigners: "SELECT * FROM signers WHERE accountid = $1 ORDER BY publickey",

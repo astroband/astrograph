@@ -1,5 +1,5 @@
-import { AccountFlags } from "../../../src/model2/account_flags";
-import { AccountFlagsFactory } from "../../../src/model2/factories";
+import { AccountFlags } from "../../../src/model/account_flags";
+import { AccountFlagsFactory } from "../../../src/model/factories";
 
 describe("constructor & factory", () => {
   const cases = [

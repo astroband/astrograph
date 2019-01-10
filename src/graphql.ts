@@ -11,11 +11,6 @@ import logger from "./util/logger";
 import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
 
-import * as model from "./model2";
-import * as factory from "./model2/factories";
-console.log(model);
-console.log(factory);
-
 const server = new ApolloServer({
   schema,
   tracing: true,

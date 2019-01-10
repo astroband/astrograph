@@ -1,6 +1,6 @@
 import { Asset } from "stellar-sdk";
-import { TrustLine } from "../../../src/model2";
-import { TrustLineFactory } from "../../../src/model2/factories";
+import { TrustLine } from "../../../src/model";
+import { TrustLineFactory } from "../../../src/model/factories";
 import { toFloatAmountString } from "../../../src/util/stellar";
 import { MAX_INT64 } from "../../../src/util";
 import AccountFactory from "../../factories/account";

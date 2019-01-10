@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
-import { AccountValues } from "../../../src/model2";
-import { AccountFlagsFactory, AccountThresholdsFactory } from "../../../src/model2/factories";
+import { AccountValues } from "../../../src/model";
+import { AccountFlagsFactory, AccountThresholdsFactory } from "../../../src/model/factories";
 import AccountValuesFactory from "../../factories/account_values";
 import SignerFactory from "../../factories/signer";
 

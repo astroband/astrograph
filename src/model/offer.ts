@@ -1,45 +1,43 @@
-import BigNumber from "bignumber.js";
-import stellar from "stellar-base";
-import Asset from "../util/asset";
-import { toFloatAmountString } from "../util/stellar";
+import { Asset } from "./asset";
 
-export class Offer {
+export interface IOfferBase {
+  id: string;
+  sellerID: string;
+  selling: Asset;
+  buying: Asset;
+  amount: string;
+  price: string;
+  priceN: number;
+  priceD: number;
+  passive: boolean;
+}
+
+export interface IOffer extends IOfferBase {
+  lastModified: string;
+}
+
+export class Offer implements IOffer {
   public id: string;
-  public sellerid: string;
+  public sellerID: string;
   public selling: Asset;
   public buying: Asset;
   public amount: string;
   public price: string;
-  public pricen: number;
-  public priced: number;
+  public priceN: number;
+  public priceD: number;
   public passive: boolean;
-  public lastModified: number;
+  public lastModified: string;
 
-  constructor(data: {
-    offerid: string;
-    sellerid: string;
-    sellingassettype: number;
-    sellingassetcode: string;
-    sellingissuer: string;
-    buyingassettype: number;
-    buyingassetcode: string;
-    buyingissuer: string;
-    amount: string;
-    pricen: number;
-    priced: number;
-    price: string;
-    flags: number;
-    lastmodified: number;
-  }) {
-    this.id = data.offerid;
-    this.sellerid = data.sellerid;
-    this.selling = Asset.build(data.sellingassettype, data.sellingassetcode, data.sellingissuer);
-    this.buying = Asset.build(data.buyingassettype, data.buyingassetcode, data.buyingissuer);
-    this.amount = toFloatAmountString(data.amount);
-    this.pricen = data.pricen;
-    this.priced = data.priced;
-    this.price = new BigNumber(data.pricen).div(data.priced).toString();
-    this.passive = (data.flags && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0;
-    this.lastModified = data.lastmodified;
+  constructor(data: IOffer) {
+    this.id = data.id;
+    this.sellerID = data.sellerID;
+    this.selling = data.selling;
+    this.buying = data.buying;
+    this.amount = data.amount;
+    this.priceN = data.priceN;
+    this.priceD = data.priceD;
+    this.price = data.price;
+    this.passive = data.passive;
+    this.lastModified = data.lastModified;
   }
 }

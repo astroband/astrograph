@@ -1,5 +1,5 @@
-import { AccountThresholds } from "../../../src/model2/account_thresholds";
-import { AccountThresholdsFactory } from "../../../src/model2/factories";
+import { AccountThresholds } from "../../../src/model/account_thresholds";
+import { AccountThresholdsFactory } from "../../../src/model/factories";
 
 describe("constructor & factory", () => {
   const cases = [

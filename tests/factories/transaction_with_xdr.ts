@@ -1,6 +1,6 @@
 import { Factory } from "rosie";
-import { TransactionWithXDR } from "../../src/model2";
-import { TransactionWithXDRFactory } from "../../src/model2/factories";
+import { TransactionWithXDR } from "../../src/model";
+import { TransactionWithXDRFactory } from "../../src/model/factories";
 
 Factory.define("transaction_with_xdr")
   .attr("txid", "cc5a32751a02ef6143499f30e3f975f56c1b74e39b3b002ca34d0ff012ad8e55")

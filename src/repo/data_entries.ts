@@ -1,6 +1,6 @@
 import { IDatabase } from "pg-promise";
-import { DataEntry } from "../model2";
-import { DataEntryFactory } from "../model2/factories";
+import { DataEntry } from "../model";
+import { DataEntryFactory } from "../model/factories";
 import { unique } from "../util/array";
 
 const sql = {

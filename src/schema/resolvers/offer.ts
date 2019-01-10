@@ -1,4 +1,4 @@
-import { Account, Asset, MutationType, Offer } from "../../model2";
+import { Account, Asset, MutationType, Offer } from "../../model";
 
 import { withFilter } from "graphql-subscriptions";
 import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
