@@ -1,4 +1,4 @@
-import Asset from "../util/asset";
+import { Asset } from "./asset";
 import { IOfferBase } from "./offer";
 
 export type IOfferValues = IOfferBase;

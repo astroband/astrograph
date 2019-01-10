@@ -1,4 +1,4 @@
-import Asset from "../util/asset";
+import { Asset } from "./asset";
 
 export interface IOfferBase {
   id: string;

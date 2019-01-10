@@ -1,8 +1,9 @@
 import BigNumber from "bignumber.js";
 import stellar from "stellar-base";
-import Asset from "../../util/asset";
-import { toFloatAmountString } from "../../util/stellar";
+import { Asset } from "../asset";
 import { IOffer, Offer } from "../offer";
+
+import { toFloatAmountString } from "../../util/stellar";
 
 export interface IOfferTableRow {
   offerid: string;
@@ -22,12 +23,12 @@ export interface IOfferTableRow {
 }
 
 export class OfferFactory {
-  public static fromDb(row: IOfferTableRow): Offer {
+  public static fromDb(row: IOfferTableRow): Offer | null | IOffer | Asset {
     const data: IOffer = {
       id: row.offerid,
       sellerID: row.sellerid,
-      selling: Asset.build(row.sellingassettype, row.sellingassetcode, row.sellingissuer),
-      buying: Asset.build(row.buyingassettype, row.buyingassetcode, row.buyingissuer),
+      selling: Asset.fromDb(row.sellingassettype, row.sellingassetcode, row.sellingissuer),
+      buying: Asset.fromDb(row.buyingassettype, row.buyingassetcode, row.buyingissuer),
       amount: toFloatAmountString(row.amount),
       priceN: row.pricen,
       priceD: row.priced,

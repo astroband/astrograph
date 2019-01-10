@@ -1,8 +1,8 @@
 import stellar from "stellar-base";
-import { Asset } from "stellar-sdk";
+import { Asset as AssetBase } from "stellar-sdk";
 import { IAssetInput } from "./asset_input";
 
-export default class extends Asset {
+export class Asset extends AssetBase {
   public static fromDb(type: number, code: string, issuer: string): Asset {
     return type === stellar.xdr.AssetType.assetTypeNative().value ? Asset.native() : new Asset(code, issuer);
   }

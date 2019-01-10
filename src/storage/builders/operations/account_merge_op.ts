@@ -18,7 +18,13 @@ export class AccountMergeOpBuilder extends SpecificOperationBuilder {
 
   protected pushResult() {
     const result = this.trXDR.accountMergeResult();
-    this.pushValue("account_merge_result_code", result.switch().value);
+    const resultCode = result.switch().value;
+    this.pushValue("account_merge_result_code", resultCode);
+
+    // if not success
+    if (resultCode !== 0) {
+      return;
+    }
 
     const resultNQuad = NQuad.blank(`${this.current.value}_result`);
 

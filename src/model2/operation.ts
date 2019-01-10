@@ -1,8 +1,8 @@
 // This module holds definitions of operations data types,
 // which we serve from GraphQL server. These are "processed" counterparts
 // of data that is stored in Dgraph
-import { Asset } from "stellar-sdk";
 import { AccountID, AssetCode } from "../util/types";
+import { Asset } from "./asset";
 
 export enum OperationKinds {
   Payment = "payment",
