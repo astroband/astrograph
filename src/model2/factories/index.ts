@@ -7,6 +7,7 @@ export * from "./data_entry_values_factory";
 export * from "./ledger_header_factory";
 export * from "./offer_factory";
 export * from "./offer_values_factory";
+export * from "./operation_factory";
 export * from "./signer_factory";
 export * from "./transaction_factory";
 export * from "./transaction_with_xdr_factory";

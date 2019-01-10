@@ -17,3 +17,5 @@ export * from "./transaction_with_xdr";
 export * from "./trust_line";
 export * from "./trust_line_values";
 export * from "./signer";
+
+export * from "./operation";
