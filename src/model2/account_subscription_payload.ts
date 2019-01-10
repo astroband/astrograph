@@ -1,7 +1,8 @@
-import { AccountValues } from "../model2";
-import { AccountValuesFactory } from "../model2/factories";
-import { publicKeyFromXDR } from "../util/xdr";
+import { AccountValues } from "./account_values";
+import { AccountValuesFactory } from "./factories/account_values_factory";
 import { IMutationType, MutationType } from "./mutation_type";
+
+import { publicKeyFromXDR } from "../util/xdr";
 
 export class AccountSubscriptionPayload implements IMutationType {
   public id: string;

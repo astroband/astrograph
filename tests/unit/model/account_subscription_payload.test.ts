@@ -1,4 +1,4 @@
-import { AccountSubscriptionPayload, MutationType } from "../../../src/model";
+import { AccountSubscriptionPayload, MutationType } from "../../../src/model2";
 import { AccountValuesFactory } from "../../../src/model2/factories";
 import stellar from "stellar-base";
 

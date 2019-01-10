@@ -1,8 +1,10 @@
-import { Asset } from "stellar-sdk";
-import { TrustLineValuesFactory } from "../model2/factories/trust_line_values_factory";
-import { TrustLineValues } from "../model2/trust_line_values";
-import { publicKeyFromXDR } from "../util/xdr";
+import { TrustLineValuesFactory } from "./factories/trust_line_values_factory";
+
+import { Asset } from "./asset";
 import { IMutationType, MutationType } from "./mutation_type";
+import { TrustLineValues } from "./trust_line_values";
+
+import { publicKeyFromXDR } from "../util/xdr";
 
 export class NativeTrustLineSubscriptionPayload implements IMutationType {
   public mutationType: MutationType = MutationType.Update;
