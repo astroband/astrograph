@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 
-import Asset from "../asset";
+import { Asset } from "../asset";
 import { IOfferValues, OfferValues } from "../offer_values";
 
 import { publicKeyFromBuffer } from "../../util/xdr";
