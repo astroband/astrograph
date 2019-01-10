@@ -1,7 +1,5 @@
 import parseArgv from "minimist";
-import retry from "retry";
-import { Cursor } from "./ingest/cursor";
-import { LedgerHeader, Transaction } from "./model";
+import { Cursor, ICursorResult } from "./ingest/cursor";
 import { Connection } from "./storage/connection";
 import logger from "./util/logger";
 import "./util/memo";
@@ -31,45 +29,23 @@ setStellarNetwork().then((network: string) => {
   c.migrate()
     .then(async () => {
       Cursor.build(startSeq || -1).then(async cursor => {
-        const work = async () => {
-          let data = await cursor.nextLedger();
+        let data: ICursorResult | null = await cursor.nextLedger();
 
-          if (!data) {
-            return;
-          }
-
+        while (data) {
           const { header, transactions } = data;
 
           if (endSeq && header.ledgerSeq > endSeq) {
-            return;
+            break;
           }
 
-          const operation = retry.operation({ retries: 5 });
-
-          operation.attempt((currentAttempt) => {
-            logger.info(`ingesting ledger #${header.ledgerSeq}, attempt #${currentAttempt}`);
-            ingest(header, transactions)
-            .then(work)
-            .catch((e) => {
-              if (e.message.includes("Please retry later")) {
-                logger.info("Server is unavailable, retrying...");
-                if (!operation.retry(e)) {
-                  // because e is present, it means we don't have retry attempts left
-                  throw e;
-                }
-              } else {
-                throw e;
-              }
-            });
-          });
-        };
-
-        const ingest = async (header: LedgerHeader, transactions: Transaction[]) => {
+          logger.info(`ingesting ledger #${header.ledgerSeq}`);
           await c.importLedgerTransactions(header, transactions);
           await c.importLedgerState(header, transactions);
-        };
 
-        work();
+          data = await cursor.nextLedger();
+        }
+
+        c.close();
       });
     })
     .catch(err => {
