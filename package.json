@@ -85,7 +85,8 @@
     "test:unit": "NODE_ENV=test yarn run jest tests/unit",
     "test:integration": "NODE_ENV=test yarn run jest tests/integration",
     "test": "NODE_ENV=test yarn run jest",
-    "import-ledgers": "ts-node ./src/dgraph_import.ts"
+    "import-ledgers": "ts-node ./src/dgraph_import.ts",
+    "live-import-ledgers": "ts-node ./src/dgraph_live_import.ts"
   },
   "license": "MIT",
   "private": true

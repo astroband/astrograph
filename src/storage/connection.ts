@@ -1,16 +1,11 @@
 import { DgraphClient, DgraphClientStub, ERR_ABORTED, Mutation, Operation } from "dgraph-js";
 import grpc from "grpc";
-import { ChangesExtractor } from "../changes_extractor";
+import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
-import { LedgerBuilder } from "./builders/ledger";
-import { LedgerStateBuilder } from "./builders/ledger_state";
-import { OperationBuilder } from "./builders/operation";
-import { TransactionBuilder } from "./builders/transaction";
 import { Cache } from "./cache";
-import { NQuads } from "./nquads";
-
-import { LedgerHeader, TransactionWithXDR } from "../model";
+import { Ingestor } from "./ingestor";
+import { NQuads } from "./nquads"; 
 
 const SCHEMA = `
   type: string @index(exact) .
@@ -107,17 +102,7 @@ export class Connection {
   }
 
   public async importLedgerState(header: LedgerHeader, transactions: TransactionWithXDR[]) {
-    let nquads: NQuads = [];
-    let builder: LedgerStateBuilder;
-
-    for (const tx of transactions) {
-      const changes = ChangesExtractor.call(tx);
-
-      for (const group of changes) {
-        builder = new LedgerStateBuilder(group, tx);
-        nquads.push(...(await builder.build()));
-      }
-    }
+    let nquads: NQuads = await Ingestor.ingestLedgerState(header, transactions);
 
     if (nquads.length === 0) {
       return;
@@ -131,28 +116,7 @@ export class Connection {
   }
 
   public async importLedgerTransactions(header: LedgerHeader, transactions: TransactionWithXDR[]) {
-    let nquads = new LedgerBuilder(header).build();
-
-    for (const transaction of transactions) {
-      nquads = nquads.concat(new TransactionBuilder(transaction).build());
-
-      for (let index = 0; index < transaction.operationsXDR.length; index++) {
-        try {
-          nquads = nquads.concat(new OperationBuilder(transaction, index).build());
-        } catch (err) {
-          logger.log(
-            "error",
-            "Failed to ingest operation with XDR '%s' on transaction %s with result %s",
-            transaction.operationsXDR[index].toXDR().toString("base64"),
-            transaction.id,
-            transaction.result
-          );
-          throw err;
-        }
-      }
-
-      // nquads = nquads.concat(new TransactionResultBuilder(transaction).build());
-    }
+    let nquads = await Ingestor.ingestLedgerTransactions(header, transactions);
 
     const c = new Cache(this, nquads);
     nquads = await c.populate();
