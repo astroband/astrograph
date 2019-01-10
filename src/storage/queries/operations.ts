@@ -2,9 +2,10 @@ import _ from "lodash";
 import { Connection } from "../connection";
 import { FiltersBuilder } from "./operations/filters_builder";
 import { queryPredicates } from "./operations/predicates";
-import { IAssetInput } from "../../model/asset_input";
-import { OperationFactory } from "../../model2/factories/operation_factory";
-import { Operation, OperationKinds } from "../../model2/operation";
+
+import { IAssetInput, Operation, OperationKinds } from "../../model2";
+import { OperationFactory } from "../../model2/factories";
+
 import { AccountID, AssetCode } from "../../util/types";
 import { Query } from "./query";
 

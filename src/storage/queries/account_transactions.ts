@@ -1,6 +1,6 @@
 import dig from "object-dig";
-import { TransactionFactory } from "../../model2/factories/transaction_factory";
-import { ITransaction } from "../../model2/transaction";
+import { ITransaction } from "../../model2";
+import { TransactionFactory } from "../../model2/factories";
 import { Connection } from "../connection";
 import { Query } from "./query";
 

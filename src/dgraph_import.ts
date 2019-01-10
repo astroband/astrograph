@@ -46,21 +46,21 @@ setStellarNetwork().then((network: string) => {
 
           const operation = retry.operation({ retries: 5 });
 
-          operation.attempt((currentAttempt) => {
+          operation.attempt(currentAttempt => {
             logger.info(`ingesting ledger #${header.ledgerSeq}, attempt #${currentAttempt}`);
             ingest(header, transactions)
-            .then(work)
-            .catch((e) => {
-              if (e.message.includes("Please retry later")) {
-                logger.info("Server is unavailable, retrying...");
-                if (!operation.retry(e)) {
-                  // because e is present, it means we don't have retry attempts left
+              .then(work)
+              .catch(e => {
+                if (e.message.includes("Please retry later")) {
+                  logger.info("Server is unavailable, retrying...");
+                  if (!operation.retry(e)) {
+                    // because e is present, it means we don't have retry attempts left
+                    throw e;
+                  }
+                } else {
                   throw e;
                 }
-              } else {
-                throw e;
-              }
-            });
+              });
           });
         };
 
