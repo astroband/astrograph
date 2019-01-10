@@ -1,12 +1,12 @@
-import transactionFactory from "../../factories/transaction";
+import transactionWithXDRFactory from "../../factories/transaction_with_xdr";
 
 describe("constructor", () => {
   describe("memo parsing", () => {
     test("none", () => {
       const xdr =
         "AAAAAGL8HQvQkbK2HA3WVjRrKmjX00fG8sLI7m0ERwJW/AX3AAAAZAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAnj+71iuHPvMz3z5b4OhuBG6xCaey+w2TeGT1exLwKIsAAAACVAvkAAAAAAAAAAABVvwF9wAAAEBPmjDcP4OFniA+mYO5QeWnJrZ2OE9eqD9S2zqP4nYy7MEfj7yrp47fYZhkNjbZGlCGB1qIQAGs/BJmaYZlfsgP";
-      const tx = transactionFactory.build({ txbody: xdr });
-      expect(tx.memo).toBeNull();
+      const tx = transactionWithXDRFactory.build({ txbody: xdr });
+      expect(tx.memo).toBeUndefined();
     });
 
     const cases = [
@@ -33,7 +33,7 @@ describe("constructor", () => {
     ];
 
     test.each(cases)("%s", (memoType, xdr, memoValue) => {
-      const tx = transactionFactory.build({ txbody: xdr });
+      const tx = transactionWithXDRFactory.build({ txbody: xdr });
       expect(tx.memo!.type).toBe(memoType);
       expect(tx.memo!.value).toEqual(memoValue);
     });
@@ -44,7 +44,7 @@ describe("constructor", () => {
       [
         "time bounds are not set",
         "AAAAAGL8HQvQkbK2HA3WVjRrKmjX00fG8sLI7m0ERwJW/AX3AAAAZAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAnj+71iuHPvMz3z5b4OhuBG6xCaey+w2TeGT1exLwKIsAAAACVAvkAAAAAAAAAAABVvwF9wAAAEBPmjDcP4OFniA+mYO5QeWnJrZ2OE9eqD9S2zqP4nYy7MEfj7yrp47fYZhkNjbZGlCGB1qIQAGs/BJmaYZlfsgP",
-        null
+        undefined
       ],
       [
         "lower bound is set",
@@ -64,7 +64,7 @@ describe("constructor", () => {
     ];
 
     test.each(cases)("%s", (caseName, xdr, value) => {
-      const tx = transactionFactory.build({ txbody: xdr });
+      const tx = transactionWithXDRFactory.build({ txbody: xdr });
       expect(tx.timeBounds).toEqual(value);
     });
   });
@@ -73,7 +73,7 @@ describe("constructor", () => {
     test("set from tx body", () => {
       const xdr =
         "AAAAAIO+zCWkYwJVyrzlIvttbpvuU0K/mEIVPESvJKGpkfKZAAAAZAAACvYAAAACAAAAAQAAAABbtxo6AAAAAFu3HiIAAAAAAAAAAQAAAAAAAAAKAAAABHRlc3QAAAABAAAABHRlc3QAAAAAAAAAAA==";
-      const tx = transactionFactory.build({ txbody: xdr });
+      const tx = transactionWithXDRFactory.build({ txbody: xdr });
 
       expect(tx.sourceAccount).toBe("GCB35TBFURRQEVOKXTSSF63NN2N64U2CX6MEEFJ4ISXSJINJSHZJTVBN");
     });
