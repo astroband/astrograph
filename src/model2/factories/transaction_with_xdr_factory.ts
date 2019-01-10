@@ -3,7 +3,16 @@ import { Memo } from "stellar-sdk";
 import { publicKeyFromBuffer } from "../../util/xdr";
 import { TimeBounds } from "../transaction";
 import { ITransactionWithXDR, TransactionWithXDR } from "../transaction_with_xdr";
-import { ITransactionTableRow } from "./transaction_factory";
+
+export interface ITransactionTableRow {
+  txid: string;
+  ledgerseq: number;
+  txindex: number;
+  txbody: string;
+  txresult: string;
+  txmeta: string;
+  txfeemeta: string;
+}
 
 // NOTE: Might use some instantiation from static method here
 export class TransactionWithXDRFactory {
