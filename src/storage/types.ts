@@ -12,6 +12,9 @@ export interface ITransactionData {
   "memo.value": string | null;
   "memo.type": MemoType | null;
   fee_amount: string;
+  fee_charged: string;
+  success: boolean;
+  result_code: number;
   // result
   // meta
   // feeMeta

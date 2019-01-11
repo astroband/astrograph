@@ -1,5 +1,5 @@
 import { Asset } from "stellar-sdk";
-import { DgraphOperationsData, IAssetData } from "../../types";
+import { DgraphOperationsData, IAssetData } from "../../storage/types";
 import {
   IAccountMergeOperation,
   IAllowTrustOperation,
@@ -14,7 +14,7 @@ import {
   ISetOptionsOperation,
   Operation,
   OperationKinds
-} from "./types";
+} from "../operation";
 
 export class DataMapper {
   public static call(data: DgraphOperationsData) {
@@ -34,7 +34,8 @@ export class DataMapper {
   }
 
   public call(): Operation {
-    switch (this.data.kind) {
+    // I don't know, why I need casting here :(
+    switch (this.data.kind as OperationKinds) {
       case OperationKinds.Payment:
         return this.mapPayment();
       case OperationKinds.SetOption:

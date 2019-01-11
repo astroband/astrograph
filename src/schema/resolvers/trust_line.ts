@@ -1,4 +1,6 @@
+import _ from "lodash";
 import { Account, TrustLine } from "../../model";
+import { TrustLineFactory } from "../../model/factories/trust_line_factory";
 import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 import { withFilter } from "graphql-subscriptions";
@@ -7,7 +9,7 @@ import { db } from "../../database";
 import { pubsub, TRUST_LINE } from "../../pubsub";
 
 const accountResolver = createBatchResolver<TrustLine, Account | null>((source: ReadonlyArray<TrustLine>) =>
-  db.accounts.findAllByIDs(source.map(r => r.accountID))
+  db.accounts.findAllByIDs(_.map(source, "accountID"))
 );
 
 const trustLineSubscription = (event: string) => {
@@ -41,7 +43,7 @@ export default {
       if (account !== null) {
         const trustLines = await db.trustLines.findAllByAccountID(args.id);
 
-        trustLines.unshift(TrustLine.buildFakeNative(account));
+        trustLines.unshift(TrustLineFactory.nativeForAccount(account));
 
         return trustLines;
       }

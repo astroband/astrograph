@@ -1,19 +1,21 @@
-import stellar from "stellar-base";
+export interface IAccountFlags {
+  authRequired: boolean;
+  authRevokable: boolean;
+  authImmutable: boolean;
+}
 
-export class AccountFlags {
+export class AccountFlags implements IAccountFlags {
   public authRequired: boolean;
   public authRevokable: boolean;
   public authImmutable: boolean;
 
-  constructor(value: number) {
-    const fl = stellar.xdr.AccountFlags;
-
-    this.authRequired = (value & fl.authRequiredFlag().value) > 0;
-    this.authRevokable = (value & fl.authRevocableFlag().value) > 0;
-    this.authImmutable = (value & fl.authImmutableFlag().value) > 0;
+  constructor(data: IAccountFlags) {
+    this.authRequired = data.authRequired;
+    this.authRevokable = data.authRevokable;
+    this.authImmutable = data.authImmutable;
   }
 
-  public equals(other: AccountFlags): boolean {
+  public equals(other: IAccountFlags): boolean {
     return (
       this.authRequired === other.authRequired &&
       this.authRevokable === other.authRevokable &&

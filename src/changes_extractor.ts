@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { Transaction } from "./model";
+import { Transaction, TransactionWithXDR } from "./model";
 import { diffAccountsXDR } from "./util/xdr";
 
 export enum ChangeType {
@@ -30,11 +30,11 @@ export interface IChange {
 }
 
 export class ChangesExtractor {
-  public static call(tx: Transaction) {
+  public static call(tx: TransactionWithXDR) {
     return new ChangesExtractor(tx).call();
   }
 
-  constructor(private tx: Transaction) {}
+  constructor(private tx: TransactionWithXDR) {}
 
   public call(): IChange[][] {
     const rawChanges = this.getRawChanges();
@@ -105,7 +105,7 @@ export class ChangesExtractor {
   }
 
   private getRawChanges(): any[][] {
-    const txMetaXDR = this.tx.metaFromXDR();
+    const txMetaXDR = this.tx.metaXDR;
     const rawChanges = [];
 
     switch (txMetaXDR.switch()) {
@@ -122,7 +122,7 @@ export class ChangesExtractor {
         break;
     }
 
-    rawChanges.push(this.tx.feeMetaFromXDR().changes());
+    rawChanges.push(this.tx.feeMetaXDR.changes());
 
     return rawChanges;
   }

@@ -1,7 +1,10 @@
-import { DataEntrySubscriptionPayload, DataEntryValues, MutationType } from "../../../src/model";
 import stellar from "stellar-base";
 
+import { DataEntrySubscriptionPayload, MutationType } from "../../../src/model";
+import { DataEntryValuesFactory } from "../../../src/model/factories/data_entry_values_factory";
+
 jest.mock("../../../src/model/data_entry_values");
+jest.mock("../../../src/model/factories/data_entry_values_factory");
 
 describe("constructor", () => {
   const rawXDR = "AAAAAQAAAAIAAAADAAby+AAAAAAAAAAAQcBkeADpOWAUnKjkYJyCrSWixCSj+E8SBlEcDoW+dD0AAAAXSHbnnAAG8vIAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAby+AAAAAAAAAAAQcBkeADpOWAUnKjkYJyCrSWixCSj+E8SBlEcDoW+dD0AAAAXSHbnnAAG8vIAAAABAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAAAAwAAAAAABvL4AAAAAwAAAABBwGR4AOk5YBScqORgnIKtJaLEJKP4TxIGURwOhb50PQAAAANmb28AAAAAA2JhcgAAAAAAAAAAAAAAAAMABvL4AAAAAAAAAABBwGR4AOk5YBScqORgnIKtJaLEJKP4TxIGURwOhb50PQAAABdIduecAAby8gAAAAEAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAEABvL4AAAAAAAAAABBwGR4AOk5YBScqORgnIKtJaLEJKP4TxIGURwOhb50PQAAABdIduecAAby8gAAAAEAAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA==";
@@ -27,7 +30,7 @@ describe("constructor", () => {
   describe("mutation type is not 'Remove'", () => {
     it("build values from XDR", () => {
       subject = new DataEntrySubscriptionPayload(MutationType.Update, xdr);
-      expect(DataEntryValues.buildFromXDR).toHaveBeenCalledWith(xdr);
+      expect(DataEntryValuesFactory.fromXDR).toHaveBeenCalledWith(xdr);
     });
   });
 });

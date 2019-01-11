@@ -1,6 +1,7 @@
 import { AccountFlags } from "../../../src/model/account_flags";
+import { AccountFlagsFactory } from "../../../src/model/factories";
 
-describe("constructor", () => {
+describe("constructor & factory", () => {
   const cases = [
     ["000", 0, { authRequired: false, authRevokable: false, authImmutable: false }],
     ["001", 1, { authRequired: true, authRevokable: false, authImmutable: false }],
@@ -13,7 +14,7 @@ describe("constructor", () => {
   ];
 
   test.each(cases)("Flags binary value: %s", (caseName, value, result) => {
-    const subject = new AccountFlags(value);
+    const subject = AccountFlagsFactory.fromValue(value);
 
     expect(subject.authImmutable).toEqual(result.authImmutable);
     expect(subject.authRevokable).toEqual(result.authRevokable);
@@ -22,7 +23,7 @@ describe("constructor", () => {
 });
 
 describe("equals()", () => {
-  const flagsValue = 6;
+  const flagsValue = { authRequired: true, authRevokable: true, authImmutable: false };
   const subject = new AccountFlags(flagsValue);
   let other: AccountFlags;
 
@@ -35,7 +36,7 @@ describe("equals()", () => {
 
   describe("when flags are different", () => {
     it("returns false", () => {
-      other = new AccountFlags(flagsValue - 2);
+      other = new AccountFlags({ authRequired: true, authRevokable: false, authImmutable: false });
       expect(subject.equals(other)).toBe(false);
     });
   });

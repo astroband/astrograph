@@ -1,9 +1,8 @@
 // This module holds definitions of operations data types,
 // which we serve from GraphQL server. These are "processed" counterparts
 // of data that is stored in Dgraph
-import { Asset } from "stellar-sdk";
-import { IAssetInput } from "../../../model/asset_input";
-import { AccountID, AssetCode } from "../../../util/types";
+import { AccountID, AssetCode } from "../util/types";
+import { Asset } from "./asset";
 
 export enum OperationKinds {
   Payment = "payment",
@@ -106,57 +105,3 @@ export type Operation =
   | IManageDataOperation
   | IManageOfferOperation
   | IPathPaymentOperation;
-
-// What filters for different operations we provide
-export interface ISetOptionsOpsQueryParams {
-  masterWeight: number;
-  account: AccountID;
-}
-
-export interface IPaymentsQueryParams {
-  asset: IAssetInput | null;
-  destination: AccountID | null;
-  source: AccountID | null;
-}
-
-export interface IAccountMergeQueryParams {
-  destination: AccountID | null;
-}
-
-export interface IAllowTrustQueryParams {
-  authorize: boolean;
-  assetCode: AssetCode;
-  trustor: AccountID;
-}
-
-export interface IBumpSequenceQueryParams {
-  bumpTo: number;
-}
-
-export interface IChangeTrustQueryParams {
-  limit: string;
-  asset: IAssetInput;
-}
-
-export interface ICreateAccountQueryParams {
-  destination: AccountID;
-}
-
-export interface IManageDataQueryParams {
-  name: string;
-  value: string;
-}
-
-export interface IManageOfferQueryParams {
-  offerId: string;
-  assetSelling: IAssetInput;
-  assetBuying: IAssetInput;
-}
-
-export interface IPathPaymentsQueryParams {
-  sourceAccount: AccountID;
-  destinationAccount: AccountID;
-  destinationAsset: IAssetInput;
-  sourceAsset: IAssetInput;
-  pathContains: IAssetInput;
-}

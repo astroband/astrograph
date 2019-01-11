@@ -1,13 +1,15 @@
+import _ from "lodash";
 import { db } from "../../database";
 import { Account, Signer } from "../../model";
+import { SignerFactory } from "../../model/factories";
 import { createBatchResolver } from "./util";
 
 const accountResolver = createBatchResolver<Signer, Account>((source: any) =>
-  db.accounts.findAllByIDs(source.map((r: Signer) => r.accountID))
+  db.accounts.findAllByIDs(_.map(source, "accountID"))
 );
 
 const signerResolver = createBatchResolver<Signer, Account>((source: any) =>
-  db.accounts.findAllByIDs(source.map((r: Signer) => r.signer))
+  db.accounts.findAllByIDs(_.map(source, "signer"))
 );
 
 export default {
@@ -19,21 +21,14 @@ export default {
     async signers(root: any, args: any, ctx: any, info: any) {
       const account = await db.accounts.findByID(args.id);
 
-      if (account !== null) {
-        const signers = await db.signers.findAllByAccountID(args.id);
-
-        signers.unshift(
-          new Signer({
-            accountid: account.id,
-            publickey: account.id,
-            weight: account.thresholds.masterWeight
-          })
-        );
-
-        return signers;
+      if (!account) {
+        return [];
       }
 
-      return [];
+      const signers = await db.signers.findAllByAccountID(args.id);
+      signers.unshift(SignerFactory.self(account.id, account.thresholds.masterWeight));
+
+      return signers;
     }
   }
 };

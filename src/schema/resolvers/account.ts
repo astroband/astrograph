@@ -1,4 +1,6 @@
+import _ from "lodash";
 import { Account, DataEntry, Signer, TrustLine } from "../../model";
+import { SignerFactory, TrustLineFactory } from "../../model/factories";
 
 import { withFilter } from "graphql-subscriptions";
 import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
@@ -8,41 +10,33 @@ import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
 
-const fetchIDs = (r: any) => r.id;
-
 const signersResolver = createBatchResolver<Account, Signer[]>(async (source: any) => {
-  const accountIDs = source.map(fetchIDs);
+  const accountIDs = _.map(source, "id");
   const signers = await db.signers.findAllByAccountIDs(accountIDs);
 
   const map = joinToMap(accountIDs, signers);
 
   for (const [accountID, accountSigners] of map) {
     const account = source.find((acc: Account) => acc.id === accountID);
-    accountSigners.unshift(
-      new Signer({
-        accountid: account.id,
-        publickey: account.id,
-        weight: account.thresholds.masterWeight
-      })
-    );
+    accountSigners.unshift(SignerFactory.self(account.id, account.thresholds.masterWeight));
   }
 
   return signers;
 });
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
-  db.dataEntries.findAllByAccountIDs(source.map(fetchIDs))
+  db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
 );
 
 const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: any) => {
-  const accountIDs = source.map(fetchIDs);
+  const accountIDs = _.map(source, "id");
   const trustLines = await db.trustLines.findAllByAccountIDs(accountIDs);
 
   const map = joinToMap(accountIDs, trustLines);
 
   for (const [accountID, accountTrustLines] of map) {
     const account = source.find((acc: Account) => acc.id === accountID);
-    accountTrustLines.unshift(TrustLine.buildFakeNative(account));
+    accountTrustLines.unshift(TrustLineFactory.nativeForAccount(account));
   }
 
   return trustLines;

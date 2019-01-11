@@ -1,13 +1,23 @@
-export class DataEntry {
+export interface IDataEntryBase {
+  accountID: string;
+  name: string;
+  value: string;
+}
+
+export interface IDataEntry extends IDataEntryBase {
+  lastModified: number;
+}
+
+export class DataEntry implements IDataEntry {
   public accountID: string;
   public name: string;
   public value: string;
   public lastModified: number;
 
-  constructor(data: { accountid: string; dataname: string; datavalue: string; lastmodified: number }) {
-    this.accountID = data.accountid;
-    this.name = data.dataname;
-    this.value = Buffer.from(data.datavalue, "base64").toString();
-    this.lastModified = data.lastmodified;
+  constructor(data: IDataEntry) {
+    this.accountID = data.accountID;
+    this.name = data.name;
+    this.value = data.value;
+    this.lastModified = data.lastModified;
   }
 }

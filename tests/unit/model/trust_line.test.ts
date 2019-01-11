@@ -1,5 +1,6 @@
 import { Asset } from "stellar-sdk";
 import { TrustLine } from "../../../src/model";
+import { TrustLineFactory } from "../../../src/model/factories";
 import { toFloatAmountString } from "../../../src/util/stellar";
 import { MAX_INT64 } from "../../../src/util";
 import AccountFactory from "../../factories/account";
@@ -12,19 +13,21 @@ const data = {
   tlimit: "9223372036854775807",
   balance: "9600000000",
   flags: 1,
-  lastmodified: 6
+  lastmodified: 6,
+  buyingliabilities: "",
+  sellingliabilities: ""
 };
 
 let subject: TrustLine;
 
 describe("constructor", () => {
-  subject = new TrustLine(data);
+  subject = TrustLineFactory.fromDb(data);
 
-  it("sets account id", () => { expect(subject.accountID).toEqual(data.accountid) });
-  it("sets lastModified", () => { expect(subject.lastModified).toEqual(data.lastmodified) });
-  it("formats limit", () => { expect(subject.limit).toEqual("922337203685.4775807") });
-  it("formats balance", () => { expect(subject.balance).toEqual("960.0000000") });
-  it("sets authorized", () => { expect(subject.authorized).toBe(true); });
+  it("sets account id", () => expect(subject.accountID).toEqual(data.accountid));
+  it("sets lastModified", () => expect(subject.lastModified).toEqual(data.lastmodified));
+  it("formats limit", () => expect(subject.limit).toEqual("922337203685.4775807"));
+  it("formats balance", () => expect(subject.balance).toEqual("960.0000000"));
+  it("sets authorized", () => expect(subject.authorized).toBe(true));
   it("sets asset", () => {
     expect(subject.asset).toBeInstanceOf(Asset);
     expect(subject.asset.getCode()).toEqual(data.assetcode);
@@ -35,9 +38,9 @@ describe("constructor", () => {
 describe("static buildFakeNative(account)", () => {
   it("returns an object with the data of account's trustline on XLM", () => {
     const account = AccountFactory.build();
-    const data = TrustLine.buildFakeNative(account);
+    const fake = TrustLineFactory.nativeForAccount(account);
 
-    expect(data).toMatchObject({
+    expect(fake).toMatchObject({
       accountID: account.id,
       balance: toFloatAmountString(account.balance),
       limit: toFloatAmountString(MAX_INT64),
@@ -45,6 +48,6 @@ describe("static buildFakeNative(account)", () => {
       lastModified: account.lastModified
     });
 
-    expect(data.asset.isNative()).toBe(true);
+    expect(fake.asset.isNative()).toBe(true);
   });
 });

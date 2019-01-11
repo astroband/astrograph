@@ -5,7 +5,7 @@ import {
   MutationType,
   NativeTrustLineSubscriptionPayload,
   OfferSubscriptionPayload,
-  Transaction,
+  TransactionWithXDR,
   TrustLineSubscriptionPayload
 } from "../model";
 
@@ -18,7 +18,7 @@ export type SubscriptionPayload =
 
 // Collection of ledger changes loaded from transaction metas, contains data only from ledger.
 export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
-  constructor(transactions: Transaction[]) {
+  constructor(transactions: TransactionWithXDR[]) {
     super();
 
     for (const tx of transactions) {

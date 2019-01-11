@@ -1,13 +1,15 @@
 import _ from "lodash";
 import { IDatabase } from "pg-promise";
-import { Transaction } from "../model";
-import { unique } from "../util/array";
+import { TransactionWithXDR } from "../model";
+import { ITransactionTableRow, TransactionWithXDRFactory } from "../model/factories";
 
 const sql = {
   selectTx:
     "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid = $1",
   selectTxIn:
-    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid IN ($1:csv) ORDER BY t.ledgerseq, t.txindex"
+    "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid IN ($1:csv) ORDER BY t.ledgerseq, t.txindex",
+  selectTxNoFee: "SELECT * FROM txhistory WHERE ledgerseq = $1 ORDER BY txindex",
+  selectFee: "SELECT txindex, txchanges FROM txfeehistory WHERE ledgerseq = $1 AND txindex IN ($2:list)"
 };
 
 export default class TransactionsRepo {
@@ -18,33 +20,35 @@ export default class TransactionsRepo {
   }
 
   // Tries to find a transaction by id;
-  public findByID(id: string): Promise<Transaction | null> {
-    return this.db.oneOrNone(sql.selectTx, id, res => new Transaction(res));
+  public findByID(id: string): Promise<TransactionWithXDR | null> {
+    return this.db.oneOrNone(
+      sql.selectTx,
+      id,
+      (res: ITransactionTableRow) => (res ? TransactionWithXDRFactory.fromDb(res) : null)
+    );
   }
 
   // TODO: Must be DRYed
-  public async findAllByID(ids: string[]): Promise<Array<Transaction | null>> {
+  public async findAllByID(ids: string[]): Promise<Array<TransactionWithXDR | null>> {
     if (ids.length === 0) {
-      return new Array<Transaction | null>();
+      return new Array<TransactionWithXDR | null>();
     }
 
-    const res = await this.db.manyOrNone(sql.selectTxIn, [ids.filter(unique)]);
-    const txs = res.map(v => new Transaction(v));
+    const res = await this.db.manyOrNone(sql.selectTxIn, [_.uniq(ids)]);
+    const txs = res.map((v: ITransactionTableRow) => TransactionWithXDRFactory.fromDb(v));
 
-    return ids.map<Transaction | null>(id => txs.find(a => a.id === id) || null);
+    return ids.map<TransactionWithXDR | null>(id => txs.find(a => a.id === id) || null);
   }
 
   // Fetches all transactions by ledger seq;
-  public async findAllBySeq(seq: number): Promise<Transaction[]> {
-    const txSelect = "SELECT * FROM txhistory WHERE ledgerseq = $1 ORDER BY txindex";
-    const txs = await this.db.manyOrNone(txSelect, seq);
+  public async findAllBySeq(seq: number): Promise<TransactionWithXDR[]> {
+    const txs = await this.db.manyOrNone(sql.selectTxNoFee, seq);
 
     if (txs.length === 0) {
       return [];
     }
 
-    const feeMetaSelect = "SELECT txindex, txchanges FROM txfeehistory WHERE ledgerseq = $1 AND txindex IN ($2:list)";
-    const feeMetas = await this.db.many(feeMetaSelect, [seq, _.map(txs, "txindex")]);
+    const feeMetas = await this.db.many(sql.selectFee, [seq, _.map(txs, "txindex")]);
 
     return _
       .chain(txs)
@@ -53,10 +57,13 @@ export default class TransactionsRepo {
         if (!meta) {
           return;
         }
-        return {...tx, txfeemeta: meta.txchanges};
+        return {
+          ...tx,
+          txfeemeta: meta.txchanges
+        };
       })
       .filter()
-      .map(t => new Transaction(t))
+      .map(t => TransactionWithXDRFactory.fromDb(t))
       .value();
   }
 }

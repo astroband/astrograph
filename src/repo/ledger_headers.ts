@@ -1,5 +1,6 @@
 import { IDatabase } from "pg-promise";
 import { LedgerHeader } from "../model";
+import { LedgerHeaderFactory } from "../model/factories";
 import { unique } from "../util/array";
 
 const sql = {
@@ -18,7 +19,7 @@ export default class LedgerHeadersRepo {
 
   // Tries to find a ledger from id;
   public findBySeq(seq: number): Promise<LedgerHeader | null> {
-    return this.db.oneOrNone(sql.selectLedger, seq, res => (res === null ? null : new LedgerHeader(res)));
+    return this.db.oneOrNone(sql.selectLedger, seq, res => (res === null ? null : LedgerHeaderFactory.fromDb(res)));
   }
 
   public async findAllBySeq(seqs: number[]): Promise<Array<LedgerHeader | null>> {
@@ -27,7 +28,7 @@ export default class LedgerHeadersRepo {
     }
 
     const res = await this.db.manyOrNone(sql.selectLedgersIn, [seqs.filter(unique)]);
-    const ledgers = res.map(v => new LedgerHeader(v));
+    const ledgers = res.map(v => LedgerHeaderFactory.fromDb(v));
 
     return seqs.map<LedgerHeader | null>(seq => ledgers.find(a => a.ledgerSeq === seq) || null);
   }

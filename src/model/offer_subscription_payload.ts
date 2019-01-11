@@ -1,7 +1,10 @@
-import Asset from "../util/asset";
-import { publicKeyFromBuffer } from "../util/xdr";
+import { OfferValuesFactory } from "./factories/offer_values_factory";
+
+import { Asset } from "./asset";
 import { IMutationType, MutationType } from "./mutation_type";
 import { OfferValues } from "./offer_values";
+
+import { publicKeyFromBuffer } from "../util/xdr";
 
 export class OfferSubscriptionPayload implements IMutationType {
   public mutationType: MutationType;
@@ -19,7 +22,7 @@ export class OfferSubscriptionPayload implements IMutationType {
     if (mutationType !== MutationType.Remove) {
       this.selling = Asset.fromOperation(xdr.selling());
       this.buying = Asset.fromOperation(xdr.buying());
-      this.values = OfferValues.buildFromXDR(xdr);
+      this.values = OfferValuesFactory.fromXDR(xdr);
     }
   }
 }
