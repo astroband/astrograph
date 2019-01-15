@@ -1,5 +1,7 @@
 import parseArgv from "minimist";
 import fs from "fs";
+import zlib from "zlib";
+// import { db } from "./database";
 import { Cursor } from "./ingest/cursor";
 import { Cache } from "./storage/cache";
 import { Connection } from "./storage/connection";
@@ -34,7 +36,10 @@ c.migrate()
   .then(async () => {
     Cursor.build(startSeq || -1).then(async cursor => {
       let data = await cursor.nextLedger();
-      const file = fs.createWriteStream("./nquads.txt");
+      const file = fs.createWriteStream("./nquads.txt.gz");
+      const gzip = zlib.createGzip();
+
+      gzip.pipe(file);
 
       while (data) {
         const { header, transactions } = data;
@@ -46,18 +51,19 @@ c.migrate()
         let nquads: NQuads = [];
         
         nquads = nquads.concat(await Ingestor.ingestLedgerState(header, transactions));
-        
         nquads = nquads.concat(await Ingestor.ingestLedgerTransactions(header, transactions));
         
         const cache = new Cache(c, nquads);
         
         nquads = await cache.populate();
         
-        file.write(nquads.join("\n"));
-        file.write("\n");
+        gzip.write(nquads.join("\n"));
+        gzip.write("\n");
         
         data = await cursor.nextLedger();
       }
+
+      gzip.end();
     });
   })
   .catch(err => {
