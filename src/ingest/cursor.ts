@@ -15,11 +15,7 @@ export class Cursor {
     return new Cursor(n);
   }
 
-  private seq: number;
-
-  constructor(seq: number) {
-    this.seq = seq;
-  }
+  constructor(private seq: number) {}
 
   get current(): number {
     return this.seq;

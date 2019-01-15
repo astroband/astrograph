@@ -1,7 +1,7 @@
 import parseArgv from "minimist";
 import fs from "fs";
 import zlib from "zlib";
-// import { db } from "./database";
+import { db } from "./database";
 import { Cursor } from "./ingest/cursor";
 import { Cache } from "./storage/cache";
 import { Connection } from "./storage/connection";
@@ -34,19 +34,30 @@ logger.info(`Using ${network}`);
 
 c.migrate()
   .then(async () => {
+    if (endSeq == null) {
+      endSeq = await db.ledgerHeaders.findMaxSeq();
+    }
+
     Cursor.build(startSeq || -1).then(async cursor => {
+      startSeq = cursor.current;
+      console.log(startSeq);
+
       let data = await cursor.nextLedger();
       const file = fs.createWriteStream("./nquads.txt.gz");
       const gzip = zlib.createGzip();
 
       gzip.pipe(file);
 
+      console.time("Import");
+      
       while (data) {
         const { header, transactions } = data;
         
-        if (endSeq && header.ledgerSeq > endSeq) {
+        if (header.ledgerSeq > endSeq!) {
           return;
         }
+
+        logger.info(`Ingesting ledger ${header.ledgerSeq}...`);
         
         let nquads: NQuads = [];
         
@@ -59,9 +70,14 @@ c.migrate()
         
         gzip.write(nquads.join("\n"));
         gzip.write("\n");
+
+        logger.info(`Done! ${endSeq! - header.ledgerSeq} ledgers left (${(header.ledgerSeq - startSeq + 1) / (endSeq! - startSeq + 1) * 100}% complete)`);
+        console.timeLog("Import");
         
         data = await cursor.nextLedger();
       }
+
+      console.timeEnd("Import");
 
       gzip.end();
     });
