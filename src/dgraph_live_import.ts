@@ -27,43 +27,43 @@ try {
 
 const c = new Connection();
 
-setStellarNetwork().then((network: string) => {
-  logger.info(`Using ${network}`);
+const network = setStellarNetwork();
+logger.info(`Using ${network}`);
 
-  c.migrate()
-    .then(async () => {
-      Cursor.build(startSeq || -1).then(async cursor => {
-        let data = await cursor.nextLedger();
-        const file = fs.createWriteStream("./nquads.txt");
+c.migrate()
+  .then(async () => {
+    Cursor.build(startSeq || -1).then(async cursor => {
+      let data = await cursor.nextLedger();
+      const file = fs.createWriteStream("./nquads.txt");
 
-        while (data) {
-          const { header, transactions } = data;
-
-          if (endSeq && header.ledgerSeq > endSeq) {
-            return;
-          }
-
-          let nquads: NQuads = [];
-
-          nquads = nquads.concat(await Ingestor.ingestLedgerState(header, transactions));
-          nquads = nquads.concat(await Ingestor.ingestLedgerTransactions(header, transactions));
-
-          const cache = new Cache(c, nquads);
-
-          nquads = await cache.populate();
-
-          file.write(nquads.join("\n"));
-          file.write("\n");
-
-          data = await cursor.nextLedger();
+      while (data) {
+        const { header, transactions } = data;
+        
+        if (endSeq && header.ledgerSeq > endSeq) {
+          return;
         }
-      });
-    })
-    .catch(err => {
-      logger.error(err);
-      process.exit(-1);
+        
+        let nquads: NQuads = [];
+        
+        nquads = nquads.concat(await Ingestor.ingestLedgerState(header, transactions));
+        
+        nquads = nquads.concat(await Ingestor.ingestLedgerTransactions(header, transactions));
+        
+        const cache = new Cache(c, nquads);
+        
+        nquads = await cache.populate();
+        
+        file.write(nquads.join("\n"));
+        file.write("\n");
+        
+        data = await cursor.nextLedger();
+      }
     });
-});
+  })
+  .catch(err => {
+    logger.error(err);
+    process.exit(-1);
+  });
 
 function parseArgs(): [number | null, number | null] {
   const args = parseArgv(process.argv.slice(2));

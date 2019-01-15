@@ -25,3 +25,5 @@ export const DEBUG_LEDGER = Number.parseInt(process.env.DEBUG_LEDGER || "", 10);
 export const INGEST_INTERVAL = Number.parseInt(process.env.INGEST_INTERVAL || "", 10) || 2000;
 
 export const DGRAPH_URL = process.env.DGRAPH_URL;
+
+export const STELLAR_NETWORK = process.env.STELLAR_NETWORK || "pubnet";

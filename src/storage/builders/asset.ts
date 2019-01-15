@@ -1,6 +1,6 @@
-import stellar from "stellar-base";
 import { Asset } from "stellar-sdk";
 import { makeKey } from "../../util/crypto";
+import { NETWORK_MASTER_KEY } from "../../util/stellar";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder } from "./account";
 import { Builder } from "./builder";
@@ -22,7 +22,7 @@ export class AssetBuilder extends Builder {
   }
 
   public build(): NQuads {
-    const issuer = this.asset.getIssuer() || stellar.Keypair.master().publicKey();
+    const issuer = this.asset.getIssuer() || NETWORK_MASTER_KEY;
 
     this.pushKey();
 

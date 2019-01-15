@@ -1,20 +1,26 @@
 import Big from "big.js";
-import { Network } from "stellar-base";
-import { db } from "../database";
+import { Keypair, Network } from "stellar-base";
+import { STELLAR_NETWORK } from "./secrets";
+
+setNetwork();
 
 const StellarAmountPrecision = 7;
 
 export const NATIVE_ASSET_CODE = "XLM";
+export const NETWORK_MASTER_KEY = Keypair.master();
 
 export type MemoType = "hash" | "return" | "text" | "id";
 
-export async function setNetwork(): Promise<string> {
-  const promise = db.storeState.getStellarNetworkPassphrase().then((networkPassphrase: string) => {
-    Network.use(new Network(networkPassphrase));
-    return networkPassphrase;
-  });
+export function setNetwork() {
+  if (STELLAR_NETWORK === "pubnet") {
+    Network.usePublicNetwork();
+  } else if (STELLAR_NETWORK === "testnet") {
+    Network.useTestNetwork();
+  } else {
+    throw new Error(`Unknown STELLAR_NETWORK "${STELLAR_NETWORK}"`);
+  }
 
-  return promise;
+  return Network.current().networkPassphrase();
 }
 
 // converts amounts according to Stellar precision like this:

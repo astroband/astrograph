@@ -37,9 +37,8 @@ const server = new ApolloServer({
   }
 });
 
-setStellarNetwork().then((network: string) => {
-  logger.info(`Using ${network}`);
-});
+const network = setStellarNetwork();
+logger.info(`Using ${network}`);
 
 if (DGRAPH_URL) {
   logger.info(`[DGraph] Updating schema...`);
