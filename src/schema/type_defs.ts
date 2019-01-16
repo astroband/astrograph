@@ -223,7 +223,7 @@ export const typeDefs = gql`
     accounts(id: [AccountID!]!): [Account]
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
-    operations(account: AccountID, filters: OperationsFilter, first: Int!, offset: Int): [IOperation]
+    operations(account: AccountID, kind: [OperationKind], filters: OperationsFilter, first: Int!, offset: Int): [IOperation]
     assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]

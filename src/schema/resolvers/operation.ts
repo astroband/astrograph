@@ -34,10 +34,10 @@ export default {
   },
   Query: {
     operations(root: any, args: any, ctx: any, info: any) {
-      const { account, first, offset, filters } = args;
+      const { account, kind, first, offset, filters } = args;
       const conn = new Connection();
 
-      const query = new OperationsQuery(conn, account, filters, first, offset);
+      const query = new OperationsQuery(conn, account, kind, filters, first, offset);
 
       return query.call();
     }

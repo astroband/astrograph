@@ -79,16 +79,21 @@ type IOperationsQueryResult = Operation[];
 
 export class OperationsQuery extends Query<IOperationsQueryResult> {
   private offset: number;
+  private kinds: OperationKinds[];
+  private filters: IOperationsQueryParams;
 
   constructor(
     connection: Connection,
     private accountID: string,
-    private filters: IOperationsQueryParams,
+    kinds: OperationKinds[],
+    filters: IOperationsQueryParams,
     private first: number,
     offset?: number
   ) {
     super(connection);
     this.offset = offset || 0;
+    this.kinds = kinds || Object.keys(OperationKinds).map(k => OperationKinds[k]);
+    this.filters = filters || {};
   }
 
   public async call(): Promise<IOperationsQueryResult> {
@@ -102,10 +107,9 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
   protected async request(): Promise<any> {
     let query = "query operations($first: int, $offset: int) {";
 
-    const opKinds = Object.keys(this.filters);
-
-    opKinds.forEach(opKind => {
-      const filters = FiltersBuilder.build(opKind as OperationKinds, this.filters[opKind]);
+    this.kinds.forEach(opKind => {
+      console.log(this.filters, opKind);
+      const filters = FiltersBuilder.build(opKind, this.filters[opKind] || {});
 
       query += `
         ${opKind} as var(func: eq(kind, "${opKind}"), orderdesc: order) ${filters.root} @cascade {
@@ -116,14 +120,14 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
     });
 
     query += `
-        ops(func: uid(${opKinds.join()}), first: $first, offset: $offset, orderdesc: order) {
+        ops(func: uid(${this.kinds.join()}), first: $first, offset: $offset, orderdesc: order) {
           kind
           index
           ledger { close_time }
           transaction { id }
           account.source { id }
           ${_
-            .chain(opKinds)
+            .chain(this.kinds)
             .map(opKind => queryPredicates[opKind])
             .flatten()
             .uniq()

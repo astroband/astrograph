@@ -34,6 +34,7 @@ export const queryPredicates = {
   [OperationKinds.ChangeTrust]: [
     "limit",
     `asset {
+      native
       code
       issuer { id }
     }`
