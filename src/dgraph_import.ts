@@ -23,36 +23,35 @@ try {
 
 const c = new Connection();
 
-setStellarNetwork().then((network: string) => {
-  logger.info(`Using ${network}`);
+const network = setStellarNetwork();
+logger.info(`Using ${network}`);
 
-  c.migrate()
-    .then(async () => {
-      Cursor.build(startSeq || -1).then(async cursor => {
-        let data: ICursorResult | null = await cursor.nextLedger();
+c.migrate()
+  .then(async () => {
+    Cursor.build(startSeq || -1).then(async cursor => {
+      let data: ICursorResult | null = await cursor.nextLedger();
 
-        while (data) {
-          const { header, transactions } = data;
+      while (data) {
+        const { header, transactions } = data;
 
-          if (endSeq && header.ledgerSeq > endSeq) {
-            break;
-          }
-
-          logger.info(`ingesting ledger #${header.ledgerSeq}`);
-          await c.importLedgerTransactions(header, transactions);
-          await c.importLedgerState(header, transactions);
-
-          data = await cursor.nextLedger();
+        if (endSeq && header.ledgerSeq > endSeq) {
+          break;
         }
 
-        c.close();
-      });
-    })
-    .catch(err => {
-      logger.error(err);
-      process.exit(-1);
+        logger.info(`ingesting ledger #${header.ledgerSeq}`);
+        await c.importLedgerTransactions(header, transactions);
+        await c.importLedgerState(header, transactions);
+
+        data = await cursor.nextLedger();
+      }
+
+      c.close();
     });
-});
+  })
+  .catch(err => {
+    logger.error(err);
+    process.exit(-1);
+  });
 
 function parseArgs(): [number | null, number | null] {
   const args = parseArgv(process.argv.slice(2));
