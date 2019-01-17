@@ -4,7 +4,7 @@
     "target": "es6",
     "module": "commonjs",
     "outDir": "dist",
-    "lib": ["es2017", "esnext"],
+    "lib": ["es2017", "esnext", "dom"],
     "sourceMap": true,
     "declaration": true,
     "suppressImplicitAnyIndexErrors": true,
