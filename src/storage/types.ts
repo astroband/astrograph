@@ -2,7 +2,7 @@
 // which are returned from Dgraph storage
 import { MemoType } from "../util/stellar";
 import { AccountID, AssetCode } from "../util/types";
-import { OperationKinds } from "./queries/operations/types";
+import { OperationKinds } from "../model/operation";
 
 export interface ITransactionData {
   id: string;
