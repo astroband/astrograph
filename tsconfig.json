@@ -43,7 +43,6 @@
   "include": [
     "src/**/*.ts",
     "tests/**/*.ts",
-    "examples/**/*.ts",
     "types/**/*.d.ts",
     "dgraph/import.ts"
   ],
