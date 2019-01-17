@@ -111,7 +111,7 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
       const filters = FiltersBuilder.build(opKind, this.filters[opKind] || {});
 
       query += `
-        ${opKind} as var(func: eq(kind, "${opKind}"), orderdesc: order) ${filters.root} @cascade {
+        ${opKind} as var(func: eq(kind, "${opKind}")) ${filters.root} @cascade {
           ${filters.nested}
           ${this.accountID ? `account.source @filter(eq(id, ${this.accountID}))` : ""}
         }
