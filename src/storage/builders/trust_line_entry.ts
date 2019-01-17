@@ -3,9 +3,7 @@ import { ITrustLine } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { toFloatAmountString } from "../../util/stellar";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { AccountBuilder } from "./account";
-import { AssetBuilder } from "./asset";
-import { Builder } from "./builder";
+import { AccountBuilder, AssetBuilder, Builder } from "./";
 
 export class TrustLineEntryBuilder extends Builder {
   public static key(trustLine: ITrustLine, ledgerSeq: number, balance?: string) {

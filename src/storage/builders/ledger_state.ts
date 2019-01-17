@@ -2,9 +2,7 @@ import { IChange } from "../../changes_extractor";
 import { ITransaction, ITrustLineBase } from "../../model";
 import { TrustLineValuesFactory } from "../../model/factories/trust_line_values_factory";
 import { NQuad, NQuads } from "../nquads";
-import { Builder } from "./builder";
-import { TransactionBuilder } from "./transaction";
-import { TrustLineEntryBuilder } from "./trust_line_entry";
+import { Builder, TransactionBuilder, TrustLineEntryBuilder } from "./";
 
 export class LedgerStateBuilder {
   private nquads: NQuads = [];

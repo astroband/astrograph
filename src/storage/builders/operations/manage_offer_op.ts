@@ -1,8 +1,7 @@
 import BigNumber from "bignumber.js";
 import { Asset } from "stellar-sdk";
 import { IBlank, NQuads } from "../../nquads";
-import { AssetBuilder } from "../asset";
-import { Builder } from "../builder";
+import { AssetBuilder, Builder } from "../";
 
 export class ManageOfferOpBuilder extends Builder {
   constructor(public readonly current: IBlank, private xdr: any) {

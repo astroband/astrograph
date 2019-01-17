@@ -3,9 +3,7 @@ import { Asset } from "stellar-sdk";
 import { publicKeyFromBuffer } from "../../../util/xdr/account";
 import { NQuads } from "../../nquads";
 
-import { AccountBuilder } from "../account";
-import { AssetBuilder } from "../asset";
-import { SpecificOperationBuilder } from "../specific_operation";
+import { AccountBuilder, AssetBuilder, SpecificOperationBuilder } from "../";
 
 export class PaymentOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {

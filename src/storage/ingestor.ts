@@ -1,10 +1,7 @@
 import logger from "../util/logger";
 import { ChangesExtractor } from "../changes_extractor";
 import { LedgerHeader, TransactionWithXDR } from "../model";
-import { LedgerBuilder } from "./builders/ledger";
-import { LedgerStateBuilder } from "./builders/ledger_state";
-import { OperationBuilder } from "./builders/operation";
-import { TransactionBuilder } from "./builders/transaction";
+import { LedgerBuilder, LedgerStateBuilder, OperationBuilder, TransactionBuilder } from "./builders";
 import { NQuads } from "./nquads";
 
 export class Ingestor {

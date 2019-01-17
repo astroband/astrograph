@@ -1,8 +1,5 @@
 import { IBlank, NQuads } from "../../nquads";
-import { AccountBuilder } from "../account";
-import { AssetBuilder } from "../asset";
-import { PathPaymentResultBuilder } from "../path_payment_result";
-import { SpecificOperationBuilder } from "../specific_operation";
+import { AccountBuilder, AssetBuilder, PathPaymentResultBuilder, SpecificOperationBuilder } from "../";
 
 export class PathPaymentOpBuilder extends SpecificOperationBuilder {
   private baseKey: any[];

@@ -54,7 +54,7 @@ export class PathPaymentResultBuilder extends Builder {
   }
 
   private pushOffers() {
-    this.xdr().success.offers().forEach((offer: any, index: number) => {
+    this.xdr.success().offers().forEach((offer: any, index: number) => {
       const offerNQuad = NQuad.blank(`${this.current.value}_result_offer_${index}`);
 
       const sellerBuilder = AccountBuilder.fromXDR(offer.sellerId());

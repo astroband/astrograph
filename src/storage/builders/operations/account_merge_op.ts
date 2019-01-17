@@ -1,7 +1,6 @@
 import { publicKeyFromBuffer } from "../../../util/xdr/account";
 import { NQuad, NQuads } from "../../nquads";
-import { AccountBuilder } from "../account";
-import { SpecificOperationBuilder } from "../specific_operation";
+import { AccountBuilder, SpecificOperationBuilder } from "../";
 
 export class AccountMergeOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {

@@ -1,8 +1,7 @@
 import { ITransaction } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { AccountBuilder } from "./account";
-import { Builder } from "./builder";
+import { AccountBuilder, Builder } from "./";
 
 export class TransactionBuilder extends Builder {
   public static key(ledgerSeq: number, index: number) {

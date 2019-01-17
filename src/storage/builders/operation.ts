@@ -1,9 +1,7 @@
 import { TransactionWithXDR } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { AccountBuilder } from "./account";
-import { Builder } from "./builder";
-import { LedgerBuilder } from "./ledger";
+import { AccountBuilder, Builder, LedgerBuilder, TransactionBuilder } from "./";
 import {
   AccountMergeOpBuilder,
   AllowTrustOpBuilder,
@@ -16,7 +14,6 @@ import {
   PaymentOpBuilder,
   SetOptionsOpBuilder
 } from "./operations";
-import { TransactionBuilder } from "./transaction";
 
 import stellar from "stellar-base";
 

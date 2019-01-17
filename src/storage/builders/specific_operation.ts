@@ -1,7 +1,7 @@
 import stellar from "stellar-base";
 
 import { IBlank, NQuads } from "../nquads";
-import { Builder } from "./builder";
+import { Builder } from "./";
 
 export abstract class SpecificOperationBuilder extends Builder {
   protected resultBodyXDR: any;

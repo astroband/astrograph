@@ -1,5 +1,5 @@
 import { NQuads } from "../../nquads";
-import { SpecificOperationBuilder } from "../specific_operation";
+import { SpecificOperationBuilder } from "../";
 
 export class ManageDataOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {

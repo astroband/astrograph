@@ -1,7 +1,7 @@
 import { makeKey } from "../../util/crypto";
 import { publicKeyFromBuffer } from "../../util/xdr/account";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { Builder } from "./builder";
+import { Builder } from "./";
 
 export class AccountBuilder extends Builder {
   public static fromXDR(xdr: any) {
