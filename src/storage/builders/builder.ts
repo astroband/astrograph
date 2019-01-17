@@ -1,5 +1,5 @@
 import { NQuad, NQuads, Subj } from "../nquads";
-import { LedgerBuilder } from "./ledger";
+import { LedgerBuilder } from "./index";
 
 export abstract class Builder {
   public abstract readonly current: Subj;

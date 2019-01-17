@@ -108,7 +108,6 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
     let query = "query operations($first: int, $offset: int) {";
 
     this.kinds.forEach(opKind => {
-      console.log(this.filters, opKind);
       const filters = FiltersBuilder.build(opKind, this.filters[opKind] || {});
 
       query += `

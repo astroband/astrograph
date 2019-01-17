@@ -1,7 +1,7 @@
 import { LedgerHeader } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { Builder } from "./builder";
+import { Builder } from "./index";
 
 export class LedgerBuilder extends Builder {
   public static key(seq: number) {

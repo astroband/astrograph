@@ -1,8 +1,7 @@
+import stellar from "stellar-base";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { AccountBuilder } from "./account";
-import { AssetBuilder } from "./asset";
-import { Builder } from "./builder";
+import { AccountBuilder, AssetBuilder, Builder } from "./";
 
 export class PathPaymentResultBuilder extends Builder {
   public static key(args: any[]): string {
@@ -14,21 +13,22 @@ export class PathPaymentResultBuilder extends Builder {
   }
 
   public current: IBlank;
-  private success: any;
 
   constructor(baseKey: any[], private xdr: any) {
     super();
     this.current = PathPaymentResultBuilder.keyNQuad(baseKey);
-    this.success = xdr.success();
   }
 
   public build(): NQuads {
     const code = this.xdr.switch().value;
+    const resultCodes = stellar.xdr.PathPaymentResultCode;
     this.pushValue("path_payment_result_code", code);
 
-    if (this.success === undefined) {
-      // FIXME handle failure
-      return [];
+    if (this.xdr.switch() !== resultCodes.pathPaymentSuccess()) {
+      if (this.xdr.switch() === resultCodes.pathPaymentNoIssuer()) {
+        this.pushBuilder(AssetBuilder.fromXDR(this.xdr.noIssuer()), "no_issuer");
+      }
+      return this.nquads;
     }
 
     this.pushLast();
@@ -39,7 +39,7 @@ export class PathPaymentResultBuilder extends Builder {
 
   private pushLast() {
     const lastNQuad = NQuad.blank(`${this.current.value}_last`);
-    const last = this.success.last();
+    const last = this.xdr.success().last();
 
     this.nquads.push(new NQuad(this.current, "last", lastNQuad));
 
@@ -54,7 +54,7 @@ export class PathPaymentResultBuilder extends Builder {
   }
 
   private pushOffers() {
-    this.success.offers().forEach((offer: any, index: number) => {
+    this.xdr().success.offers().forEach((offer: any, index: number) => {
       const offerNQuad = NQuad.blank(`${this.current.value}_result_offer_${index}`);
 
       const sellerBuilder = AccountBuilder.fromXDR(offer.sellerId());
