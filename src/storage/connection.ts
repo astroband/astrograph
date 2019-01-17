@@ -5,11 +5,11 @@ import logger from "../util/logger";
 import { DGRAPH_URL } from "../util/secrets";
 import { Cache } from "./cache";
 import { Ingestor } from "./ingestor";
-import { NQuads } from "./nquads"; 
+import { NQuads } from "./nquads";
 
 const SCHEMA = `
-  type: string @index(exact) .
-  key: string @index(exact) .
+  type: string @index(hash) .
+  key: string @index(hash) .
   seq: int @index(int) .
   id: string @index(exact) .
   index: int @index(int) .
@@ -17,7 +17,7 @@ const SCHEMA = `
   code: string @index (exact) .
   native: bool @index (bool) .
   deleted: bool @index (bool) .
-  kind: string @index(exact) .
+  kind: string @index(hash) .
   amount: int @index (int) .
   price: float @index (float) .
   starting_balance: int @index (int) .
