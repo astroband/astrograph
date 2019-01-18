@@ -6,7 +6,7 @@ import { NQuad, NQuads } from "./nquads";
 
 export class Ingestor {
   public static async ingestLedger(header: LedgerHeader, transactions: TransactionWithXDR[]) {
-    let nquads: NQuads = [];
+    let nquads: NQuads = new LedgerBuilder(header).build();
     let stateBuilder: LedgerStateBuilder;
 
     for (const tx of transactions) {
