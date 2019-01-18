@@ -54,27 +54,30 @@ export class PathPaymentResultBuilder extends Builder {
   }
 
   private pushOffers() {
-    this.xdr.success().offers().forEach((offer: any, index: number) => {
-      const offerNQuad = NQuad.blank(`${this.current.value}_result_offer_${index}`);
+    this.xdr
+      .success()
+      .offers()
+      .forEach((offer: any, index: number) => {
+        const offerNQuad = NQuad.blank(`${this.current.value}_result_offer_${index}`);
 
-      const sellerBuilder = AccountBuilder.fromXDR(offer.sellerId());
-      this.pushBuilder(sellerBuilder);
-      this.nquads.push(new NQuad(offerNQuad, "seller", sellerBuilder.current));
+        const sellerBuilder = AccountBuilder.fromXDR(offer.sellerId());
+        this.pushBuilder(sellerBuilder);
+        this.nquads.push(new NQuad(offerNQuad, "seller", sellerBuilder.current));
 
-      const assetSoldBuilder = AssetBuilder.fromXDR(offer.assetSold());
-      const assetBoughtBuilder = AssetBuilder.fromXDR(offer.assetBought());
+        const assetSoldBuilder = AssetBuilder.fromXDR(offer.assetSold());
+        const assetBoughtBuilder = AssetBuilder.fromXDR(offer.assetBought());
 
-      this.pushBuilder(assetSoldBuilder);
-      this.pushBuilder(assetBoughtBuilder);
+        this.pushBuilder(assetSoldBuilder);
+        this.pushBuilder(assetBoughtBuilder);
 
-      this.nquads.push(new NQuad(offerNQuad, "asset.sold", assetSoldBuilder.current));
-      this.nquads.push(new NQuad(offerNQuad, "asset.bought", assetBoughtBuilder.current));
+        this.nquads.push(new NQuad(offerNQuad, "asset.sold", assetSoldBuilder.current));
+        this.nquads.push(new NQuad(offerNQuad, "asset.bought", assetBoughtBuilder.current));
 
-      this.nquads.push(new NQuad(offerNQuad, "offer_id", NQuad.value(offer.offerId().toString())));
-      this.nquads.push(new NQuad(offerNQuad, "amount_sold", NQuad.value(offer.amountSold().toString())));
-      this.nquads.push(new NQuad(offerNQuad, "amount_bought", NQuad.value(offer.amountBought().toString())));
+        this.nquads.push(new NQuad(offerNQuad, "offer_id", NQuad.value(offer.offerId().toString())));
+        this.nquads.push(new NQuad(offerNQuad, "amount_sold", NQuad.value(offer.amountSold().toString())));
+        this.nquads.push(new NQuad(offerNQuad, "amount_bought", NQuad.value(offer.amountBought().toString())));
 
-      this.nquads.push(new NQuad(this.current, "offers", offerNQuad));
-    });
+        this.nquads.push(new NQuad(this.current, "offers", offerNQuad));
+      });
   }
 }

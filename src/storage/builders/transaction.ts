@@ -28,7 +28,7 @@ export class TransactionBuilder extends Builder {
 
   public build(): NQuads {
     const v = {
-      transaction: "",
+      "type.transaction": "",
       type: "transaction",
       key: this.current.value,
       id: this.tx.id,

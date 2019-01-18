@@ -103,9 +103,9 @@ export class OperationBuilder extends Builder {
 
     const values = {
       type: "operation",
-      operation: "",
+      "type.operation": "",
       index: this.n,
-      [kind]: "",
+      ["kind." + kind]: "",
       kind,
       order: `${this.seq}-${this.index}-${this.n}`
     };
