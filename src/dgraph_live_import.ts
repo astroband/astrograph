@@ -1,16 +1,16 @@
-import parseArgv from "minimist";
 import fs from "fs";
+import parseArgv from "minimist";
 import zlib from "zlib";
 import { db } from "./database";
 import { Cursor } from "./ingest/cursor";
 import { Cache } from "./storage/cache";
 import { Connection } from "./storage/connection";
+import { Ingestor } from "./storage/ingestor";
+import { NQuads } from "./storage/nquads";
 import logger from "./util/logger";
 import "./util/memo";
 import { DGRAPH_URL } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
-import { Ingestor } from "./storage/ingestor";
-import { NQuads } from "./storage/nquads";
 
 if (!DGRAPH_URL) {
   logger.error("Please, provide DGRAPH_URL env variable");
@@ -40,7 +40,6 @@ c.migrate()
 
     Cursor.build(startSeq || -1).then(async cursor => {
       startSeq = cursor.current;
-      console.log(startSeq);
 
       let data = await cursor.nextLedger();
       const file = fs.createWriteStream("./nquads.txt.gz");
@@ -49,31 +48,30 @@ c.migrate()
       gzip.pipe(file);
 
       console.time("Import");
-      
+
       while (data) {
         const { header, transactions } = data;
-        
+
         if (header.ledgerSeq > endSeq!) {
           return;
         }
 
         logger.info(`Ingesting ledger ${header.ledgerSeq}...`);
-        
-        let nquads: NQuads = [];
-        
-        nquads = nquads.concat(await Ingestor.ingestLedgerState(header, transactions));
-        nquads = nquads.concat(await Ingestor.ingestLedgerTransactions(header, transactions));
-        
+
+        let nquads: NQuads = await Ingestor.ingestLedger(header, transactions);
+
         const cache = new Cache(c, nquads);
-        
+
         nquads = await cache.populate();
-        
+
         gzip.write(nquads.join("\n"));
         gzip.write("\n");
 
-        logger.info(`Done! ${endSeq! - header.ledgerSeq} ledgers left (${(header.ledgerSeq - startSeq + 1) / (endSeq! - startSeq + 1) * 100}% complete)`);
+        logger.info(
+          `Done! ${endSeq! - header.ledgerSeq} ledgers left (${(header.ledgerSeq - startSeq + 1) / (endSeq! - startSeq + 1) * 100}% complete)`
+        );
         console.timeLog("Import");
-        
+
         data = await cursor.nextLedger();
       }
 

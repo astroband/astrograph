@@ -39,8 +39,7 @@ c.migrate()
         }
 
         logger.info(`ingesting ledger #${header.ledgerSeq}`);
-        await c.importLedgerTransactions(header, transactions);
-        await c.importLedgerState(header, transactions);
+        await c.importLedger(header, transactions);
 
         data = await cursor.nextLedger();
       }

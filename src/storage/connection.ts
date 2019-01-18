@@ -101,27 +101,13 @@ export class Connection {
     }
   }
 
-  public async importLedgerState(header: LedgerHeader, transactions: TransactionWithXDR[]) {
-    let nquads: NQuads = await Ingestor.ingestLedgerState(header, transactions);
+  public async importLedger(header: LedgerHeader, transactions: TransactionWithXDR[]) {
+    let nquads: NQuads = await Ingestor.ingestLedger(header, transactions);
 
-    if (nquads.length === 0) {
-      return;
-    }
-
-    const c = new Cache(this, nquads);
-    nquads = await c.populate();
+    const cache = new Cache(this, nquads);
+    nquads = await cache.populate();
 
     const result = await this.push(nquads.join("\n"));
-    c.put(result);
-  }
-
-  public async importLedgerTransactions(header: LedgerHeader, transactions: TransactionWithXDR[]) {
-    let nquads = await Ingestor.ingestLedgerTransactions(header, transactions);
-
-    const c = new Cache(this, nquads);
-    nquads = await c.populate();
-
-    const result = await this.push(nquads.join("\n"));
-    c.put(result);
+    cache.put(result);
   }
 }
