@@ -2,8 +2,8 @@ import { Asset } from "stellar-sdk";
 import { makeKey } from "../../util/crypto";
 import { NETWORK_MASTER_KEY } from "../../util/stellar";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { AccountBuilder } from "./account";
 import { Builder } from "./";
+import { AccountBuilder } from "./account";
 
 export class AssetBuilder extends Builder {
   public static fromXDR(xdr: any) {
