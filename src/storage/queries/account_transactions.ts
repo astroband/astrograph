@@ -28,7 +28,7 @@ export class AccountTransactionsQuery extends Query<IAccountTransactionsQueryRes
     return this.connection.query(
       `
         query accountTransactions($id: string, $first: int, $offset: int) {
-          txs(func: eq(type, "account")) @filter(eq(id, $id)) {
+          txs(func: has(account)) @filter(eq(id, $id)) {
             transactions(
               first: $first,
               offset: $offset,

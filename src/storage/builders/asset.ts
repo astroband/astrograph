@@ -26,6 +26,7 @@ export class AssetBuilder extends Builder {
 
     this.pushKey();
 
+    this.pushValue("type.asset", "");
     this.pushValue("type", "asset");
     this.pushValue("native", this.asset.isNative().toString());
     this.pushValue("code", this.asset.getCode());

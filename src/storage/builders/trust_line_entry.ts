@@ -39,6 +39,7 @@ export class TrustLineEntryBuilder extends Builder {
     this.pushBuilder(new AccountBuilder(this.trustLine.accountID), "account");
     this.pushBuilder(new AssetBuilder(this.trustLine.asset), "asset");
     this.pushValues({
+      "type.trust_line_entry": "",
       type: "trust_line_entry",
       balance: this.trustLine.balance,
       // we use ledger seq to order changes.
