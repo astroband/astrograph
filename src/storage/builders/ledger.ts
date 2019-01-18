@@ -25,6 +25,7 @@ export class LedgerBuilder extends Builder {
 
   public build(): NQuads {
     const values = {
+      ledger: "",
       type: "ledger",
       seq: this.seq,
       order: this.seq,

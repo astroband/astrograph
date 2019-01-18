@@ -99,10 +99,14 @@ export class OperationBuilder extends Builder {
     const tx = TransactionBuilder.keyNQuad(this.tx.ledgerSeq, this.tx.index);
     const ledger = LedgerBuilder.keyNQuad(this.tx.ledgerSeq);
 
+    const kind = this.xdr.body().switch().name;
+
     const values = {
       type: "operation",
+      operation: "",
       index: this.n,
-      kind: this.xdr.body().switch().name,
+      [kind]: "",
+      kind,
       order: `${this.seq}-${this.index}-${this.n}`
     };
 
