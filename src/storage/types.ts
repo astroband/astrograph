@@ -1,8 +1,9 @@
 // This module holds definitions of data types for "raw" objects,
 // which are returned from Dgraph storage
-import { MemoType } from "../util/stellar";
-import { AccountID, AssetCode } from "../util/types";
+import { AccountID } from "../model/account_id";
+import { AssetCode } from "../model/asset_code";
 import { OperationKinds } from "../model/operation";
+import { MemoType } from "../util/stellar";
 
 export interface ITransactionData {
   id: string;

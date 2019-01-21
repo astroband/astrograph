@@ -1,6 +1,6 @@
 import _ from "lodash";
-import { Connection } from "../../storage/connection";
 import { OperationKinds } from "../../model/operation";
+import { Connection } from "../../storage/connection";
 import { OperationsQuery } from "../../storage/queries/operations";
 
 export default {

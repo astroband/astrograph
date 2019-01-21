@@ -1,8 +1,9 @@
 // This module holds definitions of operations data types,
 // which we serve from GraphQL server. These are "processed" counterparts
 // of data that is stored in Dgraph
-import { AccountID, AssetCode } from "../util/types";
+import { AccountID } from "./account_id";
 import { Asset } from "./asset";
+import { AssetCode } from "./asset_code";
 
 export enum OperationKinds {
   Payment = "payment",

@@ -6,7 +6,8 @@ import { queryPredicates } from "./operations/predicates";
 import { IAssetInput, Operation, OperationKinds } from "../../model";
 import { OperationFactory } from "../../model/factories";
 
-import { AccountID, AssetCode } from "../../util/types";
+import { AccountID } from "../../model/account_id";
+import { AssetCode } from "../../model/asset_code";
 import { Query } from "./query";
 
 // What filters for different operations we provide
