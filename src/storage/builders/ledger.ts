@@ -28,7 +28,7 @@ export class LedgerBuilder extends Builder {
       "type.ledger": "",
       type: "ledger",
       seq: this.seq,
-      order: this.seq,
+      order: this.order(this.seq),
       version: this.header.ledgerVersion,
       base_fee: this.header.baseFee,
       base_reserve: this.header.baseReserve,

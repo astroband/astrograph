@@ -13,7 +13,7 @@ const SCHEMA = `
   seq: int @index(int) .
   id: string @index(exact) .
   index: int @index(int) .
-  order: string @index(exact) .
+  order: int @index(int) .
   code: string @index (exact) .
   native: bool @index (bool) .
   deleted: bool @index (bool) .
