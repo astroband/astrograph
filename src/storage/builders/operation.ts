@@ -130,6 +130,10 @@ export class OperationBuilder extends Builder {
   }
 
   private pushResult() {
+    if (!this.resultXDR) {
+      return;
+    }
+
     this.pushValue("result_code", this.resultXDR.switch().value);
     this.pushValue("success", this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner());
   }
