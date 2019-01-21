@@ -1,7 +1,7 @@
 import _ from "lodash";
+import { AccountBuilder, SpecificOperationBuilder } from "../";
 import { publicKeyFromBuffer, signerKeyFromXDR } from "../../../util/xdr";
 import { NQuad, NQuads } from "../../nquads";
-import { AccountBuilder, SpecificOperationBuilder } from "../";
 
 export class SetOptionsOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {

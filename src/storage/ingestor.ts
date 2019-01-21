@@ -1,6 +1,6 @@
-import logger from "../util/logger";
 import { ChangesExtractor } from "../changes_extractor";
 import { LedgerHeader, TransactionWithXDR } from "../model";
+import logger from "../util/logger";
 import { LedgerBuilder, LedgerStateBuilder, OperationBuilder, TransactionBuilder } from "./builders";
 import { NQuad, NQuads } from "./nquads";
 
@@ -21,10 +21,10 @@ export class Ingestor {
       for (let index = 0; index < tx.operationsXDR.length; index++) {
         try {
           nquads = nquads.concat(new OperationBuilder(tx, index).build());
-        } catch(err) {
+        } catch (err) {
           logger.log(
             "error",
-            "Failed to ingest operation with XDR \"%s\" on transaction %s with result %s",
+            'Failed to ingest operation with XDR "%s" on transaction %s with result %s',
             tx.operationsXDR[index].toXDR().toString("base64"),
             tx.id,
             tx.result

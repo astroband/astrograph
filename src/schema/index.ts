@@ -1,11 +1,10 @@
 import { makeExecutableSchema, mergeSchemas } from "apollo-server";
 
-import { typeDefs as operationsTypeDefs } from "./operations";
 import resolvers from "./resolvers";
-import { typeDefs as generalTypeDefs } from "./type_defs";
+import { typeDefs } from "./type_defs";
 
 const schema = makeExecutableSchema({
-  typeDefs: [generalTypeDefs, operationsTypeDefs],
+  typeDefs: [typeDefs],
   resolverValidationOptions: {
     requireResolversForResolveType: false
   }
