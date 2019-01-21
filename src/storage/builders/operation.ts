@@ -107,7 +107,7 @@ export class OperationBuilder extends Builder {
       index: this.n,
       ["kind." + kind]: "",
       kind,
-      order: `${this.seq}-${this.index}-${this.n}`
+      order: this.order(this.seq, this.index, this.n)
     };
 
     this.pushValues(values);
