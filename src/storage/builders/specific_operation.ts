@@ -10,7 +10,7 @@ export abstract class SpecificOperationBuilder extends Builder {
   constructor(public readonly current: IBlank, protected xdr: any, protected resultXDR: any) {
     super();
 
-    if (this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner()) {
+    if (this.resultXDR && this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner()) {
       this.trXDR = this.resultXDR.tr();
     }
   }
