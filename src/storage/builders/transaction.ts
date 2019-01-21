@@ -34,7 +34,7 @@ export class TransactionBuilder extends Builder {
       id: this.tx.id,
       index: this.tx.index,
       seq: this.seq,
-      order: `${this.seq}-${this.tx.index}`,
+      order: this.order(this.seq, this.tx.index),
       fee_amount: this.tx.feeAmount,
       fee_charged: this.tx.feeCharged,
       success: this.tx.success,

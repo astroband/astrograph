@@ -42,7 +42,7 @@ export class OperationBuilder extends Builder {
     }
 
     this.xdr = tx.operationsXDR[n];
-    this.resultXDR = tx.operationResultsXDR[n];
+    this.resultXDR = tx.operationResultsXDR ? tx.operationResultsXDR[n] : undefined;
   }
 
   public build(): NQuads {
@@ -107,7 +107,7 @@ export class OperationBuilder extends Builder {
       index: this.n,
       ["kind." + kind]: "",
       kind,
-      order: `${this.seq}-${this.index}-${this.n}`
+      order: this.order(this.seq, this.index, this.n)
     };
 
     this.pushValues(values);
@@ -130,6 +130,10 @@ export class OperationBuilder extends Builder {
   }
 
   private pushResult() {
+    if (!this.resultXDR) {
+      return;
+    }
+
     this.pushValue("result_code", this.resultXDR.switch().value);
     this.pushValue("success", this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner());
   }
