@@ -45,7 +45,7 @@ export class TrustLineEntryBuilder extends Builder {
       // we use ledger seq to order changes.
       // it's easier than try to sort by nested attribute ledger.seq
       // (I am not sure it's possible in dgraph at all)
-      order: `${this.trustLine.lastModified}-${this.n}`
+      order: this.order(this.trustLine.lastModified, 0, 0, this.n)
     });
     this.pushLedger(this.trustLine.lastModified);
     this.pushPrev();
