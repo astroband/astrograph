@@ -42,7 +42,7 @@ export class OperationBuilder extends Builder {
     }
 
     this.xdr = tx.operationsXDR[n];
-    this.resultXDR = tx.operationResultsXDR[n];
+    this.resultXDR = tx.operationResultsXDR ? tx.operationResultsXDR[n] : undefined;
   }
 
   public build(): NQuads {
