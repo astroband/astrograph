@@ -58,7 +58,7 @@ export class NQuad {
     return v
       .toString()
       .replace(/\n/g, "\\n")
-      .replace(/\\([\s\S])|(")/g, "\\$1$2") // escapes all not-escaped double quotes
+      .replace(/\\([\s\S])|(")/g, "\\$1$2"); // escapes all not-escaped double quotes
   }
 }
 

@@ -45,3 +45,5 @@ dist/
 
 # tmp, stellar-archivist
 .archives
+
+tmp
