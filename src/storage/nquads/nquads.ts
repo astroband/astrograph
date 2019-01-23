@@ -5,7 +5,7 @@ export class NQuads extends Array<NQuad> {
 
   public push(...items: NQuad[]): number {
     for (const item of items) {
-      const key = `${item.subject}-${item.predicate}`;
+      const key = `${item.subject.type}-${item.subject.value}-${item.predicate}`;
       const index = this.index.get(key);
 
       if (!index) {
@@ -18,5 +18,10 @@ export class NQuads extends Array<NQuad> {
     }
 
     return this.length;
+  }
+
+  public concat(other: NQuads): NQuads {
+    this.push(...other);
+    return this;
   }
 }
