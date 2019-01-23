@@ -10,7 +10,7 @@ const N_POW = 1;
 export abstract class Builder {
   public abstract readonly current: Subj;
 
-  protected nquads: NQuads = [];
+  protected nquads: NQuads = new NQuads();
   protected prev: Subj | null = null;
 
   public abstract build(): NQuads;

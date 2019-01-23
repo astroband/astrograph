@@ -2,7 +2,7 @@ import _ from "lodash";
 import { Connection } from "../storage/connection";
 import { ILink, NQuad, NQuads } from "./nquads";
 
-const ___cache = new Map<string, string>();
+const CACHE = new Map<string, string>();
 
 // An idea is simple: every node in DGraph database has unique string key, which we use either to distinguish
 // it in in-memory cache and to load uid from DGraph.
@@ -18,7 +18,7 @@ export class Cache {
   // Updates cache with values returned after insert
   public put(results: any) {
     results.getUidsMap().forEach((v: string, k: string) => {
-      ___cache.set(k, v);
+      CACHE.set(k, v);
     });
   }
 
@@ -53,7 +53,7 @@ export class Cache {
 
         return nquad;
       }
-    );
+    ) as NQuads;
   }
 
   // Extracts all _:abcde (new nodes to be created) from the list of NQuads.
@@ -80,7 +80,7 @@ export class Cache {
     const misses: string[] = [];
 
     this.blanks().forEach((value: string) => {
-      const cached = ___cache.get(value);
+      const cached = CACHE.get(value);
 
       if (cached) {
         hits.set(value, cached);
@@ -98,7 +98,7 @@ export class Cache {
 
     misses.forEach((miss: string) => {
       query += `
-        _${miss}(func: eq(key, "${miss}"), orderdesc: order, first: 1) {
+        _${miss}(func: eq(key, "${miss}"), first: 1) {
           uid
         }
       `;
@@ -117,7 +117,7 @@ export class Cache {
         const key = k.slice(1);
 
         found.set(key, uid);
-        ___cache.set(key, uid); // Save found to cache immediately
+        CACHE.set(key, uid); // Save found to cache immediately
       }
     });
 
