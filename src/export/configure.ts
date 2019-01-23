@@ -28,7 +28,7 @@ const setLimits = async (): Promise<any> => {
     maxSeq = await db.ledgerHeaders.findMaxSeq();
   }
 
-  minSeq = isNaN(count) ? await db.ledgerHeaders.findMinSeq() : maxSeq - count;
+  minSeq = isNaN(count) ? await db.ledgerHeaders.findMinSeq() : maxSeq - count + 1;
 
   const total = await db.ledgerHeaders.countInRange(minSeq, maxSeq);
 
