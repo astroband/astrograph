@@ -7,7 +7,9 @@ const sql = {
   selectLedger: "SELECT * FROM ledgerheaders WHERE ledgerseq = $1",
   selectLedgersIn: "SELECT * FROM ledgerheaders WHERE ledgerseq IN ($1:csv) ORDER BY ledgerseq",
   selectMaxLedger: "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1",
-  selectMinLedger: "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq ASC LIMIT 1"
+  selectMinLedger: "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq ASC LIMIT 1",
+  selectFirstAfter: "SELECT * FROM ledgerheaders WHERE ledgerseq > $1 LIMIT 1",
+  selectCountIn: "SELECT COUNT(*) FROM ledgerheaders WHERE ledgerseq >= $1 AND ledgerseq <= $2"
 };
 
 export default class LedgerHeadersRepo {
@@ -20,6 +22,14 @@ export default class LedgerHeadersRepo {
   // Tries to find a ledger from id;
   public findBySeq(seq: number): Promise<LedgerHeader | null> {
     return this.db.oneOrNone(sql.selectLedger, seq, res => (res === null ? null : LedgerHeaderFactory.fromDb(res)));
+  }
+
+  public findFirstAfterBySeq(seq: number): Promise<LedgerHeader | null> {
+    return this.db.oneOrNone(sql.selectFirstAfter, seq, res => (res === null ? null : LedgerHeaderFactory.fromDb(res)));
+  }
+
+  public countInRange(min: number, max: number): Promise<number> {
+    return this.db.one(sql.selectCountIn, [min, max], c => +c.count);
   }
 
   public async findAllBySeq(seqs: number[]): Promise<Array<LedgerHeader | null>> {
