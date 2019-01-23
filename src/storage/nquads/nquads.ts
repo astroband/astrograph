@@ -5,7 +5,7 @@ export class NQuads extends Array<NQuad> {
 
   public push(...items: NQuad[]): number {
     for (const item of items) {
-      const key = `${item.subject.type}-${item.subject.value}-${item.predicate}`;
+      const key = item.key();
       const index = this.index.get(key);
 
       if (!index) {

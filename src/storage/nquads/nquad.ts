@@ -43,6 +43,10 @@ export class NQuad {
     return `${this.interpolate(this.subject)} <${this.predicate}> ${this.interpolate(this.object)} .`;
   }
 
+  public key(): string {
+    return `${this.interpolate(this.subject)} <${this.predicate}>`;
+  }
+
   private interpolate(x: IBlank | ILink | IValue): string {
     switch (x.type) {
       case "blank":
