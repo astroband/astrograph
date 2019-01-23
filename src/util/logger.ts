@@ -19,7 +19,7 @@ if (!logLevel || !LoggerLevel[logLevel]) {
 }
 const errorWithStacktraceFormat = format(info => {
   if (info instanceof Error) {
-    return Object.assign({ message: info.message, stack: info.stack }, info);
+    return { message: info.message, stack: info.stack, ...info };
   }
 
   return info;
