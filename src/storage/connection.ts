@@ -51,28 +51,27 @@ export class Connection {
     await this.client.alter(op);
   }
 
-  public async push(nquads: string): Promise<any> {
-    const id = Math.floor(Math.random() * Math.floor(65536));
-
-    logger.debug(`[DGraph] Transaction ${id} started...`);
-    // logger.debug(nquads);
+  public async push(nquads: string | any[]): Promise<any> {
+    const start = Date.now();
 
     const txn = this.client.newTxn();
     const mu = new Mutation();
-    mu.setSetNquads(nquads);
+    const payload: string = Array.isArray(nquads) ? nquads.join("\n") : nquads;
+    mu.setSetNquads(payload);
     const assigns = await txn.mutate(mu);
 
     try {
-      logger.debug(`[DGraph] Transaction ${id} commiting...`);
       await txn.commit();
-      logger.debug(`[DGraph] Transaction ${id} commited!`);
+      const eta = Date.now() - start;
+
+      logger.debug(`[DGraph] Transaction commited, ${nquads.length} triples, took ${eta/100} s.`);
 
       return assigns;
     } catch (err) {
       try {
         if (err === ERR_ABORTED) {
-          logger.debug(`[DGraph] Transaction ${id} aborted, retrying...`);
-          logger.debug(nquads);
+          logger.debug(`[DGraph] Transaction aborted, retrying...`);
+          logger.debug(payload);
 
           await txn.commit();
           return assigns;
@@ -82,7 +81,7 @@ export class Connection {
       } catch (err) {
         await txn.discard();
         logger.error(err);
-        logger.error(nquads);
+        logger.error(payload);
         process.exit(-1);
       }
     }
@@ -107,7 +106,7 @@ export class Connection {
     const cache = new Cache(this, nquads);
     nquads = await cache.populate();
 
-    const result = await this.push(nquads.join("\n"));
+    const result = await this.push(nquads);
     cache.put(result);
   }
 }
