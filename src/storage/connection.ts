@@ -1,4 +1,5 @@
 import { DgraphClient, DgraphClientStub, ERR_ABORTED, Mutation, Operation } from "dgraph-js";
+import fs from "fs";
 import grpc from "grpc";
 import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";
@@ -111,6 +112,16 @@ export class Connection {
 
     const cache = new Cache(this, nquads);
     nquads = await cache.populate();
+
+    if (process.env.DEBUG_DUMP_LEDGERS) {
+      const fn = `tmp/${header.ledgerSeq}.txt`;
+      fs.writeFile(fn, nquads.join("\n"), err => {
+        if (err) {
+          throw err;
+        }
+        logger.info(`[DEBUG] Ledger dumped to ${fn}`);
+      });
+    }
 
     const result = await this.push(nquads);
     cache.put(result);

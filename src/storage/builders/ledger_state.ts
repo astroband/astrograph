@@ -5,13 +5,13 @@ import { NQuad, NQuads } from "../nquads";
 import { Builder, TransactionBuilder, TrustLineEntryBuilder } from "./";
 
 export class LedgerStateBuilder {
-  private nquads: NQuads = [];
+  private nquads: NQuads = new NQuads();
 
   constructor(private changes: IChange[], private tx: ITransaction) {}
 
   public async build(): Promise<NQuads> {
     if (this.changes.length === 0) {
-      return [];
+      return this.nquads;
     }
 
     const txBuilder = new TransactionBuilder(this.tx);

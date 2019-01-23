@@ -1,4 +1,3 @@
-import fs from "fs";
 import { ChangesExtractor } from "../changes_extractor";
 import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";
@@ -38,16 +37,6 @@ export class Ingestor {
     // System thing, it allows us to find out later, how many ledgers are ingested indeed with
     // all transactions and operations, and not just created as a predicate for some other nodes
     nquads.push(new NQuad(LedgerBuilder.keyNQuad(header.ledgerSeq), "_ingested", NQuad.value(true)));
-
-    if (process.env.DEBUG_DUMP_LEDGERS) {
-      const fn = `tmp/${header.ledgerSeq}.txt`;
-      fs.writeFile(fn, nquads.join("\n"), err => {
-        if (err) {
-          throw err;
-        }
-        logger.info(`[DEBUG] Ledger dumped to ${fn}`);
-      });
-    }
 
     return nquads;
   }
