@@ -1,4 +1,4 @@
-// import fs from "fs";
+import fs from "fs";
 import { ChangesExtractor } from "../changes_extractor";
 import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";
@@ -12,7 +12,7 @@ export class Ingestor {
 
     for (const tx of transactions) {
       const changes = ChangesExtractor.call(tx);
-      nquads = nquads.concat(new TransactionBuilder(tx).build());
+      nquads = nquads.concat(new TransactionBuilder(tx).build()) as NQuads;
 
       for (const group of changes) {
         stateBuilder = new LedgerStateBuilder(group, tx);
@@ -21,7 +21,7 @@ export class Ingestor {
 
       for (let index = 0; index < tx.operationsXDR.length; index++) {
         try {
-          nquads = nquads.concat(new OperationBuilder(tx, index).build());
+          nquads = nquads.concat(new OperationBuilder(tx, index).build()) as NQuads;
         } catch (err) {
           logger.log(
             "error",
@@ -39,11 +39,15 @@ export class Ingestor {
     // all transactions and operations, and not just created as a predicate for some other nodes
     nquads.push(new NQuad(LedgerBuilder.keyNQuad(header.ledgerSeq), "_ingested", NQuad.value(true)));
 
-    // NOTE: Debug ledger contents
-    // fs.writeFile(`tmp/${header.ledgerSeq}.txt`, nquads.join("\n"), (err) => {
-    //   if (err) throw err;
-    //   console.log('The file has been saved!');
-    // });
+    if (process.env.DEBUG_DUMP_LEDGERS) {
+      const fn = `tmp/${header.ledgerSeq}.txt`;
+      fs.writeFile(fn, nquads.join("\n"), err => {
+        if (err) {
+          throw err;
+        }
+        logger.info(`[DEBUG] Ledger dumped to ${fn}`);
+      });
+    }
 
     return nquads;
   }
