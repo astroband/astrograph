@@ -14,6 +14,8 @@ export default async function iterate(min: number, max: number, cb: any) {
       }
     }
 
-    cb(header);
+    const transactions = await db.transactions.findAllBySeq(header.ledgerSeq);
+
+    await cb(header, transactions);
   }
 }

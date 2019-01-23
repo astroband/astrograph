@@ -9,8 +9,7 @@ export interface IConfig {
   minSeq: number;
   maxSeq: number;
   total: number;
-  gzip: any;
-  csv: any;
+  file: any;
 }
 
 const setNetwork = () => {
@@ -37,30 +36,17 @@ const setLimits = async (): Promise<any> => {
 };
 
 const openCsv = (r: string): any => {
-  const root = `./exports/${r}`;
+  const fileName = `./export/${r}.nquads.gz`;
 
-  fs.mkdir(root, { recursive: true }, err => {
-    if (err) {
-      throw err;
-    }
-  });
+  const file = zlib.createGzip();
+  file.pipe(fs.createWriteStream(fileName));
 
-  const gzip = {
-    ledger: zlib.createGzip(),
-    ledgerR: zlib.createGzip()
-  };
-
-  const csv = {
-    ledger: gzip.ledger.pipe(fs.createWriteStream(`${root}/ledgers.csv.gz`)),
-    ledgerR: gzip.ledgerR.pipe(fs.createWriteStream(`${root}/ledgers-relations.csv.gz`))
-  };
-
-  return { gzip, csv };
+  return file;
 };
 
 export async function configure(): Promise<IConfig> {
   setNetwork();
   const { minSeq, maxSeq, total } = await setLimits();
-  const { gzip, csv } = openCsv(`${minSeq}-${maxSeq}`);
-  return { minSeq, maxSeq, total, gzip, csv };
+  const file = openCsv(`${minSeq}-${maxSeq}`);
+  return { minSeq, maxSeq, total, file };
 }

@@ -1,28 +1,26 @@
 import ProgressBar from "progress";
+import { Ingestor } from "./storage/ingestor"
 
 import { configure, IConfig } from "./export/configure";
 import iterate from "./export/iterate";
 import logger from "./util/logger";
 
-import { LedgerHeader } from "./model";
+import { LedgerHeader, TransactionWithXDR } from "./model";
+
+logger.info("DGraph live export script, yarn export <count> <seq>");
 
 configure().then(async (config: IConfig) => {
   const bar = new ProgressBar("[:bar] :elapseds elapsed, eta :etas", { total: config.total });
 
   logger.info(`Exporting ${config.total} ledgers ${config.minSeq}/${config.maxSeq}`);
 
-  await iterate(config.minSeq, config.maxSeq, (header: LedgerHeader | null) => {
-    if (!header) {
-      throw new Error("Ledger header is null");
-    }
-
-    config.gzip.ledger.write(`${header.ledgerSeq},${header.ledgerSeq},${header.ledgerSeq},0,0,0,0\n`);
-    config.gzip.ledgerR.write(`${header.ledgerSeq},${header.ledgerSeq-1},PREV\n`);
+  await iterate(config.minSeq, config.maxSeq, async (header: LedgerHeader, transactions: TransactionWithXDR[]) => {
+    const chunk = await Ingestor.ingestLedger(header, transactions);
+    config.file.write(chunk.join("\n"));
     bar.tick();
   });
 
-  config.gzip.ledger.end();
-  config.gzip.ledgerR.end();
+  config.file.end();
 });
 
 // import parseArgv from "minimist";

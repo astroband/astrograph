@@ -38,12 +38,6 @@ export class Ingestor {
     // all transactions and operations, and not just created as a predicate for some other nodes
     nquads.push(new NQuad(LedgerBuilder.keyNQuad(header.ledgerSeq), "_ingested", NQuad.value(true)));
 
-    // NOTE: Debug ledger contents
-    // fs.writeFile(`tmp/${header.ledgerSeq}.txt`, nquads.join("\n"), (err) => {
-    //   if (err) throw err;
-    //   console.log('The file has been saved!');
-    // });
-
     return nquads;
   }
 }

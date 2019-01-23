@@ -1,3 +1,4 @@
+// NOTE: OBSOLETE
 import fs from "fs";
 import parseArgv from "minimist";
 import zlib from "zlib";

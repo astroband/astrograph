@@ -1,5 +1,6 @@
 import { ITransaction } from "../../model";
 import { makeKey } from "../../util/crypto";
+import "../../util/memo";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder, Builder } from "./";
 

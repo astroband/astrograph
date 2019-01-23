@@ -1,3 +1,4 @@
+// NOTE: OBSOLETE
 import parseArgv from "minimist";
 import { Cursor, ICursorResult } from "./ingest/cursor";
 import { Connection } from "./storage/connection";
