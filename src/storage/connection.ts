@@ -64,7 +64,7 @@ export class Connection {
       await txn.commit();
       const eta = Date.now() - start;
 
-      logger.debug(`[DGraph] Transaction commited, ${nquads.length} triples, took ${eta/100} s.`);
+      logger.debug(`[DGraph] Transaction commited, ${nquads.length} triples, took ${eta / 100} s.`);
 
       return assigns;
     } catch (err) {
@@ -89,8 +89,14 @@ export class Connection {
 
   public async query(query: string, vars?: any): Promise<any> {
     try {
+      const start = Date.now();
+
       const txn = this.client.newTxn();
       const res = vars ? await txn.queryWithVars(query, vars) : await txn.query(query);
+      const eta = Date.now() - start;
+
+      logger.debug(`[DGraph] Query, took ${eta / 100} s.`);
+
       return res.getJson();
     } catch (err) {
       logger.error(err);
