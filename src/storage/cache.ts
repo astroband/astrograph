@@ -98,7 +98,7 @@ export class Cache {
 
     misses.forEach((miss: string) => {
       query += `
-        _${miss}(func: eq(key, "${miss}"), orderdesc: order, first: 1) {
+        _${miss}(func: eq(key, "${miss}"),  first: 1) {
           uid
         }
       `;
