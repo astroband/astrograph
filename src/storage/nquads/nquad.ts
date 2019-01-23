@@ -61,5 +61,3 @@ export class NQuad {
       .replace(/\\([\s\S])|(")/g, "\\$1$2"); // escapes all not-escaped double quotes
   }
 }
-
-export type NQuads = NQuad[];
