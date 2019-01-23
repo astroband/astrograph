@@ -28,6 +28,7 @@ Here is the list of available settings:
 * `INGEST_INTERVAL` – database polling interval in milliseconds (2000 by default)
 * `DEBUG_LEDGER` – when set, Astrograph will start ingesting ledgers, starting from that. It's useful for debugging. Pass `-1` to force ingest from first ledger existing in database.
 * `DEBUG_DUMP_LEDGERS` - when set, Astrograph dumps ledger nquads to `tmp` folder, used to debug DGraph insertion.
+* `DEBUG_SQL` - when set, log sql queries.
 * `DGRAPH_URL` - when set, Astrograph ingests history to DGraph server.
 
 You can set them all using environmental variables, or you can create the `.env` file in the root of the project, and set them there:

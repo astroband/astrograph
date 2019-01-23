@@ -1,4 +1,3 @@
-import fs from "fs";
 import { ChangesExtractor } from "../changes_extractor";
 import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";

@@ -57,13 +57,11 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
   );
 
   const tick = async () => {
-    logger.info(`Ingesting ledger ${cursor.current}`);
-
     const worker = new Worker(cursor);
     worker
       .run()
       .then(done => {
-        logger.info(`Ingesting ledger ${cursor.current} finished!`);
+        logger.info(`Ledger ${cursor.current}: done.`);
         if (done) {
           tick();
         } else {

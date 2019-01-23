@@ -12,7 +12,7 @@ import logger from "../logger";
 pgMonitor.setTheme("matrix"); // changing the default theme;
 
 // Flag to indicate whether we are in a DEV environment:
-const $DEV = process.env.NODE_ENV === "development";
+const $DEBUG = process.env.DEBUG_SQL;
 
 // Below we are logging errors exactly the way they are reported by pg-monitor,
 // which you can tweak any way you like, as parameter 'info' provides all the
@@ -32,7 +32,7 @@ pgMonitor.setLog((msg, info) => {
   // while in a PROD environment, and not just because nobody will be able
   // to see it there, but mainly because the console is incredibly slow and
   // hugely resource-consuming, suitable only for debugging.
-  if (!$DEV) {
+  if (!$DEBUG) {
     // If it is not a DEV environment:
     info.display = false; // display nothing;
   }
@@ -41,7 +41,7 @@ pgMonitor.setLog((msg, info) => {
 export = {
   // Monitor initialization function;
   init(options: IOptions<any>) {
-    if ($DEV) {
+    if ($DEBUG) {
       // In a DEV environment, we attach to all supported events:
       pgMonitor.attach(options);
     } else {
