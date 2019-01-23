@@ -1,4 +1,5 @@
 import { DgraphClient, DgraphClientStub, ERR_ABORTED, Mutation, Operation } from "dgraph-js";
+import fs from "fs";
 import grpc from "grpc";
 import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";
@@ -51,28 +52,27 @@ export class Connection {
     await this.client.alter(op);
   }
 
-  public async push(nquads: string): Promise<any> {
-    const id = Math.floor(Math.random() * Math.floor(65536));
-
-    logger.debug(`[DGraph] Transaction ${id} started...`);
-    // logger.debug(nquads);
+  public async push(nquads: string | any[]): Promise<any> {
+    const start = Date.now();
 
     const txn = this.client.newTxn();
     const mu = new Mutation();
-    mu.setSetNquads(nquads);
+    const payload: string = Array.isArray(nquads) ? nquads.join("\n") : nquads;
+    mu.setSetNquads(payload);
     const assigns = await txn.mutate(mu);
 
     try {
-      logger.debug(`[DGraph] Transaction ${id} commiting...`);
       await txn.commit();
-      logger.debug(`[DGraph] Transaction ${id} commited!`);
+      const eta = Date.now() - start;
+
+      logger.debug(`[DGraph] Transaction commited, ${nquads.length} triples, took ${eta / 100} s.`);
 
       return assigns;
     } catch (err) {
       try {
         if (err === ERR_ABORTED) {
-          logger.debug(`[DGraph] Transaction ${id} aborted, retrying...`);
-          logger.debug(nquads);
+          logger.debug(`[DGraph] Transaction aborted, retrying...`);
+          logger.debug(payload);
 
           await txn.commit();
           return assigns;
@@ -82,7 +82,7 @@ export class Connection {
       } catch (err) {
         await txn.discard();
         logger.error(err);
-        logger.error(nquads);
+        logger.error(payload);
         process.exit(-1);
       }
     }
@@ -90,8 +90,14 @@ export class Connection {
 
   public async query(query: string, vars?: any): Promise<any> {
     try {
+      const start = Date.now();
+
       const txn = this.client.newTxn();
       const res = vars ? await txn.queryWithVars(query, vars) : await txn.query(query);
+      const eta = Date.now() - start;
+
+      logger.debug(`[DGraph] Query, took ${eta / 100} s.`);
+
       return res.getJson();
     } catch (err) {
       logger.error(err);
@@ -107,7 +113,17 @@ export class Connection {
     const cache = new Cache(this, nquads);
     nquads = await cache.populate();
 
-    const result = await this.push(nquads.join("\n"));
+    if (process.env.DEBUG_DUMP_LEDGERS) {
+      const fn = `tmp/${header.ledgerSeq}.txt`;
+      fs.writeFile(fn, nquads.join("\n"), err => {
+        if (err) {
+          throw err;
+        }
+        logger.info(`[DEBUG] Ledger dumped to ${fn}`);
+      });
+    }
+
+    const result = await this.push(nquads);
     cache.put(result);
   }
 }

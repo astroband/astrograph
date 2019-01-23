@@ -69,6 +69,7 @@ export class OperationBuilder extends Builder {
         return new PaymentOpBuilder(this.current, this.xdr.body().paymentOp(), this.resultXDR);
       case t.pathPayment():
         return new PathPaymentOpBuilder(this.current, this.xdr.body().pathPaymentOp(), this.resultXDR, [
+          "operation",
           this.tx.ledgerSeq,
           this.index,
           this.n

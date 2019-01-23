@@ -43,6 +43,10 @@ export class NQuad {
     return `${this.interpolate(this.subject)} <${this.predicate}> ${this.interpolate(this.object)} .`;
   }
 
+  public key(): string {
+    return `${this.interpolate(this.subject)} <${this.predicate}>`;
+  }
+
   private interpolate(x: IBlank | ILink | IValue): string {
     switch (x.type) {
       case "blank":
@@ -58,8 +62,6 @@ export class NQuad {
     return v
       .toString()
       .replace(/\n/g, "\\n")
-      .replace(/\\([\s\S])|(")/g, "\\$1$2") // escapes all not-escaped double quotes
+      .replace(/\\([\s\S])|(")/g, "\\$1$2"); // escapes all not-escaped double quotes
   }
 }
-
-export type NQuads = NQuad[];

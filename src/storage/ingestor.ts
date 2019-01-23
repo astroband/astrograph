@@ -11,7 +11,7 @@ export class Ingestor {
 
     for (const tx of transactions) {
       const changes = ChangesExtractor.call(tx);
-      nquads = nquads.concat(new TransactionBuilder(tx).build());
+      nquads = nquads.concat(new TransactionBuilder(tx).build()) as NQuads;
 
       for (const group of changes) {
         stateBuilder = new LedgerStateBuilder(group, tx);
@@ -20,7 +20,7 @@ export class Ingestor {
 
       for (let index = 0; index < tx.operationsXDR.length; index++) {
         try {
-          nquads = nquads.concat(new OperationBuilder(tx, index).build());
+          nquads = nquads.concat(new OperationBuilder(tx, index).build()) as NQuads;
         } catch (err) {
           logger.log(
             "error",
