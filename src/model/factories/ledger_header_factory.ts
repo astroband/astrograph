@@ -12,7 +12,7 @@ export interface ILedgerHeaderTableRow {
 
 export class LedgerHeaderFactory {
   public static fromXDR(base64: string): LedgerHeader {
-    const header = stellar.xdr.LedgerHeader.fromXDR(Buffer.from(base64, "base64"));
+    const header = stellar.xdr.LedgerHeader.fromXDR(base64, "base64");
 
     const data: ILedgerHeader = {
       ledgerSeq: header.ledgerSeq(),
