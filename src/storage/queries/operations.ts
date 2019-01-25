@@ -120,7 +120,7 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
 
     query += `
       account(func: eq(id, $accountID)) {
-        operations @filter(uid(${this.kinds.join(",")})) (first: $first, offset: $offset) {
+        operations @filter(uid(${this.kinds.join(",")})) (first: $first, offset: $offset, orderdesc: order) {
           kind
           index
           ledger { close_time }
@@ -136,8 +136,6 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
         }
       }
     }`;
-
-    console.log(query, this.first, this.offset);
 
     return this.connection.query(query, {
       $accountID: this.accountID,
