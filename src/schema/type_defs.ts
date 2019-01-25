@@ -460,8 +460,8 @@ export const typeDefs = gql`
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
     operations(
-      account: AccountID
-      kind: [OperationKind]
+      account: AccountID!
+      kinds: [OperationKind]
       filters: OperationsFilter
       first: Int!
       offset: Int
