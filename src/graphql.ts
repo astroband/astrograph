@@ -8,7 +8,7 @@ import { Cursor, Worker } from "./ingest";
 import schema from "./schema";
 import { Connection } from "./storage/connection";
 import logger from "./util/logger";
-import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
+import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_QUERY_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
 
 const server = new ApolloServer({
@@ -40,7 +40,7 @@ const server = new ApolloServer({
 const network = setStellarNetwork();
 logger.info(`Using ${network}`);
 
-if (DGRAPH_URL) {
+if (DGRAPH_QUERY_URL) {
   logger.info(`[DGraph] Updating schema...`);
   new Connection().migrate().catch((err: any) => {
     logger.error(err);

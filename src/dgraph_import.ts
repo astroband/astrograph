@@ -3,11 +3,11 @@ import { Cursor, ICursorResult } from "./ingest/cursor";
 import { Connection } from "./storage/connection";
 import logger from "./util/logger";
 import "./util/memo";
-import { DGRAPH_URL } from "./util/secrets";
+import { DGRAPH_INGEST_URL } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
 
-if (!DGRAPH_URL) {
-  logger.error("Please, provide DGRAPH_URL env variable");
+if (!DGRAPH_INGEST_URL) {
+  logger.error("Please, provide DGRAPH_URL or both DGRAPH_INGEST_URL and DGRAPH_QUERY_URL env variables");
   process.exit(-1);
 }
 
@@ -21,7 +21,7 @@ try {
   process.exit(-1);
 }
 
-const c = new Connection();
+const c = new Connection(DGRAPH_INGEST_URL);
 
 const network = setStellarNetwork();
 logger.info(`Using ${network}`);
