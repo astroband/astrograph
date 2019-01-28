@@ -3,7 +3,7 @@ import fs from "fs";
 import grpc from "grpc";
 import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";
-import { DGRAPH_URL } from "../util/secrets";
+import { DGRAPH_QUERY_URL } from "../util/secrets";
 import { Cache } from "./cache";
 import { Ingestor } from "./ingestor";
 import { NQuads } from "./nquads";
@@ -36,8 +36,8 @@ export class Connection {
   private stub: any;
   private client: any;
 
-  constructor() {
-    this.stub = new DgraphClientStub(DGRAPH_URL, grpc.credentials.createInsecure());
+  constructor(endpointUrl?: string) {
+    this.stub = new DgraphClientStub(endpointUrl || DGRAPH_QUERY_URL, grpc.credentials.createInsecure());
 
     this.client = new DgraphClient(this.stub);
   }
