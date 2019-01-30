@@ -99,7 +99,7 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
 
   public async call(): Promise<IOperationsQueryResult> {
     const r = await this.request();
-    const ops = _.at(r, "account[0].operations"); 
+    const ops = _.at(r, "account[0].operations");
     return (ops[0] || []).map(OperationFactory.fromDgraph);
   }
 

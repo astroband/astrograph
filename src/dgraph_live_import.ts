@@ -69,7 +69,9 @@ c.migrate()
         gzip.write("\n");
 
         logger.info(
-          `Done! ${endSeq! - header.ledgerSeq} ledgers left (${(header.ledgerSeq - startSeq + 1) / (endSeq! - startSeq + 1) * 100}% complete)`
+          `Done! ${endSeq! - header.ledgerSeq} ledgers left (${((header.ledgerSeq - startSeq + 1) /
+            (endSeq! - startSeq + 1)) *
+            100}% complete)`
         );
         console.timeLog("Import");
 

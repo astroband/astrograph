@@ -1,6 +1,6 @@
 import _ from "lodash";
-import logger from "../util/logger";
 import { db } from "../database";
+import logger from "../util/logger";
 
 export default async function iterate(min: number, max: number, cb: any) {
   let totalTimes = [];
@@ -14,7 +14,7 @@ export default async function iterate(min: number, max: number, cb: any) {
       logger.debug(`Average ingest time for last 1000 ledgers: ${_.sum(ingestTimes) / ingestTimes.length}`);
       totalTimes = [];
       ingestTimes = [];
-    } 
+    }
 
     let header = await db.ledgerHeaders.findBySeq(n);
 

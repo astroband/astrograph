@@ -28,7 +28,7 @@ type Params =
 
 export class FiltersBuilder {
   public static build(kind: OperationKinds, params: Params): { root: string; nested: string } {
-    let filters: { root: string[], nested: string[] };
+    let filters: { root: string[]; nested: string[] };
 
     switch (kind) {
       case OperationKinds.Payment:
@@ -70,7 +70,7 @@ export class FiltersBuilder {
     return {
       root: `@filter(${filters.root.join("AND")})`,
       nested: filters.nested.join("\n")
-    }
+    };
   }
 }
 
@@ -81,7 +81,7 @@ function buildSetOptionsFilters(params: ISetOptionsOpsQueryParams) {
     filters.push(`eq(masterWeight, ${params.masterWeight})`);
   }
 
-  return {root: filters, nested: []};
+  return { root: filters, nested: [] };
 }
 
 function buildPaymentsFilters(params: IPaymentsQueryParams) {
@@ -153,7 +153,7 @@ function buildManageDataFilters(params: IManageDataQueryParams) {
     filters.push("NOT has(value)");
   }
 
-  return {root: filters, nested: []};
+  return { root: filters, nested: [] };
 }
 
 function buildManageOfferFilters(params: IManageOfferQueryParams) {
@@ -170,7 +170,8 @@ function buildPathPaymentsFilters(params: IPathPaymentsQueryParams) {
   return {
     root: [],
     nested: _.filter([
-      params.destinationAsset && buildAssetFilter(params.destinationAsset.code, params.destinationAsset.issuer, "asset.destination"),
+      params.destinationAsset &&
+        buildAssetFilter(params.destinationAsset.code, params.destinationAsset.issuer, "asset.destination"),
       params.sourceAsset && buildAssetFilter(params.sourceAsset.code, params.sourceAsset.issuer, "asset.source"),
       params.destinationAccount && `account.destination @filter(eq(id, "${params.destinationAccount}"))`,
       params.sourceAccount && `account.source @filter(eq(id, "${params.sourceAccount}"))`,
