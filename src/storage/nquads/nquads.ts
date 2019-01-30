@@ -1,19 +1,20 @@
 import { NQuad } from "./nquad";
 
 export class NQuads extends Array<NQuad> {
+  private index: Map<string, number> = new Map<string, number>();
+
   public push(...items: NQuad[]): number {
     for (const item of items) {
-      let n = 0;
+      const n = this.index.get(item.key);
 
-      for (n = 0; n < this.length; n++) {
-        if (this[n].key === item.key) {
-          break;
-        }
+      if (n) {
+        this[n] = item;
+        continue;
       }
 
-      this[n] = item;
+      this.index.set(item.key, this.length);
+      this[this.length] = item;
     }
-
     return this.length;
   }
 
