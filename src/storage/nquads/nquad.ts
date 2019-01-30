@@ -38,21 +38,21 @@ export class NQuad {
     this.subject = subject;
     this.predicate = predicate;
     this.object = object;
-    this.key = `${this.interpolate(this.subject)} <${this.predicate}>`;
+    this.key = this.interpolate(this.subject) + " <" + this.predicate + ">";
   }
 
   public toString(): string {
-    return `${this.key} ${this.interpolate(this.object)} .`;
+    return this.key + " " + this.interpolate(this.object) + " .";
   }
 
   private interpolate(x: IBlank | ILink | IValue): string {
     switch (x.type) {
       case "blank":
-        return `_:${x.value}`;
+        return "_:" + x.value;
       case "link":
-        return `<${x.value}>`;
+        return "<" + x.value + ">";
       case "value":
-        return `"${this.escape(x.value)}"`;
+        return '"' + this.escape(x.value) + '"';
     }
   }
 
