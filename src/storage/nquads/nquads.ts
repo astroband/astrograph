@@ -1,17 +1,17 @@
 import { NQuad } from "./nquad";
 
 export class NQuads extends Array<NQuad> {
-  private index: string[] = []; // Map<string, number> = new Map<string, number>();
-
   public push(...items: NQuad[]): number {
-    for (const item of items) {
-      const key = item.key();
-      const n = this.index.indexOf(key);
+    // prettier-ignore
+    for (let i = 0; i < items.length; i++) {
+      let n = 0;
+      const item = items[i];
 
-      if (n < 0) {
-        this[this.length] = item;
-        this.index[this.length - 1] = key;
-        continue;
+      // prettier-ignore
+      for (n = 0; n < this.length; n++) {
+        if (this[n].key === item.key) {
+          break;
+        }
       }
 
       this[n] = item;

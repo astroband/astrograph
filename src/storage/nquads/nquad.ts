@@ -29,22 +29,20 @@ export class NQuad {
     return { type: "value", value };
   }
 
-  public subject: Subj;
-  public predicate: string;
-  public object: Obj;
+  public readonly subject: Subj;
+  public readonly predicate: string;
+  public readonly object: Obj;
+  public readonly key: string;
 
   public constructor(subject: Subj, predicate: string, object: Obj) {
     this.subject = subject;
     this.predicate = predicate;
     this.object = object;
+    this.key = `${this.interpolate(this.subject)} <${this.predicate}>`;
   }
 
   public toString(): string {
-    return `${this.interpolate(this.subject)} <${this.predicate}> ${this.interpolate(this.object)} .`;
-  }
-
-  public key(): string {
-    return `${this.interpolate(this.subject)} <${this.predicate}>`;
+    return `${this.key} ${this.interpolate(this.object)} .`;
   }
 
   private interpolate(x: IBlank | ILink | IValue): string {
