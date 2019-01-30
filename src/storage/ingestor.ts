@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { ChangesExtractor } from "../changes_extractor";
 import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";
@@ -6,12 +7,12 @@ import { NQuad, NQuads } from "./nquads";
 
 export class Ingestor {
   public static async ingestLedger(header: LedgerHeader, transactions: TransactionWithXDR[]) {
-    let nquads: NQuads = new LedgerBuilder(header).build();
+    const nquads: NQuads = new LedgerBuilder(header).build();
     let stateBuilder: LedgerStateBuilder;
 
     for (const tx of transactions) {
       const changes = ChangesExtractor.call(tx);
-      nquads = nquads.concat(new TransactionBuilder(tx).build()) as NQuads;
+      nquads.push(...new TransactionBuilder(tx).build());
 
       for (const group of changes) {
         stateBuilder = new LedgerStateBuilder(group, tx);
@@ -20,7 +21,7 @@ export class Ingestor {
 
       for (let index = 0; index < tx.operationsXDR.length; index++) {
         try {
-          nquads = nquads.concat(new OperationBuilder(tx, index).build()) as NQuads;
+          nquads.push(...new OperationBuilder(tx, index).build());
         } catch (err) {
           logger.log(
             "error",

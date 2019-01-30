@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 import { Transaction, TransactionWithXDR } from "./model";
-import { diffAccountsXDR } from "./util/xdr";
+import { AccountValuesFactory } from "./model/factories/account_values_factory";
 
 export enum ChangeType {
   Created = "created",
@@ -134,6 +134,9 @@ export class ChangesExtractor {
       return [];
     }
 
-    return diffAccountsXDR(accountData, accountState);
+    const accountValues1 = AccountValuesFactory.fromXDR(accountData);
+    const accountValues2 = AccountValuesFactory.fromXDR(accountState);
+
+    return accountValues1.diffAttrs(accountValues2);
   }
 }
