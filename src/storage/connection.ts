@@ -112,10 +112,11 @@ export class Connection {
 
     const cache = new Cache(this, nquads);
     nquads = await cache.populate();
+    const payload = nquads.compact();
 
     if (process.env.DEBUG_DUMP_LEDGERS) {
       const fn = `tmp/${header.ledgerSeq}.txt`;
-      fs.writeFile(fn, nquads.join("\n"), err => {
+      fs.writeFile(fn, payload.join("\n"), err => {
         if (err) {
           throw err;
         }
@@ -123,7 +124,7 @@ export class Connection {
       });
     }
 
-    const result = await this.push(nquads);
+    const result = await this.push(payload);
     cache.put(result);
   }
 }

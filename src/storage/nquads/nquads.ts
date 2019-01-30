@@ -5,6 +5,10 @@ export class NQuads extends Array<NQuad> {
 
   public push(...items: NQuad[]): number {
     for (const item of items) {
+      if (!item) {
+        return this.length;
+      }
+
       const n = this.index.get(item.key);
 
       if (n) {
@@ -16,6 +20,10 @@ export class NQuads extends Array<NQuad> {
       this[this.length] = item;
     }
     return this.length;
+  }
+
+  public compact(): NQuads {
+    return this.filter(el => el !== undefined) as NQuads;
   }
 
   public concat(other: NQuads): NQuads {

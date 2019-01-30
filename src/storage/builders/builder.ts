@@ -13,6 +13,10 @@ export abstract class Builder {
   protected nquads: NQuads = new NQuads();
   protected prev: Subj | null = null;
 
+  constructor() {
+    this.nquads.length = 100;
+  }
+
   public abstract build(): NQuads;
 
   protected pushValues(data: object) {
