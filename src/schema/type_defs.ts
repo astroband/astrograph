@@ -436,8 +436,8 @@ export const typeDefs = gql`
   }
 
   input AssetInput {
-    code: AssetCode
-    issuer: AccountID
+    code: AssetCode!
+    issuer: AccountID!
   }
 
   input EventInput {
@@ -459,13 +459,14 @@ export const typeDefs = gql`
     accounts(id: [AccountID!]!): [Account]
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
-    operations(
+    accountOperations(
       account: AccountID!
       kinds: [OperationKind]
       filters: OperationsFilter
       first: Int!
       offset: Int
     ): [IOperation]
+    assetOperations(asset: AssetInput!, kinds: [OperationKind], first: Int!, offset: Int): [IOperation]
     assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
     dataEntries(id: AccountID!): [DataEntry]
     signers(id: AccountID!): [Signer]

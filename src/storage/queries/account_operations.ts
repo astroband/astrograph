@@ -76,9 +76,9 @@ interface IOperationsQueryParams {
   [OperationKinds.PathPayment]?: IPathPaymentsQueryParams;
 }
 
-type IOperationsQueryResult = Operation[];
+type IAccountOperationsQueryResult = Operation[];
 
-export class OperationsQuery extends Query<IOperationsQueryResult> {
+export class AccountOperationsQuery extends Query<IAccountOperationsQueryResult> {
   private offset: number;
   private kinds: OperationKinds[];
   private filters: IOperationsQueryParams;
@@ -97,7 +97,7 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
     this.filters = filters || {};
   }
 
-  public async call(): Promise<IOperationsQueryResult> {
+  public async call(): Promise<IAccountOperationsQueryResult> {
     const r = await this.request();
     const ops = _.at(r, "account[0].operations");
     return (ops[0] || []).map(OperationFactory.fromDgraph);

@@ -12,7 +12,7 @@ import {
   IPathPaymentsQueryParams,
   IPaymentsQueryParams,
   ISetOptionsOpsQueryParams
-} from "../operations";
+} from "../account_operations";
 
 type Params =
   | IPaymentsQueryParams
