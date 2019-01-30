@@ -2,12 +2,9 @@ import { NQuad } from "./nquad";
 
 export class NQuads extends Array<NQuad> {
   public push(...items: NQuad[]): number {
-    // prettier-ignore
-    for (let i = 0; i < items.length; i++) {
+    for (const item of items) {
       let n = 0;
-      const item = items[i];
 
-      // prettier-ignore
       for (n = 0; n < this.length; n++) {
         if (this[n].key === item.key) {
           break;
