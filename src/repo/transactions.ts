@@ -8,7 +8,7 @@ const sql = {
     "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid = $1",
   selectTxIn:
     "SELECT t.*, f.txchanges as txfeemeta FROM txhistory t LEFT JOIN txfeehistory f ON t.txid = f.txid WHERE t.txid IN ($1:csv) ORDER BY t.ledgerseq, t.txindex",
-  selectTxNoFee: "SELECT * FROM txfullinfo WHERE ledgerseq = $1 ORDER BY txindex",
+  selectTxNoFee: "SELECT * FROM txhistory WHERE ledgerseq = $1 ORDER BY txindex",
   selectFee: "SELECT txindex, txchanges FROM txfeehistory WHERE ledgerseq = $1 AND txindex IN ($2:list)"
 };
 
@@ -44,27 +44,26 @@ export default class TransactionsRepo {
   public async findAllBySeq(seq: number): Promise<TransactionWithXDR[]> {
     const txs = await this.db.manyOrNone(sql.selectTxNoFee, seq);
 
-    // if (txs.length === 0) {
-    //   return [];
-    // }
-    return txs.map(t => TransactionWithXDRFactory.fromDb(t));
+    if (txs.length === 0) {
+      return [];
+    }
 
-    // const feeMetas = await this.db.many(sql.selectFee, [seq, _.map(txs, "txindex")]);
+    const feeMetas = await this.db.many(sql.selectFee, [seq, _.map(txs, "txindex")]);
 
-    // return _
-    //   .chain(txs)
-    //   .map(tx => {
-    //     const meta = _.find(feeMetas, { txindex: tx.txindex }) as { txchanges: string };
-    //     if (!meta) {
-    //       return;
-    //     }
-    //     return {
-    //       ...tx,
-    //       txfeemeta: meta.txchanges
-    //     };
-    //   })
-    //   .filter()
-    //   .map(t => TransactionWithXDRFactory.fromDb(t))
-    //   .value();
+    return _
+      .chain(txs)
+      .map(tx => {
+        const meta = _.find(feeMetas, { txindex: tx.txindex }) as { txchanges: string };
+        if (!meta) {
+          return;
+        }
+        return {
+          ...tx,
+          txfeemeta: meta.txchanges
+        };
+      })
+      .filter()
+      .map(t => TransactionWithXDRFactory.fromDb(t))
+      .value();
   }
 }
