@@ -5,6 +5,8 @@ import { db } from "../database";
 import logger from "../util/logger";
 import { setNetwork as setStellarNetwork } from "../util/stellar";
 
+const EXPORT_BASE_DIR = "./export";
+
 export interface IConfig {
   minSeq: number;
   maxSeq: number;
@@ -35,8 +37,14 @@ const setLimits = async (): Promise<any> => {
   return { minSeq, maxSeq, total };
 };
 
-const openCsv = (r: string): any => {
-  const fileName = `./export/${r}.nquads.gz`;
+const openCsv = async (r: string): Promise<any> => {
+  const fileName = `${EXPORT_BASE_DIR}/${r}.nquads.gz`;
+
+  await fs.mkdir(EXPORT_BASE_DIR, { recursive: true }, (err: any) => {
+    if (err) {
+      throw err;
+    }
+  });
 
   const file = zlib.createGzip();
   file.pipe(fs.createWriteStream(fileName));
@@ -47,6 +55,6 @@ const openCsv = (r: string): any => {
 export async function configure(): Promise<IConfig> {
   setNetwork();
   const { minSeq, maxSeq, total } = await setLimits();
-  const file = openCsv(`${minSeq}-${maxSeq}`);
+  const file = await openCsv(`${minSeq}-${maxSeq}`);
   return { minSeq, maxSeq, total, file };
 }
