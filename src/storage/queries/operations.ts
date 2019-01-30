@@ -99,28 +99,28 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
 
   public async call(): Promise<IOperationsQueryResult> {
     const r = await this.request();
-    if (!r.ops) {
-      return [];
-    }
-    return r.ops.map(OperationFactory.fromDgraph);
+    const ops = _.at(r, "account[0].operations"); 
+    return (ops[0] || []).map(OperationFactory.fromDgraph);
   }
 
   protected async request(): Promise<any> {
-    let query = "query operations($first: int, $offset: int) {";
+    let query = "query operations($accountID: string, $first: int, $offset: int) {";
 
     this.kinds.forEach(opKind => {
       const filters = FiltersBuilder.build(opKind, this.filters[opKind] || {});
 
       query += `
-        ${opKind} as var(func: has(${opKind})) ${filters.root} @cascade {
-          ${filters.nested}
-          ${this.accountID ? `account.source @filter(eq(id, ${this.accountID}))` : ""}
+        var(func: eq(id, $accountID)) @cascade  {
+          ${opKind} as operations ${filters.root} {
+            ${filters.nested}
+          }
         }
       `;
     });
 
     query += `
-        ops(func: uid(${this.kinds.join()}), first: $first, offset: $offset, orderdesc: order) {
+      account(func: eq(id, $accountID)) {
+        operations @filter(uid(${this.kinds.join(",")})) (first: $first, offset: $offset, orderdesc: order) {
           kind
           index
           ledger { close_time }
@@ -135,9 +135,10 @@ export class OperationsQuery extends Query<IOperationsQueryResult> {
             .join("\n")}
         }
       }
-    `;
+    }`;
 
     return this.connection.query(query, {
+      $accountID: this.accountID,
       $first: this.first.toString(),
       $offset: this.offset.toString()
     });

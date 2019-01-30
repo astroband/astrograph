@@ -10,11 +10,11 @@ import { Ingestor } from "./storage/ingestor";
 import { NQuads } from "./storage/nquads";
 import logger from "./util/logger";
 import "./util/memo";
-import { DGRAPH_URL } from "./util/secrets";
+import { DGRAPH_QUERY_URL } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
 
-if (!DGRAPH_URL) {
-  logger.error("Please, provide DGRAPH_URL env variable");
+if (!DGRAPH_QUERY_URL) {
+  logger.error("Please, provide DGRAPH_INGEST_URL or DGRAPH_URL env variable");
   process.exit(-1);
 }
 

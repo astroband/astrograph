@@ -17,10 +17,10 @@ export interface ITransactionTableRow {
 // NOTE: Might use some instantiation from static method here
 export class TransactionWithXDRFactory {
   public static fromDb(row: ITransactionTableRow): TransactionWithXDR {
-    const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(Buffer.from(row.txbody, "base64"));
-    const resultXDR = stellar.xdr.TransactionResultPair.fromXDR(Buffer.from(row.txresult, "base64"));
-    const metaXDR = stellar.xdr.TransactionMeta.fromXDR(Buffer.from(row.txmeta, "base64"));
-    const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(Buffer.from(row.txfeemeta, "base64"));
+    const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(row.txbody, "base64");
+    const resultXDR = stellar.xdr.TransactionResultPair.fromXDR(row.txresult, "base64");
+    const metaXDR = stellar.xdr.TransactionMeta.fromXDR(row.txmeta, "base64");
+    const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(row.txfeemeta, "base64");
 
     const body = bodyXDR.tx();
     const result = resultXDR.result();

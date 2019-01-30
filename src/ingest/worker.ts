@@ -4,7 +4,7 @@ import { Cursor } from "./cursor";
 import { SubscriptionPayloadCollection } from "./subscription_payload_collection";
 
 import { Connection } from "../storage/connection";
-import { DGRAPH_URL } from "../util/secrets";
+import { DGRAPH_INGEST_URL } from "../util/secrets";
 
 export class Worker {
   public cursor: Cursor;
@@ -22,8 +22,8 @@ export class Worker {
       const collection = new SubscriptionPayloadCollection(transactions);
       await Publisher.publish(header, collection);
 
-      if (DGRAPH_URL) {
-        const c = new Connection();
+      if (DGRAPH_INGEST_URL) {
+        const c = new Connection(DGRAPH_INGEST_URL);
         await c.importLedger(header, transactions);
         c.close();
       }
