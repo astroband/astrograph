@@ -1,7 +1,8 @@
 import _ from "lodash";
 import { OperationKinds } from "../../model/operation";
 import { Connection } from "../../storage/connection";
-import { OperationsQuery } from "../../storage/queries/operations";
+import { AccountOperationsQuery } from "../../storage/queries/account_operations";
+import { AssetOperationsQuery } from "../../storage/queries/asset_operations";
 
 export default {
   IOperation: {
@@ -33,11 +34,19 @@ export default {
     }
   },
   Query: {
-    operations(root: any, args: any, ctx: any, info: any) {
+    assetOperations(root: any, args: any, ctx: any, info: any) {
+      const { asset, kinds, first, offset } = args;
+      const conn = new Connection();
+
+      const query = new AssetOperationsQuery(conn, asset, kinds, first, offset);
+
+      return query.call();
+    },
+    accountOperations(root: any, args: any, ctx: any, info: any) {
       const { account, kinds, first, offset, filters } = args;
       const conn = new Connection();
 
-      const query = new OperationsQuery(conn, account, kinds, filters, first, offset);
+      const query = new AccountOperationsQuery(conn, account, kinds, filters, first, offset);
 
       return query.call();
     }
