@@ -436,8 +436,8 @@ export const typeDefs = gql`
   }
 
   input AssetInput {
-    code: AssetCode!
-    issuer: AccountID!
+    code: AssetCode
+    issuer: AccountID
   }
 
   input EventInput {
