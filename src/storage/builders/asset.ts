@@ -23,13 +23,15 @@ export class AssetBuilder extends Builder {
 
   public build(): NQuads {
     const issuer = this.asset.getIssuer() || NETWORK_MASTER_KEY;
+    const code = this.asset.getCode();
 
     this.pushKey();
 
     this.pushValue("type.asset", "");
     this.pushValue("type", "asset");
     this.pushValue("native", this.asset.isNative().toString());
-    this.pushValue("code", this.asset.getCode());
+    this.pushValue("code", code);
+    this.pushValue("asset.id", `${code}-${issuer}`);
 
     this.pushBuilder(new AccountBuilder(issuer), "issuer", "assets.issued");
 

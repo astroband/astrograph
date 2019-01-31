@@ -7,7 +7,7 @@ setNetwork();
 const StellarAmountPrecision = 7;
 
 export const NATIVE_ASSET_CODE = "XLM";
-export const NETWORK_MASTER_KEY = Keypair.master();
+export const NETWORK_MASTER_KEY = Keypair.master().publicKey();
 
 export type MemoType = "hash" | "return" | "text" | "id";
 
