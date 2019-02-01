@@ -1,15 +1,23 @@
 import "./util/memo";
 
+import * as Sentry from "@sentry/node";
+
 import { ApolloError, ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
-import Honeybadger from "honeybadger";
 
 import { Cursor, Worker } from "./ingest";
 import schema from "./schema";
 import { Connection } from "./storage/connection";
 import logger from "./util/logger";
-import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_QUERY_URL, INGEST_INTERVAL, PORT } from "./util/secrets";
+import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_QUERY_URL, INGEST_INTERVAL, PORT, SENTRY_DSN } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
+
+if (SENTRY_DSN) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    integrations: [new Sentry.Integrations.RewriteFrames({ root: __dirname || process.cwd() })]
+  });
+}
 
 const server = new ApolloServer({
   schema,
@@ -22,7 +30,7 @@ const server = new ApolloServer({
     logger.error(error);
 
     if (!error.originalError || error.originalError.constructor.name !== "UserInputError") {
-      Honeybadger.notify(error);
+      Sentry.captureException(error);
     }
 
     return new GraphQLError(
@@ -44,7 +52,7 @@ if (DGRAPH_QUERY_URL) {
   logger.info(`[DGraph] Updating schema...`);
   new Connection().migrate().catch((err: any) => {
     logger.error(err);
-    Honeybadger.notify(err);
+    Sentry.captureException(err);
     process.exit(-1);
   });
 }
@@ -75,7 +83,7 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
           return;
         }
 
-        Honeybadger.notify(e);
+        Sentry.captureException(e);
       });
   };
 
