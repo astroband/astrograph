@@ -4,6 +4,20 @@ const schemaWithComments = `
   # common
   order: int @index(int) .
   key: string @index(hash) .
+  type.account: string .
+  type.asset: string .
+  type.ledger: string .
+  type.operation: string .
+  type.transaction: string .
+  type.trust_line_entry: string .
+  kind.setOption: string .
+  kind.payment: string .
+  kind.pathPayment: string .
+  kind.manageOffer: string .
+  kind.manageDatum: string .
+  kind.createAccount: string .
+  kind.changeTrust: string .
+  kind.allowTrust: string .
 
   # ledgers
   ledger.id: int @index(int) .
@@ -12,6 +26,7 @@ const schemaWithComments = `
   base_reserve: int .
   max_tx_set_size: int .
   close_time: dateTime @index(hour) .
+  _ingested: bool .
 
   # accounts
   account.id: string @index(exact) .
@@ -37,6 +52,9 @@ const schemaWithComments = `
   time_bounds.max: dateTime .
   memo.type: string .
   memo.value: string .
+
+  # trustline entry
+  balance: string .
 
   # operations
   op.id: string @index(exact) .
@@ -93,6 +111,7 @@ const schemaWithComments = `
   path_payment_op.assets_path: uid @reverse .
   send_max: int .
   dest_amount: int .
+  path_payment_result_code: int .
   
   # set options
   set_options_op.signer: uid @reverse .
