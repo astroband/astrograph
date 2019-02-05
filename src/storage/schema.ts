@@ -132,6 +132,6 @@ const schemaWithComments = `
 `;
 
 // remove comments
-const validDgraphSchema = schemaWithComments.replace(/#.+$/mg, "");
+const validDgraphSchema = schemaWithComments.replace(/#.+$/gm, "");
 
 export { validDgraphSchema as SCHEMA };

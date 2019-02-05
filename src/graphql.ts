@@ -7,9 +7,8 @@ import { GraphQLError } from "graphql";
 
 import { Cursor, Worker } from "./ingest";
 import schema from "./schema";
-import { Connection } from "./storage/connection";
 import logger from "./util/logger";
-import { BIND_ADDRESS, DEBUG_LEDGER, DGRAPH_QUERY_URL, INGEST_INTERVAL, PORT, SENTRY_DSN } from "./util/secrets";
+import { BIND_ADDRESS, DEBUG_LEDGER, INGEST_INTERVAL, PORT, SENTRY_DSN } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
 
 if (SENTRY_DSN) {
@@ -47,15 +46,6 @@ const server = new ApolloServer({
 
 const network = setStellarNetwork();
 logger.info(`Using ${network}`);
-
-if (DGRAPH_QUERY_URL) {
-  logger.info(`[DGraph] Updating schema...`);
-  new Connection().migrate().catch((err: any) => {
-    logger.error(err);
-    Sentry.captureException(err);
-    process.exit(-1);
-  });
-}
 
 Cursor.build(DEBUG_LEDGER).then(cursor => {
   logger.info(

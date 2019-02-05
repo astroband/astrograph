@@ -88,7 +88,8 @@
     "test:unit": "NODE_ENV=test yarn run jest tests/unit",
     "test:integration": "NODE_ENV=test yarn run jest tests/integration",
     "test": "NODE_ENV=test yarn run jest",
-    "export": "ts-node ./src/export.ts"
+    "export": "ts-node ./src/export.ts",
+    "dgraph-migrate": "ts-node ./src/migrate.ts"
   },
   "license": "MIT",
   "private": true
