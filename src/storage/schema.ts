@@ -4,151 +4,134 @@ const schemaWithComments = `
   # common
   order: int @index(int) .
   key: string @index(hash) .
-  id: string @index(exact) .
-  type.account: default .
-  type.asset: default .
-  type.ledger: default .
-  type.operation: default .
-  type.transaction: default .
-  type.trust_line_entry: default .
-  kind.accountMerge: default .
-  kind.allowTrust: default .
-  kind.changeTrust: default .
-  kind.createAccount: default .
-  kind.createPassiveOffer: default .
-  kind.inflation: default .
-  kind.manageDatum: default .
-  kind.manageOffer: default .
-  kind.pathPayment: default .
-  kind.payment: default .
-  kind.setOption: default .
-  index: int @index(int) .
-  account.source: [uid] .
-  ledger: [uid] .
-  next: [uid] .
-  prev: [uid] .
-  asset: [uid] .
 
   # ledgers
-  seq: int @index(int) .
-  version: default .
-  base_fee: default .
-  base_reserve: default .
-  max_tx_set_size: default .
-  close_time: datetime @index(hour) .
-  _ingested: default .
+  ledger.id: int @index(int) .
+  version: int .
+  base_fee: int .
+  base_reserve: int .
+  max_tx_set_size: int .
+  close_time: dateTime @index(hour) .
 
   # accounts
+  account.id: string @index(exact) .
   deleted: bool @index(bool) .
-  assets.issued: [uid] .
-  operations: [uid] .
-  transactions: [uid] .
 
   # assets
-  asset.id: default .
-  issuer: [uid] .
+  asset.id: string @index(exact) .
+  asset.issuer: uid @reverse .
   code: string @index(exact) .
   native: bool @index(bool) .
 
   # transactions
-  result_code: default .
-  fee_amount: default .
-  fee_charged: default .
-  success: default .
-  time_bounds.min: default .
-  time_bounds.max: default .
-  memo.type: default .
-  memo.value: default .
-
-  # trustline entry
-  balance: default .
+  tx.id: string @index(exact) .
+  tx.ledger: uid @reverse .
+  tx.source: uid @reverse .
+  tx.index: int .
+  tx.next: uid @reverse .
+  result_code: int .
+  fee_amount: int .
+  fee_charged: int .
+  success: bool @index(bool) .
+  time_bounds.min: dateTime .
+  time_bounds.max: dateTime .
+  memo.type: string .
+  memo.value: string .
 
   # operations
-  transaction: [uid] .
-  kind: string @index(hash) .
-  amount: int @index(int) .
-  account.destination: [uid] .
-  result: [uid] .
+  op.id: string @index(exact) .
+  op.transaction: uid @reverse .
+  op.index: int .
+  op.source: uid @reverse .
+  op.destination: uid @reverse .
+  op.kind: string @index(hash) .
+  amount: int .
 
   # account merge
-  account_merge_result_code: default .
+  result: uid .
+  account_merge_result_code: int .
 
   # allow trust
-  trustor: [uid] .
+  allow_trust_op.trustor: uid @reverse .
   asset_code: string @index(exact) .
   authorize: bool @index(bool) .
-  allow_trust_result_code: default .
+  allow_trust_result_code: int .
 
   # bump sequence
   bump_to: int @index(int) .
+  bump_sequence_result_code: int .
 
   # change trust
+  change_trust_op.asset: uid @reverse .
   limit: int @index(int) .
-  change_trust_result_code: default .
+  change_trust_result_code: int .
 
   # create account
   starting_balance: int @index(int) .
-  create_account_result_code: default .
+  create_account_result_code: int .
 
   # manage data
   name: string @index(exact) .
-  value: string @index(exact) .
-  manage_data_result_code: default .
+  value: string @index(exact) . 
+  manage_data_result_code: int .
 
   # manage offer
-  asset.buying: [uid] .
-  asset.selling: [uid] .
-  price_n: default .
-  price_d: default .
-  price: float @index(float) .
-  offer_id: string @index(exact) .
+  manage_offer_op.asset_buying: uid @reverse .
+  manage_offer_op.asset_selling: uid @reverse .
+  price_n: int .
+  price_d: int .
+  price: float .
+  offer_id: string @index (exact) .
 
   # payment
-  payment_result_code: default .
+  payment_op.asset: uid @reverse .
+  payment_result_code: int .
 
   # path payment
-  asset.source: [uid] .
-  asset.destination: [uid] .
-  assets.path: [uid] .
-  send_max: default .
-  dest_amount: default .
-  path_payment_result_code: default .
-
+  path_payment_op.asset_source: uid @reverse .
+  path_payment_op.asset_destination: uid @reverse .
+  path_payment_op.assets_path: uid @reverse .
+  send_max: int .
+  dest_amount: int .
+  
   # set options
-  signer: [uid] .
-  account.inflation_dest: [uid] .
-  clear_flags: default .
-  set_flags: default .
-  master_weight: default .
-  home_domain: default .
-  thresholds: [uid] .
-  set_options_result_code: default .
+  set_options_op.signer: uid @reverse .
+  set_options_op.inflation_destination: uid .
+  clear_flags: int .
+  set_flags: int .
+  master_weight: int .
+  signer: uid .
+  home_domain: string .
+  thresholds: uid .
+  set_options_result_code: int .
 
   # thresholds
-  low: default .
-  med: default .
-  high: default .
+  high: int .
+  med: int .
+  low: int .
 
   # signer
-  account: [uid] .
-  weight: default .
+  account: uid .
+  weight: int .
 
   # operation results
   # account merge result
   source_account_balance: int .
 
   # path payment result
-  no_issuer: [uid] .
-  last: [uid] .
-  offers: [uid] .
-  asset.sold: [uid] .
-  asset.bought: [uid] .
-  amount_sold: default .
-  amount_bought: default .
-  seller: [uid] .
+  path_payment_result.no_issuer: uid .
+  path_payment_result.last: uid .
+  destination: uid .
+  last.asset: uid .
+  path_payment_result.offers: uid .
+  asset_sold: uid .
+  asset_bought: uid .
+  amount_sold: int .
+  amount_bought: int .
+  seller: uid .
 `;
 
 // remove comments
-const validDgraphSchema = schemaWithComments.replace(/#.+$/gm, "");
+const validDgraphSchema = schemaWithComments.replace(/#.+$/mg, "");
 
 export { validDgraphSchema as SCHEMA };
