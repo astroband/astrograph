@@ -7,30 +7,7 @@ import { DGRAPH_QUERY_URL } from "../util/secrets";
 import { Cache } from "./cache";
 import { Ingestor } from "./ingestor";
 import { NQuads } from "./nquads";
-
-const SCHEMA = `
-  type: string @index(hash) .
-  key: string @index(hash) .
-  seq: int @index(int) .
-  id: string @index(exact) .
-  index: int @index(int) .
-  order: int @index(int) .
-  code: string @index (exact) .
-  native: bool @index (bool) .
-  deleted: bool @index (bool) .
-  kind: string @index(hash) .
-  amount: int @index (int) .
-  price: float @index (float) .
-  starting_balance: int @index (int) .
-  close_time: dateTime @index (hour) .
-  authorize: bool @index (bool) .
-  asset_code: string @index (exact) .
-  bump_to: int @index (int) .
-  limit: int @index (int) .
-  name: string @index (exact) .
-  value: string @index (exact) .
-  offer_id: string @index (exact) .
-`;
+import { SCHEMA } from "./schema";
 
 export class Connection {
   private stub: any;
