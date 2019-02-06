@@ -34,7 +34,7 @@ export class AccountTransactionsQuery extends Query<IAccountTransactionsQueryRes
               offset: $offset,
               orderdesc: order
             ) {
-              account.source { id }
+              account.source { account.id }
               memo.value
               memo.type
               fee_amount
