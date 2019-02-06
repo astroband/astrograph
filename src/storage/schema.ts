@@ -4,12 +4,6 @@ const schemaWithComments = `
   # common
   order: int @index(int) .
   key: string @index(hash) .
-  type.account: string .
-  type.asset: string .
-  type.ledger: string .
-  type.operation: string .
-  type.transaction: string .
-  type.trust_line_entry: string .
   kind.setOption: string .
   kind.payment: string .
   kind.pathPayment: string .
@@ -21,11 +15,12 @@ const schemaWithComments = `
 
   # ledgers
   ledger.id: int @index(int) .
+  ledger.prev: uid @reverse .
   version: int .
   base_fee: int .
   base_reserve: int .
   max_tx_set_size: int .
-  close_time: dateTime @index(hour) .
+  close_time: datetime @index(hour) .
   _ingested: bool .
 
   # accounts
@@ -43,7 +38,7 @@ const schemaWithComments = `
   tx.ledger: uid @reverse .
   tx.source: uid @reverse .
   tx.index: int .
-  tx.next: uid @reverse .
+  tx.prev: uid @reverse .
   result_code: int .
   fee_amount: int .
   fee_charged: int .
@@ -53,7 +48,7 @@ const schemaWithComments = `
   memo.type: string .
   memo.value: string .
 
-  # trustline entry
+  # ledger change
   balance: string .
 
   # operations
@@ -63,39 +58,41 @@ const schemaWithComments = `
   op.source: uid @reverse .
   op.destination: uid @reverse .
   op.kind: string @index(hash) .
+  op.prev: uid @reverse .
   amount: int .
 
   # account merge
   result: uid .
-  account_merge_result_code: int .
+  account_merge_op.result_code: int .
 
   # allow trust
   allow_trust_op.trustor: uid @reverse .
-  asset_code: string @index(exact) .
+  allow_trust_op.result_code: int .
+  allow_trust_op.asset: uid @reverse .
   authorize: bool @index(bool) .
-  allow_trust_result_code: int .
 
   # bump sequence
+  bump_sequence_op.result_code: int .
   bump_to: int @index(int) .
-  bump_sequence_result_code: int .
 
   # change trust
   change_trust_op.asset: uid @reverse .
+  change_trust_op.result_code: int .
   limit: int @index(int) .
-  change_trust_result_code: int .
 
   # create account
   starting_balance: int @index(int) .
-  create_account_result_code: int .
+  create_account_op.result_code: int .
 
   # manage data
+  manage_data_op.result_code: int .
   name: string @index(exact) .
   value: string @index(exact) . 
-  manage_data_result_code: int .
 
   # manage offer
   manage_offer_op.asset_buying: uid @reverse .
   manage_offer_op.asset_selling: uid @reverse .
+  manage_offer_op.result_code: int .
   price_n: int .
   price_d: int .
   price: float .
@@ -109,20 +106,20 @@ const schemaWithComments = `
   path_payment_op.asset_source: uid @reverse .
   path_payment_op.asset_destination: uid @reverse .
   path_payment_op.assets_path: uid @reverse .
+  path_payment_op.result_code: int .
   send_max: int .
   dest_amount: int .
-  path_payment_result_code: int .
   
   # set options
   set_options_op.signer: uid @reverse .
   set_options_op.inflation_destination: uid .
+  set_options_op.result_code: int .
   clear_flags: int .
   set_flags: int .
   master_weight: int .
   signer: uid .
   home_domain: string .
   thresholds: uid .
-  set_options_result_code: int .
 
   # thresholds
   high: int .
