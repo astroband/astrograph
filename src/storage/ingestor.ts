@@ -39,6 +39,8 @@ export class Ingestor {
     // all transactions and operations, and not just created as a predicate for some other nodes
     nquads.push(new NQuad(LedgerBuilder.keyNQuad(header.ledgerSeq), "_ingested", NQuad.value(true)));
 
+    console.log(nquads);
+
     return nquads;
   }
 }

@@ -6,7 +6,7 @@ export class NQuads extends Array<NQuad> {
   public push(...items: NQuad[]): number {
     for (const item of items) {
       if (!item) {
-        return this.length;
+        continue;
       }
 
       const n = this.index.get(item.key);
@@ -19,6 +19,7 @@ export class NQuads extends Array<NQuad> {
       this.index.set(item.key, this.length);
       this[this.length] = item;
     }
+
     return this.length;
   }
 
