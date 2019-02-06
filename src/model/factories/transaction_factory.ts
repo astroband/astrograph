@@ -24,7 +24,7 @@ export class TransactionFactory {
       feeCharged: node.fee_charged,
       success: node.success,
       resultCode: node.result_code,
-      sourceAccount: node["account.source"][0].id,
+      sourceAccount: node["account.source"][0]["account.id"],
       timeBounds
     });
   }

@@ -37,7 +37,7 @@ export abstract class Builder {
 
   protected pushPrev(predicatePrefix?: string) {
     if (!this.prev) {
-      return
+      return;
     }
 
     const predicate = predicatePrefix ? `${predicatePrefix}.prev` : "prev";

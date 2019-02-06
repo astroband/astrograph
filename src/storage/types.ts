@@ -121,7 +121,7 @@ export interface IAssetData {
 }
 
 export interface IAccountData {
-  id: AccountID;
+  "account.id": AccountID;
   // it's incomplete
 }
 
