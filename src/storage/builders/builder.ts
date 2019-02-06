@@ -35,11 +35,13 @@ export abstract class Builder {
     this.pushValue("key", this.current.value);
   }
 
-  protected pushPrev() {
-    if (this.prev) {
-      this.nquads.push(new NQuad(this.current, "prev", this.prev));
-      this.nquads.push(new NQuad(this.prev, "next", this.current));
+  protected pushPrev(predicatePrefix?: string) {
+    if (!this.prev) {
+      return
     }
+
+    const predicate = predicatePrefix ? `${predicatePrefix}.prev` : "prev";
+    this.nquads.push(new NQuad(this.current, predicate, this.prev));
   }
 
   protected pushLedger(seq: number) {
