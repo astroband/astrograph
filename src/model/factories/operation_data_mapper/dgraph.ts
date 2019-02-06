@@ -26,7 +26,7 @@ export class DataMapper {
   constructor(private data: DgraphOperationsData) {
     this.baseData = {
       kind: data.kind,
-      account: data["account.source"][0].id,
+      account: data["account.source"][0]["account.id"],
       index: parseInt(data.index, 10),
       dateTime: new Date(data.ledger[0].close_time),
       transactionId: data.transaction[0].id
@@ -61,13 +61,13 @@ export class DataMapper {
 
   private mapPayment(): IPaymentOperation {
     const assetData = this.data.asset[0];
-    const asset = assetData.native ? Asset.native() : new Asset(assetData.code, assetData.issuer[0].id);
+    const asset = assetData.native ? Asset.native() : new Asset(assetData.code, assetData.issuer[0]["account.id"]);
 
     return {
       ...this.baseData,
       ...{
-        destination: this.data["account.destination"][0].id,
-        source: this.data["account.source"][0].id,
+        destination: this.data["account.destination"][0]["account.id"],
+        source: this.data["account.source"][0]["account.id"],
         amount: this.data.amount,
         asset
       }
@@ -78,7 +78,7 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{
-        destination: this.data["account.destination"][0].id
+        destination: this.data["account.destination"][0]["account.id"]
       }
     };
   }
@@ -99,9 +99,9 @@ export class DataMapper {
           medium: parseInt(this.data.thresholds[0].med, 10),
           low: parseInt(this.data.thresholds[0].low, 10)
         },
-        inflationDestination: this.data["account.inflation_dest"][0].id,
+        inflationDestination: this.data["account.inflation_dest"][0]["account.id"],
         signer: {
-          account: this.data.signer[0].account[0].id,
+          account: this.data.signer[0].account[0]["account.id"],
           weight: parseInt(this.data.signer[0].weight, 10)
         }
       }
@@ -112,7 +112,7 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{
-        trustor: this.data.trustor[0].id,
+        trustor: this.data.trustor[0]["account.id"],
         authorize: this.data.authorize,
         assetCode: this.data.asset_code
       }
@@ -127,7 +127,7 @@ export class DataMapper {
   }
 
   private mapChangeTrust(): IChangeTrustOperation {
-    const asset = new Asset(this.data.asset[0].code, this.data.asset[0].issuer[0].id);
+    const asset = new Asset(this.data.asset[0].code, this.data.asset[0].issuer[0]["account.id"]);
 
     return {
       ...this.baseData,
@@ -140,7 +140,7 @@ export class DataMapper {
       ...this.baseData,
       ...{
         startingBalance: this.data.starting_balance,
-        destination: this.data["account.destination"][0].id
+        destination: this.data["account.destination"][0]["account.id"]
       }
     };
   }
@@ -158,10 +158,10 @@ export class DataMapper {
 
     const assetBuying = assetBuyingData.native
       ? Asset.native()
-      : new Asset(assetBuyingData.code, assetBuyingData.issuer[0].id);
+      : new Asset(assetBuyingData.code, assetBuyingData.issuer[0]["account.id"]);
     const assetSelling = assetSellingData.native
       ? Asset.native()
-      : new Asset(assetSellingData.code, assetSellingData.issuer[0].id);
+      : new Asset(assetSellingData.code, assetSellingData.issuer[0]["account.id"]);
 
     return {
       ...this.baseData,
@@ -185,22 +185,22 @@ export class DataMapper {
 
     const destinationAsset = destinationAssetData.native
       ? Asset.native()
-      : new Asset(destinationAssetData.code, destinationAssetData.issuer[0].id);
+      : new Asset(destinationAssetData.code, destinationAssetData.issuer[0]["account.id"]);
     const sourceAsset = sourceAssetData.native
       ? Asset.native()
-      : new Asset(sourceAssetData.code, sourceAssetData.issuer[0].id);
+      : new Asset(sourceAssetData.code, sourceAssetData.issuer[0]["account.id"]);
 
     return {
       ...this.baseData,
       ...{
         sendMax: this.data.send_max,
         destinationAmount: this.data.dest_amount,
-        destinationAccount: this.data["account.destination"][0].id,
+        destinationAccount: this.data["account.destination"][0]["account.id"],
         destinationAsset,
-        sourceAccount: this.data["account.source"][0].id,
+        sourceAccount: this.data["account.source"][0]["account.id"],
         sourceAsset,
         path: this.data["assets.path"].map((assetData: IAssetData) => {
-          return assetData.native ? Asset.native() : new Asset(assetData.code, assetData.issuer[0].id);
+          return assetData.native ? Asset.native() : new Asset(assetData.code, assetData.issuer[0]["account.id"]);
         })
       }
     };

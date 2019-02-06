@@ -35,14 +35,14 @@ export class AssetOperationsQuery extends Query<IAssetOperationsQueryResult> {
     const opKindFilter = this.kinds.map(opKind => `has(kind.${opKind})`).join(" OR ");
 
     const query = `query assetOperations($code: string, $issuer: string, $first: int, $offset: int) {
-      issuer(func: eq(id, $issuer)) {
+      issuer(func: eq(account.id, $issuer)) {
         assets.issued @filter(eq(code, $code))  {
           operations @filter(${opKindFilter}) (first: $first, offset: $offset, orderdesc: order) {
             kind
             index
             ledger { close_time }
             transaction { id }
-            account.source { id }
+            account.source { account.id }
             ${_
               .chain(this.kinds)
               .map(opKind => queryPredicates[opKind])

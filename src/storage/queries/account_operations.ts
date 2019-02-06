@@ -110,7 +110,7 @@ export class AccountOperationsQuery extends Query<IAccountOperationsQueryResult>
       const filters = FiltersBuilder.build(opKind, this.filters[opKind] || {});
 
       query += `
-        var(func: eq(id, $accountID)) @cascade  {
+        var(func: eq(account.id, $accountID)) @cascade  {
           ${opKind} as operations ${filters.root} {
             ${filters.nested}
           }
@@ -119,13 +119,13 @@ export class AccountOperationsQuery extends Query<IAccountOperationsQueryResult>
     });
 
     query += `
-      account(func: eq(id, $accountID)) {
+      account(func: eq(account.id, $accountID)) {
         operations @filter(uid(${this.kinds.join(",")})) (first: $first, offset: $offset, orderdesc: order) {
           kind
           index
           ledger { close_time }
           transaction { id }
-          account.source { id }
+          account.source { account.id }
           ${_
             .chain(this.kinds)
             .map(opKind => queryPredicates[opKind])

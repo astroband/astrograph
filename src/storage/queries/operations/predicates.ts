@@ -4,12 +4,12 @@ import { OperationKinds } from "../../../model/operation";
 
 export const queryPredicates = {
   [OperationKinds.Payment]: [
-    "account.destination { id }",
+    "account.destination { account.id }",
     "amount",
     `asset {
       native
       code
-      issuer { id }
+      issuer { account.id }
     }`
   ],
   [OperationKinds.SetOption]: [
@@ -22,24 +22,24 @@ export const queryPredicates = {
       med
       low
     }`,
-    "account.inflation_dest { id }",
+    "account.inflation_dest { account.id }",
     `signer {
-      account { id }
+      account { account.id }
       weight
     }`
   ],
-  [OperationKinds.AccountMerge]: ["account.destination { id }"],
-  [OperationKinds.AllowTrust]: ["trustor { id }", "asset_code", "authorize"],
+  [OperationKinds.AccountMerge]: ["account.destination { account.id }"],
+  [OperationKinds.AllowTrust]: ["trustor { account.id }", "asset_code", "authorize"],
   [OperationKinds.BumpSequence]: ["bump_to"],
   [OperationKinds.ChangeTrust]: [
     "limit",
     `asset {
       native
       code
-      issuer { id }
+      issuer { account.id }
     }`
   ],
-  [OperationKinds.CreateAccount]: ["starting_balance", "account.destination { id }"],
+  [OperationKinds.CreateAccount]: ["starting_balance", "account.destination { account.id }"],
   [OperationKinds.ManageData]: ["name", "value"],
   [OperationKinds.ManageOffer]: [
     "offer_id",
@@ -49,33 +49,33 @@ export const queryPredicates = {
     `asset.buying {
       native
       code
-      issuer { id }
+      issuer { account.id }
     }`,
     `asset.selling {
       native
       code
-      issuer { id }
+      issuer { account.id }
     }`,
     "amount"
   ],
   [OperationKinds.PathPayment]: [
     "send_max",
     "dest_amount",
-    "account.destination { id }",
+    "account.destination { account.id }",
     `asset.destination {
       native
       code
-      issuer { id }
+      issuer { account.id }
     }`,
     `asset.source {
       native
       code
-      issuer { id }
+      issuer { account.id }
     }`,
     `assets.path {
       native
       code
-      issuer { id }
+      issuer { account.id }
     }`
   ]
 };
