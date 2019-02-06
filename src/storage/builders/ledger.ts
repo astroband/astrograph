@@ -25,9 +25,7 @@ export class LedgerBuilder extends Builder {
 
   public build(): NQuads {
     const values = {
-      "type.ledger": "",
-      type: "ledger",
-      seq: this.seq,
+      "ledger.id": this.seq,
       order: this.order(this.seq),
       version: this.header.ledgerVersion,
       base_fee: this.header.baseFee,
@@ -37,7 +35,7 @@ export class LedgerBuilder extends Builder {
     };
 
     this.pushKey();
-    this.pushPrev();
+    this.pushPrev("ledger");
     this.pushValues(values);
 
     return this.nquads;
