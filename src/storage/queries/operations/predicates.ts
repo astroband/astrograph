@@ -9,7 +9,7 @@ export const queryPredicates = {
     `asset {
       native
       code
-      issuer { account.id }
+      asset.issuer { account.id }
     }`
   ],
   [OperationKinds.SetOption]: [
@@ -36,7 +36,7 @@ export const queryPredicates = {
     `asset {
       native
       code
-      issuer { account.id }
+      asset.issuer { account.id }
     }`
   ],
   [OperationKinds.CreateAccount]: ["starting_balance", "account.destination { account.id }"],
@@ -49,12 +49,12 @@ export const queryPredicates = {
     `asset.buying {
       native
       code
-      issuer { account.id }
+      asset.issuer { account.id }
     }`,
     `asset.selling {
       native
       code
-      issuer { account.id }
+      asset.issuer { account.id }
     }`,
     "amount"
   ],
@@ -65,17 +65,17 @@ export const queryPredicates = {
     `asset.destination {
       native
       code
-      issuer { account.id }
+      asset.issuer { account.id }
     }`,
     `asset.source {
       native
       code
-      issuer { account.id }
+      asset.issuer { account.id }
     }`,
     `assets.path {
       native
       code
-      issuer { account.id }
+      asset.issuer { account.id }
     }`
   ]
 };
