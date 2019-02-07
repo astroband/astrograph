@@ -7,9 +7,11 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
 
-    this.pushValue("clear_flags", this.xdr.clearFlags());
-    this.pushValue("set_flags", this.xdr.setFlags());
-    this.pushValue("master_weight", this.xdr.masterWeight());
+    this.pushValues({
+      clear_flags: this.xdr.clearFlags(),
+      set_flags: this.xdr.setFlags(),
+      master_weight: this.xdr.masterWeight()
+    });
 
     this.pushInflationDest();
     this.pushThresholds();
@@ -22,7 +24,7 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
 
   protected pushResult() {
     const code = this.trXDR.setOptionsResult().switch().value;
-    this.pushValue("set_options_result_code", code);
+    this.pushValue(`${this.entityPrefix}.result_code`, code);
   }
 
   private pushThresholds() {
@@ -67,7 +69,7 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     const signerNquad = NQuad.blank(`${this.current.value}_signer`);
     const signerBuilder = new AccountBuilder(signer.address);
 
-    this.nquads.push(new NQuad(this.current, "signer", signerNquad));
+    this.nquads.push(new NQuad(this.current, `${this.entityPrefix}.signer`, signerNquad));
     this.nquads.push(...signerBuilder.build());
 
     this.nquads.push(new NQuad(signerNquad, "account", signerBuilder.current));
@@ -80,6 +82,10 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     }
 
     const inflationDestination = publicKeyFromBuffer(this.xdr.inflationDest().value());
-    this.pushBuilder(new AccountBuilder(inflationDestination), "account.inflation_dest");
+    this.pushBuilder(new AccountBuilder(inflationDestination), `${this.entityPrefix}.inflation_destination`);
+  }
+
+  private get entityPrefix() {
+    return "set_options_op";
   }
 }

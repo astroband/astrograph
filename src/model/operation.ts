@@ -3,7 +3,6 @@
 // of data that is stored in Dgraph
 import { AccountID } from "./account_id";
 import { Asset } from "./asset";
-import { AssetCode } from "./asset_code";
 
 export enum OperationKinds {
   Payment = "payment",
@@ -55,7 +54,7 @@ export interface IAccountMergeOperation extends IBaseOperation {
 }
 
 export interface IAllowTrustOperation extends IBaseOperation {
-  assetCode: AssetCode;
+  asset: Asset;
   trustor: AccountID;
   authorize: boolean;
 }

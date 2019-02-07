@@ -15,7 +15,6 @@ export class ManageOfferOpBuilder extends Builder {
       n: this.xdr.price().n(),
       d: this.xdr.price().d()
     };
-    // const priceNquad = NQuad.blank(`${this.current.value}_price`);
 
     this.pushValue("price_n", price.n);
     this.pushValue("price_d", price.d);
@@ -23,8 +22,8 @@ export class ManageOfferOpBuilder extends Builder {
 
     this.pushValue("amount", this.xdr.amount().toString());
     this.pushValue("offer_id", this.xdr.offerId().toString());
-    this.pushBuilder(new AssetBuilder(selling), "asset.selling", "operations");
-    this.pushBuilder(new AssetBuilder(buying), "asset.buying", "operations");
+    this.pushBuilder(new AssetBuilder(selling), "manage_offer_op.asset_selling", "operations");
+    this.pushBuilder(new AssetBuilder(buying), "manage_offer_op.asset_buying", "operations");
 
     return this.nquads;
   }

@@ -25,17 +25,17 @@ export interface ITransactionData {
 }
 
 interface IOperationData {
-  kind: OperationKinds;
-  ledger: ILedgerData[];
-  index: string;
-  transaction: ITransactionData[];
+  "op.kind": OperationKinds;
+  "op.ledger": ILedgerData[];
+  "op.index": string;
+  "op.transaction": ITransactionData[];
+  "op.source": IAccountData[];
+  "op.destination": IAccountData[];
 }
 
 export interface IPaymentOperationData extends IOperationData {
-  "account.source": IAccountData[];
-  "account.destination": IAccountData[];
   amount: string;
-  asset: IAssetData[];
+  "payment_op.asset": IAssetData[];
 }
 
 export interface ISetOptionsOperationData extends IOperationData {
@@ -48,20 +48,16 @@ export interface ISetOptionsOperationData extends IOperationData {
     med: string;
     low: string;
   };
-  "account.inflation_dest": IAccountData[];
-  signer: {
+  "set_options_op.inflation_destination": IAccountData[];
+  "set_options_op.signer": {
     account: IAccountData[];
     weight: string;
   };
 }
 
-export interface IAccountMergeOperationData extends IOperationData {
-  "account.destination": IAccountData[];
-}
-
 export interface IAllowTrustOperationData extends IOperationData {
-  trustor: IAccountData[];
-  asset_code: AssetCode;
+  "allow_trust_op.trustor": IAccountData[];
+  "allow_trust_op.asset": IAssetData[];
   authorize: boolean;
 }
 
@@ -71,13 +67,13 @@ export interface IBumpSequenceOperationData extends IOperationData {
 
 export interface IChangeTrustOperationData extends IOperationData {
   limit: string;
-  asset: IAssetData[];
+  "change_trust_op.asset": IAssetData[];
 }
 
 export interface ICreateAccountOperationData extends IOperationData {
   starting_balance: string;
-  "account.destination": IAccountData[];
 }
+
 export interface IManageDataOperationData extends IOperationData {
   name: string;
   value: string;
@@ -88,23 +84,21 @@ export interface IManageOfferOperationData extends IOperationData {
   price_d: string;
   price: number;
   offer_id: string;
-  "asset.selling": IAssetData[];
-  "asset.buying": IAssetData[];
+  "manage_offer_op.asset_selling": IAssetData[];
+  "manage_offer_op.asset_buying": IAssetData[];
   amount: number;
 }
 
 export interface IPathPaymentOperationData extends IOperationData {
   send_max: string;
   dest_amount: string;
-  "account.destination": IAccountData[];
-  "asset.destination": IAssetData[];
-  "asset.source": IAssetData[];
-  "assets.path": IAssetData[];
+  "path_payment_op.asset_destination": IAssetData[];
+  "path_payment_op.asset_source": IAssetData[];
+  "path_payment_op.assets_path": IAssetData[];
 }
 
 export type DgraphOperationsData = IPaymentOperationData &
   ISetOptionsOperationData &
-  IAccountMergeOperationData &
   IAllowTrustOperationData &
   IBumpSequenceOperationData &
   IChangeTrustOperationData &

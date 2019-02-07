@@ -9,13 +9,13 @@ export class ChangeTrustOpBuilder extends SpecificOperationBuilder {
     this.pushValue("limit", this.xdr.limit().toString());
 
     const asset = Asset.fromOperation(this.xdr.line());
-    this.pushBuilder(new AssetBuilder(asset), "asset", "operations");
+    this.pushBuilder(new AssetBuilder(asset), "change_trust_op.asset");
 
     return this.nquads;
   }
 
   protected pushResult() {
     const code = this.trXDR.changeTrustResult().switch().value;
-    this.pushValue("change_trust_result_code", code);
+    this.pushValue("change_trust.result_code", code);
   }
 }

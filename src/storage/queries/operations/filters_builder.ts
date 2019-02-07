@@ -88,9 +88,9 @@ function buildPaymentsFilters(params: IPaymentsQueryParams) {
   return {
     root: [],
     nested: _.filter([
-      params.asset && buildAssetFilter(params.asset.code, params.asset.issuer),
-      params.destination && `account.destination @filter(eq(id, "${params.destination}"))`,
-      params.source && `account.source @filter(eq(id, "${params.source}"))`
+      params.asset && buildAssetFilter(params.asset.code, params.asset.issuer, "payment_op.asset"),
+      params.destination && `op.destination @filter(eq(account.id, "${params.destination}"))`,
+      params.source && `op.source @filter(eq(account.id, "${params.source}"))`
     ]) as string[]
   };
 }
@@ -98,7 +98,7 @@ function buildPaymentsFilters(params: IPaymentsQueryParams) {
 function buildAccountMergeFilters(params: IAccountMergeQueryParams) {
   return {
     root: [],
-    nested: params.destination ? [`account.destination @filter(eq(id, "${params.destination}"))`] : []
+    nested: params.destination ? [`op.destination @filter(eq(account.id, "${params.destination}"))`] : []
   };
 }
 
@@ -115,7 +115,7 @@ function buildAllowTrustFilters(params: IAllowTrustQueryParams) {
 
   return {
     root: filters,
-    nested: params.trustor ? [`trustor @filter(eq(id, "${params.trustor}"))`] : []
+    nested: params.trustor ? [`allow_trust_op.trustor @filter(eq(account.id, "${params.trustor}"))`] : []
   };
 }
 
@@ -136,7 +136,7 @@ function buildChangeTrustFilters(params: IChangeTrustQueryParams) {
 function buildCreateAccountFilters(params: ICreateAccountQueryParams) {
   return {
     root: [],
-    nested: params.destination ? [`account.destination @filter(eq(id, "${params.destination}"))`] : []
+    nested: params.destination ? [`op.destination @filter(eq(account.id, "${params.destination}"))`] : []
   };
 }
 
@@ -173,8 +173,8 @@ function buildPathPaymentsFilters(params: IPathPaymentsQueryParams) {
       params.destinationAsset &&
         buildAssetFilter(params.destinationAsset.code, params.destinationAsset.issuer, "asset.destination"),
       params.sourceAsset && buildAssetFilter(params.sourceAsset.code, params.sourceAsset.issuer, "asset.source"),
-      params.destinationAccount && `account.destination @filter(eq(id, "${params.destinationAccount}"))`,
-      params.sourceAccount && `account.source @filter(eq(id, "${params.sourceAccount}"))`,
+      params.destinationAccount && `op.destination @filter(eq(account.id, "${params.destinationAccount}"))`,
+      params.sourceAccount && `op.source @filter(eq(account.id, "${params.sourceAccount}"))`,
       params.pathContains && buildAssetFilter(params.pathContains.code, params.pathContains.issuer, "assets.path")
     ])
   };

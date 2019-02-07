@@ -12,6 +12,6 @@ export class BumpSequenceOpBuilder extends SpecificOperationBuilder {
 
   protected pushResult() {
     const code = this.trXDR.bumpSeqResult().switch().value;
-    this.pushValue("bump_sequence_result_code", code);
+    this.pushValue("bump_sequence_op.result_code", code);
   }
 }

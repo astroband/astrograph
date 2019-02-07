@@ -6,11 +6,7 @@ export class AccountMergeOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
 
-    this.pushBuilder(
-      new AccountBuilder(publicKeyFromBuffer(this.xdr.destination().value())),
-      "account.destination",
-      "operations"
-    );
+    this.pushBuilder(new AccountBuilder(publicKeyFromBuffer(this.xdr.destination().value())), "op.destination");
 
     return this.nquads;
   }
@@ -18,7 +14,7 @@ export class AccountMergeOpBuilder extends SpecificOperationBuilder {
   protected pushResult() {
     const result = this.trXDR.accountMergeResult();
     const resultCode = result.switch().value;
-    this.pushValue("account_merge_result_code", resultCode);
+    this.pushValue("account_merge_op.result_code", resultCode);
 
     // if not success
     if (resultCode !== 0) {
