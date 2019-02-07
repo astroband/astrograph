@@ -68,7 +68,7 @@ export const queryPredicates = {
   ],
   [OperationKinds.PathPayment]: [
     "send_max",
-    "dest_amount",
+    "amount",
     "op.destination { account.id }",
     `path_payment_op.asset_destination {
       native

@@ -202,7 +202,7 @@ export class DataMapper {
       ...this.baseData,
       ...{
         sendMax: this.data.send_max,
-        destinationAmount: this.data.dest_amount,
+        destinationAmount: this.data.amount,
         destinationAccount: this.data["op.destination"][0]["account.id"],
         destinationAsset,
         sourceAccount: this.data["op.source"][0]["account.id"],
