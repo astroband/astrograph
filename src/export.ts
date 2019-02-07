@@ -16,7 +16,7 @@ configure().then(async (config: IConfig) => {
 
   await iterate(config.minSeq, config.maxSeq, async (header: LedgerHeader, transactions: TransactionWithXDR[]) => {
     const chunk = await Ingestor.ingestLedger(header, transactions);
-    config.file.write(chunk.join("\n") + "\n");
+    config.file.write(chunk.toString());
     bar.tick();
   });
 

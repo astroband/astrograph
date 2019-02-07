@@ -27,6 +27,10 @@ export class NQuads extends Array<NQuad> {
     return this.filter(el => el !== undefined) as NQuads;
   }
 
+  public toString(): string {
+    return this.compact().join("\n");
+  }
+
   public concat(other: NQuads): NQuads {
     this.push(...other);
     return this;

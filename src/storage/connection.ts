@@ -42,7 +42,7 @@ export class Connection {
       await txn.commit();
       const eta = Date.now() - start;
 
-      logger.debug(`[DGraph] Transaction commited, ${nquads.length} triples, took ${eta / 100} s.`);
+      logger.debug(`[DGraph] Transaction commited, ${nquads.length} triples, took ${eta / 1000} s.`);
 
       return assigns;
     } catch (err) {
@@ -73,7 +73,7 @@ export class Connection {
       const res = vars ? await txn.queryWithVars(query, vars) : await txn.query(query);
       const eta = Date.now() - start;
 
-      logger.debug(`[DGraph] Query, took ${eta / 100} s.`);
+      logger.debug(`[DGraph] Query, took ${eta / 1000} s.`);
 
       return res.getJson();
     } catch (err) {
