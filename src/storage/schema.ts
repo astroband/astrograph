@@ -97,7 +97,7 @@ const schemaWithComments = `
   price_n: int .
   price_d: int .
   price: float .
-  offer_id: string @index (exact) .
+  offer_id: int @index(int) .
 
   # payment
   payment_op.asset: uid @reverse .
