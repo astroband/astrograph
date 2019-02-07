@@ -29,12 +29,9 @@ export class TransactionBuilder extends Builder {
 
   public build(): NQuads {
     const v = {
-      "type.transaction": "",
-      type: "transaction",
       key: this.current.value,
-      id: this.tx.id,
-      index: this.tx.index,
-      seq: this.seq,
+      "tx.id": this.tx.id,
+      "tx.index": this.tx.index,
       order: this.order(this.seq, this.tx.index),
       fee_amount: this.tx.feeAmount,
       fee_charged: this.tx.feeCharged,
@@ -54,8 +51,8 @@ export class TransactionBuilder extends Builder {
 
     this.pushValues(v);
 
-    this.pushPrev();
-    this.pushLedger(this.seq);
+    this.pushPrev("tx");
+    this.pushLedger(this.seq, "tx");
     this.pushSourceAccount();
 
     return this.nquads;
@@ -63,6 +60,6 @@ export class TransactionBuilder extends Builder {
 
   private pushSourceAccount() {
     const account = new AccountBuilder(this.tx.sourceAccount);
-    this.pushBuilder(account, "account.source", "transactions");
+    this.pushBuilder(account, "tx.source");
   }
 }

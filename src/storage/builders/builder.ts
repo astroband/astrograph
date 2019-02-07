@@ -48,8 +48,9 @@ export abstract class Builder {
     this.nquads.push(new NQuad(this.current, predicate, this.prev));
   }
 
-  protected pushLedger(seq: number) {
-    this.nquads.push(new NQuad(this.current, "ledger", LedgerBuilder.keyNQuad(seq)));
+  protected pushLedger(seq: number, predicatePrefix?: string) {
+    const predicate = predicatePrefix ? `${predicatePrefix}.ledger` : "ledger";
+    this.nquads.push(new NQuad(this.current, predicate, LedgerBuilder.keyNQuad(seq)));
   }
 
   protected pushBuilder(builder: Builder, key?: string, foreignKey?: string) {
