@@ -1,7 +1,7 @@
 import { TransactionWithXDR } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { AccountBuilder, Builder, LedgerBuilder, TransactionBuilder } from "./";
+import { AccountBuilder, Builder, TransactionBuilder } from "./";
 import {
   AccountMergeOpBuilder,
   AllowTrustOpBuilder,
@@ -48,7 +48,7 @@ export class OperationBuilder extends Builder {
   public build(): NQuads {
     this.pushKey();
     this.pushRoot();
-    this.pushPrev();
+    this.pushPrev("op");
 
     const builder = this.buildBuilder();
     if (builder) {
@@ -88,7 +88,12 @@ export class OperationBuilder extends Builder {
       case t.manageDatum():
         return new ManageDataOpBuilder(this.current, this.xdr.body().manageDataOp(), this.resultXDR);
       case t.allowTrust():
-        return new AllowTrustOpBuilder(this.current, this.xdr.body().allowTrustOp(), this.resultXDR);
+        return new AllowTrustOpBuilder(
+          this.current,
+          this.xdr.body().allowTrustOp(),
+          this.sourceAccount(),
+          this.resultXDR
+        );
       case t.bumpSequence():
         return new BumpSequenceOpBuilder(this.current, this.xdr.body().bumpSequenceOp(), this.resultXDR);
     }
@@ -98,28 +103,22 @@ export class OperationBuilder extends Builder {
 
   protected pushRoot() {
     const tx = TransactionBuilder.keyNQuad(this.tx.ledgerSeq, this.tx.index);
-    const ledger = LedgerBuilder.keyNQuad(this.tx.ledgerSeq);
 
     const kind = this.xdr.body().switch().name;
 
     const values = {
-      type: "operation",
-      "type.operation": "",
-      index: this.n,
+      "op.index": this.n,
       ["kind." + kind]: "",
-      kind,
+      "op.kind": kind,
       order: this.order(this.seq, this.index, this.n)
     };
 
     this.pushValues(values);
-    this.pushLedger(this.seq);
+    this.pushLedger(this.seq, "op");
     this.pushResult();
 
-    this.nquads.push(new NQuad(this.current, "transaction", tx));
-    this.nquads.push(new NQuad(tx, "operations", this.current));
-    this.nquads.push(new NQuad(ledger, "operations", this.current));
-
-    this.pushBuilder(new AccountBuilder(this.sourceAccount()), "account.source", "operations");
+    this.nquads.push(new NQuad(this.current, "op.transaction", tx));
+    this.pushBuilder(new AccountBuilder(this.sourceAccount()), "op.source");
   }
 
   private sourceAccount(): string {

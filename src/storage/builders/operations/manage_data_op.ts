@@ -15,6 +15,6 @@ export class ManageDataOpBuilder extends SpecificOperationBuilder {
 
   protected pushResult() {
     const code = this.trXDR.manageDataResult().switch().value;
-    this.pushValue("manage_data_result_code", code);
+    this.pushValue("manage_data.result_code", code);
   }
 }
