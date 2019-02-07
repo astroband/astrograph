@@ -91,7 +91,7 @@ export interface IManageOfferOperationData extends IOperationData {
 
 export interface IPathPaymentOperationData extends IOperationData {
   send_max: string;
-  dest_amount: string;
+  amount: string;
   "path_payment_op.asset_destination": IAssetData[];
   "path_payment_op.asset_source": IAssetData[];
   "path_payment_op.assets_path": IAssetData[];

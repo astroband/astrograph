@@ -13,7 +13,7 @@ export class PathPaymentOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
     this.pushValue("send_max", this.xdr.sendMax().toString());
-    this.pushValue("dest_amount", this.xdr.destAmount().toString());
+    this.pushValue("amount", this.xdr.destAmount().toString());
     this.pushBuilder(AccountBuilder.fromXDR(this.xdr.destination()), "op.destination");
     this.pushBuilder(
       AssetBuilder.fromXDR(this.xdr.destAsset()),

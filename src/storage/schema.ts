@@ -109,7 +109,6 @@ const schemaWithComments = `
   path_payment_op.assets_path: uid @reverse .
   path_payment_op.result_code: int .
   send_max: int .
-  dest_amount: int .
   
   # set options
   set_options_op.signer: uid @reverse .
