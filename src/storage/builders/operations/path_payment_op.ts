@@ -14,9 +14,13 @@ export class PathPaymentOpBuilder extends SpecificOperationBuilder {
     super.build();
     this.pushValue("send_max", this.xdr.sendMax().toString());
     this.pushValue("dest_amount", this.xdr.destAmount().toString());
-    this.pushBuilder(AccountBuilder.fromXDR(this.xdr.destination()), "account.destination", "operations");
-    this.pushBuilder(AssetBuilder.fromXDR(this.xdr.destAsset()), "asset.destination", "operations");
-    this.pushBuilder(AssetBuilder.fromXDR(this.xdr.sendAsset()), "asset.source", "operations");
+    this.pushBuilder(AccountBuilder.fromXDR(this.xdr.destination()), "op.destination");
+    this.pushBuilder(
+      AssetBuilder.fromXDR(this.xdr.destAsset()),
+      `${this.entityPrefix}.asset_destination`,
+      "operations"
+    );
+    this.pushBuilder(AssetBuilder.fromXDR(this.xdr.sendAsset()), `${this.entityPrefix}.asset_source`, "operations");
 
     (this.xdr.path() as any[]).forEach(xdr => {
       this.pushBuilder(AssetBuilder.fromXDR(xdr), "assets.path", "operations");
@@ -29,5 +33,9 @@ export class PathPaymentOpBuilder extends SpecificOperationBuilder {
     const resultBuilder = new PathPaymentResultBuilder(this.baseKey, this.trXDR.pathPaymentResult());
 
     this.pushBuilder(resultBuilder, "result");
+  }
+
+  private get entityPrefix() {
+    return "path_payment_op";
   }
 }

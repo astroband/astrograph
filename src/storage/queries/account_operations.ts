@@ -99,7 +99,7 @@ export class AccountOperationsQuery extends Query<IAccountOperationsQueryResult>
 
   public async call(): Promise<IAccountOperationsQueryResult> {
     const r = await this.request();
-    const ops = _.at(r, "account[0].operations");
+    const ops = _.at(r, "account[0]['~op.source']");
     return (ops[0] || []).map(OperationFactory.fromDgraph);
   }
 
@@ -111,7 +111,7 @@ export class AccountOperationsQuery extends Query<IAccountOperationsQueryResult>
 
       query += `
         var(func: eq(account.id, $accountID)) @cascade  {
-          ${opKind} as operations ${filters.root} {
+          ${opKind} as ~op.source ${filters.root} {
             ${filters.nested}
           }
         }
@@ -120,12 +120,12 @@ export class AccountOperationsQuery extends Query<IAccountOperationsQueryResult>
 
     query += `
       account(func: eq(account.id, $accountID)) {
-        operations @filter(uid(${this.kinds.join(",")})) (first: $first, offset: $offset, orderdesc: order) {
-          kind
-          index
-          ledger { close_time }
-          transaction { id }
-          account.source { account.id }
+        ~op.source @filter(uid(${this.kinds.join(",")})) (first: $first, offset: $offset, orderdesc: order) {
+          op.kind
+          op.index
+          op.ledger { close_time }
+          op.transaction { tx.id }
+          op.source { account.id }
           ${_
             .chain(this.kinds)
             .map(opKind => queryPredicates[opKind])

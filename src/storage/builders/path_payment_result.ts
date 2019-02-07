@@ -22,11 +22,11 @@ export class PathPaymentResultBuilder extends Builder {
   public build(): NQuads {
     const code = this.xdr.switch().value;
     const resultCodes = stellar.xdr.PathPaymentResultCode;
-    this.pushValue("path_payment_result_code", code);
+    this.pushValue("path_payment_op.result_code", code);
 
     if (this.xdr.switch() !== resultCodes.pathPaymentSuccess()) {
       if (this.xdr.switch() === resultCodes.pathPaymentNoIssuer()) {
-        this.pushBuilder(AssetBuilder.fromXDR(this.xdr.noIssuer()), "no_issuer");
+        this.pushBuilder(AssetBuilder.fromXDR(this.xdr.noIssuer()), "path_payment_op.no_issuer");
       }
       return this.nquads;
     }
@@ -51,8 +51,8 @@ export class PathPaymentResultBuilder extends Builder {
     this.pushBuilder(lastAssetBuilder);
 
     this.nquads.push(new NQuad(lastNQuad, "key", NQuad.value(key)));
-    this.nquads.push(new NQuad(lastNQuad, "account.destination", destinationAccountBuilder.current));
-    this.nquads.push(new NQuad(lastNQuad, "asset", lastAssetBuilder.current));
+    this.nquads.push(new NQuad(lastNQuad, "destination", destinationAccountBuilder.current));
+    this.nquads.push(new NQuad(lastNQuad, "last.asset", lastAssetBuilder.current));
   }
 
   private pushOffers() {
@@ -74,14 +74,18 @@ export class PathPaymentResultBuilder extends Builder {
         this.pushBuilder(assetBoughtBuilder);
 
         this.nquads.push(new NQuad(offerNQuad, "key", NQuad.value(key)));
-        this.nquads.push(new NQuad(offerNQuad, "asset.sold", assetSoldBuilder.current));
-        this.nquads.push(new NQuad(offerNQuad, "asset.bought", assetBoughtBuilder.current));
+        this.nquads.push(new NQuad(offerNQuad, "asset_sold", assetSoldBuilder.current));
+        this.nquads.push(new NQuad(offerNQuad, "asset_bought", assetBoughtBuilder.current));
 
         this.nquads.push(new NQuad(offerNQuad, "offer_id", NQuad.value(offer.offerId().toString())));
         this.nquads.push(new NQuad(offerNQuad, "amount_sold", NQuad.value(offer.amountSold().toString())));
         this.nquads.push(new NQuad(offerNQuad, "amount_bought", NQuad.value(offer.amountBought().toString())));
 
-        this.nquads.push(new NQuad(this.current, "offers", offerNQuad));
+        this.nquads.push(new NQuad(this.current, `${this.entityPrefix}.offers`, offerNQuad));
       });
+  }
+
+  private get entityPrefix() {
+    return "path_payment_op";
   }
 }

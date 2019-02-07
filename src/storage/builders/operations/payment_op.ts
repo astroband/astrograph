@@ -13,14 +13,18 @@ export class PaymentOpBuilder extends SpecificOperationBuilder {
     const destination = publicKeyFromBuffer(this.xdr.destination().value());
 
     this.pushValue("amount", amount);
-    this.pushBuilder(new AccountBuilder(destination), "account.destination", "operations");
-    this.pushBuilder(new AssetBuilder(asset), "asset", "operations");
+    this.pushBuilder(new AccountBuilder(destination), "op.destination");
+    this.pushBuilder(new AssetBuilder(asset), `${this.entityPrefix}.asset`, "operations");
 
     return this.nquads;
   }
 
   protected pushResult() {
     const code = this.trXDR.paymentResult().switch().value;
-    this.pushValue("payment_result_code", code);
+    this.pushValue(`${this.entityPrefix}.result_code`, code);
+  }
+
+  private get entityPrefix() {
+    return "payment_op";
   }
 }

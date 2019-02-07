@@ -54,6 +54,7 @@ const schemaWithComments = `
   # operations
   op.id: string @index(exact) .
   op.transaction: uid @reverse .
+  op.ledger: uid @reverse .
   op.index: int .
   op.source: uid @reverse .
   op.destination: uid @reverse .
@@ -100,7 +101,7 @@ const schemaWithComments = `
 
   # payment
   payment_op.asset: uid @reverse .
-  payment_result_code: int .
+  payment_op.result_code: int .
 
   # path payment
   path_payment_op.asset_source: uid @reverse .
@@ -112,12 +113,12 @@ const schemaWithComments = `
   
   # set options
   set_options_op.signer: uid @reverse .
-  set_options_op.inflation_destination: uid .
+  set_options_op.inflation_destination: uid @reverse .
   set_options_op.result_code: int .
+  set_options_op.signer: uid .
   clear_flags: int .
   set_flags: int .
   master_weight: int .
-  signer: uid .
   home_domain: string .
   thresholds: uid .
 

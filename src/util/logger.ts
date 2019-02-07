@@ -31,7 +31,8 @@ const logger: Logger = createLogger({
     format.colorize(),
     format.splat(),
     format.timestamp(),
-    format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+    format.simple()
+    // format.printf(info => `${info.timestamp} ${info.level}: ${info.message} Stacktrace: ${info.stack}`)
   ),
   transports: [
     new transports.Console({ level: logLevel }),
