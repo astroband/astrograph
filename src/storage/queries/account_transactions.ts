@@ -1,4 +1,4 @@
-import dig from "object-dig";
+import _ from "lodash";
 import { ITransaction } from "../../model";
 import { TransactionFactory } from "../../model/factories";
 import { Connection } from "../connection";
@@ -20,29 +20,29 @@ export class AccountTransactionsQuery extends Query<IAccountTransactionsQueryRes
 
   public async call(): Promise<IAccountTransactionsQueryResult> {
     const r = await this.request();
-    const data = dig(r, "txs", 0, "transactions");
+    const data = _.at(r, "account[0]['~tx.source']");
 
-    return (data || []).map(TransactionFactory.fromDgraph);
+    return (data[0] || []).map(TransactionFactory.fromDgraph);
   }
 
   protected async request(): Promise<any> {
     return this.connection.query(
       `
         query accountTransactions($id: string, $first: int, $offset: int) {
-          txs(func: eq(id, $id)) {
-            transactions(
+          account(func: eq(account.id, $id)) {
+            ~tx.source(
               first: $first,
               offset: $offset,
               orderdesc: order
             ) {
-              account.source { account.id }
+              tx.id
+              tx.index
+              tx.ledger { ledger.id }
+              tx.source { account.id }
               memo.value
               memo.type
               fee_amount
-              seq
               order
-              id
-              index
             }
           }
         }

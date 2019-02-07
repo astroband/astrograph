@@ -6,9 +6,9 @@ import { OperationKinds } from "../model/operation";
 import { MemoType } from "../util/stellar";
 
 export interface ITransactionData {
-  id: string;
-  seq: string;
-  index: string;
+  "tx.id": string;
+  "tx.index": string;
+  "tx.ledger": ILedgerData[];
   // body
   "memo.value": string | null;
   "memo.type": MemoType | null;
@@ -19,7 +19,7 @@ export interface ITransactionData {
   // result
   // meta
   // feeMeta
-  "account.source": IAccountData[];
+  "tx.source": IAccountData[];
   // Datetime ISO string
   "time_bounds.min": string;
   "time_bounds.max": string;
