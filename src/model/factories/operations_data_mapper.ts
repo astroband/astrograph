@@ -61,7 +61,9 @@ export class DataMapper {
 
   private mapPayment(): IPaymentOperation {
     const assetData = this.data.asset[0];
-    const asset = assetData.native ? Asset.native() : new Asset(assetData.code, assetData.issuer[0]["account.id"]);
+    const asset = assetData.native
+      ? Asset.native()
+      : new Asset(assetData.code, assetData["asset.issuer"][0]["account.id"]);
 
     return {
       ...this.baseData,
@@ -127,7 +129,7 @@ export class DataMapper {
   }
 
   private mapChangeTrust(): IChangeTrustOperation {
-    const asset = new Asset(this.data.asset[0].code, this.data.asset[0].issuer[0]["account.id"]);
+    const asset = new Asset(this.data.asset[0].code, this.data.asset[0]["asset.issuer"][0]["account.id"]);
 
     return {
       ...this.baseData,
@@ -158,10 +160,10 @@ export class DataMapper {
 
     const assetBuying = assetBuyingData.native
       ? Asset.native()
-      : new Asset(assetBuyingData.code, assetBuyingData.issuer[0]["account.id"]);
+      : new Asset(assetBuyingData.code, assetBuyingData["asset.issuer"][0]["account.id"]);
     const assetSelling = assetSellingData.native
       ? Asset.native()
-      : new Asset(assetSellingData.code, assetSellingData.issuer[0]["account.id"]);
+      : new Asset(assetSellingData.code, assetSellingData["asset.issuer"][0]["account.id"]);
 
     return {
       ...this.baseData,
@@ -185,10 +187,10 @@ export class DataMapper {
 
     const destinationAsset = destinationAssetData.native
       ? Asset.native()
-      : new Asset(destinationAssetData.code, destinationAssetData.issuer[0]["account.id"]);
+      : new Asset(destinationAssetData.code, destinationAssetData["asset.issuer"][0]["account.id"]);
     const sourceAsset = sourceAssetData.native
       ? Asset.native()
-      : new Asset(sourceAssetData.code, sourceAssetData.issuer[0]["account.id"]);
+      : new Asset(sourceAssetData.code, sourceAssetData["asset.issuer"][0]["account.id"]);
 
     return {
       ...this.baseData,
@@ -200,7 +202,9 @@ export class DataMapper {
         sourceAccount: this.data["account.source"][0]["account.id"],
         sourceAsset,
         path: this.data["assets.path"].map((assetData: IAssetData) => {
-          return assetData.native ? Asset.native() : new Asset(assetData.code, assetData.issuer[0]["account.id"]);
+          return assetData.native
+            ? Asset.native()
+            : new Asset(assetData.code, assetData["asset.issuer"][0]["account.id"]);
         })
       }
     };

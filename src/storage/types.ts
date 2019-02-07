@@ -115,8 +115,9 @@ export type DgraphOperationsData = IPaymentOperationData &
   IPathPaymentOperationData;
 
 export interface IAssetData {
+  "asset.id": string;
   code: AssetCode;
-  issuer: IAccountData[];
+  "asset.issuer": IAccountData[];
   native: boolean;
 }
 
