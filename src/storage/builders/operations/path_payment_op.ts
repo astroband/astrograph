@@ -23,7 +23,7 @@ export class PathPaymentOpBuilder extends SpecificOperationBuilder {
     this.pushBuilder(AssetBuilder.fromXDR(this.xdr.sendAsset()), `${this.entityPrefix}.asset_source`, "operations");
 
     (this.xdr.path() as any[]).forEach(xdr => {
-      this.pushBuilder(AssetBuilder.fromXDR(xdr), "assets.path", "operations");
+      this.pushBuilder(AssetBuilder.fromXDR(xdr), "path_payment_op.assets_path", "operations");
     });
 
     return this.nquads;
