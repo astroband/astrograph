@@ -11,7 +11,7 @@ export class NQuads extends Array<NQuad> {
 
       const n = this.index.get(item.key);
 
-      if (n) {
+      if (n !== undefined) {
         this[n] = item;
         continue;
       }
