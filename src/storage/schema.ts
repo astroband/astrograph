@@ -39,7 +39,7 @@ const schemaWithComments = `
   tx.source: uid @reverse .
   tx.index: int .
   tx.prev: uid @reverse .
-  result_code: int .
+  result_code: int @index(int) .
   fee_amount: int .
   fee_charged: int .
   success: bool @index(bool) .
@@ -60,10 +60,10 @@ const schemaWithComments = `
   op.destination: uid @reverse .
   op.kind: string @index(hash) .
   op.prev: uid @reverse .
+  op.result: uid @reverse .
   amount: int .
 
   # account merge
-  result: uid .
   account_merge_op.result_code: int .
 
   # allow trust
@@ -128,23 +128,10 @@ const schemaWithComments = `
 
   # signer
   account: uid .
-  weight: int .
+  weight: int . 
 
-  # operation results
-  # account merge result
-  source_account_balance: int .
-
-  # path payment result
-  path_payment_result.no_issuer: uid .
-  path_payment_result.last: uid .
-  destination: uid .
-  last.asset: uid .
-  path_payment_result.offers: uid .
-  asset_sold: uid .
-  asset_bought: uid .
-  amount_sold: int .
-  amount_bought: int .
-  seller: uid .
+  # operation result
+  result_code: int @index(int) .
 `;
 
 // remove comments

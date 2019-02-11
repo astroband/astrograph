@@ -22,11 +22,6 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     return this.nquads;
   }
 
-  protected pushResult() {
-    const code = this.trXDR.setOptionsResult().switch().value;
-    this.pushValue(`${this.entityPrefix}.result_code`, code);
-  }
-
   private pushThresholds() {
     const thresholds = {
       high: this.xdr.highThreshold(),
@@ -83,6 +78,14 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
 
     const inflationDestination = publicKeyFromBuffer(this.xdr.inflationDest().value());
     this.pushBuilder(new AccountBuilder(inflationDestination), `${this.entityPrefix}.inflation_destination`);
+  }
+
+  protected get resultCode() {
+    if (!this.trXDR) {
+      return;
+    }
+
+    return this.trXDR.setOptionsResult().switch().value;
   }
 
   private get entityPrefix() {

@@ -68,14 +68,9 @@ export class OperationBuilder extends Builder {
       case t.payment():
         return new PaymentOpBuilder(this.current, this.xdr.body().paymentOp(), this.resultXDR);
       case t.pathPayment():
-        return new PathPaymentOpBuilder(this.current, this.xdr.body().pathPaymentOp(), this.resultXDR, [
-          "operation",
-          this.tx.ledgerSeq,
-          this.index,
-          this.n
-        ]);
+        return new PathPaymentOpBuilder(this.current, this.xdr.body().pathPaymentOp(), this.resultXDR);
       case t.manageOffer():
-        return new ManageOfferOpBuilder(this.current, this.xdr.body().manageOfferOp());
+        return new ManageOfferOpBuilder(this.current, this.xdr.body().manageOfferOp(), this.resultXDR);
       case t.setOption():
         return new SetOptionsOpBuilder(this.current, this.xdr.body().setOptionsOp(), this.resultXDR);
       case t.changeTrust():
@@ -115,7 +110,6 @@ export class OperationBuilder extends Builder {
 
     this.pushValues(values);
     this.pushLedger(this.seq, "op");
-    this.pushResult();
 
     this.nquads.push(new NQuad(this.current, "op.transaction", tx));
     this.pushBuilder(new AccountBuilder(this.sourceAccount()), "op.source");
@@ -127,14 +121,5 @@ export class OperationBuilder extends Builder {
       return publicKeyFromBuffer(account.value());
     }
     return this.tx.sourceAccount;
-  }
-
-  private pushResult() {
-    if (!this.resultXDR) {
-      return;
-    }
-
-    this.pushValue("result_code", this.resultXDR.switch().value);
-    this.pushValue("success", this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner());
   }
 }
