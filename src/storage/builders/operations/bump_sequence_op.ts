@@ -10,8 +10,11 @@ export class BumpSequenceOpBuilder extends SpecificOperationBuilder {
     return this.nquads;
   }
 
-  protected pushResult() {
-    const code = this.trXDR.bumpSeqResult().switch().value;
-    this.pushValue("bump_sequence_op.result_code", code);
+  protected get resultCode() {
+    if (!this.trXDR) {
+      return;
+    }
+
+    return this.trXDR.bumpSeqResult().switch().value;
   }
 }

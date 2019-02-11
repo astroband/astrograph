@@ -32,8 +32,11 @@ export class AllowTrustOpBuilder extends SpecificOperationBuilder {
     return this.nquads;
   }
 
-  protected pushResult() {
-    const code = this.trXDR.allowTrustResult().switch().value;
-    this.pushValue("allow_trust_op.result_code", code);
+  protected get resultCode() {
+    if (!this.trXDR) {
+      return;
+    }
+
+    return this.trXDR.allowTrustResult().switch().value;
   }
 }

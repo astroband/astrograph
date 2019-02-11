@@ -1,13 +1,9 @@
 import BigNumber from "bignumber.js";
 import { Asset } from "stellar-sdk";
-import { AssetBuilder, Builder } from "../";
-import { IBlank, NQuads } from "../../nquads";
+import { AssetBuilder, SpecificOperationBuilder } from "../";
+import { NQuads } from "../../nquads";
 
-export class ManageOfferOpBuilder extends Builder {
-  constructor(public readonly current: IBlank, private xdr: any) {
-    super();
-  }
-
+export class ManageOfferOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     const selling = Asset.fromOperation(this.xdr.selling());
     const buying = Asset.fromOperation(this.xdr.buying());
@@ -26,5 +22,13 @@ export class ManageOfferOpBuilder extends Builder {
     this.pushBuilder(new AssetBuilder(buying), "manage_offer_op.asset_buying", "operations");
 
     return this.nquads;
+  }
+
+  protected get resultCode() {
+    if (!this.trXDR) {
+      return;
+    }
+
+    return this.trXDR.manageOfferResult().switch().value;
   }
 }

@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 
-import { IBlank, NQuads } from "../nquads";
+import { IBlank, NQuad, NQuads } from "../nquads";
 import { Builder } from "./";
 
 export abstract class SpecificOperationBuilder extends Builder {
@@ -16,12 +16,19 @@ export abstract class SpecificOperationBuilder extends Builder {
   }
 
   public build(): NQuads {
-    if (this.trXDR) {
-      this.pushResult();
-    }
-
+    this.pushResult();
     return this.nquads;
   }
 
-  protected abstract pushResult(): void;
+  protected abstract get resultCode(): number | undefined;
+
+  protected pushResult() {
+    if (this.resultCode === undefined) {
+      return;
+    }
+
+    const resultNQuad = NQuad.blank(`${this.current.value}_result`);
+    this.nquads.push(new NQuad(this.current, "op.result", resultNQuad));
+    this.nquads.push(new NQuad(resultNQuad, "result_code", NQuad.value(this.resultCode)));
+  }
 }

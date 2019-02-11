@@ -10,7 +10,7 @@ export class CreateAccountOpBuilder extends SpecificOperationBuilder {
     const destination = publicKeyFromBuffer(this.xdr.destination().value());
 
     this.pushValue("starting_balance", startingBalance);
-    this.pushBuilder(new AccountBuilder(destination), "account.destination", "operations");
+    this.pushBuilder(new AccountBuilder(destination), "account.destination");
 
     return this.nquads;
   }
@@ -18,5 +18,13 @@ export class CreateAccountOpBuilder extends SpecificOperationBuilder {
   protected pushResult() {
     const code = this.trXDR.createAccountResult().switch().value;
     this.pushValue("create_account_result_code", code);
+  }
+
+  protected get resultCode() {
+    if (!this.trXDR) {
+      return;
+    }
+
+    return this.trXDR.createAccountResult().switch().value;
   }
 }

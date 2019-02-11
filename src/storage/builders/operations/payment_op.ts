@@ -19,9 +19,12 @@ export class PaymentOpBuilder extends SpecificOperationBuilder {
     return this.nquads;
   }
 
-  protected pushResult() {
-    const code = this.trXDR.paymentResult().switch().value;
-    this.pushValue(`${this.entityPrefix}.result_code`, code);
+  protected get resultCode() {
+    if (!this.trXDR) {
+      return;
+    }
+
+    return this.trXDR.paymentResult().switch().value;
   }
 
   private get entityPrefix() {

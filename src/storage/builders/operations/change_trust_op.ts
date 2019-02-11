@@ -14,8 +14,11 @@ export class ChangeTrustOpBuilder extends SpecificOperationBuilder {
     return this.nquads;
   }
 
-  protected pushResult() {
-    const code = this.trXDR.changeTrustResult().switch().value;
-    this.pushValue("change_trust.result_code", code);
+  protected get resultCode() {
+    if (!this.trXDR) {
+      return;
+    }
+
+    return this.trXDR.changeTrustResult().switch().value;
   }
 }

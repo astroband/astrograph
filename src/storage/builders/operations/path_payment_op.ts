@@ -1,15 +1,7 @@
-import { AccountBuilder, AssetBuilder, PathPaymentResultBuilder, SpecificOperationBuilder } from "../";
-import { IBlank, NQuads } from "../../nquads";
+import { AccountBuilder, AssetBuilder, SpecificOperationBuilder } from "../";
+import { NQuads } from "../../nquads";
 
 export class PathPaymentOpBuilder extends SpecificOperationBuilder {
-  private baseKey: any[];
-
-  constructor(public readonly current: IBlank, protected xdr: any, protected resultXDR: any, baseKey: any[]) {
-    super(current, xdr, resultXDR);
-
-    this.baseKey = baseKey;
-  }
-
   public build(): NQuads {
     super.build();
     this.pushValue("send_max", this.xdr.sendMax().toString());
@@ -29,10 +21,12 @@ export class PathPaymentOpBuilder extends SpecificOperationBuilder {
     return this.nquads;
   }
 
-  protected pushResult() {
-    const resultBuilder = new PathPaymentResultBuilder(this.baseKey, this.trXDR.pathPaymentResult());
+  protected get resultCode() {
+    if (!this.trXDR) {
+      return;
+    }
 
-    this.pushBuilder(resultBuilder, "result");
+    return this.trXDR.pathPaymentResult().switch().value;
   }
 
   private get entityPrefix() {
