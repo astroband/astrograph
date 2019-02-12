@@ -1,13 +1,18 @@
-dist: trusty
+dist: xenial
 language: node_js
-node_js:
-  - "8"
-env:
-  - DB=astrograph_test DBUSER=postgres DBHOST=localhost
+addons:
+  postgresql: 10
 services:
   - postgresql
+
+node_js:
+  - 10
+env:
+  global:
+    - DB=astrograph_test DBUSER=postgres DBHOST=localhost
+
 before_script:
-  - psql -c 'create database astrograph_test;' -U postgres
+  - psql -U postgres -c 'create database astrograph_test;'
 script:
   - yarn test:coverage
 after_success:
