@@ -38,11 +38,19 @@ export class NQuad {
     this.subject = subject;
     this.predicate = predicate;
     this.object = object;
-    this.key = this.interpolate(this.subject) + " <" + this.predicate + ">";
+    this.key = this.generateKey();
   }
 
   public toString(): string {
     return this.key + " " + this.interpolate(this.object) + " .";
+  }
+
+  private generateKey(): string {
+    if (this.object.type === "blank" || this.object.type === "link") {
+      return this.toString();
+    }
+
+    return this.interpolate(this.subject) + " <" + this.predicate + ">";
   }
 
   private interpolate(x: IBlank | ILink | IValue): string {

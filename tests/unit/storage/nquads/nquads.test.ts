@@ -10,7 +10,7 @@ describe("nquads", () => {
     expect(nquads.toString()).toEqual("");
   });
 
-  it("prevents duplicates", () => {
+  it("prevents duplicates for scalars", () => {
     const nquadsA = new NQuads();
     const nquadsB = new NQuads();
 
@@ -22,5 +22,19 @@ describe("nquads", () => {
 
     expect(nquadsA.compact().length).toEqual(1);
     expect(nquadsA[0].object.value).toEqual("abcde");
+  });
+
+  it("wisely prevents duplicates for blanks", () => {
+    const nquadsA = new NQuads();
+    const nquadsB = new NQuads();
+
+    nquadsA.push(new NQuad(NQuad.blank("account"), "id", NQuad.blank("link1")));
+    nquadsB.push(new NQuad(NQuad.blank("account"), "id", NQuad.blank("link1")));
+    nquadsB.push(new NQuad(NQuad.blank("account"), "id", NQuad.blank("link2")));
+
+    nquadsA.push(...nquadsB);
+    nquadsA.concat(nquadsB);
+
+    expect(nquadsA.compact().length).toEqual(2);
   });
 });
