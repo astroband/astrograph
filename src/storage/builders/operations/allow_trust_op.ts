@@ -7,8 +7,8 @@ export class AllowTrustOpBuilder extends SpecificOperationBuilder {
   // FIXME: adding `source` only for this operation is a dirty hack
   constructor(
     public readonly current: IBlank,
-    public readonly source: string,
     protected xdr: any,
+    public readonly source: string,
     protected resultXDR: any
   ) {
     super(current, xdr, resultXDR);
