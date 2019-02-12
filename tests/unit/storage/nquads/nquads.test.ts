@@ -28,9 +28,9 @@ describe("nquads", () => {
     const nquadsA = new NQuads();
     const nquadsB = new NQuads();
 
-    nquadsA.push(new NQuad(NQuad.blank("account"), "id", NQuad.blank("link1")));
-    nquadsB.push(new NQuad(NQuad.blank("account"), "id", NQuad.blank("link1")));
-    nquadsB.push(new NQuad(NQuad.blank("account"), "id", NQuad.blank("link2")));
+    nquadsA.push(new NQuad(NQuad.blank("account"), "id", NQuad.blank("link1"), true));
+    nquadsB.push(new NQuad(NQuad.blank("account"), "id", NQuad.blank("link1"), true));
+    nquadsB.push(new NQuad(NQuad.blank("account"), "id", NQuad.blank("link2"), true));
 
     nquadsA.push(...nquadsB);
     nquadsA.concat(nquadsB);

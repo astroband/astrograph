@@ -34,19 +34,19 @@ export class NQuad {
   public readonly object: Obj;
   public readonly key: string;
 
-  public constructor(subject: Subj, predicate: string, object: Obj) {
+  public constructor(subject: Subj, predicate: string, object: Obj, hasMany: boolean = false) {
     this.subject = subject;
     this.predicate = predicate;
     this.object = object;
-    this.key = this.generateKey();
+    this.key = this.generateKey(hasMany);
   }
 
   public toString(): string {
     return this.key + " " + this.interpolate(this.object) + " .";
   }
 
-  private generateKey(): string {
-    if (this.object.type === "blank" || this.object.type === "link") {
+  private generateKey(hasMany: boolean): string {
+    if (hasMany) {
       return this.toString();
     }
 
