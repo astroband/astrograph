@@ -1,7 +1,7 @@
 import stellar from "stellar-base";
 import { Memo } from "stellar-sdk";
 import { publicKeyFromBuffer } from "../../util/xdr";
-import { TimeBounds } from "../transaction";
+import { TimeBounds, TimeBoundNotSet } from "../transaction";
 import { ITransactionWithXDR, TransactionWithXDR } from "../transaction_with_xdr";
 
 export interface ITransactionTableRow {
@@ -26,11 +26,8 @@ export class TransactionWithXDRFactory {
     const result = resultXDR.result();
 
     const memo = Memo.fromXDRObject(body.memo());
-    const timeBoundsXDR = body.timeBounds();
 
-    const timeBounds: TimeBounds | undefined = timeBoundsXDR
-      ? [timeBoundsXDR.minTime().toInt(), timeBoundsXDR.maxTime().toInt()]
-      : undefined;
+    const timeBounds = this.parseTimeBounds(body.timeBounds());
 
     const resultCode = result.result().switch().value;
     const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
@@ -62,5 +59,23 @@ export class TransactionWithXDRFactory {
     };
 
     return new TransactionWithXDR(data);
+  }
+
+  private static parseTimeBounds(timeBoundsXDR: any): TimeBounds | undefined {
+    if (timeBoundsXDR) {
+      return;
+    }
+
+    const lowerBound: Date = new Date(timeBoundsXDR.minTime().toInt() * 1000);
+    let upperBound: Date | TimeBoundNotSet;
+
+    // maxTime equal 0 means that it's not set
+    if (timeBoundsXDR.maxTime() === "0") {
+      upperBound = "not_set";
+    } else {
+      upperBound = new Date(timeBoundsXDR.maxTime() * 1000);
+    }
+
+    return [lowerBound, upperBound];
   }
 }

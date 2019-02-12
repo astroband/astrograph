@@ -42,17 +42,13 @@ export class TransactionBuilder extends Builder {
       result_code: this.tx.resultCode
     };
 
-    if (this.tx.timeBounds) {
-      v["time_bounds.min"] = this.tx.timeBounds[0];
-      v["time_bounds.max"] = this.tx.timeBounds[1];
-    }
-
     if (this.tx.memo) {
       v["memo.type"] = this.tx.memo.type;
       v["memo.value"] = this.tx.memo.getPlainValue();
     }
 
     this.pushValues(v);
+    this.pushTimeBounds();
 
     this.pushPrev();
     this.pushLedger(this.seq);
@@ -64,5 +60,17 @@ export class TransactionBuilder extends Builder {
   private pushSourceAccount() {
     const account = new AccountBuilder(this.tx.sourceAccount);
     this.pushBuilder(account, "account.source", "transactions");
+  }
+
+  private pushTimeBounds() {
+    if (!this.tx.timeBounds) {
+      return;
+    }
+
+    this.pushValue("time_bounds.min", this.tx.timeBounds[0].toISOString());
+
+    if (this.tx.timeBounds[1] instanceof Date) {
+      this.pushValue("time_bounds.max", this.tx.timeBounds[1].toISOString());
+    }
   }
 }

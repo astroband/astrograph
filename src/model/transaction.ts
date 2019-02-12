@@ -1,6 +1,7 @@
 import { Memo } from "stellar-sdk";
 
-export type TimeBounds = [number, number];
+export type TimeBoundNotSet = "not_set";
+export type TimeBounds = [Date, Date | TimeBoundNotSet];
 
 export interface ITransaction {
   id: string;
