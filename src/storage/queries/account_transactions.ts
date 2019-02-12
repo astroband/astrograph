@@ -21,14 +21,15 @@ export class AccountTransactionsQuery extends Query<IAccountTransactionsQueryRes
   public async call(): Promise<IAccountTransactionsQueryResult> {
     const r = await this.request();
     const data = dig(r, "txs", 0, "transactions");
-    return data.map(TransactionFactory.fromDgraph);
+
+    return (data || []).map(TransactionFactory.fromDgraph);
   }
 
   protected async request(): Promise<any> {
     return this.connection.query(
       `
         query accountTransactions($id: string, $first: int, $offset: int) {
-          txs(func: has(account)) @filter(eq(id, $id)) {
+          txs(func: eq(id, $id)) {
             transactions(
               first: $first,
               offset: $offset,
