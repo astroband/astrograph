@@ -1,3 +1,4 @@
+dist: trusty
 language: node_js
 node_js:
   - "8"
@@ -8,6 +9,6 @@ services:
 before_script:
   - psql -c 'create database astrograph_test;' -U postgres
 script:
-  - yarn run test:unit --coverage
+  - yarn test:coverage
 after_success:
   - codecov -f coverage/*.json
