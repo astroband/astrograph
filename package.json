@@ -61,6 +61,7 @@
     "apollo-client": "^2.4.1",
     "apollo-link-http": "^1.5.4",
     "apollo-link-ws": "^1.0.8",
+    "codecov": "^3.1.0",
     "jest": "^23.6.0",
     "nodemon": "^1.18.7",
     "prettier": "1.13.3",
@@ -84,6 +85,7 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json --fix",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "test": "jest",
+    "test:codecov": "codecov -f coverage/*.json",
     "test:coverage": "jest --coverage",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
@@ -97,6 +99,8 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "coverageDirectory": "coverage",
-    "roots": ["<rootDir>/tests/"]
+    "roots": [
+      "<rootDir>/tests/"
+    ]
   }
 }
