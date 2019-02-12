@@ -2,6 +2,8 @@ dist: xenial
 language: node_js
 addons:
   postgresql: 10
+  sonarcloud:
+    organization: astroband
 services:
   - postgresql
 
@@ -15,5 +17,6 @@ before_script:
   - psql -U postgres -c 'create database astrograph_test;'
 script:
   - yarn test:coverage
+  - sonar-scanner
 after_success:
   - yarn test:codecov

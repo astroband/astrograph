@@ -63,6 +63,7 @@
     "apollo-link-ws": "^1.0.8",
     "codecov": "^3.1.0",
     "jest": "^23.6.0",
+    "jest-sonar-reporter": "^2.0.0",
     "nodemon": "^1.18.7",
     "prettier": "1.13.3",
     "rosie": "^2.0.1",
@@ -85,12 +86,12 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json --fix",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "test": "jest",
-    "test:codecov": "codecov -f coverage/*.json",
+    "test:codecov": "codecov -f reports/coverage/*.json",
     "test:coverage": "jest --coverage",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
     "bench": "ts-node ./benchmark/index.ts",
-    "export": "ts-node ./src/export.ts",
+    "export": "yarn build && node ./dist/export.js",
     "dgraph-migrate": "ts-node ./src/migrate.ts"
   },
   "license": "MIT",
@@ -98,9 +99,13 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "coverageDirectory": "coverage",
+    "coverageDirectory": "reports/coverage",
+    "testResultsProcessor": "jest-sonar-reporter",
     "roots": [
       "<rootDir>/tests/"
     ]
+  },
+  "jestSonar": {
+    "reportPath": "reports"
   }
 }

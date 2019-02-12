@@ -8,6 +8,7 @@
     "module": "commonjs",
     "lib": ["es2018", "esnext.asynciterable"],
     "declaration": true,
+    "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
 
     /* Strict Type-Checking Options */
