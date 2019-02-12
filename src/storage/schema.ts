@@ -128,10 +128,7 @@ const schemaWithComments = `
 
   # signer
   account: [uid] .
-  weight: int . 
-
-  # operation result
-  result_code: int @index(int) .
+  weight: int .
 `;
 
 // remove comments
