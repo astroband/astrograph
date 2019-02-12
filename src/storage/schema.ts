@@ -15,7 +15,7 @@ const schemaWithComments = `
 
   # ledgers
   ledger.id: int @index(int) .
-  ledger.prev: uid @reverse .
+  ledger.prev: [uid] @reverse .
   version: int .
   base_fee: int .
   base_reserve: int .
@@ -29,16 +29,16 @@ const schemaWithComments = `
 
   # assets
   asset.id: string @index(exact) .
-  asset.issuer: uid @reverse .
+  asset.issuer: [uid] @reverse .
   code: string @index(exact) .
   native: bool @index(bool) .
 
   # transactions
   tx.id: string @index(exact) .
-  tx.ledger: uid @reverse .
-  tx.source: uid @reverse .
+  tx.ledger: [uid] @reverse .
+  tx.source: [uid] @reverse .
   tx.index: int .
-  tx.prev: uid @reverse .
+  tx.prev: [uid] @reverse .
   result_code: int @index(int) .
   fee_amount: int .
   fee_charged: int .
@@ -53,23 +53,23 @@ const schemaWithComments = `
 
   # operations
   op.id: string @index(exact) .
-  op.transaction: uid @reverse .
-  op.ledger: uid @reverse .
+  op.transaction: [uid] @reverse .
+  op.ledger: [uid] @reverse .
   op.index: int .
-  op.source: uid @reverse .
-  op.destination: uid @reverse .
+  op.source: [uid] @reverse .
+  op.destination: [uid] @reverse .
   op.kind: string @index(hash) .
-  op.prev: uid @reverse .
-  op.result: uid @reverse .
+  op.prev: [uid] @reverse .
+  op.result: [uid] @reverse .
   amount: int .
 
   # account merge
   account_merge_op.result_code: int .
 
   # allow trust
-  allow_trust_op.trustor: uid @reverse .
+  allow_trust_op.trustor: [uid] @reverse .
   allow_trust_op.result_code: int .
-  allow_trust_op.asset: uid @reverse .
+  allow_trust_op.asset: [uid] @reverse .
   authorize: bool @index(bool) .
 
   # bump sequence
@@ -77,7 +77,7 @@ const schemaWithComments = `
   bump_to: int @index(int) .
 
   # change trust
-  change_trust_op.asset: uid @reverse .
+  change_trust_op.asset: [uid] @reverse .
   change_trust_op.result_code: int .
   limit: int @index(int) .
 
@@ -91,8 +91,8 @@ const schemaWithComments = `
   value: string @index(exact) . 
 
   # manage offer
-  manage_offer_op.asset_buying: uid @reverse .
-  manage_offer_op.asset_selling: uid @reverse .
+  manage_offer_op.asset_buying: [uid] @reverse .
+  manage_offer_op.asset_selling: [uid] @reverse .
   manage_offer_op.result_code: int .
   price_n: int .
   price_d: int .
@@ -100,26 +100,26 @@ const schemaWithComments = `
   offer_id: int @index(int) .
 
   # payment
-  payment_op.asset: uid @reverse .
+  payment_op.asset: [uid] @reverse .
   payment_op.result_code: int .
 
   # path payment
-  path_payment_op.asset_source: uid @reverse .
-  path_payment_op.asset_destination: uid @reverse .
-  path_payment_op.assets_path: uid @reverse .
+  path_payment_op.asset_source: [uid] @reverse .
+  path_payment_op.asset_destination: [uid] @reverse .
+  path_payment_op.assets_path: [uid] @reverse .
   path_payment_op.result_code: int .
   send_max: int .
   
   # set options
-  set_options_op.signer: uid @reverse .
-  set_options_op.inflation_destination: uid @reverse .
+  set_options_op.signer: [uid] @reverse .
+  set_options_op.inflation_destination: [uid] @reverse .
   set_options_op.result_code: int .
-  set_options_op.signer: uid .
+  set_options_op.signer: [uid] .
   clear_flags: int .
   set_flags: int .
   master_weight: int .
   home_domain: string .
-  thresholds: uid .
+  thresholds: [uid] .
 
   # thresholds
   high: int .
@@ -127,7 +127,7 @@ const schemaWithComments = `
   low: int .
 
   # signer
-  account: uid .
+  account: [uid] .
   weight: int . 
 
   # operation result
