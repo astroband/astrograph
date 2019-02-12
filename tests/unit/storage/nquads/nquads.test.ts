@@ -15,11 +15,12 @@ describe("nquads", () => {
     const nquadsB = new NQuads();
 
     nquadsA.push(new NQuad(NQuad.blank("account"), "id", NQuad.value("abcd")));
-    nquadsB.push(new NQuad(NQuad.blank("account"), "id", NQuad.value("abcd")));
+    nquadsB.push(new NQuad(NQuad.blank("account"), "id", NQuad.value("abcde")));
 
     nquadsA.push(...nquadsB);
     nquadsA.concat(nquadsB);
 
     expect(nquadsA.compact().length).toEqual(1);
+    expect(nquadsA[0].object.value).toEqual("abcde");
   });
 });
