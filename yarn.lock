@@ -369,7 +369,7 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.0.tgz#8b63ab7f1aa5321248aad5ac890a485656dcea4d"
   integrity sha512-te5lMAWii1uEJ4FwLjzdlbw3+n0FZNOvFXHxQDKeT0dilh7HOzdMzV2TrJVUzq8ep7J4Na8OUYPRLSQkJHAlrg==
 
-"@udia/graphql-postgres-subscriptions@^1.0.9":
+"@udia/graphql-postgres-subscriptions@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@udia/graphql-postgres-subscriptions/-/graphql-postgres-subscriptions-1.1.0.tgz#34a267cc406b5db5453828526356a82520dc3e20"
   integrity sha512-UJzkSzfn4TGEdMxCgcRLt7LxLls6OjZzMqsfP6nVOvSuRfGXMTCoIBEROdvN4G4bDlrfhYL8t4P/2KVlys5UEg==

@@ -1,8 +1,16 @@
-import { PubSub } from "graphql-subscriptions";
+import PostgresPubSub from "@udia/graphql-postgres-subscriptions";
+import { Client } from "pg";
+import { db } from "./database";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger, LedgerHeader } from "./model";
+import logger from "./util/logger";
 
-export const pubsub = new PubSub();
+const pgClient = new Client(db.$cn as string);
+export const pubsub = new PostgresPubSub(pgClient);
+pgClient
+  .connect()
+  .then(() => logger.debug("Connected to PG pubsub"))
+  .catch(err => logger.error(`Error connecting to PG pubsub: ${err}`));
 
 export const LEDGER_CREATED = "LEDGER_CREATED";
 

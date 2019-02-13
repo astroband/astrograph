@@ -5,7 +5,6 @@ const schemaWithComments = `
   order: int @index(int) .
   key: string @index(hash) .
   id: string @index(exact) .
-  type: string @index(hash) .
   type.account: default .
   type.asset: default .
   type.ledger: default .
@@ -24,11 +23,11 @@ const schemaWithComments = `
   kind.payment: default .
   kind.setOption: default .
   index: int @index(int) .
-  account.source: uid .
-  ledger: uid .
-  next: uid .
-  prev: uid .
-  asset: uid .
+  account.source: [uid] .
+  ledger: [uid] .
+  next: [uid] .
+  prev: [uid] .
+  asset: [uid] .
 
   # ledgers
   seq: int @index(int) .
@@ -41,13 +40,13 @@ const schemaWithComments = `
 
   # accounts
   deleted: bool @index(bool) .
-  assets.issued: uid .
-  operations: uid .
-  transactions: uid .
+  assets.issued: [uid] .
+  operations: [uid] .
+  transactions: [uid] .
 
   # assets
   asset.id: default .
-  issuer: uid .
+  issuer: [uid] .
   code: string @index(exact) .
   native: bool @index(bool) .
 
@@ -65,17 +64,17 @@ const schemaWithComments = `
   balance: default .
 
   # operations
-  transaction: uid .
+  transaction: [uid] .
   kind: string @index(hash) .
   amount: int @index(int) .
-  account.destination: uid .
-  result: uid .
+  account.destination: [uid] .
+  result: [uid] .
 
   # account merge
   account_merge_result_code: default .
 
   # allow trust
-  trustor: uid .
+  trustor: [uid] .
   asset_code: string @index(exact) .
   authorize: bool @index(bool) .
   allow_trust_result_code: default .
@@ -97,8 +96,8 @@ const schemaWithComments = `
   manage_data_result_code: default .
 
   # manage offer
-  asset.buying: uid .
-  asset.selling: uid .
+  asset.buying: [uid] .
+  asset.selling: [uid] .
   price_n: default .
   price_d: default .
   price: float @index(float) .
@@ -108,21 +107,21 @@ const schemaWithComments = `
   payment_result_code: default .
 
   # path payment
-  asset.source: uid .
-  asset.destination: uid .
-  assets.path: uid .
+  asset.source: [uid] .
+  asset.destination: [uid] .
+  assets.path: [uid] .
   send_max: default .
   dest_amount: default .
   path_payment_result_code: default .
 
   # set options
-  signer: uid .
-  account.inflation_dest: uid .
+  signer: [uid] .
+  account.inflation_dest: [uid] .
   clear_flags: default .
   set_flags: default .
   master_weight: default .
   home_domain: default .
-  thresholds: uid .
+  thresholds: [uid] .
   set_options_result_code: default .
 
   # thresholds
@@ -131,7 +130,7 @@ const schemaWithComments = `
   high: default .
 
   # signer
-  account: uid .
+  account: [uid] .
   weight: default .
 
   # operation results
@@ -139,14 +138,14 @@ const schemaWithComments = `
   source_account_balance: int .
 
   # path payment result
-  no_issuer: uid .
-  last: uid .
-  offers: uid .
-  asset.sold: uid .
-  asset.bought: uid .
+  no_issuer: [uid] .
+  last: [uid] .
+  offers: [uid] .
+  asset.sold: [uid] .
+  asset.bought: [uid] .
   amount_sold: default .
   amount_bought: default .
-  seller: uid .
+  seller: [uid] .
 `;
 
 // remove comments
