@@ -1,7 +1,7 @@
 {
   "name": "astrograph",
   "version": "0.1.0",
-  "main": "src/graphql.ts",
+  "main": "src/graphql_server.ts",
   "description": "GraphQL server for Stellar network",
   "author": "Mobius Team",
   "repository": {
@@ -22,7 +22,7 @@
     "@types/progress": "^2.0.3",
     "@types/protobufjs": "^6.0.0",
     "@types/retry": "^0.12.0",
-    "@udia/graphql-postgres-subscriptions": "^1.0.9",
+    "@udia/graphql-postgres-subscriptions": "^1.1.0",
     "apollo-server": "^2.0.0-rc.8",
     "big.js": "^5.1.2",
     "bignumber.js": "^8.0.1",
@@ -32,7 +32,6 @@
     "graphql": "^0.13.2",
     "graphql-relay": "^0.5.5",
     "graphql-resolve-batch": "^1.0.2",
-    "graphql-subscriptions": "^0.5.8",
     "grpc": "^1.18.0",
     "lodash": "^4.17.11",
     "minimist": "^1.2.0",
