@@ -1,10 +1,10 @@
 import fs from "fs";
 import ProgressBar from "progress";
-import zlib  from "zlib";
-import { Ingestor } from "./storage/ingestor";
-
+import zlib from "zlib";
 import { configure, IConfig } from "./export/configure";
 import iterate from "./export/iterate";
+import { Ingestor } from "./storage/ingestor";
+import { SCHEMA } from "./storage/schema";
 import logger from "./util/logger";
 
 import { LedgerHeader, TransactionWithXDR } from "./model";
@@ -50,6 +50,8 @@ configure()
     });
 
     file.end();
+
+    fs.writeFileSync(`${config.dirPath}/export.schema`, SCHEMA.replace(/^\s*\n/gm, "").replace(/^\s\s/gm, ""));
   })
   .catch(err => {
     logger.error(err);
