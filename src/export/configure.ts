@@ -1,6 +1,5 @@
 import fs from "fs";
 import parseArgv from "minimist";
-import zlib from "zlib";
 import { db } from "../database";
 import logger from "../util/logger";
 import { setNetwork as setStellarNetwork } from "../util/stellar";
@@ -11,7 +10,8 @@ export interface IConfig {
   minSeq: number;
   maxSeq: number;
   total: number;
-  file: any;
+  dirPath: string;
+  sliceSize: number;
 }
 
 const setNetwork = () => {
@@ -19,11 +19,17 @@ const setNetwork = () => {
   logger.info(`Using ${network}`);
 };
 
-const setLimits = async (): Promise<any> => {
+const parseArguments = () => {
   const args = parseArgv(process.argv.slice(2));
 
   const count: number = Number.parseInt(args._[0], 10);
-  let maxSeq: number = Number.parseInt(args._[1], 10);
+  const maxSeq: number = Number.parseInt(args._[1], 10);
+  const sliceSize = args.slice;
+
+  return { count, maxSeq, sliceSize };
+};
+
+const setLimits = async (count: number, maxSeq: number): Promise<any> => {
   let minSeq: number | null = null;
 
   if (isNaN(maxSeq)) {
@@ -37,24 +43,27 @@ const setLimits = async (): Promise<any> => {
   return { minSeq, maxSeq, total };
 };
 
-const openCsv = async (r: string): Promise<any> => {
-  const fileName = `${EXPORT_BASE_DIR}/${r}.nquads.gz`;
+const makeDir = async (path: string) => {
+  if (fs.existsSync(path)) {
+    throw new Error(`File ${path} exists. Please remove it and start over`);
+  }
 
-  await fs.mkdir(EXPORT_BASE_DIR, { recursive: true }, (err: any) => {
+  await fs.mkdir(path, { recursive: true }, (err: any) => {
     if (err) {
       throw err;
     }
   });
-
-  const file = zlib.createGzip();
-  file.pipe(fs.createWriteStream(fileName));
-
-  return file;
 };
 
 export async function configure(): Promise<IConfig> {
   setNetwork();
-  const { minSeq, maxSeq, total } = await setLimits();
-  const file = await openCsv(`${minSeq}-${maxSeq}`);
-  return { minSeq, maxSeq, total, file };
+  const { count, maxSeq: maxSeqArg, sliceSize } = parseArguments();
+  const { minSeq, maxSeq, total } = await setLimits(count, maxSeqArg);
+
+  const dirPath = `${EXPORT_BASE_DIR}/${minSeq}-${maxSeq}`;
+
+  logger.info(`Creating directory ${dirPath} to store RDF files...`);
+  await makeDir(dirPath);
+
+  return { minSeq, maxSeq, total, dirPath, sliceSize: sliceSize || 100000 };
 }
