@@ -8,6 +8,6 @@ services:
 before_script:
   - psql -c 'create database astrograph_test;' -U postgres
 script:
-  - yarn run test:unit --coverage
+  - yarn run test:unit --coverage --maxWorkers=4
 after_success:
   - codecov -f coverage/*.json
