@@ -1,7 +1,7 @@
 import stellar from "stellar-base";
 import { Memo } from "stellar-sdk";
 import { publicKeyFromBuffer } from "../../util/xdr";
-import { TimeBounds } from "../transaction";
+import { ITimeBounds } from "../transaction";
 import { ITransactionWithXDR, TransactionWithXDR } from "../transaction_with_xdr";
 
 export interface ITransactionTableRow {
@@ -26,11 +26,8 @@ export class TransactionWithXDRFactory {
     const result = resultXDR.result();
 
     const memo = Memo.fromXDRObject(body.memo());
-    const timeBoundsXDR = body.timeBounds();
 
-    const timeBounds: TimeBounds | undefined = timeBoundsXDR
-      ? [timeBoundsXDR.minTime().toInt(), timeBoundsXDR.maxTime().toInt()]
-      : undefined;
+    const timeBounds = this.parseTimeBounds(body.timeBounds());
 
     const resultCode = result.result().switch().value;
     const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
@@ -62,5 +59,17 @@ export class TransactionWithXDRFactory {
     };
 
     return new TransactionWithXDR(data);
+  }
+
+  public static parseTimeBounds(timeBoundsXDR: any): ITimeBounds | undefined {
+    if (!timeBoundsXDR) {
+      return;
+    }
+
+    const minTime: Date = new Date(timeBoundsXDR.minTime().toInt() * 1000);
+    // maxTime equal 0 means that it's not set
+    const maxTime = timeBoundsXDR.maxTime().toInt() !== 0 ? new Date(timeBoundsXDR.maxTime() * 1000) : undefined;
+
+    return { minTime, maxTime };
   }
 }

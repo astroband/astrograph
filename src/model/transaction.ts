@@ -1,6 +1,9 @@
 import { Memo } from "stellar-sdk";
 
-export type TimeBounds = [number, number];
+export interface ITimeBounds {
+  readonly minTime: Date;
+  readonly maxTime?: Date;
+}
 
 export interface ITransaction {
   id: string;
@@ -9,7 +12,7 @@ export interface ITransaction {
   memo?: Memo;
   feeAmount: string;
   sourceAccount: string;
-  timeBounds?: TimeBounds;
+  timeBounds?: ITimeBounds;
   feeCharged: string;
   success: boolean;
   resultCode: number;
@@ -22,7 +25,7 @@ export class Transaction implements ITransaction {
   public memo?: Memo;
   public feeAmount: string;
   public sourceAccount: string;
-  public timeBounds?: TimeBounds;
+  public timeBounds?: ITimeBounds;
   public feeCharged: string;
   public success: boolean;
   public resultCode: number;
