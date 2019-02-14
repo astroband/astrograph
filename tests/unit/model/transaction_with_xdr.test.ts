@@ -49,17 +49,17 @@ describe("constructor", () => {
       [
         "lower bound is set",
         "AAAAAIO+zCWkYwJVyrzlIvttbpvuU0K/mEIVPESvJKGpkfKZAAAAZAAACvYAAAACAAAAAQAAAABbtxo6AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAKAAAABHRlc3QAAAABAAAABHRlc3QAAAAAAAAAAA==",
-        [1538726458, 0]
+        { minTime: new Date(1538726458000) }
       ],
       [
         "upper bound is set",
         "AAAAAIO+zCWkYwJVyrzlIvttbpvuU0K/mEIVPESvJKGpkfKZAAAAZAAACvYAAAACAAAAAQAAAAAAAAAAAAAAAFve8PcAAAAAAAAAAQAAAAAAAAAKAAAABHRlc3QAAAABAAAABHRlc3QAAAAAAAAAAA==",
-        [0, 1541337335]
+        { minTime: new Date(0), maxTime: new Date(1541337335000) }
       ],
       [
         "both bounds are set",
         "AAAAAIO+zCWkYwJVyrzlIvttbpvuU0K/mEIVPESvJKGpkfKZAAAAZAAACvYAAAACAAAAAQAAAABbtxo6AAAAAFu3HiIAAAAAAAAAAQAAAAAAAAAKAAAABHRlc3QAAAABAAAABHRlc3QAAAAAAAAAAA==",
-        [1538726458, 1538727458]
+        { minTime: new Date(1538726458000), maxTime: new Date(1538727458000) }
       ]
     ];
 

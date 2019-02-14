@@ -20,8 +20,9 @@ export interface ITransactionData {
   // meta
   // feeMeta
   "account.source": IAccountData[];
-  "time_bounds.min": number;
-  "time_bounds.max": number;
+  // Datetime ISO string
+  "time_bounds.min": string;
+  "time_bounds.max": string;
 }
 
 interface IOperationData {
