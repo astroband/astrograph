@@ -67,10 +67,10 @@ export class TransactionBuilder extends Builder {
       return;
     }
 
-    this.pushValue("time_bounds.min", this.tx.timeBounds[0].toISOString());
+    this.pushValue("time_bounds.min", this.tx.timeBounds.minTime.toISOString());
 
-    if (this.tx.timeBounds[1] instanceof Date) {
-      this.pushValue("time_bounds.max", this.tx.timeBounds[1].toISOString());
+    if (this.tx.timeBounds.maxTime instanceof Date) {
+      this.pushValue("time_bounds.max", this.tx.timeBounds.maxTime.toISOString());
     }
   }
 }
