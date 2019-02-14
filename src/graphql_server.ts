@@ -1,4 +1,4 @@
-import "./init";
+import init from "./init";
 import "./util/memo";
 
 import * as Sentry from "@sentry/node";
@@ -9,6 +9,8 @@ import { GraphQLError } from "graphql";
 import schema from "./schema";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
+
+init();
 
 const server = new ApolloServer({
   schema,
