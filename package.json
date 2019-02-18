@@ -79,8 +79,8 @@
   },
   "scripts": {
     "build": "tsc --build tsconfig.build.json",
-    "start": "nodemon ./src/graphql.ts",
-    "start-prod": "nodemon ./dist/graphql.js",
+    "start": "nodemon ./src/graphql_server.ts",
+    "start-prod": "nodemon ./dist/graphql_server.js",
     "dev": "nodemon --watch src && tslint-check",
     "prod": "yarn build && yarn tslint && yarn start-prod",
     "tslint": "tslint -c tslint.json -p tsconfig.json --fix",
