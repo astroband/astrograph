@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": false,
+    "sourceMap": false,
+    "inlineSources": true,
+    "inlineSourceMap": true,
+    "sourceRoot": "/"
+  },
+  "include": ["src/**/*"]
+}
