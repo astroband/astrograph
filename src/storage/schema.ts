@@ -114,7 +114,6 @@ const schemaWithComments = `
   set_options_op.signer: [uid] @reverse .
   set_options_op.inflation_destination: [uid] @reverse .
   set_options_op.result_code: int .
-  set_options_op.signer: [uid] .
   clear_flags: int .
   set_flags: int .
   master_weight: int .
@@ -129,6 +128,10 @@ const schemaWithComments = `
   # signer
   account: [uid] .
   weight: int .
+
+  # trade
+  trade.asset: [uid] @reverse .
+  trade.counterpart: [uid] .
 `;
 
 // remove comments

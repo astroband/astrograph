@@ -70,7 +70,12 @@ export class OperationBuilder extends Builder {
       case t.pathPayment():
         return new PathPaymentOpBuilder(this.current, this.xdr.body().pathPaymentOp(), this.resultXDR);
       case t.manageOffer():
-        return new ManageOfferOpBuilder(this.current, this.xdr.body().manageOfferOp(), this.resultXDR);
+        return new ManageOfferOpBuilder(
+          this.current,
+          this.xdr.body().manageOfferOp(),
+          this.sourceAccount(),
+          this.resultXDR
+        );
       case t.setOption():
         return new SetOptionsOpBuilder(this.current, this.xdr.body().setOptionsOp(), this.resultXDR);
       case t.changeTrust():

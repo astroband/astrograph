@@ -6,5 +6,6 @@ export * from "./path_payment_result";
 export * from "./account";
 export * from "./asset";
 export * from "./ledger_state";
+export * from "./trade";
 export * from "./transaction";
 export * from "./trust_line_entry";

@@ -1,4 +1,4 @@
-import { IChange } from "../../changes_extractor";
+import { ChangeType, EntryType, IChange } from "../../changes_extractor";
 import { ITransaction, ITrustLineBase } from "../../model";
 import { TrustLineValuesFactory } from "../../model/factories/trust_line_values_factory";
 import { NQuad, NQuads } from "../nquads";
@@ -21,10 +21,10 @@ export class LedgerStateBuilder {
 
     this.changes.forEach((change, i) => {
       switch (change.type) {
-        case "created":
+        case ChangeType.Created:
           builder = this.buildCreatedBuilder(change, i);
           break;
-        case "updated":
+        case ChangeType.Updated:
           builder = this.buildUpdatedBuilder(change, i);
           break;
         default:
@@ -45,10 +45,10 @@ export class LedgerStateBuilder {
     let data: ITrustLineBase;
 
     switch (change.entry) {
-      case "account":
+      case EntryType.Account:
         data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
         break;
-      case "trustline":
+      case EntryType.Trustline:
         data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
         break;
       default:
@@ -63,13 +63,13 @@ export class LedgerStateBuilder {
     let data: ITrustLineBase;
 
     switch (change.entry) {
-      case "account":
+      case EntryType.Account:
         if (change.accountChanges && !change.accountChanges.includes("balance")) {
           return null;
         }
         data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
         break;
-      case "trustline":
+      case EntryType.Trustline:
         data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
         break;
       default:
