@@ -26,10 +26,10 @@ export class DataMapper {
   constructor(private data: DgraphOperationsData) {
     this.baseData = {
       kind: data["op.kind"],
-      account: data["op.source"][0]["account.id"],
+      account: data["op.source"]["account.id"],
       index: parseInt(data["op.index"], 10),
-      dateTime: new Date(data["op.ledger"][0].close_time),
-      transactionId: data["op.transaction"][0]["tx.id"]
+      dateTime: new Date(data["op.ledger"].close_time),
+      transactionId: data["op.transaction"]["tx.id"]
     };
   }
 
@@ -60,16 +60,16 @@ export class DataMapper {
   }
 
   private mapPayment(): IPaymentOperation {
-    const assetData = this.data["payment_op.asset"][0];
+    const assetData = this.data["payment_op.asset"];
     const asset = assetData.native
       ? Asset.native()
-      : new Asset(assetData.code, assetData["asset.issuer"][0]["account.id"]);
+      : new Asset(assetData.code, assetData["asset.issuer"]["account.id"]);
 
     return {
       ...this.baseData,
       ...{
-        destination: this.data["op.destination"][0]["account.id"],
-        source: this.data["op.source"][0]["account.id"],
+        destination: this.data["op.destination"]["account.id"],
+        source: this.data["op.source"]["account.id"],
         amount: this.data.amount,
         asset
       }
@@ -80,7 +80,7 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{
-        destination: this.data["op.destination"][0]["account.id"]
+        destination: this.data["op.destination"]["account.id"]
       }
     };
   }
@@ -97,29 +97,29 @@ export class DataMapper {
         clearFlags: parseInt(this.data.clear_flags, 10),
         setFlags: parseInt(this.data.set_flags, 10),
         thresholds: {
-          high: parseInt(this.data.thresholds[0].high, 10),
-          medium: parseInt(this.data.thresholds[0].med, 10),
-          low: parseInt(this.data.thresholds[0].low, 10)
+          high: parseInt(this.data.thresholds.high, 10),
+          medium: parseInt(this.data.thresholds.med, 10),
+          low: parseInt(this.data.thresholds.low, 10)
         },
-        inflationDestination: this.data["set_options_op.inflation_destination"][0]["account.id"],
+        inflationDestination: this.data["set_options_op.inflation_destination"]["account.id"],
         signer: {
-          account: this.data["set_options_op.signer"][0].account[0]["account.id"],
-          weight: parseInt(this.data["set_options_op.signer"][0].weight, 10)
+          account: this.data["set_options_op.signer"].account["account.id"],
+          weight: parseInt(this.data["set_options_op.signer"].weight, 10)
         }
       }
     };
   }
 
   private mapAllowTrust(): IAllowTrustOperation {
-    const assetData = this.data["allow_trust_op.asset"][0];
+    const assetData = this.data["allow_trust_op.asset"];
     const asset = assetData.native
       ? Asset.native()
-      : new Asset(assetData.code, assetData["asset.issuer"][0]["account.id"]);
+      : new Asset(assetData.code, assetData["asset.issuer"]["account.id"]);
 
     return {
       ...this.baseData,
       ...{
-        trustor: this.data["allow_trust_op.trustor"][0]["account.id"],
+        trustor: this.data["allow_trust_op.trustor"]["account.id"],
         authorize: this.data.authorize,
         asset
       }
@@ -134,8 +134,8 @@ export class DataMapper {
   }
 
   private mapChangeTrust(): IChangeTrustOperation {
-    const assetData = this.data["change_trust_op.asset"][0];
-    const asset = new Asset(assetData.code, assetData["asset.issuer"][0]["account.id"]);
+    const assetData = this.data["change_trust_op.asset"];
+    const asset = new Asset(assetData.code, assetData["asset.issuer"]["account.id"]);
 
     return {
       ...this.baseData,
@@ -148,7 +148,7 @@ export class DataMapper {
       ...this.baseData,
       ...{
         startingBalance: this.data.starting_balance,
-        destination: this.data["op.destination"][0]["account.id"]
+        destination: this.data["op.destination"]["account.id"]
       }
     };
   }
@@ -161,15 +161,15 @@ export class DataMapper {
   }
 
   private mapManageOffer(): IManageOfferOperation {
-    const assetBuyingData = this.data["manage_offer_op.asset_buying"][0];
-    const assetSellingData = this.data["manage_offer_op.asset_selling"][0];
+    const assetBuyingData = this.data["manage_offer_op.asset_buying"];
+    const assetSellingData = this.data["manage_offer_op.asset_selling"];
 
     const assetBuying = assetBuyingData.native
       ? Asset.native()
-      : new Asset(assetBuyingData.code, assetBuyingData["asset.issuer"][0]["account.id"]);
+      : new Asset(assetBuyingData.code, assetBuyingData["asset.issuer"]["account.id"]);
     const assetSelling = assetSellingData.native
       ? Asset.native()
-      : new Asset(assetSellingData.code, assetSellingData["asset.issuer"][0]["account.id"]);
+      : new Asset(assetSellingData.code, assetSellingData["asset.issuer"]["account.id"]);
 
     return {
       ...this.baseData,
@@ -188,29 +188,27 @@ export class DataMapper {
   }
 
   private mapPathPayment(): IPathPaymentOperation {
-    const destinationAssetData = this.data["path_payment_op.asset_destination"][0];
-    const sourceAssetData = this.data["path_payment_op.asset_source"][0];
+    const destinationAssetData = this.data["path_payment_op.asset_destination"];
+    const sourceAssetData = this.data["path_payment_op.asset_source"];
 
     const destinationAsset = destinationAssetData.native
       ? Asset.native()
-      : new Asset(destinationAssetData.code, destinationAssetData["asset.issuer"][0]["account.id"]);
+      : new Asset(destinationAssetData.code, destinationAssetData["asset.issuer"]["account.id"]);
     const sourceAsset = sourceAssetData.native
       ? Asset.native()
-      : new Asset(sourceAssetData.code, sourceAssetData["asset.issuer"][0]["account.id"]);
+      : new Asset(sourceAssetData.code, sourceAssetData["asset.issuer"]["account.id"]);
 
     return {
       ...this.baseData,
       ...{
         sendMax: this.data.send_max,
         destinationAmount: this.data.amount,
-        destinationAccount: this.data["op.destination"][0]["account.id"],
+        destinationAccount: this.data["op.destination"]["account.id"],
         destinationAsset,
-        sourceAccount: this.data["op.source"][0]["account.id"],
+        sourceAccount: this.data["op.source"]["account.id"],
         sourceAsset,
         path: this.data["path_payment_op.assets_path"].map((assetData: IAssetData) => {
-          return assetData.native
-            ? Asset.native()
-            : new Asset(assetData.code, assetData["asset.issuer"][0]["account.id"]);
+          return assetData.native ? Asset.native() : new Asset(assetData.code, assetData["asset.issuer"]["account.id"]);
         })
       }
     };

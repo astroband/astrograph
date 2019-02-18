@@ -8,7 +8,7 @@ import { MemoType } from "../util/stellar";
 export interface ITransactionData {
   "tx.id": string;
   "tx.index": string;
-  "tx.ledger": ILedgerData[];
+  "tx.ledger": ILedgerData;
   // body
   "memo.value": string | null;
   "memo.type": MemoType | null;
@@ -19,7 +19,7 @@ export interface ITransactionData {
   // result
   // meta
   // feeMeta
-  "tx.source": IAccountData[];
+  "tx.source": IAccountData;
   // Datetime ISO string
   "time_bounds.min": string;
   "time_bounds.max": string;
@@ -27,16 +27,16 @@ export interface ITransactionData {
 
 interface IOperationData {
   "op.kind": OperationKinds;
-  "op.ledger": ILedgerData[];
+  "op.ledger": ILedgerData;
   "op.index": string;
-  "op.transaction": ITransactionData[];
-  "op.source": IAccountData[];
-  "op.destination": IAccountData[];
+  "op.transaction": ITransactionData;
+  "op.source": IAccountData;
+  "op.destination": IAccountData;
 }
 
 export interface IPaymentOperationData extends IOperationData {
   amount: string;
-  "payment_op.asset": IAssetData[];
+  "payment_op.asset": IAssetData;
 }
 
 export interface ISetOptionsOperationData extends IOperationData {
@@ -49,16 +49,16 @@ export interface ISetOptionsOperationData extends IOperationData {
     med: string;
     low: string;
   };
-  "set_options_op.inflation_destination": IAccountData[];
+  "set_options_op.inflation_destination": IAccountData;
   "set_options_op.signer": {
-    account: IAccountData[];
+    account: IAccountData;
     weight: string;
   };
 }
 
 export interface IAllowTrustOperationData extends IOperationData {
-  "allow_trust_op.trustor": IAccountData[];
-  "allow_trust_op.asset": IAssetData[];
+  "allow_trust_op.trustor": IAccountData;
+  "allow_trust_op.asset": IAssetData;
   authorize: boolean;
 }
 
@@ -68,7 +68,7 @@ export interface IBumpSequenceOperationData extends IOperationData {
 
 export interface IChangeTrustOperationData extends IOperationData {
   limit: string;
-  "change_trust_op.asset": IAssetData[];
+  "change_trust_op.asset": IAssetData;
 }
 
 export interface ICreateAccountOperationData extends IOperationData {
@@ -85,16 +85,16 @@ export interface IManageOfferOperationData extends IOperationData {
   price_d: string;
   price: number;
   offer_id: string;
-  "manage_offer_op.asset_selling": IAssetData[];
-  "manage_offer_op.asset_buying": IAssetData[];
+  "manage_offer_op.asset_selling": IAssetData;
+  "manage_offer_op.asset_buying": IAssetData;
   amount: number;
 }
 
 export interface IPathPaymentOperationData extends IOperationData {
   send_max: string;
   amount: string;
-  "path_payment_op.asset_destination": IAssetData[];
-  "path_payment_op.asset_source": IAssetData[];
+  "path_payment_op.asset_destination": IAssetData;
+  "path_payment_op.asset_source": IAssetData;
   "path_payment_op.assets_path": IAssetData[];
 }
 
@@ -111,7 +111,7 @@ export type DgraphOperationsData = IPaymentOperationData &
 export interface IAssetData {
   "asset.id": string;
   code: AssetCode;
-  "asset.issuer": IAccountData[];
+  "asset.issuer": IAccountData;
   native: boolean;
 }
 
