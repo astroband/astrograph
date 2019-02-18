@@ -13,15 +13,24 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
     }`
   );
 
+  // indicates that we're waiting for the new ledger
+  // to appear, so no need to log about it on every tick
+  let waitNewLedgers = false;
+
   const tick = async () => {
     const worker = new Worker(cursor);
     worker
       .run()
       .then(done => {
-        logger.info(`Ledger ${cursor.current}: done.`);
         if (done) {
+          logger.info(`Ledger ${cursor.current}: done.`);
+          waitNewLedgers = false;
           tick();
         } else {
+          if (!waitNewLedgers) {
+            logger.info(`No new ledger, waiting...`);
+            waitNewLedgers = true;
+          }
           setTimeout(tick, INGEST_INTERVAL);
         }
       })
