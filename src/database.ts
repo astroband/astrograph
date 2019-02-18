@@ -49,7 +49,7 @@ const initOptions: IOptions<IExtensions> = {
   }
 };
 
-export const config = {
+const config = {
   host: secrets.DBHOST,
   port: secrets.DBPORT,
   database: secrets.DB,
