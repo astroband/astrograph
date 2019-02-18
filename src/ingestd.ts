@@ -19,30 +19,30 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
 
   const tick = async () => {
     const worker = new Worker(cursor);
-    worker
-      .run()
-      .then(done => {
-        if (done) {
-          logger.info(`Ledger ${cursor.current}: done.`);
-          waitNewLedgers = false;
-          tick();
-        } else {
-          if (!waitNewLedgers) {
-            logger.info(`No new ledger, waiting...`);
-            waitNewLedgers = true;
-          }
-          setTimeout(tick, INGEST_INTERVAL);
-        }
-      })
-      .catch(e => {
-        logger.error(e);
-        if (e.message.includes("Please retry again, server is not ready to accept requests")) {
-          setTimeout(tick, 200);
-          return;
-        }
 
-        Sentry.captureException(e);
-      });
+    try {
+      const done = await worker.run();
+
+      if (done) {
+        logger.info(`Ledger ${cursor.current}: done.`);
+        waitNewLedgers = false;
+        tick();
+      } else {
+        if (!waitNewLedgers) {
+          logger.info(`No new ledger, waiting...`);
+          waitNewLedgers = true;
+        }
+        setTimeout(tick, INGEST_INTERVAL);
+      }
+    } catch(e) {
+      logger.error(e);
+      if (e.message.includes("Please retry again, server is not ready to accept requests")) {
+        setTimeout(tick, 200);
+        return;
+      }
+
+      Sentry.captureException(e);
+    }
   };
 
   tick();
