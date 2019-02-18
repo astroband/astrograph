@@ -16,7 +16,7 @@ env:
 before_script:
   - psql -U postgres -c 'create database astrograph_test;'
 script:
-  - yarn test:coverage
+  - yarn test:coverage --maxWorkers=4
   - sonar-scanner
 after_success:
   - yarn test:codecov
