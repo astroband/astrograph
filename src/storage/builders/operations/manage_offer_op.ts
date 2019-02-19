@@ -5,6 +5,8 @@ import { NQuads } from "../../nquads";
 
 export class ManageOfferOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
+    super.build();
+
     const selling = Asset.fromOperation(this.xdr.selling());
     const buying = Asset.fromOperation(this.xdr.buying());
     const price = {
