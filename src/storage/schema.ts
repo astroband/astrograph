@@ -28,6 +28,7 @@ const schemaWithComments = `
   account.created_by: uid @reverse .
   account.merged_into: uid @reverse .
   account.inflation_destination: uid @reverse .
+  account.thresholds: uid .
   home_domain: string @index(trigram) .
 
   # assets

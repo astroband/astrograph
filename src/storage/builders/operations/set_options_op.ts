@@ -45,6 +45,7 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     const thresholdsNquad = NQuad.blank(`${this.current.value}_thresholds`);
 
     this.nquads.push(new NQuad(this.current, "thresholds", thresholdsNquad));
+    this.nquads.push(new NQuad(this.sourceAccountBuilder.current, "account.thresholds", thresholdsNquad));
 
     for (const key in thresholds) {
       if (_.isUndefined(thresholds[key])) {
