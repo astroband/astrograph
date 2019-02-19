@@ -7,9 +7,8 @@ export class AccountMergeOpBuilder extends SpecificOperationBuilder {
     super.build();
 
     const destinationBuilder = new AccountBuilder(publicKeyFromBuffer(this.body.destination().value()));
-    const sourceBuilder = new AccountBuilder(this.sourceAccountId);
 
-    this.nquads.push(new NQuad(sourceBuilder.current, "account.merged_into", destinationBuilder.current));
+    this.nquads.push(new NQuad(this.sourceAccountBuilder.current, "account.merged_into", destinationBuilder.current));
     this.pushBuilder(destinationBuilder, "op.destination");
 
     return this.nquads;

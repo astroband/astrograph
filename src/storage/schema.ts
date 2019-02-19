@@ -28,6 +28,7 @@ const schemaWithComments = `
   account.created_by: uid @reverse .
   account.merged_into: uid @reverse .
   account.inflation_destination: uid @reverse .
+  home_domain: string @index(trigram) .
 
   # assets
   asset.id: string @index(exact) .
@@ -120,8 +121,8 @@ const schemaWithComments = `
   clear_flags: int .
   set_flags: int .
   master_weight: int .
-  home_domain: string .
   thresholds: uid .
+  # home_domain is used here too
 
   # thresholds
   high: int .

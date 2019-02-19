@@ -10,11 +10,10 @@ export class CreateAccountOpBuilder extends SpecificOperationBuilder {
     const startingBalance = this.body.startingBalance().toString();
     const destinationId = publicKeyFromBuffer(this.body.destination().value());
     const destinationBuilder = new AccountBuilder(destinationId);
-    const sourceBuilder = new AccountBuilder(this.sourceAccountId);
 
     this.pushValue("starting_balance", startingBalance);
     this.pushBuilder(destinationBuilder, "account.destination");
-    this.nquads.push(new NQuad(destinationBuilder.current, "account.created_by", sourceBuilder.current));
+    this.nquads.push(new NQuad(destinationBuilder.current, "account.created_by", this.sourceAccountBuilder.current));
 
     return this.nquads;
   }

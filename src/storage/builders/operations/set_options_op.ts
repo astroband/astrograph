@@ -7,17 +7,20 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
 
+    const homeDomain = this.body.homeDomain();
+
     this.pushValues({
       clear_flags: this.body.clearFlags(),
       set_flags: this.body.setFlags(),
-      master_weight: this.body.masterWeight()
+      master_weight: this.body.masterWeight(),
+      home_domain: homeDomain
     });
 
     this.pushInflationDest();
     this.pushThresholds();
     this.pushSigner();
 
-    this.pushValue("home_domain", this.body.homeDomain());
+    this.nquads.push(new NQuad(this.sourceAccountBuilder.current, "home_domain", NQuad.value(homeDomain)));
 
     return this.nquads;
   }
@@ -78,11 +81,10 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
 
     const inflationDestination = publicKeyFromBuffer(this.body.inflationDest().value());
     const inflationDestAccountBuilder = new AccountBuilder(inflationDestination);
-    const sourceAccountBuilder = new AccountBuilder(this.sourceAccountId);
 
     this.pushBuilder(inflationDestAccountBuilder, `${this.entityPrefix}.inflation_destination`);
     this.nquads.push(
-      new NQuad(sourceAccountBuilder.current, "account.inflation_destination", inflationDestAccountBuilder.current)
+      new NQuad(this.sourceAccountBuilder.current, "account.inflation_destination", inflationDestAccountBuilder.current)
     );
   }
 

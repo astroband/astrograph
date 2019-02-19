@@ -2,8 +2,10 @@ import stellar from "stellar-base";
 
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { Builder } from "./";
+import { AccountBuilder } from "./account";
 
 export abstract class SpecificOperationBuilder extends Builder {
+  protected sourceAccountBuilder: AccountBuilder;
   protected resultBodyXDR: any;
   protected trXDR: any;
 
@@ -15,6 +17,7 @@ export abstract class SpecificOperationBuilder extends Builder {
   ) {
     super();
 
+    this.sourceAccountBuilder = new AccountBuilder(sourceAccountId);
     if (this.resultXDR && this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner()) {
       this.trXDR = this.resultXDR.tr();
     }
