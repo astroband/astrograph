@@ -1,12 +1,16 @@
 import { AccountBuilder, SpecificOperationBuilder } from "../";
 import { publicKeyFromBuffer } from "../../../util/xdr/account";
-import { NQuads } from "../../nquads";
+import { NQuad, NQuads } from "../../nquads";
 
 export class AccountMergeOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
 
-    this.pushBuilder(new AccountBuilder(publicKeyFromBuffer(this.body.destination().value())), "op.destination");
+    const destinationBuilder = new AccountBuilder(publicKeyFromBuffer(this.body.destination().value()));
+    const sourceBuilder = new AccountBuilder(this.sourceAccountId);
+
+    this.nquads.push(new NQuad(sourceBuilder.current, "account.merged_into", destinationBuilder.current));
+    this.pushBuilder(destinationBuilder, "op.destination");
 
     return this.nquads;
   }

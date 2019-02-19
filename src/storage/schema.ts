@@ -26,7 +26,7 @@ const schemaWithComments = `
   # accounts
   account.id: string @index(exact) .
   account.created_by: uid @reverse .
-  deleted: bool @index(bool) .
+  account.merged_into: uid @reverse .
 
   # assets
   asset.id: string @index(exact) .

@@ -21,10 +21,7 @@ export class AccountBuilder extends Builder {
 
   public build(): NQuads {
     this.pushKey();
-    this.pushValues({
-      "account.id": this.id,
-      deleted: false
-    });
+    this.pushValue("account.id", this.id);
 
     return this.nquads;
   }
