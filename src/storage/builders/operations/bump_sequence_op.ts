@@ -10,7 +10,7 @@ export class BumpSequenceOpBuilder extends SpecificOperationBuilder {
     return this.nquads;
   }
 
-  protected get resultCode() {
+  protected get resultCode(): number | undefined {
     if (!this.trXDR) {
       return;
     }

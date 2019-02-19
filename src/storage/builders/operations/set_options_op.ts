@@ -80,7 +80,7 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     this.pushBuilder(new AccountBuilder(inflationDestination), `${this.entityPrefix}.inflation_destination`);
   }
 
-  protected get resultCode() {
+  protected get resultCode(): number | undefined {
     if (!this.trXDR) {
       return;
     }

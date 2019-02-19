@@ -20,7 +20,7 @@ export class CreateAccountOpBuilder extends SpecificOperationBuilder {
     this.pushValue("create_account_result_code", code);
   }
 
-  protected get resultCode() {
+  protected get resultCode(): number | undefined {
     if (!this.trXDR) {
       return;
     }
