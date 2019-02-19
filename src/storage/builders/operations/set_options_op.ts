@@ -8,25 +8,25 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     super.build();
 
     this.pushValues({
-      clear_flags: this.xdr.clearFlags(),
-      set_flags: this.xdr.setFlags(),
-      master_weight: this.xdr.masterWeight()
+      clear_flags: this.body.clearFlags(),
+      set_flags: this.body.setFlags(),
+      master_weight: this.body.masterWeight()
     });
 
     this.pushInflationDest();
     this.pushThresholds();
     this.pushSigner();
 
-    this.pushValue("home_domain", this.xdr.homeDomain());
+    this.pushValue("home_domain", this.body.homeDomain());
 
     return this.nquads;
   }
 
   private pushThresholds() {
     const thresholds = {
-      high: this.xdr.highThreshold(),
-      med: this.xdr.medThreshold(),
-      low: this.xdr.lowThreshold()
+      high: this.body.highThreshold(),
+      med: this.body.medThreshold(),
+      low: this.body.lowThreshold()
     };
 
     if (
@@ -53,13 +53,13 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
   }
 
   private pushSigner() {
-    if (!this.xdr.signer()) {
+    if (!this.body.signer()) {
       return;
     }
 
     const signer = {
-      address: signerKeyFromXDR(this.xdr.signer().key()),
-      weight: this.xdr.signer().weight()
+      address: signerKeyFromXDR(this.body.signer().key()),
+      weight: this.body.signer().weight()
     };
     const signerNquad = NQuad.blank(`${this.current.value}_signer`);
     const signerBuilder = new AccountBuilder(signer.address);
@@ -72,11 +72,11 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
   }
 
   private pushInflationDest() {
-    if (!this.xdr.inflationDest()) {
+    if (!this.body.inflationDest()) {
       return;
     }
 
-    const inflationDestination = publicKeyFromBuffer(this.xdr.inflationDest().value());
+    const inflationDestination = publicKeyFromBuffer(this.body.inflationDest().value());
     this.pushBuilder(new AccountBuilder(inflationDestination), `${this.entityPrefix}.inflation_destination`);
   }
 
@@ -86,6 +86,10 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     }
 
     return this.trXDR.setOptionsResult().switch().value;
+  }
+
+  protected get body(): any {
+    return this.bodyXDR.setOptionsOp();
   }
 
   private get entityPrefix() {

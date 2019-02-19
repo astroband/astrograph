@@ -7,7 +7,12 @@ export abstract class SpecificOperationBuilder extends Builder {
   protected resultBodyXDR: any;
   protected trXDR: any;
 
-  constructor(public readonly current: IBlank, protected xdr: any, protected resultXDR: any) {
+  constructor(
+    public readonly current: IBlank,
+    protected sourceAccountId: string,
+    protected bodyXDR: any,
+    protected resultXDR: any
+  ) {
     super();
 
     if (this.resultXDR && this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner()) {
@@ -21,6 +26,7 @@ export abstract class SpecificOperationBuilder extends Builder {
   }
 
   protected abstract get resultCode(): number | undefined;
+  protected abstract get body(): any;
 
   protected pushResult() {
     if (this.resultCode === undefined) {

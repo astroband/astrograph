@@ -1,21 +1,22 @@
+import { Memoize } from "typescript-memoize";
 import { AccountBuilder, AssetBuilder, SpecificOperationBuilder } from "../";
 import { NQuads } from "../../nquads";
 
 export class PathPaymentOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
-    this.pushValue("send_max", this.xdr.sendMax().toString());
-    this.pushValue("amount", this.xdr.destAmount().toString());
-    this.pushBuilder(AccountBuilder.fromXDR(this.xdr.destination()), "op.destination");
+    this.pushValue("send_max", this.body.sendMax().toString());
+    this.pushValue("amount", this.body.destAmount().toString());
+    this.pushBuilder(AccountBuilder.fromXDR(this.body.destination()), "op.destination");
     this.pushBuilder(
-      AssetBuilder.fromXDR(this.xdr.destAsset()),
+      AssetBuilder.fromXDR(this.body.destAsset()),
       `${this.entityPrefix}.asset_destination`,
       "operations"
     );
-    this.pushBuilder(AssetBuilder.fromXDR(this.xdr.sendAsset()), `${this.entityPrefix}.asset_source`, "operations");
+    this.pushBuilder(AssetBuilder.fromXDR(this.body.sendAsset()), `${this.entityPrefix}.asset_source`, "operations");
 
-    (this.xdr.path() as any[]).forEach(xdr => {
-      this.pushBuilder(AssetBuilder.fromXDR(xdr), "path_payment_op.assets_path", "operations");
+    (this.body.path() as any[]).forEach(xdr => {
+      this.pushBuilder(AssetBuilder.fromXDR(xdr), `${this.entityPrefix}.assets_path`, "operations");
     });
 
     return this.nquads;
@@ -27,6 +28,11 @@ export class PathPaymentOpBuilder extends SpecificOperationBuilder {
     }
 
     return this.trXDR.pathPaymentResult().switch().value;
+  }
+
+  @Memoize()
+  protected get body(): any {
+    return this.bodyXDR.pathPaymentOp();
   }
 
   private get entityPrefix() {
