@@ -38,8 +38,7 @@ export class DataMapper {
   }
 
   public call(): Operation {
-    // I don't know, why I need casting here :(
-    switch (this.data["op.kind"] as OperationKinds) {
+    switch (this.data["op.kind"]) {
       case OperationKinds.Payment:
         return this.mapPayment();
       case OperationKinds.SetOption:
