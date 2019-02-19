@@ -27,6 +27,7 @@ const schemaWithComments = `
   account.id: string @index(exact) .
   account.created_by: uid @reverse .
   account.merged_into: uid @reverse .
+  account.inflation_destination: uid @reverse .
 
   # assets
   asset.id: string @index(exact) .

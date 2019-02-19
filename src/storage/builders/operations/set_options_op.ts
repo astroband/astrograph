@@ -77,7 +77,13 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     }
 
     const inflationDestination = publicKeyFromBuffer(this.body.inflationDest().value());
-    this.pushBuilder(new AccountBuilder(inflationDestination), `${this.entityPrefix}.inflation_destination`);
+    const inflationDestAccountBuilder = new AccountBuilder(inflationDestination);
+    const sourceAccountBuilder = new AccountBuilder(this.sourceAccountId);
+
+    this.pushBuilder(inflationDestAccountBuilder, `${this.entityPrefix}.inflation_destination`);
+    this.nquads.push(
+      new NQuad(sourceAccountBuilder.current, "account.inflation_destination", inflationDestAccountBuilder.current)
+    );
   }
 
   protected get resultCode(): number | undefined {
