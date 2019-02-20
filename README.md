@@ -1,18 +1,21 @@
-[![Build Status](https://travis-ci.com/mobius-network/astrograph.svg?branch=master)](https://travis-ci.com/mobius-network/astrograph)
+[![Build Status](https://img.shields.io/travis/com/astroband/astrograph/master.svg)](https://travis-ci.com/astroband/astrograph)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=astroband_astrograph&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=astroband_astrograph)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=astroband_astrograph&metric=security_rating)](https://sonarcloud.io/dashboard?id=astroband_astrograph)
+[![License](https://img.shields.io/github/license/astroband/astrograph.svg)](raw/master/LICENSE.txt)
 
 # Astrograph
 
-Astrograph is a GraphQL server for the [Stellar](https://www.stellar.org/) network. You can think about it as a GraphQL version of [Horizon](https://github.com/stellar/horizon), the client-facing API server for the Stellar ecosystem. Astrograph allows you to retrieve various data from the blockchain, as well as allowing you to subscribe to particular events using [GraphQL subscriptions](https://github.com/apollographql/graphql-subscriptions) mechanisms.
+**Important** This project is still under heavy active development. Until it reaches 1.0 breaking changes may land without prior notice.
 
-Astrograph works directly with the [stellar-core](https://github.com/stellar/stellar-core) database. What does that mean?
+Astrograph is a GraphQL server for the [Stellar](https://www.stellar.org/) network. You can think about it as a GraphQL version of [Horizon](https://github.com/stellar/go/tree/master/services/horizon), the client-facing API server for the Stellar ecosystem. 
 
-* To resolve any query, Astrograph uses raw data from stellar-core database
-* To publish events to subscribers, it polls stellar-core database for new ledgers once in a while. After a new ledger is found, Astrograph fetches all changes from that and publish them
-* You need stellar-core instance up and running to launch your Astrograph server
+Astrograph allows you to retrieve various data from the blockchain, as well as allowing you to subscribe to particular events using [GraphQL subscriptions](https://github.com/apollographql/graphql-subscriptions) mechanisms.
 
-## WARNING
+Astrograph was initially developed by Evil Martians for [Mobius](https://mobius.network) under the MIT license. We continue our work on Astrograph for the benefit of the broader Stellar developer community.
 
-This is not final release. Schema might (and, most likely, *will* change in future releases).
+<a href="https://evilmartians.com/?utm_source=astrograph">
+<img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54"></a>
+
 
 ## Configure
 
@@ -45,14 +48,14 @@ DBUSER="john"
 You can install Astrograph, using [yarn](https://yarnpkg.com/):
 
 ```shell
-$ git clone https://github.com/mobius-network/astrograph
+$ git clone https://github.com/astroband/astrograph
 $ cd astrograph
 $ yarn              # install dependencies
 $ yarn run dev      # for developing purposes
 $ yarn run prod     # for live setup
 ```
 
-Also there is a [Dockerfile](https://github.com/mobius-network/astrograph/blob/master/Dockerfile). For now you can use it like this:
+Also there is a [Dockerfile](Dockerfile). For now you can use it like this:
 
 ```shell
 $ docker build -t "astrograph:latest" . # build docker image
@@ -78,7 +81,7 @@ Astrograph uses [jest](https://github.com/facebook/jest) for the tests.
 You can run all available tests with `yarn run test` command.
 
 Astrograph ships with integration tests too.
-You should configure test database connection with `.env.test` file before running them because they are using [database fixture](https://github.com/mobius-network/astrograph/blob/master/tests/test_db.sql).
+You should configure test database connection with `.env.test` file before running them because they are using [database fixture](tests/test_db.sql).
 `.env.test` file presence is mandatory to prevent accidental overwriting your stellar-core database with the fixture!
 
 You can run unit and integration tests separately, using the next commands:
@@ -321,7 +324,7 @@ We haven't done full stress tests yet. Despite that, it looks like the server on
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/mobius-network/astrograph. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/astroband/astrograph. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## Contributors
 
