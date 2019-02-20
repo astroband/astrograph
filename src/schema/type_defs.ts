@@ -461,6 +461,10 @@ export const typeDefs = gql`
     accountTransactions(id: AccountID!, first: Int!, offset: Int): [Transaction]
     accountOperations(
       account: AccountID!
+      first: Int!
+    ): [IOperation]
+    dgraphAccountOperations(
+      account: AccountID!
       kinds: [OperationKind]
       filters: OperationsFilter
       first: Int!
