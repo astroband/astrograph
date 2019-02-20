@@ -1,9 +1,16 @@
+import { Operation as HorizonOperation } from "../horizon_operation";
+import { HorizonOperationData } from "../../datasource/types";
 import { DgraphOperationsData } from "../../storage/types";
 import { Operation } from "../operation";
-import { DataMapper } from "./operations_data_mapper";
+import { DataMapper as DgraphDataMapper } from "./operation_data_mapper/dgraph";
+import { DataMapper as HorizonDataMapper } from "./operation_data_mapper/horizon";
 
 export class OperationFactory {
   public static fromDgraph(node: DgraphOperationsData): Operation {
-    return DataMapper.call(node);
+    return DgraphDataMapper.call(node);
+  }
+
+  public static fromHorizon(node: HorizonOperationData): HorizonOperation {
+    return HorizonDataMapper.call(node);
   }
 }

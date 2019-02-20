@@ -16,6 +16,7 @@
     "@sentry/node": "4.5.3",
     "@udia/graphql-postgres-subscriptions": "^1.1.0",
     "apollo-server": "^2.4.2",
+    "apollo-datasource-rest": "^0.3.1",
     "big.js": "^5.1.2",
     "bignumber.js": "^8.0.1",
     "bluebird": "^3.5.3",

@@ -3,6 +3,7 @@ import { OperationKinds } from "../../model/operation";
 import { Connection } from "../../storage/connection";
 import { AccountOperationsQuery } from "../../storage/queries/account_operations";
 import { AssetOperationsQuery } from "../../storage/queries/asset_operations";
+import { schema as horizonSchema } from "../horizon";
 
 export default {
   IOperation: {
@@ -42,13 +43,23 @@ export default {
 
       return query.call();
     },
-    accountOperations(root: any, args: any, ctx: any, info: any) {
+    dgraphAccountOperations(root: any, args: any, ctx: any, info: any) {
       const { account, kinds, first, offset, filters } = args;
       const conn = new Connection();
 
       const query = new AccountOperationsQuery(conn, account, kinds, filters, first, offset);
 
       return query.call();
+    },
+    accountOperations(root: any, args: any, context: any, info: any) {
+      return info.mergeInfo.delegateToSchema({
+        schema: horizonSchema,
+        operations: "query",
+        fieldName: "accountOperations",
+        args,
+        context,
+        info
+      });
     }
   }
 };
