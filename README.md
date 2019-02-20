@@ -11,7 +11,7 @@ Astrograph is a GraphQL server for the [Stellar](https://www.stellar.org/) netwo
 
 Astrograph allows you to retrieve various data from the blockchain, as well as allowing you to subscribe to particular events using [GraphQL subscriptions](https://github.com/apollographql/graphql-subscriptions) mechanisms.
 
-Astrograph was initially developed by Evil Martians for [Mobius](https://mobius.network) under the MIT license. We continue our work on Astrograph for the benefit of the broader Stellar developer community.
+Astrograph was initially developed by Evil Martians for [Mobius](https://mobius.network) under the MIT license. We continue our work on Astrograph for the benefit of the broader Stellar developer community. Anyone is welcome to contribute to Astrograph, just read [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 <a href="https://evilmartians.com/?utm_source=astrograph">
 <img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54"></a>
@@ -322,11 +322,7 @@ All examples are assuming that Astrograph is running on `localhost:4000`. You ca
 
 We haven't done full stress tests yet. Despite that, it looks like the server on MBP mid 14 with 16GB RAM survives approx 7k concurrent connections with no losses. Check the [benchmark script](benchmark/index.ts) for details. To implement the fully functional test, we need to implement a dedicated stress test mode.
 
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/astroband/astrograph. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## Contributors
+## Maintainers
 
 * Victor Sokolov (@gzigzigzeo)
 * Timur Ramazanov (@charlie-wasp)
