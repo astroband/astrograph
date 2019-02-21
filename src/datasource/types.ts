@@ -2,10 +2,20 @@ import { AccountID } from "../model/account_id";
 import { AssetCode } from "../model/asset_code";
 
 type HorizonAssetType = "native" | "alphanum4" | "alphanum12";
-export type HorizonOpType = "create_account" | "payment" | "path_payment" | "manage_offer" | "set_options" | "change_trust" | "allow_trust" | "account_merge" | "manage_data" | "bump_sequence";
+export type HorizonOpType =
+  | "create_account"
+  | "payment"
+  | "path_payment"
+  | "manage_offer"
+  | "set_options"
+  | "change_trust"
+  | "allow_trust"
+  | "account_merge"
+  | "manage_data"
+  | "bump_sequence";
 
 interface IBaseOperationData {
-  id: number;
+  id: string;
   paging_token: any;
   source_account: AccountID;
   transaction_hash: string;
@@ -50,7 +60,7 @@ export interface IManageOfferOperationData extends IBaseOperationData {
   buying_asset_issuer: AccountID;
   buying_asset_type: HorizonAssetType;
   price: string;
-  price_r: { n: number, d: number };
+  price_r: { n: number; d: number };
   selling_asset_code: AssetCode;
   selling_asset_issuer: AccountID;
   selling_asset_type: HorizonAssetType;
