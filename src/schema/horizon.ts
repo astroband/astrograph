@@ -129,8 +129,13 @@ export const typeDefs = gql`
     weight: Int
   }
 
+  enum SortOrder {
+    desc
+    asc
+  }
+
   extend type Query {
-    accountOperations(account: AccountID!, first: Int!, cursor: String): [IOperation]
+    accountOperations(account: AccountID!, first: Int!, order: SortOrder, cursor: String): [IOperation]
   }
 
 `;
