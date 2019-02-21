@@ -3,7 +3,7 @@ import assetResolvers from "./asset";
 import dataEntryResolvers from "./data_entry";
 import ledgerResolvers from "./ledger";
 import offerResolvers from "./offer";
-import operationResolvers from "./operation";
+import operationResolvers from "./horizon_operation";
 import signerResolvers from "./signer";
 import transactionResolvers from "./transaction";
 import trustLineResolvers from "./trust_line";

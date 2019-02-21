@@ -205,8 +205,8 @@ export const typeDefs = gql`
     pathPayment: PathPaymentOpFilter
   }
 
-  type Query {
-    dgraphAccountOperations(
+  extend type Query {
+    accountOperations(
       account: AccountID!
       kinds: [OperationKind]
       filters: OperationsFilter
