@@ -1,5 +1,4 @@
 import { RESTDataSource } from "apollo-datasource-rest";
-import _ from "lodash";
 import { AccountID } from "../model/account_id";
 import { HorizonOperationData } from "./types";
 
@@ -23,6 +22,10 @@ export default class HorizonAPI extends RESTDataSource {
 
     const data = await this.get(`accounts/${accountId}/operations`, params);
 
-    return data._embedded.records.map((r: any) => _.omit(r, "_links"));
+    data._embedded.records.forEach((record: any) => {
+      delete record._links;
+    });
+
+    return data._embedded.records;
   }
 }
