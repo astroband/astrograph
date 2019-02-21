@@ -2,39 +2,15 @@ import { gql, makeExecutableSchema } from "apollo-server";
 import operationResolvers from "./resolvers/horizon_operation";
 
 export const typeDefs = gql`
-  scalar AssetCode
-  scalar AccountID
-  scalar OfferID
-  scalar TimeBounds
-  scalar MemoValue
-  scalar DateTime
-
-  type Asset {
-    native: Boolean!
-    issuer: AccountID
-    code: AssetCode!
-  }
-
-  enum OperationKind {
-    payment
-    setOption
-    accountMerge
-    allowTrust
-    bumpSequence
-    changeTrust
-    createAccount
-    manageDatum
-    manageOffer
-    pathPayment
-  }
-
   interface IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
   }
 
   type PaymentOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -45,6 +21,7 @@ export const typeDefs = gql`
   }
 
   type SetOptionsOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -58,6 +35,7 @@ export const typeDefs = gql`
   }
 
   type AccountMergeOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -65,6 +43,7 @@ export const typeDefs = gql`
   }
 
   type AllowTrustOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -74,6 +53,7 @@ export const typeDefs = gql`
   }
 
   type BumpSequenceOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -81,6 +61,7 @@ export const typeDefs = gql`
   }
 
   type ChangeTrustOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -89,6 +70,7 @@ export const typeDefs = gql`
   }
 
   type CreateAccountOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -97,6 +79,7 @@ export const typeDefs = gql`
   }
 
   type ManageDatumOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -105,6 +88,7 @@ export const typeDefs = gql`
   }
 
   type ManageOfferOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -117,6 +101,7 @@ export const typeDefs = gql`
   }
 
   type PathPaymentOperation implements IOperation {
+    id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
@@ -129,31 +114,13 @@ export const typeDefs = gql`
     sourceAccount: AccountID!
   }
 
-  type OfferPriceComponents {
-    n: Int!
-    d: Int!
-  }
-
-  type SetOptionsThresholds {
-    low: Int
-    medium: Int
-    high: Int
-  }
-
-  type SetOptionsSigner {
-    account: AccountID
-    weight: Int
-  }
-
   type Query {
-    accountOperations(
-      account: AccountID!
-      first: Int!
-    ): [IOperation]
+    accountOperations(account: AccountID!, first: Int!): [IOperation]
   }
+
 `;
 
 export const schema = makeExecutableSchema({
-  typeDefs: typeDefs,
+  typeDefs,
   resolvers: [operationResolvers]
 });

@@ -1,14 +1,12 @@
 import { makeExecutableSchema, mergeSchemas } from "apollo-server";
 
+import { typeDefs as horizonTypeDefs } from "./horizon";
 import resolvers from "./resolvers";
 import { typeDefs } from "./type_defs";
 
 const schema = makeExecutableSchema({
-  typeDefs: [typeDefs],
-  resolverValidationOptions: {
-    requireResolversForResolveType: false
-  }
+  typeDefs: [typeDefs, horizonTypeDefs],
+  resolverValidationOptions: { requireResolversForResolveType: false }
 });
-const schemas = [schema];
 
-export default mergeSchemas({ schemas, resolvers });
+export default mergeSchemas({ schemas: [schema], resolvers });

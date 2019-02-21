@@ -21,8 +21,6 @@ export class DataMapper {
     return new DataMapper(data).call();
   }
 
-  private baseData: IBaseOperation;
-
   public static mapHorizonOpType(type: HorizonOpType): OperationKinds {
     switch (type) {
       case "create_account":
@@ -48,8 +46,11 @@ export class DataMapper {
     }
   }
 
+  private baseData: IBaseOperation;
+
   constructor(private data: HorizonOperationData) {
     this.baseData = {
+      id: data.id,
       kind: DataMapper.mapHorizonOpType(data.type),
       account: data.source_account,
       dateTime: new Date(data.created_at),
@@ -83,9 +84,8 @@ export class DataMapper {
   }
 
   private mapPayment(): IPaymentOperation {
-    const asset = this.data.asset_type === "native"
-      ? Asset.native()
-      : new Asset(this.data.asset_code, this.data.asset_issuer);
+    const asset =
+      this.data.asset_type === "native" ? Asset.native() : new Asset(this.data.asset_code, this.data.asset_issuer);
 
     return {
       ...this.baseData,
@@ -172,12 +172,15 @@ export class DataMapper {
   }
 
   private mapManageOffer(): IManageOfferOperation {
-    const assetBuying = this.data.buying_asset_type === "native"
-      ? Asset.native()
-      : new Asset(this.data.buying_asset_code, this.data.buying_asset_issuer);
-    const assetSelling = this.data.selling_asset_type === "native"
-      ? Asset.native()
-      : new Asset(this.data.selling_asset_code, this.data.selling_asset_issuer);
+    const assetBuying =
+      this.data.buying_asset_type === "native"
+        ? Asset.native()
+        : new Asset(this.data.buying_asset_code, this.data.buying_asset_issuer);
+
+    const assetSelling =
+      this.data.selling_asset_type === "native"
+        ? Asset.native()
+        : new Asset(this.data.selling_asset_code, this.data.selling_asset_issuer);
 
     return {
       ...this.baseData,
@@ -196,12 +199,12 @@ export class DataMapper {
   }
 
   private mapPathPayment(): IPathPaymentOperation {
-    const destinationAsset = this.data.asset_type === "native"
-      ? Asset.native()
-      : new Asset(this.data.asset_code, this.data.asset_issuer);
-    const sourceAsset = this.data.source_asset_type === "native"
-      ? Asset.native()
-      : new Asset(this.data.source_asset_code, this.data.source_asset_issuer);
+    const destinationAsset =
+      this.data.asset_type === "native" ? Asset.native() : new Asset(this.data.asset_code, this.data.asset_issuer);
+    const sourceAsset =
+      this.data.source_asset_type === "native"
+        ? Asset.native()
+        : new Asset(this.data.source_asset_code, this.data.source_asset_issuer);
 
     return {
       ...this.baseData,

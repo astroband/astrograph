@@ -16,6 +16,7 @@ export enum OperationKinds {
 }
 
 export interface IBaseOperation {
+  id: string;
   kind: OperationKinds;
   account: AccountID;
   transactionId: string;

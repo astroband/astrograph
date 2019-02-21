@@ -1,6 +1,6 @@
-import { Operation as HorizonOperation } from "../horizon_operation";
 import { HorizonOperationData } from "../../datasource/types";
 import { DgraphOperationsData } from "../../storage/types";
+import { Operation as HorizonOperation } from "../horizon_operation";
 import { Operation } from "../operation";
 import { DataMapper as DgraphDataMapper } from "./operation_data_mapper/dgraph";
 import { DataMapper as HorizonDataMapper } from "./operation_data_mapper/horizon";
