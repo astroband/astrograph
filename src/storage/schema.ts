@@ -52,6 +52,19 @@ const schemaWithComments = `
   memo.type: string .
   memo.value: string .
 
+  # offers
+  offer.id: int @index(int) .
+  offer.asset_buying: uid @reverse .
+  offer.asset_selling: uid @reverse .
+  offer.ledger: uid @reverse .
+  offer.seller: uid @reverse .
+  # "amount" is from operation nodes
+  # amount: int .
+  # predicates from "manageOffer" operation are used here too
+  # price_n: int . 
+  # price_d: int .
+  # offer_id: int @index(int) .
+
   # ledger change
   balance: string .
 

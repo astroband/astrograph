@@ -1,8 +1,8 @@
-import { IChange } from "../../changes_extractor";
+import { IChange, ChangeType, EntryType } from "../../changes_extractor";
 import { ITransaction, ITrustLineBase } from "../../model";
 import { TrustLineValuesFactory } from "../../model/factories/trust_line_values_factory";
 import { NQuad, NQuads } from "../nquads";
-import { Builder, TransactionBuilder, TrustLineEntryBuilder } from "./";
+import { Builder, OfferBuilder, TransactionBuilder, TrustLineEntryBuilder } from "./";
 
 export class LedgerStateBuilder {
   private nquads: NQuads = new NQuads();
@@ -21,10 +21,10 @@ export class LedgerStateBuilder {
 
     this.changes.forEach((change, i) => {
       switch (change.type) {
-        case "created":
+        case ChangeType.Created:
           builder = this.buildCreatedBuilder(change, i);
           break;
-        case "updated":
+        case ChangeType.Updated:
           builder = this.buildUpdatedBuilder(change, i);
           break;
         default:
@@ -40,17 +40,18 @@ export class LedgerStateBuilder {
     return this.nquads;
   }
 
-  // returns builder for ingesting event of creating account or trustline
-  private buildCreatedBuilder(change: any, n: number): TrustLineEntryBuilder | null {
+  private buildCreatedBuilder(change: any, n: number): Builder | null {
     let data: ITrustLineBase;
 
     switch (change.entry) {
-      case "account":
+      case EntryType.Account:
         data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
         break;
-      case "trustline":
+      case EntryType.Trustline:
         data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
         break;
+      case EntryType.Offer:
+        return new OfferBuilder(change.data.offer(), change.seq);
       default:
         return null;
     }
@@ -58,20 +59,21 @@ export class LedgerStateBuilder {
     return new TrustLineEntryBuilder({ ...data, lastModified: change.seq }, change, n);
   }
 
-  // returns builder for ingesting event of trustline update or account balance update
-  private buildUpdatedBuilder(change: any, n: number): TrustLineEntryBuilder | null {
+  private buildUpdatedBuilder(change: any, n: number): Builder | null {
     let data: ITrustLineBase;
 
     switch (change.entry) {
-      case "account":
+      case EntryType.Account:
         if (change.accountChanges && !change.accountChanges.includes("balance")) {
           return null;
         }
         data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
         break;
-      case "trustline":
+      case EntryType.Trustline:
         data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
         break;
+      case EntryType.Offer:
+        return new OfferBuilder(change.data.offer(), change.seq);
       default:
         return null;
     }
