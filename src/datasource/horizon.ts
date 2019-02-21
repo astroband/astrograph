@@ -9,8 +9,18 @@ export default class HorizonAPI extends RESTDataSource {
     this.baseURL = "https://horizon.stellar.org/";
   }
 
-  public async getAccountOperations(accountId: AccountID, first = 10): Promise<HorizonOperationData[]> {
-    const data = await this.get(`accounts/${accountId}/operations?limit=${first}`);
+  public async getAccountOperations(
+    accountId: AccountID,
+    first = 10,
+    cursor?: string
+  ): Promise<HorizonOperationData[]> {
+    const params: { limit: number; cursor?: string } = { limit: first };
+
+    if (cursor) {
+      params.cursor = cursor;
+    }
+
+    const data = await this.get(`accounts/${accountId}/operations`, params);
 
     return data._embedded.records.map((r: any) => _.omit(r, "_links"));
   }

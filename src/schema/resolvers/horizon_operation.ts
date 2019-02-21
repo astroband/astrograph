@@ -33,8 +33,8 @@ export default {
   },
   Query: {
     async accountOperations(root: any, args: any, ctx: any, info: any) {
-      const { account, first } = args;
-      const data = await ctx.dataSources.horizon.getAccountOperations(account, first);
+      const { account, first, cursor } = args;
+      const data = await ctx.dataSources.horizon.getAccountOperations(account, first, cursor);
 
       return data.map(OperationFactory.fromHorizon);
     }
