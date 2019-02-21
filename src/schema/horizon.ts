@@ -130,7 +130,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    accountOperations(account: AccountID!, first: Int!): [IOperation]
+    accountOperations(account: AccountID!, first: Int!, cursor: String): [IOperation]
   }
 
 `;
