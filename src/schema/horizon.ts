@@ -1,5 +1,4 @@
-import { gql, makeExecutableSchema } from "apollo-server";
-import operationResolvers from "./resolvers/horizon_operation";
+import { gql } from "apollo-server";
 
 export const typeDefs = gql`
   interface IOperation {
@@ -114,13 +113,24 @@ export const typeDefs = gql`
     sourceAccount: AccountID!
   }
 
-  type Query {
+  type OfferPriceComponents {
+    n: Int!
+    d: Int!
+  }
+
+  type SetOptionsThresholds {
+    low: Int
+    medium: Int
+    high: Int
+  }
+
+  type SetOptionsSigner {
+    account: AccountID
+    weight: Int
+  }
+
+  extend type Query {
     accountOperations(account: AccountID!, first: Int!): [IOperation]
   }
 
 `;
-
-export const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers: [operationResolvers]
-});
