@@ -104,4 +104,25 @@ export class Connection {
     const result = await this.push(payload);
     cache.put(result);
   }
+
+  public async deleteOffers(offerIds: number[]): Promise<void> {
+    const fetchUidsQuery = `{
+      offers(func: eq(offer.id, [${offerIds.join(",")}])) {
+        uid
+      }
+    }`;
+
+    const response: { offers: { uid: string }[] } = await this.query(fetchUidsQuery);
+    const uids = response.offers.map(offer => offer.uid);
+
+    const mu = new Mutation();
+
+    mu.setDelNquads(
+      uids.map((uid: string) => `<${uid}> * * .` ).join("\n")
+    );
+
+    const txn = this.client.newTxn();
+    await txn.mutate(mu);
+    await txn.commit();
+  }
 }
