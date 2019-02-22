@@ -56,8 +56,8 @@ const schemaWithComments = `
   offer.id: int @index(int) .
   offer.asset_buying: uid @reverse .
   offer.asset_selling: uid @reverse .
-  offer.ledger: uid @reverse .
   offer.seller: uid @reverse .
+  last_modified_seq: int @index(int) .
   # "amount" is from operation nodes
   # amount: int .
   # predicates from "manageOffer" operation are used here too

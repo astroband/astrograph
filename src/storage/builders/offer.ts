@@ -27,13 +27,13 @@ export class OfferBuilder extends Builder {
       "offer.id": this.xdr.offerId().toInt(),
       amount: this.xdr.amount().toInt(),
       price_n: this.xdr.price().n(),
-      price_d: this.xdr.price().d()
+      price_d: this.xdr.price().d(),
+      last_modified_seq: this.ledgerSeq
     });
 
     this.pushBuilder(new AccountBuilder(sellerId), "offer.seller");
     this.pushBuilder(new AssetBuilder(sellingAsset), "offer.asset_selling");
     this.pushBuilder(new AssetBuilder(buyingAsset), "offer.asset_buying");
-    this.pushLedger(this.ledgerSeq, "offer");
 
     return this.nquads;
   }
