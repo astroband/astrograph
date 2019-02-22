@@ -1,5 +1,5 @@
 import { Asset } from "stellar-sdk";
-import { DgraphOperationsData, IAssetData } from "../../storage/types";
+import { DgraphOperationsData, IAssetData } from "../../../storage/types";
 import {
   IAccountMergeOperation,
   IAllowTrustOperation,
@@ -14,7 +14,7 @@ import {
   ISetOptionsOperation,
   Operation,
   OperationKinds
-} from "../operation";
+} from "../../operation";
 
 export class DataMapper {
   public static call(data: DgraphOperationsData) {
