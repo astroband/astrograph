@@ -63,7 +63,6 @@ const schemaWithComments = `
   # predicates from "manageOffer" operation are used here too
   # price_n: int . 
   # price_d: int .
-  # offer_id: int @index(int) .
 
   # ledger change
   balance: string .

@@ -3,6 +3,7 @@ import { Cursor } from "./cursor";
 
 import { SubscriptionPayloadCollection } from "./subscription_payload_collection";
 
+import { LedgerStateParser } from "../ledger_state_parser";
 import { Connection } from "../storage/connection";
 import { DGRAPH_INGEST_URL } from "../util/secrets";
 
@@ -24,7 +25,10 @@ export class Worker {
 
       if (DGRAPH_INGEST_URL) {
         const c = new Connection(DGRAPH_INGEST_URL);
+        const stateParser = new LedgerStateParser(transactions);
+        stateParser.parse();
         await c.importLedger(header, transactions);
+        await c.deleteOffers(stateParser.deletedOfferIds);
         c.close();
       }
 
