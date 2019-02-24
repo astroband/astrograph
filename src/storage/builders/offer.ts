@@ -1,6 +1,6 @@
-import { Asset } from "stellar-base";
+import { OfferFactory } from "../../model/factories/offer_factory";
+import { IOfferBase, Offer } from "../../model";
 import { makeKey } from "../../util/crypto";
-import { publicKeyFromBuffer } from "../../util/xdr/account";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder, AssetBuilder, Builder } from "./index";
 
@@ -11,29 +11,40 @@ export class OfferBuilder extends Builder {
 
   public readonly current: IBlank;
 
-  constructor(private xdr: any, private ledgerSeq: number) {
+  constructor(private data: any, private ledgerSeq: number) {
     super();
 
-    this.current = NQuad.blank(OfferBuilder.key(xdr.offerId()));
+    const offerId = this.data instanceof Offer
+      ? this.data.id
+      : this.data.offerId();
+
+    this.current = NQuad.blank(OfferBuilder.key(offerId));
   }
 
   public build(): NQuads {
-    const sellerId = publicKeyFromBuffer(this.xdr.sellerId().value());
-    const buyingAsset = Asset.fromOperation(this.xdr.buying());
-    const sellingAsset = Asset.fromOperation(this.xdr.selling());
+    let offer: IOfferBase = this.data instanceof Offer
+      ? this.data
+      : OfferFactory.fromXDR(this.data);
 
     this.pushKey();
+
+    this.buildFromModel(offer);
+
+    return this.nquads;
+  }
+
+  private buildFromModel(offer: IOfferBase) {
     this.pushValues({
-      "offer.id": this.xdr.offerId().toInt(),
-      amount: this.xdr.amount().toInt(),
-      price_n: this.xdr.price().n(),
-      price_d: this.xdr.price().d(),
+      "offer.id": offer.id,
+      amount: offer.amount,
+      price_n: offer.priceN,
+      price_d: offer.priceD,
       last_modified_seq: this.ledgerSeq
     });
 
-    this.pushBuilder(new AccountBuilder(sellerId), "offer.seller");
-    this.pushBuilder(new AssetBuilder(sellingAsset), "offer.asset_selling");
-    this.pushBuilder(new AssetBuilder(buyingAsset), "offer.asset_buying");
+    this.pushBuilder(new AccountBuilder(offer.sellerID), "offer.seller");
+    this.pushBuilder(new AssetBuilder(offer.selling), "offer.asset_selling");
+    this.pushBuilder(new AssetBuilder(offer.buying), "offer.asset_buying");
 
     return this.nquads;
   }

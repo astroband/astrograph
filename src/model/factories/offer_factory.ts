@@ -1,8 +1,8 @@
-import BigNumber from "bignumber.js";
 import stellar from "stellar-base";
 import { Asset } from "../asset";
-import { IOffer, Offer } from "../offer";
+import { IOffer, Offer, IOfferBase } from "../offer";
 
+import { calculatePrice } from "../../util/offer";
 import { toFloatAmountString } from "../../util/stellar";
 
 export interface IOfferTableRow {
@@ -32,11 +32,29 @@ export class OfferFactory {
       amount: toFloatAmountString(row.amount),
       priceN: row.pricen,
       priceD: row.priced,
-      price: new BigNumber(row.pricen).div(row.priced).toString(),
+      price: calculatePrice(row.pricen, row.priced),
       passive: (row.flags && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0,
       lastModified: row.lastmodified
     };
 
     return new Offer(data);
+  }
+
+  // builds offer from LedgerStateEntry
+  public static fromXDR(xdr: any): IOfferBase {
+    const priceN = xdr.price().n();
+    const priceD = xdr.price().d();
+
+    return {
+      id: xdr.offerId().toInt(),
+      sellerID: xdr.sellerId().value(),
+      selling: Asset.fromOperation(xdr.selling()),
+      buying: Asset.fromOperation(xdr.buying()),
+      amount: xdr.amount().toInt(),
+      priceN,
+      priceD,
+      price: calculatePrice(priceN, priceD),
+      passive: (xdr.flags() && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0,
+    };
   }
 }
