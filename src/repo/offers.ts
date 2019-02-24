@@ -39,6 +39,12 @@ export default class OffersRepo {
     return res.map(a => OfferFactory.fromDb(a));
   }
 
+  public async count() {
+    const queryBuilder = squel.select().field("count(*)").from("offers");
+
+    return this.db.one(queryBuilder.toString(), [], c => +c.count);
+  }
+
   private appendAsset(queryBuilder: any, prefix: string, asset?: IAssetInput) {
     if (asset) {
       if (asset.issuer && asset.code) {
