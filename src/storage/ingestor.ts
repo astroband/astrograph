@@ -5,8 +5,19 @@ import logger from "../util/logger";
 import { LedgerBuilder, LedgerStateBuilder, OperationBuilder, TransactionBuilder } from "./builders";
 import { NQuad, NQuads } from "./nquads";
 
+export interface IIngestOpts {
+  ingestOffers?: boolean;
+}
+
+const defaultOpts: IIngestOpts = { ingestOffers: false };
+
 export class Ingestor {
-  public static async ingestLedger(header: LedgerHeader, transactions: TransactionWithXDR[]) {
+  public static async ingestLedger(
+    header: LedgerHeader,
+    transactions: TransactionWithXDR[],
+    opts: IIngestOpts = defaultOpts
+  ) {
+    opts = { ...defaultOpts, ...opts };
     const nquads: NQuads = new LedgerBuilder(header).build();
     let stateBuilder: LedgerStateBuilder;
 
@@ -15,7 +26,7 @@ export class Ingestor {
       nquads.push(...new TransactionBuilder(tx).build());
 
       for (const group of changes) {
-        stateBuilder = new LedgerStateBuilder(group, tx);
+        stateBuilder = new LedgerStateBuilder(group, tx, opts.ingestOffers);
         nquads.push(...(await stateBuilder.build()));
       }
 
