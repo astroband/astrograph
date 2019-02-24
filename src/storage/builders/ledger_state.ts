@@ -7,7 +7,11 @@ import { Builder, OfferBuilder, TransactionBuilder, TrustLineEntryBuilder } from
 export class LedgerStateBuilder {
   private nquads: NQuads = new NQuads();
 
-  constructor(private changes: IChange[], private tx: ITransaction) {}
+  constructor(
+    private changes: IChange[],
+    private tx: ITransaction,
+    private ingestOffers?: boolean
+  ) {}
 
   public async build(): Promise<NQuads> {
     if (this.changes.length === 0) {
@@ -20,6 +24,10 @@ export class LedgerStateBuilder {
     this.nquads.push(...txBuilder.build());
 
     this.changes.forEach((change, i) => {
+      if (change.entry === EntryType.Offer && !this.ingestOffers) {
+        return;
+      }
+
       switch (change.type) {
         case ChangeType.Created:
           builder = this.buildCreatedBuilder(change, i);

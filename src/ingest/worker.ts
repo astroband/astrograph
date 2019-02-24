@@ -27,7 +27,7 @@ export class Worker {
         const c = new Connection(DGRAPH_INGEST_URL);
         const stateParser = new LedgerStateParser(transactions);
         stateParser.parse();
-        await c.importLedger(header, transactions);
+        await c.importLedger(header, transactions, { ingestOffers: true });
         await c.deleteOffers(stateParser.deletedOfferIds);
         c.close();
       }
