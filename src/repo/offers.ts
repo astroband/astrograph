@@ -40,7 +40,10 @@ export default class OffersRepo {
   }
 
   public async count() {
-    const queryBuilder = squel.select().field("count(*)").from("offers");
+    const queryBuilder = squel
+      .select()
+      .field("count(*)")
+      .from("offers");
 
     return this.db.one(queryBuilder.toString(), [], c => +c.count);
   }

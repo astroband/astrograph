@@ -1,4 +1,4 @@
-import { IChange, ChangeType, EntryType } from "../../changes_extractor";
+import { ChangeType, EntryType, IChange } from "../../changes_extractor";
 import { ITransaction, ITrustLineBase } from "../../model";
 import { TrustLineValuesFactory } from "../../model/factories/trust_line_values_factory";
 import { NQuad, NQuads } from "../nquads";
@@ -8,9 +8,9 @@ export class LedgerStateBuilder {
   private nquads: NQuads = new NQuads();
 
   constructor(
-    private changes: IChange[],
-    private tx: ITransaction,
-    private ingestOffers?: boolean
+    private readonly changes: IChange[],
+    private readonly tx: ITransaction,
+    private readonly ingestOffers = false
   ) {}
 
   public async build(): Promise<NQuads> {
