@@ -14,7 +14,7 @@ export class PaymentOpBuilder extends SpecificOperationBuilder {
     const destination = publicKeyFromBuffer(this.body.destination().value());
 
     this.pushValue("amount", amount);
-    this.pushBuilder(new AccountBuilder(destination), "op.destination");
+    this.pushLink("op.destination", AccountBuilder.key(destination));
     this.pushBuilder(new AssetBuilder(asset), `payment_op.asset`, "operations");
 
     return this.nquads;

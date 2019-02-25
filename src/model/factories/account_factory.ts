@@ -1,6 +1,6 @@
-import { Account, IAccount } from "../account";
-import { AccountFlagsFactory } from "./account_flags_factory";
-import { AccountThresholdsFactory } from "./account_thresholds_factory";
+import { publicKeyFromXDR } from "../../util/xdr/account";
+import { Account, IAccount, IAccountBase } from "../account";
+import { AccountFlagsFactory, AccountThresholdsFactory } from "./";
 
 export interface IAccountTableRow {
   accountid: string;
@@ -29,5 +29,22 @@ export class AccountFactory {
     };
 
     return new Account(data);
+  }
+
+  public static fromXDR(xdr: any): IAccountBase {
+    if (publicKeyFromXDR(xdr) === "GA7YRWZP2X6HZZMX7A243QARVDFWJW3DZBS6G32A2H4LU3KKAM56ANQI") {
+      console.log(xdr.homeDomain().toString());
+    }
+
+    return {
+      id: publicKeyFromXDR(xdr),
+      balance: xdr.balance().toString(),
+      sequenceNumber: xdr.seqNum().toString(),
+      numSubentries: xdr.numSubEntries(),
+      inflationDest: xdr.inflationDest(),
+      homeDomain: xdr.homeDomain(),
+      thresholds: AccountThresholdsFactory.fromValue(xdr.thresholds()),
+      flags: AccountFlagsFactory.fromValue(xdr.flags())
+    };
   }
 }

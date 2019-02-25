@@ -109,7 +109,7 @@ export class OperationBuilder extends Builder {
     this.pushLedger(this.seq, "op");
 
     this.nquads.push(new NQuad(this.current, "op.transaction", tx));
-    this.pushBuilder(new AccountBuilder(this.sourceAccount), "op.source");
+    this.pushLink("op.source", AccountBuilder.key(this.sourceAccount));
   }
 
   @Memoize()

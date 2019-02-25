@@ -7,7 +7,7 @@ export class PathPaymentOpBuilder extends SpecificOperationBuilder {
     super.build();
     this.pushValue("send_max", this.body.sendMax().toString());
     this.pushValue("amount", this.body.destAmount().toString());
-    this.pushBuilder(AccountBuilder.fromXDR(this.body.destination()), "op.destination");
+    this.pushLink("op.destination", AccountBuilder.keyFromXDR(this.body.destination()));
     this.pushBuilder(
       AssetBuilder.fromXDR(this.body.destAsset()),
       `${this.entityPrefix}.asset_destination`,

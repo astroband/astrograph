@@ -108,6 +108,8 @@ export class ChangesExtractor {
     const txMetaXDR = this.tx.metaXDR;
     const rawChanges = [];
 
+    rawChanges.push(this.tx.feeMetaXDR.changes());
+
     switch (txMetaXDR.switch()) {
       case 0:
         for (const op of txMetaXDR.operations()) {
@@ -121,8 +123,6 @@ export class ChangesExtractor {
         }
         break;
     }
-
-    rawChanges.push(this.tx.feeMetaXDR.changes());
 
     return rawChanges;
   }

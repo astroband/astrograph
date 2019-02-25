@@ -36,7 +36,7 @@ export class TrustLineEntryBuilder extends Builder {
 
   public build(): NQuads {
     this.pushKey();
-    this.pushBuilder(new AccountBuilder(this.trustLine.accountID), "account");
+    this.pushLink("account", AccountBuilder.key(this.trustLine.accountID));
     this.pushBuilder(new AssetBuilder(this.trustLine.asset), "asset");
     this.pushValues({
       "type.trust_line_entry": "",
