@@ -17,12 +17,11 @@ async function exportOffers(): Promise<number> {
   file.pipe(fs.createWriteStream(fileName));
 
   for (let i = 0; i < batchesCount; i += 1) {
-    const rows: IOfferTableRow[] =
-      await db.any("SELECT * FROM offers LIMIT $1 OFFSET $2", [batchSize, offset]);
+    const rows: IOfferTableRow[] = await db.any("SELECT * FROM offers LIMIT $1 OFFSET $2", [batchSize, offset]);
 
     rows.forEach(row => {
       const offer = OfferFactory.fromDb(row);
-      const builder = new OfferBuilder(offer, parseInt(row.lastmodified, 10));  
+      const builder = new OfferBuilder(offer, parseInt(row.lastmodified, 10));
 
       file.write(builder.build().toString() + "\n");
     });

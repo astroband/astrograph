@@ -5,7 +5,7 @@ import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";
 import { DGRAPH_QUERY_URL } from "../util/secrets";
 import { Cache } from "./cache";
-import { Ingestor, IIngestOpts } from "./ingestor";
+import { IIngestOpts, Ingestor } from "./ingestor";
 import { NQuads } from "./nquads";
 import { SCHEMA } from "./schema";
 
@@ -84,11 +84,7 @@ export class Connection {
     }
   }
 
-  public async importLedger(
-    header: LedgerHeader,
-    transactions: TransactionWithXDR[],
-    opts: IIngestOpts
-  ) {
+  public async importLedger(header: LedgerHeader, transactions: TransactionWithXDR[], opts: IIngestOpts) {
     let nquads: NQuads = await Ingestor.ingestLedger(header, transactions, opts);
 
     const cache = new Cache(this, nquads);

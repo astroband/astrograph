@@ -1,5 +1,5 @@
-import { OfferFactory } from "../../model/factories/offer_factory";
 import { IOfferBase, Offer } from "../../model";
+import { OfferFactory } from "../../model/factories/offer_factory";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
 import { AccountBuilder, AssetBuilder, Builder } from "./index";
@@ -11,20 +11,16 @@ export class OfferBuilder extends Builder {
 
   public readonly current: IBlank;
 
-  constructor(private data: any, private ledgerSeq: number) {
+  constructor(private readonly data: any, private readonly ledgerSeq: number) {
     super();
 
-    const offerId = this.data instanceof Offer
-      ? this.data.id
-      : this.data.offerId();
+    const offerId = this.data instanceof Offer ? this.data.id : this.data.offerId();
 
     this.current = NQuad.blank(OfferBuilder.key(offerId));
   }
 
   public build(): NQuads {
-    let offer: IOfferBase = this.data instanceof Offer
-      ? this.data
-      : OfferFactory.fromXDR(this.data);
+    const offer: IOfferBase = this.data instanceof Offer ? this.data : OfferFactory.fromXDR(this.data);
 
     this.pushKey();
 

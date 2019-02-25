@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 import { Asset } from "../asset";
-import { IOffer, Offer, IOfferBase } from "../offer";
+import { IOffer, IOfferBase, Offer } from "../offer";
 
 import { calculatePrice } from "../../util/offer";
 import { toFloatAmountString } from "../../util/stellar";
@@ -54,7 +54,7 @@ export class OfferFactory {
       priceN,
       priceD,
       price: calculatePrice(priceN, priceD),
-      passive: (xdr.flags() && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0,
+      passive: (xdr.flags() && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0
     };
   }
 }
