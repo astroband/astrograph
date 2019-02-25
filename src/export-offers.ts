@@ -21,7 +21,7 @@ async function exportOffers(): Promise<number> {
 
     rows.forEach(row => {
       const offer = OfferFactory.fromDb(row);
-      const builder = new OfferBuilder(offer, parseInt(row.lastmodified, 10));
+      const builder = new OfferBuilder(offer);
 
       file.write(builder.build().toString() + "\n");
     });

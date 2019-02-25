@@ -1,7 +1,7 @@
 import { Memoize } from "typescript-memoize";
 import { AccountBuilder, SpecificOperationBuilder } from "../";
 import { publicKeyFromBuffer } from "../../../util/xdr/account";
-import { NQuad, NQuads } from "../../nquads";
+import { NQuads } from "../../nquads";
 
 export class CreateAccountOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
@@ -9,11 +9,9 @@ export class CreateAccountOpBuilder extends SpecificOperationBuilder {
 
     const startingBalance = this.body.startingBalance().toString();
     const destinationId = publicKeyFromBuffer(this.body.destination().value());
-    const destinationBuilder = new AccountBuilder(destinationId);
 
     this.pushValue("starting_balance", startingBalance);
-    this.pushBuilder(destinationBuilder, "account.destination");
-    this.nquads.push(new NQuad(destinationBuilder.current, "account.created_by", this.sourceAccountBuilder.current));
+    this.pushLink("account.destination", AccountBuilder.key(destinationId));
 
     return this.nquads;
   }

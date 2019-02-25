@@ -66,12 +66,10 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
       weight: this.body.signer().weight()
     };
     const signerNquad = NQuad.blank(`${this.current.value}_signer`);
-    const signerBuilder = new AccountBuilder(signer.address);
 
     this.nquads.push(new NQuad(this.current, `${this.entityPrefix}.signer`, signerNquad));
-    this.nquads.push(...signerBuilder.build());
 
-    this.nquads.push(new NQuad(signerNquad, "account", signerBuilder.current));
+    this.nquads.push(new NQuad(signerNquad, "account", NQuad.blank(signer.address)));
     this.nquads.push(new NQuad(signerNquad, "weight", NQuad.value(signer.weight)));
   }
 
@@ -81,12 +79,8 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     }
 
     const inflationDestination = publicKeyFromBuffer(this.body.inflationDest().value());
-    const inflationDestAccountBuilder = new AccountBuilder(inflationDestination);
 
-    this.pushBuilder(inflationDestAccountBuilder, `${this.entityPrefix}.inflation_destination`);
-    this.nquads.push(
-      new NQuad(this.sourceAccountBuilder.current, "account.inflation_destination", inflationDestAccountBuilder.current)
-    );
+    this.pushLink(`${this.entityPrefix}.inflation_destination`, AccountBuilder.key(inflationDestination));
   }
 
   protected get resultCode(): number | undefined {

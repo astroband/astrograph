@@ -16,7 +16,7 @@ export class AllowTrustOpBuilder extends SpecificOperationBuilder {
       .replace(/\0/g, "");
     const asset = new Asset(assetCode, this.sourceAccountId);
 
-    this.pushBuilder(new AccountBuilder(id), "allow_trust_op.trustor");
+    this.pushLink("allow_trust_op.trustor", AccountBuilder.key(id));
     this.pushBuilder(new AssetBuilder(asset), "allow_trust_op.asset", "operations");
     this.pushValue("authorize", this.body.authorize());
 

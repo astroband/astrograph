@@ -1,91 +1,127 @@
-import { ChangeType, EntryType, IChange } from "../../changes_extractor";
-import { ITransaction, ITrustLineBase } from "../../model";
-import { TrustLineValuesFactory } from "../../model/factories/trust_line_values_factory";
-import { NQuad, NQuads } from "../nquads";
-import { Builder, OfferBuilder, TransactionBuilder, TrustLineEntryBuilder } from "./";
+import { LedgerStateParser } from "../../ledger_state_parser";
+import { IAccount, IOffer, TransactionWithXDR } from "../../model";
+import { NQuads } from "../nquads";
+import { AccountBuilder, OfferBuilder } from "./";
 
 export class LedgerStateBuilder {
   private nquads: NQuads = new NQuads();
+  private readonly parser: LedgerStateParser;
 
-  constructor(
-    private readonly changes: IChange[],
-    private readonly tx: ITransaction,
-    private readonly ingestOffers = false
-  ) {}
+  constructor(txs: TransactionWithXDR[], private readonly ingestOffers = false) {
+    this.parser = new LedgerStateParser(txs);
+  }
 
   public async build(): Promise<NQuads> {
-    if (this.changes.length === 0) {
-      return this.nquads;
-    }
+    this.parser.parse();
 
-    const txBuilder = new TransactionBuilder(this.tx);
-    let builder: Builder | null;
+    this.parser.updatedAccounts.forEach((data: IAccount) =>{
+      const accountBuilder = new AccountBuilder(data);
+      this.nquads.push(...accountBuilder.build());   
+    });
 
-    this.nquads.push(...txBuilder.build());
-
-    this.changes.forEach((change, i) => {
-      if (change.entry === EntryType.Offer && !this.ingestOffers) {
+    this.parser.createdAccounts.forEach((data: IAccount) =>{
+      if (this.parser.updatedAccounts.has(data.id)) {
         return;
       }
 
-      switch (change.type) {
-        case ChangeType.Created:
-          builder = this.buildCreatedBuilder(change, i);
-          break;
-        case ChangeType.Updated:
-          builder = this.buildUpdatedBuilder(change, i);
-          break;
-        default:
-          return;
+      const accountBuilder = new AccountBuilder(data);
+      this.nquads.push(...accountBuilder.build());   
+    });
+
+    if (!this.ingestOffers) {
+      return this.nquads;
+    }
+
+    this.parser.updatedOffers.forEach((data: IOffer) =>{
+      const offerBuilder = new OfferBuilder(data);
+      this.nquads.push(...offerBuilder.build());   
+    });
+
+    this.parser.createdOffers.forEach((data: IOffer) =>{
+      if (this.parser.updatedOffers.has(data.id)) {
+        return;
       }
 
-      if (builder) {
-        this.nquads.push(...builder.build());
-        this.nquads.push(new NQuad(builder.current, "transaction", txBuilder.current));
-      }
+      const offerBuilder = new OfferBuilder(data);
+      this.nquads.push(...offerBuilder.build());   
     });
 
     return this.nquads;
   }
 
-  private buildCreatedBuilder(change: any, n: number): Builder | null {
-    let data: ITrustLineBase;
+  // public async buildOld(): Promise<NQuads> {
+  //   if (this.changes.length === 0) {
+  //     return this.nquads;
+  //   }
 
-    switch (change.entry) {
-      case EntryType.Account:
-        data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
-        break;
-      case EntryType.Trustline:
-        data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
-        break;
-      case EntryType.Offer:
-        return new OfferBuilder(change.data.offer(), change.seq);
-      default:
-        return null;
-    }
+  //   const txBuilder = new TransactionBuilder(this.tx);
+  //   let builder: Builder | null;
 
-    return new TrustLineEntryBuilder({ ...data, lastModified: change.seq }, change, n);
-  }
+  //   this.nquads.push(...txBuilder.build());
 
-  private buildUpdatedBuilder(change: any, n: number): Builder | null {
-    let data: ITrustLineBase;
+  //   this.changes.forEach((change, i) => {
+  //     if (change.entry === EntryType.Offer && !this.ingestOffers) {
+  //       return;
+  //     }
 
-    switch (change.entry) {
-      case EntryType.Account:
-        if (change.accountChanges && !change.accountChanges.includes("balance")) {
-          return null;
-        }
-        data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
-        break;
-      case EntryType.Trustline:
-        data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
-        break;
-      case EntryType.Offer:
-        return new OfferBuilder(change.data.offer(), change.seq);
-      default:
-        return null;
-    }
+  //     switch (change.type) {
+  //       case ChangeType.Created:
+  //         builder = this.buildCreatedBuilder(change, i);
+  //         break;
+  //       case ChangeType.Updated:
+  //         builder = this.buildUpdatedBuilder(change, i);
+  //         break;
+  //       default:
+  //         return;
+  //     }
 
-    return new TrustLineEntryBuilder({ ...data, lastModified: change.seq }, change, n);
-  }
+  //     if (builder) {
+  //       this.nquads.push(...builder.build());
+  //       this.nquads.push(new NQuad(builder.current, "transaction", txBuilder.current));
+  //     }
+  //   });
+
+  //   return this.nquads;
+  // }
+
+  // private buildCreatedBuilder(change: any, n: number): Builder | null {
+  //   let data: ITrustLineBase;
+
+  //   switch (change.entry) {
+  //     case EntryType.Account:
+  //       data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
+  //       break;
+  //     case EntryType.Trustline:
+  //       data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
+  //       break;
+  //     case EntryType.Offer:
+  //       return new OfferBuilder(change.data.offer(), change.seq);
+  //     default:
+  //       return null;
+  //   }
+
+  //   return new TrustLineEntryBuilder({ ...data, lastModified: change.seq }, change, n);
+  // }
+
+  // private buildUpdatedBuilder(change: any, n: number): Builder | null {
+  //   let data: ITrustLineBase;
+
+  //   switch (change.entry) {
+  //     case EntryType.Account:
+  //       if (change.accountChanges && !change.accountChanges.includes("balance")) {
+  //         return null;
+  //       }
+  //       data = TrustLineValuesFactory.fakeNativeFromXDR(change.data.account());
+  //       break;
+  //     case EntryType.Trustline:
+  //       data = TrustLineValuesFactory.fromXDR(change.data.trustLine());
+  //       break;
+  //     case EntryType.Offer:
+  //       return new OfferBuilder(change.data.offer(), change.seq);
+  //     default:
+  //       return null;
+  //   }
+
+  //   return new TrustLineEntryBuilder({ ...data, lastModified: change.seq }, change, n);
+  // }
 }
