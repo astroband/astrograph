@@ -61,6 +61,10 @@ export abstract class Builder {
     }
   }
 
+  protected pushLink(predicate: string, key: string) {
+    this.nquads.push(new NQuad(this.current, predicate, NQuad.blank(key)));
+  }
+
   protected order(ledger: number, tx: number = 0, op: number = 0, n: number = 0): string {
     return Big(ledger)
       .times(LEDGER_POW)

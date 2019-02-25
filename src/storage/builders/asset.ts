@@ -31,7 +31,7 @@ export class AssetBuilder extends Builder {
     this.pushValue("code", code);
     this.pushValue("native", this.asset.isNative().toString());
 
-    this.pushBuilder(new AccountBuilder(issuer), "asset.issuer");
+    this.pushLink("asset.issuer", AccountBuilder.key(issuer));
 
     return this.nquads;
   }

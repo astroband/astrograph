@@ -55,8 +55,7 @@ export class TransactionBuilder extends Builder {
   }
 
   private pushSourceAccount() {
-    const account = new AccountBuilder(this.tx.sourceAccount);
-    this.pushBuilder(account, "tx.source");
+    this.pushLink("tx.source", AccountBuilder.key(this.tx.sourceAccount));
   }
 
   private pushTimeBounds() {

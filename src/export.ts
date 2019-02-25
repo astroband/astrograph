@@ -42,7 +42,7 @@ configure()
         file.pipe(fs.createWriteStream(buildSliceFileName(sliceCounter)));
       }
 
-      const chunk = await Ingestor.ingestLedger(header, transactions);
+      const chunk = await Ingestor.ingestLedger(header, transactions, { ingestOffers: true });
       file.write(chunk.toString() + "\n");
 
       ledgerCounter += 1;

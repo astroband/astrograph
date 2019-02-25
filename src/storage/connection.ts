@@ -105,26 +105,30 @@ export class Connection {
     cache.put(result);
   }
 
-  public async deleteOffers(offerIds: number[]): Promise<void> {
-    if (offerIds.length === 0) {
-      return;
+  public async deleteByPredicates(args: { [predicate: string]: Array<string | number> }) {
+    const txn = this.client.newTxn();
+
+    for (const predicate in args) {
+      if (args[predicate].length === 0) {
+        return;
+      }
+
+      const fetchUidsQuery = `{
+        nodes(func: eq(${predicate}, [${args[predicate].join(",")}])) {
+          uid
+        }
+      }`;
+
+      const response: { nodes: Array<{ uid: string }> } = await this.query(fetchUidsQuery);
+      const uids = response.nodes.map(node => node.uid);
+
+      const mu = new Mutation();
+
+      mu.setDelNquads(uids.map((uid: string) => `<${uid}> * * .`).join("\n"));
+
+      await txn.mutate(mu);
     }
 
-    const fetchUidsQuery = `{
-      offers(func: eq(offer.id, [${offerIds.join(",")}])) {
-        uid
-      }
-    }`;
-
-    const response: { offers: Array<{ uid: string }> } = await this.query(fetchUidsQuery);
-    const uids = response.offers.map(offer => offer.uid);
-
-    const mu = new Mutation();
-
-    mu.setDelNquads(uids.map((uid: string) => `<${uid}> * * .`).join("\n"));
-
-    const txn = this.client.newTxn();
-    await txn.mutate(mu);
     await txn.commit();
   }
 }

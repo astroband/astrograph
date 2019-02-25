@@ -28,7 +28,10 @@ export class Worker {
         const stateParser = new LedgerStateParser(transactions);
         stateParser.parse();
         await c.importLedger(header, transactions, { ingestOffers: true });
-        await c.deleteOffers(stateParser.deletedOfferIds);
+        await c.deleteByPredicates({
+          "offer.id": stateParser.deletedOfferIds,
+          "account.id": stateParser.deletedAccountIds
+        });
         c.close();
       }
 

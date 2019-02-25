@@ -13,7 +13,7 @@ export interface IOfferBase {
 }
 
 export interface IOffer extends IOfferBase {
-  lastModified: string;
+  lastModified: number;
 }
 
 export class Offer implements IOffer {
@@ -26,7 +26,7 @@ export class Offer implements IOffer {
   public priceN: number;
   public priceD: number;
   public passive: boolean;
-  public lastModified: string;
+  public lastModified: number;
 
   constructor(data: IOffer) {
     this.id = data.id;

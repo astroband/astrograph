@@ -23,7 +23,7 @@ export interface IOfferTableRow {
 }
 
 export class OfferFactory {
-  public static fromDb(row: IOfferTableRow): Offer | null | IOffer | Asset {
+  public static fromDb(row: IOfferTableRow): Offer {
     const data: IOffer = {
       id: row.offerid,
       sellerID: row.sellerid,
@@ -34,7 +34,7 @@ export class OfferFactory {
       priceD: row.priced,
       price: calculateOfferPrice(row.pricen, row.priced),
       passive: (row.flags && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0,
-      lastModified: row.lastmodified
+      lastModified: parseInt(row.lastmodified, 10)
     };
 
     return new Offer(data);
