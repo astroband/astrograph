@@ -24,7 +24,11 @@ export class LedgerStateParser {
     }
   }
 
-  public addChange(change: IChange): void {
+  public get deletedOfferIds() {
+    return this.offers.deleted;
+  }
+
+  private addChange(change: IChange): void {
     if (change.entry === EntryType.Offer) {
       this.addOfferChange(change);
     }
@@ -47,9 +51,5 @@ export class LedgerStateParser {
         );
         break;
     }
-  }
-
-  public get deletedOfferIds() {
-    return this.offers.deleted;
   }
 }

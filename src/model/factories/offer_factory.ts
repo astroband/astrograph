@@ -2,7 +2,7 @@ import stellar from "stellar-base";
 import { Asset } from "../asset";
 import { IOffer, IOfferBase, Offer } from "../offer";
 
-import { calculatePrice } from "../../util/offer";
+import { calculateOfferPrice } from "../../util/offer";
 import { toFloatAmountString } from "../../util/stellar";
 
 export interface IOfferTableRow {
@@ -32,7 +32,7 @@ export class OfferFactory {
       amount: toFloatAmountString(row.amount),
       priceN: row.pricen,
       priceD: row.priced,
-      price: calculatePrice(row.pricen, row.priced),
+      price: calculateOfferPrice(row.pricen, row.priced),
       passive: (row.flags && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0,
       lastModified: row.lastmodified
     };
@@ -53,7 +53,7 @@ export class OfferFactory {
       amount: xdr.amount().toInt(),
       priceN,
       priceD,
-      price: calculatePrice(priceN, priceD),
+      price: calculateOfferPrice(priceN, priceD),
       passive: (xdr.flags() && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0
     };
   }
