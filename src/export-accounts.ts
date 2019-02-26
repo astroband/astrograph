@@ -1,4 +1,5 @@
 import fs from "fs";
+import ProgressBar from "progress";
 import zlib from "zlib";
 import { db } from "./database";
 import { IAccountTableRow, AccountFactory } from "./model/factories/account_factory";
@@ -14,6 +15,8 @@ async function exportAccounts(): Promise<number> {
   const batchesInFile = 10;
   let offset = 0;
   const accountsCount = await db.accounts.count();
+
+  const bar = new ProgressBar("[:bar] :elapseds elapsed, eta :etas", { total: accountsCount });
 
   const batchesCount = Math.ceil(accountsCount / batchSize);
   let file = zlib.createGzip();
@@ -33,6 +36,7 @@ async function exportAccounts(): Promise<number> {
       const builder = new AccountBuilder(account);
 
       file.write(builder.build().toString() + "\n");
+      bar.tick();
     });
 
     offset += batchSize;
