@@ -12,7 +12,7 @@ fs.mkdirSync(dir, { recursive: true });
 
 async function exportAccounts(): Promise<number> {
   const batchSize = 1000;
-  const batchesInFile = 10;
+  const batchesInFile = 100;
   let offset = 0;
   const accountsCount = await db.accounts.count();
 
@@ -26,7 +26,7 @@ async function exportAccounts(): Promise<number> {
       file.end();
       file = zlib.createGzip();
 
-      file.pipe(fs.createWriteStream(`${dir}/${Math.ceil(i / batchesInFile)}`));
+      file.pipe(fs.createWriteStream(`${dir}/${Math.ceil(i / batchesInFile)}.rdf.gz`));
     }
 
     const rows: IAccountTableRow[] = await db.any("SELECT * FROM accounts LIMIT $1 OFFSET $2", [batchSize, offset]);
