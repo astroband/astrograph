@@ -3,7 +3,6 @@ import { Asset } from "../asset";
 import { IOffer, IOfferBase, Offer } from "../offer";
 
 import { calculateOfferPrice } from "../../util/offer";
-import { toFloatAmountString } from "../../util/stellar";
 
 export interface IOfferTableRow {
   offerid: string;
@@ -29,7 +28,7 @@ export class OfferFactory {
       sellerID: row.sellerid,
       selling: Asset.fromDb(row.sellingassettype, row.sellingassetcode, row.sellingissuer),
       buying: Asset.fromDb(row.buyingassettype, row.buyingassetcode, row.buyingissuer),
-      amount: toFloatAmountString(row.amount),
+      amount: row.amount,
       priceN: row.pricen,
       priceD: row.priced,
       price: calculateOfferPrice(row.pricen, row.priced),
