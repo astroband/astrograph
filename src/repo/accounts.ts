@@ -1,4 +1,5 @@
 import _ from "lodash";
+import squel from "squel";
 import { IDatabase } from "pg-promise";
 import { Account } from "../model";
 import { AccountFactory, IAccountTableRow } from "../model/factories";
@@ -40,5 +41,14 @@ export default class AccountsRepo {
   public async findAllBySigner(id: string, limit: number): Promise<Account[]> {
     const res = await this.db.manyOrNone(sql.selectSignedAccountIds, [id, limit]);
     return res.map((v: IAccountTableRow) => AccountFactory.fromDb(v));
+  }
+
+  public async count() {
+    const queryBuilder = squel
+      .select()
+      .field("count(*)")
+      .from("accounts");
+
+    return this.db.one(queryBuilder.toString(), [], c => +c.count);
   }
 }
