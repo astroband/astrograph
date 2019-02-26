@@ -130,7 +130,6 @@ const schemaWithComments = `
   set_options_op.signer: uid @reverse .
   set_options_op.inflation_destination: uid @reverse .
   set_options_op.result_code: int .
-  set_options_op.signer: uid .
   clear_flags: int .
   set_flags: int .
   master_weight: int .
