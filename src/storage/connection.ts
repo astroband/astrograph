@@ -5,7 +5,7 @@ import { LedgerHeader, TransactionWithXDR } from "../model";
 import logger from "../util/logger";
 import { DGRAPH_QUERY_URL } from "../util/secrets";
 import { Cache } from "./cache";
-import { Ingestor } from "./ingestor";
+import { IIngestOpts, Ingestor } from "./ingestor";
 import { NQuads } from "./nquads";
 import { SCHEMA } from "./schema";
 
@@ -84,8 +84,8 @@ export class Connection {
     }
   }
 
-  public async importLedger(header: LedgerHeader, transactions: TransactionWithXDR[]) {
-    let nquads: NQuads = await Ingestor.ingestLedger(header, transactions);
+  public async importLedger(header: LedgerHeader, transactions: TransactionWithXDR[], opts: IIngestOpts) {
+    let nquads: NQuads = await Ingestor.ingestLedger(header, transactions, opts);
 
     const cache = new Cache(this, nquads);
     nquads = await cache.populate();
@@ -103,5 +103,28 @@ export class Connection {
 
     const result = await this.push(payload);
     cache.put(result);
+  }
+
+  public async deleteOffers(offerIds: number[]): Promise<void> {
+    if (offerIds.length === 0) {
+      return;
+    }
+
+    const fetchUidsQuery = `{
+      offers(func: eq(offer.id, [${offerIds.join(",")}])) {
+        uid
+      }
+    }`;
+
+    const response: { offers: Array<{ uid: string }> } = await this.query(fetchUidsQuery);
+    const uids = response.offers.map(offer => offer.uid);
+
+    const mu = new Mutation();
+
+    mu.setDelNquads(uids.map((uid: string) => `<${uid}> * * .`).join("\n"));
+
+    const txn = this.client.newTxn();
+    await txn.mutate(mu);
+    await txn.commit();
   }
 }
