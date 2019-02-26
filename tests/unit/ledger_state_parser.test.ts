@@ -23,7 +23,7 @@ describe("LedgerStateParser", () => {
         .mockReturnValueOnce(
           [
             [{ type: ChangeType.Removed, entry: EntryType.Offer, data: offerChangeXDRMock(15) }],
-            [{ type: ChangeType.Removed, entry: EntryType.Account }]
+            [{ type: ChangeType.Removed, entry: EntryType.Trustline }]
           ]
         )
         .mockReturnValueOnce(
@@ -42,7 +42,7 @@ describe("LedgerStateParser", () => {
 
       subject.parse();
 
-      expect(subject.deletedOfferIds).toEqual([15, 20]);
+      expect(subject.deletedOfferIds).toEqual(["15", "20"]);
     });
   });
 });
