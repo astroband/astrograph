@@ -7,29 +7,29 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
 
-    this.pushValue("clear_flags", this.xdr.clearFlags());
-    this.pushValue("set_flags", this.xdr.setFlags());
-    this.pushValue("master_weight", this.xdr.masterWeight());
+    const homeDomain = this.body.homeDomain();
+
+    this.pushValues({
+      clear_flags: this.body.clearFlags(),
+      set_flags: this.body.setFlags(),
+      master_weight: this.body.masterWeight(),
+      home_domain: homeDomain
+    });
 
     this.pushInflationDest();
     this.pushThresholds();
     this.pushSigner();
 
-    this.pushValue("home_domain", this.xdr.homeDomain());
+    this.nquads.push(new NQuad(this.sourceAccountBuilder.current, "home_domain", NQuad.value(homeDomain)));
 
     return this.nquads;
   }
 
-  protected pushResult() {
-    const code = this.trXDR.setOptionsResult().switch().value;
-    this.pushValue("set_options_result_code", code);
-  }
-
   private pushThresholds() {
     const thresholds = {
-      high: this.xdr.highThreshold(),
-      med: this.xdr.medThreshold(),
-      low: this.xdr.lowThreshold()
+      high: this.body.highThreshold(),
+      med: this.body.medThreshold(),
+      low: this.body.lowThreshold()
     };
 
     if (
@@ -45,6 +45,7 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
     const thresholdsNquad = NQuad.blank(`${this.current.value}_thresholds`);
 
     this.nquads.push(new NQuad(this.current, "thresholds", thresholdsNquad));
+    this.nquads.push(new NQuad(this.sourceAccountBuilder.current, "account.thresholds", thresholdsNquad));
 
     for (const key in thresholds) {
       if (_.isUndefined(thresholds[key])) {
@@ -56,18 +57,18 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
   }
 
   private pushSigner() {
-    if (!this.xdr.signer()) {
+    if (!this.body.signer()) {
       return;
     }
 
     const signer = {
-      address: signerKeyFromXDR(this.xdr.signer().key()),
-      weight: this.xdr.signer().weight()
+      address: signerKeyFromXDR(this.body.signer().key()),
+      weight: this.body.signer().weight()
     };
     const signerNquad = NQuad.blank(`${this.current.value}_signer`);
     const signerBuilder = new AccountBuilder(signer.address);
 
-    this.nquads.push(new NQuad(this.current, "signer", signerNquad));
+    this.nquads.push(new NQuad(this.current, `${this.entityPrefix}.signer`, signerNquad));
     this.nquads.push(...signerBuilder.build());
 
     this.nquads.push(new NQuad(signerNquad, "account", signerBuilder.current));
@@ -75,11 +76,32 @@ export class SetOptionsOpBuilder extends SpecificOperationBuilder {
   }
 
   private pushInflationDest() {
-    if (!this.xdr.inflationDest()) {
+    if (!this.body.inflationDest()) {
       return;
     }
 
-    const inflationDestination = publicKeyFromBuffer(this.xdr.inflationDest().value());
-    this.pushBuilder(new AccountBuilder(inflationDestination), "account.inflation_dest");
+    const inflationDestination = publicKeyFromBuffer(this.body.inflationDest().value());
+    const inflationDestAccountBuilder = new AccountBuilder(inflationDestination);
+
+    this.pushBuilder(inflationDestAccountBuilder, `${this.entityPrefix}.inflation_destination`);
+    this.nquads.push(
+      new NQuad(this.sourceAccountBuilder.current, "account.inflation_destination", inflationDestAccountBuilder.current)
+    );
+  }
+
+  protected get resultCode(): number | undefined {
+    if (!this.trXDR) {
+      return;
+    }
+
+    return this.trXDR.setOptionsResult().switch().value;
+  }
+
+  protected get body(): any {
+    return this.bodyXDR.setOptionsOp();
+  }
+
+  private get entityPrefix() {
+    return "set_options_op";
   }
 }

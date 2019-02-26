@@ -6,9 +6,9 @@ import { OperationKinds } from "../model/operation";
 import { MemoType } from "../util/stellar";
 
 export interface ITransactionData {
-  id: string;
-  seq: string;
-  index: string;
+  "tx.id": string;
+  "tx.index": string;
+  "tx.ledger": ILedgerData;
   // body
   "memo.value": string | null;
   "memo.type": MemoType | null;
@@ -19,24 +19,24 @@ export interface ITransactionData {
   // result
   // meta
   // feeMeta
-  "account.source": IAccountData[];
+  "tx.source": IAccountData;
   // Datetime ISO string
   "time_bounds.min": string;
   "time_bounds.max": string;
 }
 
 interface IOperationData {
-  kind: OperationKinds;
-  ledger: ILedgerData[];
-  index: string;
-  transaction: ITransactionData[];
+  "op.kind": OperationKinds;
+  "op.ledger": ILedgerData;
+  "op.index": string;
+  "op.transaction": ITransactionData;
+  "op.source": IAccountData;
+  "op.destination": IAccountData;
 }
 
 export interface IPaymentOperationData extends IOperationData {
-  "account.source": IAccountData[];
-  "account.destination": IAccountData[];
   amount: string;
-  asset: IAssetData[];
+  "payment_op.asset": IAssetData;
 }
 
 export interface ISetOptionsOperationData extends IOperationData {
@@ -49,20 +49,16 @@ export interface ISetOptionsOperationData extends IOperationData {
     med: string;
     low: string;
   };
-  "account.inflation_dest": IAccountData[];
-  signer: {
-    account: IAccountData[];
+  "set_options_op.inflation_destination": IAccountData;
+  "set_options_op.signer": {
+    account: IAccountData;
     weight: string;
   };
 }
 
-export interface IAccountMergeOperationData extends IOperationData {
-  "account.destination": IAccountData[];
-}
-
 export interface IAllowTrustOperationData extends IOperationData {
-  trustor: IAccountData[];
-  asset_code: AssetCode;
+  "allow_trust_op.trustor": IAccountData;
+  "allow_trust_op.asset": IAssetData;
   authorize: boolean;
 }
 
@@ -72,13 +68,13 @@ export interface IBumpSequenceOperationData extends IOperationData {
 
 export interface IChangeTrustOperationData extends IOperationData {
   limit: string;
-  asset: IAssetData[];
+  "change_trust_op.asset": IAssetData;
 }
 
 export interface ICreateAccountOperationData extends IOperationData {
   starting_balance: string;
-  "account.destination": IAccountData[];
 }
+
 export interface IManageDataOperationData extends IOperationData {
   name: string;
   value: string;
@@ -89,23 +85,21 @@ export interface IManageOfferOperationData extends IOperationData {
   price_d: string;
   price: number;
   offer_id: string;
-  "asset.selling": IAssetData[];
-  "asset.buying": IAssetData[];
+  "manage_offer_op.asset_selling": IAssetData;
+  "manage_offer_op.asset_buying": IAssetData;
   amount: number;
 }
 
 export interface IPathPaymentOperationData extends IOperationData {
   send_max: string;
-  dest_amount: string;
-  "account.destination": IAccountData[];
-  "asset.destination": IAssetData[];
-  "asset.source": IAssetData[];
-  "assets.path": IAssetData[];
+  amount: string;
+  "path_payment_op.asset_destination": IAssetData;
+  "path_payment_op.asset_source": IAssetData;
+  "path_payment_op.assets_path": IAssetData[];
 }
 
 export type DgraphOperationsData = IPaymentOperationData &
   ISetOptionsOperationData &
-  IAccountMergeOperationData &
   IAllowTrustOperationData &
   IBumpSequenceOperationData &
   IChangeTrustOperationData &
@@ -115,13 +109,14 @@ export type DgraphOperationsData = IPaymentOperationData &
   IPathPaymentOperationData;
 
 export interface IAssetData {
+  "asset.id": string;
   code: AssetCode;
-  issuer: IAccountData[];
+  "asset.issuer": IAccountData;
   native: boolean;
 }
 
 export interface IAccountData {
-  id: AccountID;
+  "account.id": AccountID;
   // it's incomplete
 }
 

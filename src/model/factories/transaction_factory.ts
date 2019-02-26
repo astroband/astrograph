@@ -16,15 +16,15 @@ export class TransactionFactory {
     };
 
     return new Transaction({
-      id: node.id,
-      ledgerSeq: parseInt(node.seq, 10),
-      index: parseInt(node.index, 10),
+      id: node["tx.id"],
+      ledgerSeq: parseInt(node["tx.ledger"][0]["ledger.id"], 10),
+      index: parseInt(node["tx.index"], 10),
       memo,
       feeAmount: node.fee_amount,
       feeCharged: node.fee_charged,
       success: node.success,
       resultCode: node.result_code,
-      sourceAccount: node["account.source"][0].id,
+      sourceAccount: node["tx.source"][0]["account.id"],
       timeBounds
     });
   }

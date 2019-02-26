@@ -1,7 +1,8 @@
+import { Memoize } from "typescript-memoize";
 import { TransactionWithXDR } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad, NQuads } from "../nquads";
-import { AccountBuilder, Builder, LedgerBuilder, TransactionBuilder } from "./";
+import { AccountBuilder, Builder, TransactionBuilder } from "./";
 import {
   AccountMergeOpBuilder,
   AllowTrustOpBuilder,
@@ -48,7 +49,7 @@ export class OperationBuilder extends Builder {
   public build(): NQuads {
     this.pushKey();
     this.pushRoot();
-    this.pushPrev();
+    this.pushPrev("op");
 
     const builder = this.buildBuilder();
     if (builder) {
@@ -61,36 +62,32 @@ export class OperationBuilder extends Builder {
   protected buildBuilder(): Builder | null {
     const t = stellar.xdr.OperationType;
 
+    const args: [IBlank, string, any, any] = [this.current, this.sourceAccount, this.xdr.body(), this.resultXDR];
     // See comments for examples https://github.com/mobius-network/astrograph/pull/84
     switch (this.xdr.body().switch()) {
       case t.createAccount():
-        return new CreateAccountOpBuilder(this.current, this.xdr.body().createAccountOp(), this.resultXDR);
+        return new CreateAccountOpBuilder(...args);
       case t.payment():
-        return new PaymentOpBuilder(this.current, this.xdr.body().paymentOp(), this.resultXDR);
+        return new PaymentOpBuilder(...args);
       case t.pathPayment():
-        return new PathPaymentOpBuilder(this.current, this.xdr.body().pathPaymentOp(), this.resultXDR, [
-          "operation",
-          this.tx.ledgerSeq,
-          this.index,
-          this.n
-        ]);
+        return new PathPaymentOpBuilder(...args);
       case t.manageOffer():
-        return new ManageOfferOpBuilder(this.current, this.xdr.body().manageOfferOp());
+        return new ManageOfferOpBuilder(...args);
       case t.setOption():
-        return new SetOptionsOpBuilder(this.current, this.xdr.body().setOptionsOp(), this.resultXDR);
+        return new SetOptionsOpBuilder(...args);
       case t.changeTrust():
-        return new ChangeTrustOpBuilder(this.current, this.xdr.body().changeTrustOp(), this.resultXDR);
+        return new ChangeTrustOpBuilder(...args);
       case t.accountMerge():
-        return new AccountMergeOpBuilder(this.current, this.xdr.body(), this.resultXDR);
+        return new AccountMergeOpBuilder(this.current, this.sourceAccount, this.xdr.body(), this.resultXDR);
       // case t.createPassiveOfferOp():
       //   return this.createPassiveOfferOp();
       // ---
       case t.manageDatum():
-        return new ManageDataOpBuilder(this.current, this.xdr.body().manageDataOp(), this.resultXDR);
+        return new ManageDataOpBuilder(...args);
       case t.allowTrust():
-        return new AllowTrustOpBuilder(this.current, this.xdr.body().allowTrustOp(), this.resultXDR);
+        return new AllowTrustOpBuilder(...args);
       case t.bumpSequence():
-        return new BumpSequenceOpBuilder(this.current, this.xdr.body().bumpSequenceOp(), this.resultXDR);
+        return new BumpSequenceOpBuilder(...args);
     }
 
     return null;
@@ -98,44 +95,29 @@ export class OperationBuilder extends Builder {
 
   protected pushRoot() {
     const tx = TransactionBuilder.keyNQuad(this.tx.ledgerSeq, this.tx.index);
-    const ledger = LedgerBuilder.keyNQuad(this.tx.ledgerSeq);
 
     const kind = this.xdr.body().switch().name;
 
     const values = {
-      type: "operation",
-      "type.operation": "",
-      index: this.n,
+      "op.index": this.n,
       ["kind." + kind]: "",
-      kind,
+      "op.kind": kind,
       order: this.order(this.seq, this.index, this.n)
     };
 
     this.pushValues(values);
-    this.pushLedger(this.seq);
-    this.pushResult();
+    this.pushLedger(this.seq, "op");
 
-    this.nquads.push(new NQuad(this.current, "transaction", tx));
-    this.nquads.push(new NQuad(tx, "operations", this.current));
-    this.nquads.push(new NQuad(ledger, "operations", this.current));
-
-    this.pushBuilder(new AccountBuilder(this.sourceAccount()), "account.source", "operations");
+    this.nquads.push(new NQuad(this.current, "op.transaction", tx));
+    this.pushBuilder(new AccountBuilder(this.sourceAccount), "op.source");
   }
 
-  private sourceAccount(): string {
+  @Memoize()
+  private get sourceAccount(): string {
     const account = this.xdr.sourceAccount();
     if (account) {
       return publicKeyFromBuffer(account.value());
     }
     return this.tx.sourceAccount;
-  }
-
-  private pushResult() {
-    if (!this.resultXDR) {
-      return;
-    }
-
-    this.pushValue("result_code", this.resultXDR.switch().value);
-    this.pushValue("success", this.resultXDR.switch() === stellar.xdr.OperationResultCode.opInner());
   }
 }

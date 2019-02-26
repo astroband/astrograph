@@ -1,3 +1,4 @@
+import { Memoize } from "typescript-memoize";
 import { SpecificOperationBuilder } from "../";
 import { NQuads } from "../../nquads";
 
@@ -5,16 +6,24 @@ export class ManageDataOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
 
-    this.pushValue("name", this.xdr.dataName().toString());
+    this.pushValue("name", this.body.dataName().toString());
 
-    const value = this.xdr.dataValue() ? this.xdr.dataValue().toString("base64") : undefined;
+    const value = this.body.dataValue() ? this.body.dataValue().toString("base64") : undefined;
     this.pushValue("value", value);
 
     return this.nquads;
   }
 
-  protected pushResult() {
-    const code = this.trXDR.manageDataResult().switch().value;
-    this.pushValue("manage_data_result_code", code);
+  protected get resultCode(): number | undefined {
+    if (!this.trXDR) {
+      return;
+    }
+
+    return this.trXDR.manageDataResult().switch().value;
+  }
+
+  @Memoize()
+  protected get body(): any {
+    return this.bodyXDR.manageDataOp();
   }
 }

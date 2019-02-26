@@ -4,12 +4,12 @@ import { OperationKinds } from "../../../model/operation";
 
 export const queryPredicates = {
   [OperationKinds.Payment]: [
-    "account.destination { id }",
+    "op.destination { account.id }",
     "amount",
-    `asset {
+    `payment_op.asset {
       native
       code
-      issuer { id }
+      asset.issuer { account.id }
     }`
   ],
   [OperationKinds.SetOption]: [
@@ -22,60 +22,68 @@ export const queryPredicates = {
       med
       low
     }`,
-    "account.inflation_dest { id }",
-    `signer {
-      account { id }
+    "set_options_op.inflation_destination { account.id }",
+    `set_options_op.signer {
+      account { account.id }
       weight
     }`
   ],
-  [OperationKinds.AccountMerge]: ["account.destination { id }"],
-  [OperationKinds.AllowTrust]: ["trustor { id }", "asset_code", "authorize"],
+  [OperationKinds.AccountMerge]: ["op.destination { account.id }"],
+  [OperationKinds.AllowTrust]: [
+    "allow_trust_op.trustor { account.id }",
+    `allow_trust_op.asset {
+      code
+      issuer { account.id }
+      native
+    }`,
+    "authorize"
+  ],
   [OperationKinds.BumpSequence]: ["bump_to"],
   [OperationKinds.ChangeTrust]: [
     "limit",
-    `asset {
+    `change_trust_op.asset {
       native
       code
-      issuer { id }
+      asset.issuer { account.id }
     }`
   ],
-  [OperationKinds.CreateAccount]: ["starting_balance", "account.destination { id }"],
+  [OperationKinds.CreateAccount]: ["starting_balance", "op.destination { account.id }"],
   [OperationKinds.ManageData]: ["name", "value"],
   [OperationKinds.ManageOffer]: [
     "offer_id",
     "price_n",
     "price_d",
     "price",
-    `asset.buying {
+    `manage_offer_op.asset buying {
       native
       code
-      issuer { id }
+      asset.issuer { account.id }
     }`,
-    `asset.selling {
+    `manage_offer_op.asset_selling {
       native
       code
-      issuer { id }
+      asset.issuer { account.id }
     }`,
     "amount"
   ],
   [OperationKinds.PathPayment]: [
     "send_max",
-    "dest_amount",
-    "account.destination { id }",
-    `asset.destination {
+    "amount",
+    "op.destination { account.id }",
+    `path_payment_op.asset_destination {
       native
       code
-      issuer { id }
+      asset.issuer { account.id }
     }`,
-    `asset.source {
+    `path_payment_op.asset_source {
       native
       code
-      issuer { id }
+      asset.issuer { account.id }
     }`,
-    `assets.path {
+    `path_payment_op.assets_path {
       native
       code
-      issuer { id }
+      asset.issuer { account.id }
     }`
   ]
 };

@@ -27,7 +27,7 @@ export class AssetOperationsQuery extends Query<IAssetOperationsQueryResult> {
 
   public async call(): Promise<IAssetOperationsQueryResult> {
     const r = await this.request();
-    const ops = _.at(r, "issuer[0].['assets.issued'][0].operations");
+    const ops = _.at(r, "issuer[0]['~asset.issuer'][0].operations");
     return (ops[0] || []).map(OperationFactory.fromDgraph);
   }
 
@@ -35,14 +35,14 @@ export class AssetOperationsQuery extends Query<IAssetOperationsQueryResult> {
     const opKindFilter = this.kinds.map(opKind => `has(kind.${opKind})`).join(" OR ");
 
     const query = `query assetOperations($code: string, $issuer: string, $first: int, $offset: int) {
-      issuer(func: eq(id, $issuer)) {
-        assets.issued @filter(eq(code, $code))  {
+      issuer(func: eq(account.id, $issuer)) {
+        ~asset.issuer @filter(eq(code, $code))  {
           operations @filter(${opKindFilter}) (first: $first, offset: $offset, orderdesc: order) {
             kind
             index
             ledger { close_time }
             transaction { id }
-            account.source { id }
+            account.source { account.id }
             ${_
               .chain(this.kinds)
               .map(opKind => queryPredicates[opKind])

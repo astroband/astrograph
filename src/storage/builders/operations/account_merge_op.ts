@@ -6,31 +6,23 @@ export class AccountMergeOpBuilder extends SpecificOperationBuilder {
   public build(): NQuads {
     super.build();
 
-    this.pushBuilder(
-      new AccountBuilder(publicKeyFromBuffer(this.xdr.destination().value())),
-      "account.destination",
-      "operations"
-    );
+    const destinationBuilder = new AccountBuilder(publicKeyFromBuffer(this.body.destination().value()));
+
+    this.nquads.push(new NQuad(this.sourceAccountBuilder.current, "account.merged_into", destinationBuilder.current));
+    this.pushBuilder(destinationBuilder, "op.destination");
 
     return this.nquads;
   }
 
-  protected pushResult() {
-    const result = this.trXDR.accountMergeResult();
-    const resultCode = result.switch().value;
-    this.pushValue("account_merge_result_code", resultCode);
-
-    // if not success
-    if (resultCode !== 0) {
+  protected get resultCode(): number | undefined {
+    if (!this.trXDR) {
       return;
     }
 
-    const resultNQuad = NQuad.blank(`${this.current.value}_result`);
+    return this.trXDR.accountMergeResult().switch().value;
+  }
 
-    this.nquads.push(
-      new NQuad(resultNQuad, "source_account_balance", NQuad.value(result.sourceAccountBalance().toString()))
-    );
-
-    this.nquads.push(new NQuad(this.current, "result", resultNQuad));
+  protected get body(): any {
+    return this.bodyXDR;
   }
 }

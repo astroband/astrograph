@@ -1,33 +1,41 @@
-import { AccountBuilder, AssetBuilder, PathPaymentResultBuilder, SpecificOperationBuilder } from "../";
-import { IBlank, NQuads } from "../../nquads";
+import { Memoize } from "typescript-memoize";
+import { AccountBuilder, AssetBuilder, SpecificOperationBuilder } from "../";
+import { NQuads } from "../../nquads";
 
 export class PathPaymentOpBuilder extends SpecificOperationBuilder {
-  private baseKey: any[];
-
-  constructor(public readonly current: IBlank, protected xdr: any, protected resultXDR: any, baseKey: any[]) {
-    super(current, xdr, resultXDR);
-
-    this.baseKey = baseKey;
-  }
-
   public build(): NQuads {
     super.build();
-    this.pushValue("send_max", this.xdr.sendMax().toString());
-    this.pushValue("dest_amount", this.xdr.destAmount().toString());
-    this.pushBuilder(AccountBuilder.fromXDR(this.xdr.destination()), "account.destination", "operations");
-    this.pushBuilder(AssetBuilder.fromXDR(this.xdr.destAsset()), "asset.destination", "operations");
-    this.pushBuilder(AssetBuilder.fromXDR(this.xdr.sendAsset()), "asset.source", "operations");
+    this.pushValue("send_max", this.body.sendMax().toString());
+    this.pushValue("amount", this.body.destAmount().toString());
+    this.pushBuilder(AccountBuilder.fromXDR(this.body.destination()), "op.destination");
+    this.pushBuilder(
+      AssetBuilder.fromXDR(this.body.destAsset()),
+      `${this.entityPrefix}.asset_destination`,
+      "operations"
+    );
+    this.pushBuilder(AssetBuilder.fromXDR(this.body.sendAsset()), `${this.entityPrefix}.asset_source`, "operations");
 
-    (this.xdr.path() as any[]).forEach(xdr => {
-      this.pushBuilder(AssetBuilder.fromXDR(xdr), "assets.path", "operations");
+    (this.body.path() as any[]).forEach(xdr => {
+      this.pushBuilder(AssetBuilder.fromXDR(xdr), `${this.entityPrefix}.assets_path`, "operations");
     });
 
     return this.nquads;
   }
 
-  protected pushResult() {
-    const resultBuilder = new PathPaymentResultBuilder(this.baseKey, this.trXDR.pathPaymentResult());
+  protected get resultCode(): number | undefined {
+    if (!this.trXDR) {
+      return;
+    }
 
-    this.pushBuilder(resultBuilder, "result");
+    return this.trXDR.pathPaymentResult().switch().value;
+  }
+
+  @Memoize()
+  protected get body(): any {
+    return this.bodyXDR.pathPaymentOp();
+  }
+
+  private get entityPrefix() {
+    return "path_payment_op";
   }
 }
