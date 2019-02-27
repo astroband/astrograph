@@ -49,15 +49,7 @@ export class PathPaymentResultBuilder extends Builder {
     this.pushBuilder(lastAssetBuilder);
 
     this.nquads.push(new NQuad(lastNQuad, "key", NQuad.value(key)));
-    this.nquads.push(
-      new NQuad(
-        lastNQuad,
-        "destination",
-        NQuad.blank(
-          AccountBuilder.keyFromXDR(last.destination())
-        )
-      )
-    );
+    this.nquads.push(new NQuad(lastNQuad, "destination", NQuad.blank(AccountBuilder.keyFromXDR(last.destination()))));
     this.nquads.push(new NQuad(lastNQuad, "last.asset", lastAssetBuilder.current));
   }
 
@@ -69,13 +61,7 @@ export class PathPaymentResultBuilder extends Builder {
         const key = PathPaymentResultBuilder.key([`result_offer_${index}`, this.current.value]);
         const offerNQuad = NQuad.blank(key);
 
-        this.nquads.push(
-          new NQuad(
-            offerNQuad,
-            "seller",
-            NQuad.blank(AccountBuilder.keyFromXDR(offer.sellerId()))
-          )
-        );
+        this.nquads.push(new NQuad(offerNQuad, "seller", NQuad.blank(AccountBuilder.keyFromXDR(offer.sellerId()))));
 
         const assetSoldBuilder = AssetBuilder.fromXDR(offer.assetSold());
         const assetBoughtBuilder = AssetBuilder.fromXDR(offer.assetBought());

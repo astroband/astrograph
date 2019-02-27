@@ -77,9 +77,6 @@ export class LedgerStateParser {
       return;
     }
 
-    if (accountId === "GA7YRWZP2X6HZZMX7A243QARVDFWJW3DZBS6G32A2H4LU3KKAM56ANQI" && change.type !== "state") {
-      console.log(change.seq, change.tx.index, change.type);
-    }
     const account = { lastModified: change.seq, ...AccountFactory.fromXDR(xdrData) };
 
     switch (change.type) {
@@ -93,7 +90,10 @@ export class LedgerStateParser {
   }
 
   private addOfferChange(change: IChange): void {
-    const offerId = change.data.offer().offerId().toString();
+    const offerId = change.data
+      .offer()
+      .offerId()
+      .toString();
 
     if (change.type === ChangeType.Removed) {
       this.offers.deleted.push(offerId);

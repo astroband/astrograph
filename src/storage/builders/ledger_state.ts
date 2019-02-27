@@ -14,36 +14,36 @@ export class LedgerStateBuilder {
   public async build(): Promise<NQuads> {
     this.parser.parse();
 
-    this.parser.updatedAccounts.forEach((data: IAccount) =>{
+    this.parser.updatedAccounts.forEach((data: IAccount) => {
       const accountBuilder = new AccountBuilder(data);
-      this.nquads.push(...accountBuilder.build());   
+      this.nquads.push(...accountBuilder.build());
     });
 
-    this.parser.createdAccounts.forEach((data: IAccount) =>{
+    this.parser.createdAccounts.forEach((data: IAccount) => {
       if (this.parser.updatedAccounts.has(data.id)) {
         return;
       }
 
       const accountBuilder = new AccountBuilder(data);
-      this.nquads.push(...accountBuilder.build());   
+      this.nquads.push(...accountBuilder.build());
     });
 
     if (!this.ingestOffers) {
       return this.nquads;
     }
 
-    this.parser.updatedOffers.forEach((data: IOffer) =>{
+    this.parser.updatedOffers.forEach((data: IOffer) => {
       const offerBuilder = new OfferBuilder(data);
-      this.nquads.push(...offerBuilder.build());   
+      this.nquads.push(...offerBuilder.build());
     });
 
-    this.parser.createdOffers.forEach((data: IOffer) =>{
+    this.parser.createdOffers.forEach((data: IOffer) => {
       if (this.parser.updatedOffers.has(data.id)) {
         return;
       }
 
       const offerBuilder = new OfferBuilder(data);
-      this.nquads.push(...offerBuilder.build());   
+      this.nquads.push(...offerBuilder.build());
     });
 
     return this.nquads;
