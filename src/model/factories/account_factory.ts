@@ -32,10 +32,6 @@ export class AccountFactory {
   }
 
   public static fromXDR(xdr: any): IAccountBase {
-    if (publicKeyFromXDR(xdr) === "GA7YRWZP2X6HZZMX7A243QARVDFWJW3DZBS6G32A2H4LU3KKAM56ANQI") {
-      console.log(xdr.homeDomain().toString());
-    }
-
     return {
       id: publicKeyFromXDR(xdr),
       balance: xdr.balance().toString(),

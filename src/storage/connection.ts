@@ -108,13 +108,13 @@ export class Connection {
   public async deleteByPredicates(args: { [predicate: string]: Array<string | number> }) {
     const txn = this.client.newTxn();
 
-    for (const predicate in args) {
-      if (args[predicate].length === 0) {
+    Object.entries(args).forEach(async ([predicate, values]) => {
+      if (values.length === 0) {
         return;
       }
 
       const fetchUidsQuery = `{
-        nodes(func: eq(${predicate}, [${args[predicate].join(",")}])) {
+        nodes(func: eq(${predicate}, [${values.join(",")}])) {
           uid
         }
       }`;
@@ -127,7 +127,7 @@ export class Connection {
       mu.setDelNquads(uids.map((uid: string) => `<${uid}> * * .`).join("\n"));
 
       await txn.mutate(mu);
-    }
+    });
 
     await txn.commit();
   }

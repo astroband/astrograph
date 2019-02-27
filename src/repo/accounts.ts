@@ -1,6 +1,6 @@
 import _ from "lodash";
-import squel from "squel";
 import { IDatabase } from "pg-promise";
+import squel from "squel";
 import { Account } from "../model";
 import { AccountFactory, IAccountTableRow } from "../model/factories";
 

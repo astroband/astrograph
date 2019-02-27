@@ -1,6 +1,6 @@
 import { IOffer } from "../../model";
 import { makeKey } from "../../util/crypto";
-import { IBlank, NQuad, } from "../nquads";
+import { IBlank, NQuad } from "../nquads";
 import { AccountBuilder, AssetBuilder, Builder } from "./index";
 
 export class OfferBuilder extends Builder {

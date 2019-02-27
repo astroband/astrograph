@@ -2,7 +2,7 @@ import fs from "fs";
 import ProgressBar from "progress";
 import zlib from "zlib";
 import { db } from "./database";
-import { IAccountTableRow, AccountFactory } from "./model/factories/account_factory";
+import { AccountFactory, IAccountTableRow } from "./model/factories/account_factory";
 import { AccountBuilder } from "./storage/builders";
 import logger from "./util/logger";
 

@@ -7,7 +7,9 @@ export class AccountMergeOpBuilder extends SpecificOperationBuilder {
 
     const destinationAccountKey = AccountBuilder.keyFromXDR(this.body.destination().value());
 
-    this.nquads.push(new NQuad(this.sourceAccountBuilder.current, "account.merged_into", NQuad.blank(destinationAccountKey)));
+    this.nquads.push(
+      new NQuad(this.sourceAccountBuilder.current, "account.merged_into", NQuad.blank(destinationAccountKey))
+    );
     this.pushLink("op.destination", destinationAccountKey);
 
     return this.nquads;
