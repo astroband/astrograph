@@ -70,7 +70,7 @@ export class Connection {
       const start = Date.now();
 
       const txn = this.client.newTxn();
-      const res = vars ? await txn.queryWithVars(query, vars) : await txn.query(query);
+      const res = await txn.queryWithVars(query, vars);
       const eta = Date.now() - start;
 
       logger.debug(`[DGraph] Query, took ${eta / 1000} s.`);
@@ -84,8 +84,16 @@ export class Connection {
     }
   }
 
-  public async importLedger(header: LedgerHeader, transactions: TransactionWithXDR[], opts: IIngestOpts) {
+  public async importLedger(
+    header: LedgerHeader,
+    transactions: TransactionWithXDR[],
+    opts: IIngestOpts
+  ): Promise<void> {
     let nquads: NQuads = await Ingestor.ingestLedger(header, transactions, opts);
+
+    if (nquads.length === 0) {
+      return;
+    }
 
     const cache = new Cache(this, nquads);
     nquads = await cache.populate();
@@ -105,30 +113,41 @@ export class Connection {
     cache.put(result);
   }
 
+  // Deletes all predicates from nodes with given properties,
+  //
+  // e.g. given { offer_id: [1, 2], account_id: [ 3, 4] } deletes
+  // nodes with offer_id equals 1 or 2, and nodes with account_id equals 3 or 4
+  // For each predicate in args separate transaction is created, so delete
+  // mutations will run concurrently
   public async deleteByPredicates(args: { [predicate: string]: Array<string | number> }) {
-    const txn = this.client.newTxn();
-
-    Object.entries(args).forEach(async ([predicate, values]) => {
+    const handler = async (predicate: string, values: Array<string | number>) => {
       if (values.length === 0) {
         return;
       }
 
-      const fetchUidsQuery = `{
+      const txn = this.client.newTxn();
+
+      const response = await txn.query(`{
         nodes(func: eq(${predicate}, [${values.join(",")}])) {
           uid
         }
-      }`;
+      }`);
+      const uids = response.getJson().nodes.map((node: { uid: string }) => node.uid);
 
-      const response: { nodes: Array<{ uid: string }> } = await this.query(fetchUidsQuery);
-      const uids = response.nodes.map(node => node.uid);
+      if (uids.length === 0) {
+        return;
+      }
 
       const mu = new Mutation();
+      mu.setCommitNow(true);
 
       mu.setDelNquads(uids.map((uid: string) => `<${uid}> * * .`).join("\n"));
 
       await txn.mutate(mu);
-    });
+    };
 
-    await txn.commit();
+    const promises = Object.entries(args).map(arg => handler(...arg));
+
+    return Promise.all(promises);
   }
 }

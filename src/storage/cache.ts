@@ -94,6 +94,12 @@ export class Cache {
 
   // Builds and runs concurrent query for passed keys, extracts them and passes back uids found in database.
   private async query(misses: string[]) {
+    const found = new Map<string, string>();
+
+    if (misses.length === 0) {
+      return found;
+    }
+
     let query = `query cache {`;
 
     misses.forEach((miss: string) => {
@@ -106,7 +112,6 @@ export class Cache {
 
     query += "}";
 
-    const found = new Map<string, string>();
     const result = await this.connection.query(query);
 
     _.keys(result).forEach((k: string) => {
