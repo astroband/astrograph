@@ -6,7 +6,7 @@ import { AccountFactory, IAccountTableRow } from "./model/factories/account_fact
 import { AccountBuilder } from "./storage/builders";
 import logger from "./util/logger";
 
-const dir = `export/accounts-${new Date().toISOString()}`;
+const dir = `export/accounts-${new Date().getTime()}`;
 
 fs.mkdirSync(dir, { recursive: true });
 
