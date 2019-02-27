@@ -5,7 +5,7 @@ import { IOfferTableRow, OfferFactory } from "./model/factories/offer_factory";
 import { OfferBuilder } from "./storage/builders/offer";
 import logger from "./util/logger";
 
-const fileName = `export/offers-${new Date().toISOString()}.rdf.gz`;
+const fileName = `export/offers-${new Date().getTime()}.rdf.gz`;
 
 async function exportOffers(): Promise<number> {
   const batchSize = 1000;
