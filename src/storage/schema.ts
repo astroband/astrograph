@@ -57,12 +57,10 @@ const schemaWithComments = `
   offer.asset_buying: uid @reverse .
   offer.asset_selling: uid @reverse .
   offer.seller: uid @reverse .
+  selling_amount: int @index(int) .
+  buying_amount: float @index(float) .
   last_modified_seq: int @index(int) .
-  # "amount" is from operation nodes
-  # amount: int .
-  # predicates from "manageOffer" operation are used here too
-  # price_n: int . 
-  # price_d: int .
+  price: float @index(float).
 
   # ledger change
   balance: string .
@@ -104,7 +102,7 @@ const schemaWithComments = `
   # manage data
   manage_data_op.result_code: int .
   name: string @index(exact) .
-  value: string @index(exact) . 
+  value: string @index(exact) .
 
   # manage offer
   manage_offer_op.asset_buying: uid @reverse .
@@ -112,7 +110,6 @@ const schemaWithComments = `
   manage_offer_op.result_code: int .
   price_n: int .
   price_d: int .
-  price: float .
   offer_id: int @index(int) .
 
   # payment
@@ -125,7 +122,7 @@ const schemaWithComments = `
   path_payment_op.assets_path: [uid] @reverse .
   path_payment_op.result_code: int .
   send_max: int .
-  
+
   # set options
   set_options_op.signer: uid @reverse .
   set_options_op.inflation_destination: uid @reverse .

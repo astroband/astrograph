@@ -1,3 +1,4 @@
+import { BigNumber } from "bignumber.js";
 import { IOffer } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { IBlank, NQuad } from "../nquads";
@@ -20,9 +21,9 @@ export class OfferBuilder extends Builder {
     this.pushKey();
     this.pushValues({
       "offer.id": this.offer.id,
-      amount: this.offer.amount,
-      price_n: this.offer.priceN,
-      price_d: this.offer.priceD,
+      selling_amount: this.offer.amount,
+      buying_amount: new BigNumber(this.offer.amount).times(this.offer.price).toString(),
+      price: this.offer.price,
       last_modified_seq: this.offer.lastModified
     });
 
