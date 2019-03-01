@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { NQuad, NQuads, Subj } from "../nquads";
+import { IFacet, NQuad, NQuads, Subj } from "../nquads";
 import { LedgerBuilder } from "./";
 
 const LEDGER_POW = Big(10).pow(9);
@@ -15,12 +15,8 @@ export abstract class Builder {
 
   public abstract build(): NQuads;
 
-  protected pushValues(data: object) {
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        this.pushValue(key, data[key]);
-      }
-    }
+  protected pushValues(data: { [predicate: string]: number | string | boolean }) {
+    Object.entries(data).forEach(([predicate, value]) => this.pushValue(predicate, value));
   }
 
   protected pushValue(predicate: string, value: any) {
@@ -49,11 +45,11 @@ export abstract class Builder {
     this.nquads.push(new NQuad(this.current, predicate, LedgerBuilder.keyNQuad(seq)));
   }
 
-  protected pushBuilder(builder: Builder, key?: string, foreignKey?: string) {
+  protected pushBuilder(builder: Builder, key?: string, foreignKey?: string, facet?: IFacet) {
     this.nquads.push(...builder.build());
 
     if (key) {
-      this.nquads.push(new NQuad(this.current, key, builder.current));
+      this.nquads.push(new NQuad(this.current, key, builder.current, facet));
     }
 
     if (foreignKey) {

@@ -13,6 +13,10 @@ export interface IValue {
   value: string | number | boolean;
 }
 
+export interface IFacet {
+  [name: string]: string | number | boolean;
+}
+
 export type Subj = IBlank | ILink;
 export type Obj = IBlank | ILink | IValue;
 
@@ -29,20 +33,19 @@ export class NQuad {
     return { type: "value", value };
   }
 
-  public readonly subject: Subj;
-  public readonly predicate: string;
-  public readonly object: Obj;
   public readonly key: string;
 
-  public constructor(subject: Subj, predicate: string, object: Obj) {
-    this.subject = subject;
-    this.predicate = predicate;
-    this.object = object;
+  public constructor(
+    public readonly subject: Subj,
+    public readonly predicate: string,
+    public readonly object: Obj,
+    public readonly facet?: IFacet
+  ) {
     this.key = this.interpolate(this.subject) + " <" + this.predicate + ">";
   }
 
   public toString(): string {
-    return this.key + " " + this.interpolate(this.object) + " .";
+    return `${this.key} ${this.interpolate(this.object)} ${this.interpolateFacet()} .`.replace(/\s+/g, " ");
   }
 
   private interpolate(x: IBlank | ILink | IValue): string {
@@ -54,6 +57,18 @@ export class NQuad {
       case "value":
         return '"' + this.escape(x.value) + '"';
     }
+  }
+
+  private interpolateFacet(): string {
+    if (!this.facet) {
+      return "";
+    }
+
+    const pairs = Object.entries(this.facet)
+      .map(([name, value]) => `${name}=${value}`)
+      .join(" ");
+
+    return `(${pairs})`;
   }
 
   private escape(v: string | number | boolean): string {

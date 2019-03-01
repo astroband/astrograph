@@ -48,7 +48,7 @@ export class Cache {
         }
 
         if (newObject || newSubject) {
-          return new NQuad(newSubject || nquad.subject, nquad.predicate, newObject || nquad.object);
+          return new NQuad(newSubject || nquad.subject, nquad.predicate, newObject || nquad.object, nquad.facet);
         }
 
         return nquad;

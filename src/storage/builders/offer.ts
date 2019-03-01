@@ -28,8 +28,10 @@ export class OfferBuilder extends Builder {
     });
 
     this.pushLink("offer.seller", AccountBuilder.key(this.offer.sellerID));
-    this.pushBuilder(new AssetBuilder(this.offer.selling), "offer.asset_selling");
-    this.pushBuilder(new AssetBuilder(this.offer.buying), "offer.asset_buying");
+    this.pushBuilder(new AssetBuilder(this.offer.selling), "offer.asset_selling", undefined, {
+      price: this.offer.price
+    });
+    this.pushBuilder(new AssetBuilder(this.offer.buying), "offer.asset_buying", undefined, { price: this.offer.price });
 
     return this.nquads;
   }
