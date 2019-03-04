@@ -1,4 +1,4 @@
-import { Asset } from "stellar-sdk";
+import { Asset } from "../../model";
 import { makeKey } from "../../util/crypto";
 import { NETWORK_MASTER_KEY } from "../../util/stellar";
 import { IBlank, NQuad, NQuads } from "../nquads";
@@ -27,7 +27,7 @@ export class AssetBuilder extends Builder {
 
     this.pushKey();
 
-    this.pushValue("asset.id", `${code}-${issuer}`);
+    this.pushValue("asset.id", this.asset.toString());
     this.pushValue("code", code);
     this.pushValue("native", this.asset.isNative().toString());
 

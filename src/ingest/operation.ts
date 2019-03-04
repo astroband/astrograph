@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 import { Memoize } from "typescript-memoize";
-import { TransactionWithXDR } from "../model";
+import { Asset, TransactionWithXDR } from "../model";
 import { AccountBuilder } from "../storage/builders";
 import { NQuad, NQuads } from "../storage/nquads";
 import { publicKeyFromBuffer } from "../util/xdr/account";
@@ -13,15 +13,42 @@ export class OperationIngestor {
   }
 
   public ingest(): NQuads {
-    const nquads = new NQuads();
     const t = stellar.xdr.OperationType;
 
-    if (this.xdr.body().switch() !== t.createAccount()) {
-      return nquads;
+    switch (this.xdr.body().switch()) {
+      case t.createAccount():
+        return this.ingestCreateAccountOp();
+      case t.payment():
+        return this.ingestPaymentOp();
+      default:
+        return new NQuads();
     }
+  }
 
+  private ingestPaymentOp() {
+    const nquads = new NQuads();
+    const body = this.xdr.body().paymentOp();
+    const asset = Asset.fromOperation(body.asset());
+
+    nquads.push(
+      new NQuad(
+        NQuad.blank(AccountBuilder.key(this.sourceAccount)),
+        "account.last_paid_to",
+        NQuad.blank(AccountBuilder.keyFromXDR(body.destination())),
+        {
+          asset: asset.toString(),
+          amount: body.amount().toString(),
+          seq: this.tx.ledgerSeq
+        }
+      )
+    );
+
+    return nquads;
+  }
+
+  private ingestCreateAccountOp() {
+    const nquads = new NQuads();
     const body = this.xdr.body().createAccountOp();
-
     const destinationId = publicKeyFromBuffer(body.destination().value());
 
     nquads.push(

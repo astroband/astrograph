@@ -65,8 +65,8 @@ export class NQuad {
     }
 
     const pairs = Object.entries(this.facet)
-      .map(([name, value]) => `${name}=${value}`)
-      .join(" ");
+      .map(([name, value]) => `${name}="${value}"`)
+      .join(", ");
 
     return `(${pairs})`;
   }

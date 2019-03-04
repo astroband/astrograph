@@ -1,5 +1,4 @@
 import init from "./init";
-import "./util/memo";
 
 import * as Sentry from "@sentry/node";
 

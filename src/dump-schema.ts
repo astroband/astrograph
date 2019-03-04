@@ -3,6 +3,6 @@ import { SCHEMA } from "./storage/schema";
 import logger from "./util/logger";
 
 const fileName = "dgraph.schema";
-fs.writeFileSync(fileName, SCHEMA.replace(/^\s*\n/gm, "").replace(/^\s\s/gm, ""));
+fs.writeFileSync(fileName, SCHEMA.replace(/^\s*\n/gm, ""));
 
 logger.info(`DGraph schema was dumped to ${fileName}`);

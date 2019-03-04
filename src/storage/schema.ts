@@ -29,6 +29,7 @@ const schemaWithComments = `
   account.merged_into: uid @reverse .
   account.inflation_destination: uid @reverse .
   account.thresholds: uid .
+  account.last_paid_to: uid @reverse .
   home_domain: string @index(trigram) .
 
   # assets
@@ -144,6 +145,14 @@ const schemaWithComments = `
 `;
 
 // remove comments
-const validDgraphSchema = schemaWithComments.replace(/#.+$/gm, "");
+const validDgraphSchema = schemaWithComments.replace(/#.+$/gm, "").replace(/^\s\s/gm, "");
+const linksRegexp = RegExp("^(.+): uid", "gm");
+const oneToOneLinks: string[] = [];
+let matches = linksRegexp.exec(validDgraphSchema);
 
-export { validDgraphSchema as SCHEMA };
+while (matches !== null) {
+  oneToOneLinks.push(matches[1]);
+  matches = linksRegexp.exec(validDgraphSchema);
+}
+
+export { validDgraphSchema as SCHEMA, oneToOneLinks };

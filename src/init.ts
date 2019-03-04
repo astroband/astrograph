@@ -1,4 +1,6 @@
 import * as Sentry from "@sentry/node";
+import "./util/asset";
+import "./util/memo";
 import logger from "./util/logger";
 import { SENTRY_DSN } from "./util/secrets";
 import { setNetwork as setStellarNetwork } from "./util/stellar";
