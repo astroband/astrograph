@@ -11,7 +11,7 @@ export class LedgerStateBuilder {
     this.parser = new LedgerStateParser(txs);
   }
 
-  public async build(): Promise<NQuads> {
+  public build(): NQuads {
     this.parser.parse();
 
     this.parser.updatedAccounts.forEach((data: IAccount) => {
