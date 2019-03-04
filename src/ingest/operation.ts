@@ -6,9 +6,9 @@ import { NQuad, NQuads } from "../storage/nquads";
 import { publicKeyFromBuffer } from "../util/xdr/account";
 
 export class OperationIngestor {
-  private xdr: any;
+  private readonly xdr: any;
 
-  constructor(private tx: TransactionWithXDR, n: number) {
+  constructor(private readonly tx: TransactionWithXDR, n: number) {
     this.xdr = tx.operationsXDR[n];
   }
 
