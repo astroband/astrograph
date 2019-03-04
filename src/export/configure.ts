@@ -1,6 +1,7 @@
 import fs from "fs";
 import parseArgv from "minimist";
 import { db } from "../database";
+import "../util/asset";
 import logger from "../util/logger";
 import { setNetwork as setStellarNetwork } from "../util/stellar";
 
