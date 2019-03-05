@@ -1,4 +1,4 @@
-import { DgraphClient, DgraphClientStub, ERR_ABORTED, Mutation, Operation } from "dgraph-js";
+import { DgraphClient, DgraphClientStub, Mutation, Operation } from "dgraph-js";
 import fs from "fs";
 import grpc from "grpc";
 import { LedgerHeader, TransactionWithXDR } from "../model";
@@ -27,42 +27,6 @@ export class Connection {
     const op = new Operation();
     op.setSchema(SCHEMA);
     await this.client.alter(op);
-  }
-
-  public async push(nquads: string | any[]): Promise<any> {
-    const start = Date.now();
-
-    const txn = this.client.newTxn();
-    const mu = new Mutation();
-    const payload: string = Array.isArray(nquads) ? nquads.join("\n") : nquads;
-    mu.setSetNquads(payload);
-    const assigns = await txn.mutate(mu);
-
-    try {
-      await txn.commit();
-      const eta = Date.now() - start;
-
-      logger.debug(`[DGraph] Transaction commited, ${nquads.length} triples, took ${eta / 1000} s.`);
-
-      return assigns;
-    } catch (err) {
-      try {
-        if (err === ERR_ABORTED) {
-          logger.debug(`[DGraph] Transaction aborted, retrying...`);
-          logger.debug(payload);
-
-          await txn.commit();
-          return assigns;
-        } else {
-          throw err;
-        }
-      } catch (err) {
-        await txn.discard();
-        logger.error(err);
-        logger.error(payload);
-        process.exit(-1);
-      }
-    }
   }
 
   public async query(query: string, vars?: any): Promise<any> {
@@ -109,21 +73,37 @@ export class Connection {
       });
     }
 
-    await this.dropOneToOneLinks(nquads);
-    const result = await this.push(payload);
+    const txn = this.client.newTxn();
+    const dropLinksMu = this.dropOneToOneLinksMutation(nquads);
+    if (dropLinksMu) {
+      await txn.mutate(dropLinksMu);
+    }
+    const updateMu = new Mutation();
+    updateMu.setSetNquads(payload.join("\n"));
+    const result = await txn.mutate(updateMu);
 
-    cache.put(result);
+    try {
+      await txn.commit();
+      cache.put(result);
+    } finally {
+      await txn.discard();
+    }
   }
 
-  public async deletePredicates(uidPredicatesMap: { [uid: string]: string[] }): Promise<void> {
+  // Returns a Mutation object, which deletes given predicates from given nodes
+  //
+  // Expects input in the next form:
+  // {
+  //  "0xa1": ["name", "friend"],
+  //  "0xbc": ["salary"]
+  // }
+  public deletePredicatesMutation(uidPredicatesMap: { [uid: string]: string[] }): Mutation | undefined {
     if (Object.keys(uidPredicatesMap).length === 0) {
       return;
     }
 
-    const txn = this.client.newTxn();
     const mu = new Mutation();
 
-    mu.setCommitNow(true);
     mu.setDelNquads(
       Object.entries(uidPredicatesMap)
         .map(([uid, predicates]) => {
@@ -132,7 +112,7 @@ export class Connection {
         .join("\n")
     );
 
-    await txn.mutate(mu);
+    return mu;
   }
 
   // Deletes all predicates from nodes with given properties,
@@ -173,7 +153,15 @@ export class Connection {
     return Promise.all(promises);
   }
 
-  private async dropOneToOneLinks(nquads: NQuads) {
+  // Returns Mutation, which deletes all already existing 1-to-1 links from
+  // given nquads according to schema
+  //
+  // It's necessary, because DGraph doesn't allow to update the edge
+  // with type `uid`, it must be deleted first
+  //
+  // So if you want to push some nquads, you must care about
+  // deleting all such predicates first
+  private dropOneToOneLinksMutation(nquads: NQuads) {
     const predicatesToDrop: { [key: string]: string[] } = {};
 
     nquads.forEach(nquad => {
@@ -188,6 +176,6 @@ export class Connection {
       predicatesToDrop[nquad.subject.value].push(nquad.predicate);
     });
 
-    await this.deletePredicates(predicatesToDrop);
+    return this.deletePredicatesMutation(predicatesToDrop);
   }
 }
