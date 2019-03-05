@@ -7,7 +7,7 @@ import { DGRAPH_QUERY_URL } from "../util/secrets";
 import { Cache } from "./cache";
 import { IIngestOpts, Ingestor } from "./ingestor";
 import { NQuads } from "./nquads";
-import { SCHEMA } from "./schema";
+import { oneToOneLinks, SCHEMA } from "./schema";
 
 export class Connection {
   private stub: any;
@@ -109,8 +109,30 @@ export class Connection {
       });
     }
 
+    await this.dropOneToOneLinks(nquads);
     const result = await this.push(payload);
+
     cache.put(result);
+  }
+
+  public async deletePredicates(uidPredicatesMap: { [uid: string]: string[] }): Promise<void> {
+    if (Object.keys(uidPredicatesMap).length === 0) {
+      return;
+    }
+
+    const txn = this.client.newTxn();
+    const mu = new Mutation();
+
+    mu.setCommitNow(true);
+    mu.setDelNquads(
+      Object.entries(uidPredicatesMap)
+        .map(([uid, predicates]) => {
+          return predicates.map(predicate => `<${uid}> <${predicate}> * .`).join("\n");
+        })
+        .join("\n")
+    );
+
+    await txn.mutate(mu);
   }
 
   // Deletes all predicates from nodes with given properties,
@@ -149,5 +171,23 @@ export class Connection {
     const promises = Object.entries(args).map(arg => handler(...arg));
 
     return Promise.all(promises);
+  }
+
+  private async dropOneToOneLinks(nquads: NQuads) {
+    const predicatesToDrop: { [key: string]: string[] } = {};
+
+    nquads.forEach(nquad => {
+      if (oneToOneLinks.indexOf(nquad.predicate) === -1 || nquad.subject.type !== "link") {
+        return;
+      }
+
+      if (!predicatesToDrop[nquad.subject.value]) {
+        predicatesToDrop[nquad.subject.value] = [];
+      }
+
+      predicatesToDrop[nquad.subject.value].push(nquad.predicate);
+    });
+
+    await this.deletePredicates(predicatesToDrop);
   }
 }
