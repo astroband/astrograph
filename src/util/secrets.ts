@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import fs from "fs";
+import path from "path";
 import logger from "./logger";
 
 const environment = process.env.NODE_ENV;
@@ -11,6 +12,8 @@ if (fs.existsSync(envFile)) {
 } else if (environment === "test" && !process.env.CI) {
   throw new Error("No .env file found for the test environment. Create `.env.test` file with necessary settings");
 }
+
+dotenv.config({ path: path.join(__dirname, "../..", envFile) });
 
 export const DB = process.env.DB || "stellar";
 export const DBPORT = Number.parseInt(process.env.DBPORT || "5432", 10);
