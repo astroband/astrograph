@@ -54,7 +54,17 @@ export default {
   },
   Query: {
     offers(root: any, args: any, ctx: any, info: any) {
-      return db.offers.findAll(args.seller, args.selling, args.buying, args.first, args.limit);
+      const { first, offset, orderBy, ...criteria } = args;
+      const columnsMap = { id: "offerid" };
+      let orderColumn = "offerid";
+      let orderDir: "ASC" | "DESC" = "DESC";
+
+      if (orderBy) {
+        [orderColumn, orderDir] = orderBy.split("_");
+        orderColumn = columnsMap[orderColumn];
+      }
+
+      return db.offers.findAll(criteria, first, offset, [orderColumn, orderDir]);
     }
   },
   Subscription: {

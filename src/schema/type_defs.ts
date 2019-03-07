@@ -185,7 +185,7 @@ export const typeDefs = gql`
     seller: Account!
     selling: Asset!
     buying: Asset!
-    amount: Int!
+    amount: Float!
     price: String!
     passive: Boolean!
   }
@@ -195,7 +195,7 @@ export const typeDefs = gql`
     seller: Account!
     selling: Asset!
     buying: Asset!
-    amount: Int!
+    amount: Float!
     price: String!
     passive: Boolean!
     ledger: Ledger!
@@ -206,7 +206,7 @@ export const typeDefs = gql`
     seller: Account!
     selling: Asset!
     buying: Asset!
-    amount: Int!
+    amount: Float!
     price: String!
     passive: Boolean!
   }
@@ -250,6 +250,11 @@ export const typeDefs = gql`
     sellingAssetEq: AssetInput
   }
 
+  enum OfferOrderByInput {
+    id_DESC
+    id_ASC
+  }
+
   type Query {
     account(id: AccountID!): Account
     accounts(id: [AccountID!]!): [Account]
@@ -262,7 +267,14 @@ export const typeDefs = gql`
     ledgers(seq: [Int!]): [Ledger]!
     transaction(id: String!): Transaction
     transactions(id: [String!]): [Transaction]
-    offers(seller: AccountID, selling: AssetInput, buying: AssetInput, first: Int!, offset: Int): [Offer]
+    offers(
+      seller: AccountID
+      selling: AssetInput
+      buying: AssetInput
+      orderBy: OfferOrderByInput
+      first: Int!
+      offset: Int
+    ): [Offer]
   }
 
   type Subscription {

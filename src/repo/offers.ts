@@ -12,19 +12,35 @@ export default class OffersRepo {
     this.db = db;
   }
 
-  public async findAll(seller?: string, selling?: IAssetInput, buying?: IAssetInput, limit?: number, offset?: number) {
+  public async findAll(
+    criteria?: {
+      seller?: string;
+      selling?: IAssetInput;
+      buying?: IAssetInput;
+    },
+    limit?: number,
+    offset?: number,
+    order?: [string, "ASC" | "DESC"]
+  ) {
     const queryBuilder = squel
       .select()
       .field("*")
-      .from("offers")
-      .order("offerid");
+      .from("offers");
 
-    if (seller) {
-      queryBuilder.where("sellerid = ?", seller);
+    if (!order) {
+      order = ["offerid", "DESC"];
     }
 
-    this.appendAsset(queryBuilder, "selling", selling);
-    this.appendAsset(queryBuilder, "buying", buying);
+    queryBuilder.order(order[0], order[1] === "ASC");
+
+    if (criteria) {
+      if (criteria.seller) {
+        queryBuilder.where("sellerid = ?", criteria.seller);
+      }
+
+      this.appendAsset(queryBuilder, "selling", criteria.selling);
+      this.appendAsset(queryBuilder, "buying", criteria.buying);
+    }
 
     if (limit) {
       queryBuilder.limit(limit);
