@@ -20,10 +20,10 @@ export class TransactionBuilder extends Builder {
     super();
 
     this.seq = tx.ledgerSeq;
-    this.current = TransactionBuilder.keyNQuad(tx.ledgerSeq, tx.index);
+    this.current = TransactionBuilder.keyNQuad(tx.ledgerSeq, tx.index!);
 
-    if (tx.index > 0) {
-      this.prev = TransactionBuilder.keyNQuad(tx.ledgerSeq, tx.index - 1);
+    if (tx.index! > 0) {
+      this.prev = TransactionBuilder.keyNQuad(tx.ledgerSeq, tx.index! - 1);
     }
   }
 
@@ -31,8 +31,8 @@ export class TransactionBuilder extends Builder {
     const v = {
       key: this.current.value,
       "tx.id": this.tx.id,
-      "tx.index": this.tx.index,
-      order: this.order(this.seq, this.tx.index),
+      "tx.index": this.tx.index!,
+      order: this.order(this.seq, this.tx.index!),
       fee_amount: this.tx.feeAmount,
       fee_charged: this.tx.feeCharged,
       success: this.tx.success,
