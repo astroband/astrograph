@@ -1,5 +1,6 @@
 import stellar from "stellar-base";
 import { Memo } from "stellar-sdk";
+import { IHorizonTransactionData } from "../../datasource/types";
 import { publicKeyFromBuffer } from "../../util/xdr";
 import { ITimeBounds } from "../transaction";
 import { ITransactionWithXDR, TransactionWithXDR } from "../transaction_with_xdr";
@@ -38,7 +39,6 @@ export class TransactionWithXDRFactory {
     const data: ITransactionWithXDR = {
       id: row.txid,
       ledgerSeq: row.ledgerseq,
-      index: row.txindex,
       body: row.txbody,
       bodyXDR,
       result: row.txresult,
@@ -59,6 +59,47 @@ export class TransactionWithXDRFactory {
     };
 
     return new TransactionWithXDR(data);
+  }
+
+  public static fromHorizon(data: IHorizonTransactionData): TransactionWithXDR {
+    const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(data.envelope_xdr, "base64");
+    const result = stellar.xdr.TransactionResult.fromXDR(data.result_xdr, "base64");
+    const metaXDR = stellar.xdr.TransactionMeta.fromXDR(data.result_meta_xdr, "base64");
+    const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(data.fee_meta_xdr, "base64");
+
+    const body = bodyXDR.tx();
+
+    const memo = Memo.fromXDRObject(body.memo());
+
+    const timeBounds = this.parseTimeBounds(body.timeBounds());
+
+    const resultCode = result.result().switch().value;
+    const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
+    const feeAmount = body.fee().toString();
+    const feeCharged = result.feeCharged().toString();
+    const sourceAccount = publicKeyFromBuffer(body.sourceAccount().value());
+
+    return new TransactionWithXDR({
+      id: data.id,
+      ledgerSeq: data.ledger,
+      body: data.envelope_xdr,
+      bodyXDR,
+      result: data.result_xdr,
+      resultXDR: result,
+      meta: data.result_meta_xdr,
+      metaXDR,
+      feeMeta: data.fee_meta_xdr,
+      feeMetaXDR,
+      memo: memo.value ? memo : undefined,
+      timeBounds,
+      feeAmount,
+      feeCharged,
+      resultCode,
+      success,
+      sourceAccount,
+      operationsXDR: body.operations(),
+      operationResultsXDR: result.result().results()
+    });
   }
 
   public static parseTimeBounds(timeBoundsXDR: any): ITimeBounds | undefined {

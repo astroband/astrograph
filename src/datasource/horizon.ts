@@ -1,6 +1,6 @@
 import { RESTDataSource } from "apollo-datasource-rest";
-import { AccountID } from "../model/account_id";
-import { HorizonOperationData } from "./types";
+import { AccountID } from "../model";
+import { HorizonOperationData, IHorizonTransactionData } from "./types";
 
 export default class HorizonAPI extends RESTDataSource {
   constructor() {
@@ -27,5 +27,16 @@ export default class HorizonAPI extends RESTDataSource {
     });
 
     return data._embedded.records;
+  }
+
+  public async getTransactions(transactionIds: string[]): Promise<IHorizonTransactionData[]> {
+    const promises = transactionIds.map(id => this.get(`transactions/${id}`));
+
+    return Promise.all(promises).then(responses => {
+      responses.forEach((record: IHorizonTransactionData & { _links: object }) => {
+        delete record._links;
+      });
+      return responses;
+    });
   }
 }

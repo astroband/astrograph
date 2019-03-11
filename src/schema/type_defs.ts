@@ -7,6 +7,7 @@ export const typeDefs = gql`
   scalar TimeBounds
   scalar MemoValue
   scalar DateTime
+  scalar TransactionHash
 
   enum MemoType {
     id
@@ -224,7 +225,7 @@ export const typeDefs = gql`
     index: Int!
     memo: Memo
     feeAmount: String!
-    sourceAccount: String!
+    sourceAccount: AccountID!
     timeBounds: TimeBounds
     feeCharged: String!
     success: Boolean!
@@ -265,8 +266,8 @@ export const typeDefs = gql`
     trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger!
     ledgers(seq: [Int!]): [Ledger]!
-    transaction(id: String!): Transaction
-    transactions(id: [String!]): [Transaction]
+    transaction(id: TransactionHash!): Transaction
+    transactions(ids: [TransactionHash!]): [Transaction]
     offers(
       seller: AccountID
       selling: AssetInput
