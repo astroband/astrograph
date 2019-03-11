@@ -8,7 +8,6 @@ export interface ITimeBounds {
 export interface ITransaction {
   id: string;
   ledgerSeq: number;
-  index: number;
   memo?: Memo;
   feeAmount: string;
   sourceAccount: string;
@@ -21,7 +20,6 @@ export interface ITransaction {
 export class Transaction implements ITransaction {
   public id: string;
   public ledgerSeq: number;
-  public index: number;
   public memo?: Memo;
   public feeAmount: string;
   public sourceAccount: string;
@@ -33,7 +31,6 @@ export class Transaction implements ITransaction {
   constructor(data: ITransaction) {
     this.id = data.id;
     this.ledgerSeq = data.ledgerSeq;
-    this.index = data.index;
     this.memo = data.memo;
     this.feeAmount = data.feeAmount;
     this.sourceAccount = data.sourceAccount;

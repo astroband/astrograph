@@ -1,4 +1,5 @@
-import { db } from "../../database";
+import { HorizonTransactionData } from "../../datasource/types";
+import { TransactionWithXDRFactory } from "../../model/factories";
 import { ledgerResolver, memoResolver } from "./util";
 
 export default {
@@ -7,11 +8,13 @@ export default {
     memo: memoResolver
   },
   Query: {
-    transaction(root: any, args: any, ctx: any, info: any) {
-      return db.transactions.findByID(args.id);
+    async transaction(root: any, args: any, ctx: any, info: any) {
+      const records = await ctx.dataSources.horizon.getTransactions([args.id]);
+      return TransactionWithXDRFactory.fromHorizon(records[0]);
     },
-    transactions(root: any, args: any, ctx: any, info: any) {
-      return db.transactions.findAllByID(args.id);
+    async transactions(root: any, args: any, ctx: any, info: any) {
+      const records = await ctx.dataSources.horizon.getTransactions(args.ids);
+      return records.map((tx: HorizonTransactionData) => TransactionWithXDRFactory.fromHorizon(tx));
     }
   }
 };
