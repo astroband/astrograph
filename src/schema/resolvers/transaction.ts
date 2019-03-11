@@ -1,4 +1,4 @@
-import { HorizonTransactionData } from "../../datasource/types";
+import { IHorizonTransactionData } from "../../datasource/types";
 import { TransactionWithXDRFactory } from "../../model/factories";
 import { ledgerResolver, memoResolver } from "./util";
 
@@ -14,7 +14,7 @@ export default {
     },
     async transactions(root: any, args: any, ctx: any, info: any) {
       const records = await ctx.dataSources.horizon.getTransactions(args.ids);
-      return records.map((tx: HorizonTransactionData) => TransactionWithXDRFactory.fromHorizon(tx));
+      return records.map((tx: IHorizonTransactionData) => TransactionWithXDRFactory.fromHorizon(tx));
     }
   }
 };
