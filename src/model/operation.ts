@@ -19,14 +19,14 @@ export enum OperationKinds {
 
 export interface IBaseOperation {
   kind: OperationKinds;
-  account: AccountID;
+  opSource: AccountID | null;
+  txSource: AccountID;
   transactionId: string;
   index: number;
   dateTime: Date;
 }
 
 export interface IPaymentOperation extends IBaseOperation {
-  source: AccountID | null;
   destination: AccountID;
   asset: Asset;
   amount: string;
@@ -83,6 +83,8 @@ export interface IManageOfferOperation extends IBaseOperation {
   offerId: string;
   price: number;
   priceComponents: { n: string; d: string };
+  assetBuying: Asset;
+  assetSelling: Asset;
 }
 
 export interface IPathPaymentOperation extends IBaseOperation {

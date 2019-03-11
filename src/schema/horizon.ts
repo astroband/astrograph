@@ -138,4 +138,8 @@ export const typeDefs = gql`
     accountOperations(account: AccountID!, first: Int!, order: SortOrder, cursor: String): [IOperation]
   }
 
+  extend type Subscription {
+    operations(txSource: AccountID, opSource: AccountID, kind: [OperationKind]): IOperation
+  }
+
 `;

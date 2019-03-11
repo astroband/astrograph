@@ -1,6 +1,8 @@
+import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
 import { OperationFactory } from "../../model/factories/operation_factory";
-import { OperationKinds } from "../../model/operation";
+import { Operation, OperationKinds } from "../../model/operation";
+import { NEW_OPERATION, pubsub } from "../../pubsub";
 
 export default {
   IOperation: {
@@ -29,6 +31,34 @@ export default {
       }
 
       return null;
+    }
+  },
+  Subscription: {
+    operations: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(NEW_OPERATION),
+        (payload: Operation, variables) => {
+          let fit = true;
+
+          if (variables.txSource) {
+            fit = fit && payload.txSource === variables.txSource;
+          }
+
+          if (variables.opSource) {
+            fit = fit && payload.opSource === variables.opSource;
+          }
+
+          if (variables.kind) {
+            fit = fit && variables.kind.indexOf(payload.kind) !== -1;
+          }
+
+          return fit;
+        }
+      ),
+
+      resolve(payload: any, args: any, ctx: any, info: any) {
+        return payload;
+      }
     }
   },
   Query: {

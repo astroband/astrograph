@@ -1,5 +1,7 @@
+import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
-import { OperationKinds } from "../../model/operation";
+import { Operation, OperationKinds } from "../../model/operation";
+import { NEW_OPERATION, pubsub } from "../../pubsub";
 import { Connection } from "../../storage/connection";
 import { AccountOperationsQuery } from "../../storage/queries/account_operations";
 import { AssetOperationsQuery } from "../../storage/queries/asset_operations";
@@ -32,6 +34,16 @@ export default {
       }
 
       return null;
+    }
+  },
+  Subscription: {
+    operations: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(NEW_OPERATION),
+        (payload: Operation, variables) => {
+          return payload.account === variables.account
+        }
+      )
     }
   },
   Query: {
