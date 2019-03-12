@@ -94,5 +94,7 @@ function refineAllowTrustOpXDR(body: any) {
   return {};
 }
 function refineBumpSequenceOpXDR(body: any) {
-  return {};
+  return {
+    bumpTo: body.bumpTo().toString()
+  };
 }
