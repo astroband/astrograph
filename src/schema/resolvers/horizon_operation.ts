@@ -37,22 +37,24 @@ export default {
     operations: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(NEW_OPERATION),
-        (payload: Operation, variables) => {
-          let fit = true;
-
-          if (variables.txSource) {
-            fit = fit && payload.txSource === variables.txSource;
+        (payload: Operation, vars) => {
+          if (vars.txSource && !vars.txSource.includes(payload.txSource)) {
+            return false;
           }
 
-          if (variables.opSource) {
-            fit = fit && payload.opSource === variables.opSource;
+          if (vars.opSource && !vars.opSource.includes(payload.opSource)) {
+            return false;
           }
 
-          if (variables.kind) {
-            fit = fit && variables.kind.indexOf(payload.kind) !== -1;
+          if (vars.kind && !vars.kind.includes(payload.kind)) {
+            return false;
           }
 
-          return fit;
+          if (vars.destination && !("destination" in payload && vars.destination.includes(payload.destination))) {
+            return false;
+          }
+
+          return true;
         }
       ),
 
