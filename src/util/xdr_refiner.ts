@@ -81,9 +81,14 @@ function refinePathPaymentOpXDR(body: any) {
 function refineSetOptionOpXDR(body: any) {
   return {};
 }
+
 function refineChangeTrustOpXDR(body: any) {
-  return {};
+  return {
+    limit: body.limit().toString(),
+    asset: stellar.Asset.fromOperation(body.line())
+  };
 }
+
 function refineAccountMergeOpXDR(body: any) {
   return {
     destination: publicKeyFromBuffer(body.destination().value())
