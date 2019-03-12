@@ -24,7 +24,7 @@ export function refineOperationXDR(xdr: any) {
       obj = refineAccountMergeOpXDR(xdr.body().accountMergeOp());
       break;
     case t.manageDatum():
-      obj = refineManageDatumOpXDR(xdr.body().manageDataOp());
+      obj = refineManageDataOpXDR(xdr.body().manageDataOp());
       break;
     case t.allowTrust():
       obj = refineAllowTrustOpXDR(xdr.body().allowTrustOp());
@@ -87,8 +87,12 @@ function refineChangeTrustOpXDR(body: any) {
 function refineAccountMergeOpXDR(body: any) {
   return {};
 }
-function refineManageDatumOpXDR(body: any) {
-  return {};
+
+function refineManageDataOpXDR(body: any) {
+  return {
+    name: body.dataName().toString(),
+    value: body.dataValue() ? body.dataValue().toString("base64") : undefined
+  };
 }
 
 function refineAllowTrustOpXDR(body: any) {
