@@ -35,7 +35,7 @@ export class OperationBuilder extends Builder {
     super();
 
     this.seq = tx.ledgerSeq;
-    this.index = tx.index!;
+    this.index = tx.index;
     this.current = NQuad.blank(OperationBuilder.key(tx.ledgerSeq, this.index, n));
 
     if (n > 0) {

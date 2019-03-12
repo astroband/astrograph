@@ -126,6 +126,7 @@ export type HorizonOperationData = IPaymentOperationData &
 
 export interface IHorizonTransactionData {
   id: string;
+  paging_token: string;
   successful: boolean;
   ledger: number;
   created_at: string;

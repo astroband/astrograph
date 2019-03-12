@@ -7,7 +7,7 @@ export interface ITimeBounds {
 
 export interface ITransaction {
   id: string;
-  index?: number;
+  index: number;
   ledgerSeq: number;
   memo?: Memo;
   feeAmount: string;
@@ -20,7 +20,7 @@ export interface ITransaction {
 
 export class Transaction implements ITransaction {
   public id: string;
-  public index?: number;
+  public index: number;
   public ledgerSeq: number;
   public memo?: Memo;
   public feeAmount: string;
