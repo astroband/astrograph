@@ -139,7 +139,12 @@ export const typeDefs = gql`
   }
 
   extend type Subscription {
-    operations(txSource: AccountID, opSource: AccountID, kind: [OperationKind]): IOperation
+    operations(
+      txSource: [AccountID]
+      opSource: [AccountID]
+      kind: [OperationKind]
+      destination: [AccountID]
+    ): IOperation
   }
 
 `;
