@@ -4,14 +4,14 @@ export const typeDefs = gql`
   interface Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
   }
 
   type PaymentOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     destination: AccountID!
     asset: Asset!
@@ -22,7 +22,7 @@ export const typeDefs = gql`
   type SetOptionsOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     clearFlags: Int
     setFlags: Int
@@ -36,7 +36,7 @@ export const typeDefs = gql`
   type AccountMergeOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     destination: AccountID!
   }
@@ -44,7 +44,7 @@ export const typeDefs = gql`
   type AllowTrustOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     trustor: AccountID
     authorize: Boolean
@@ -54,7 +54,7 @@ export const typeDefs = gql`
   type BumpSequenceOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     bumpTo: Int!
   }
@@ -62,7 +62,7 @@ export const typeDefs = gql`
   type ChangeTrustOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     limit: String!
     asset: Asset!
@@ -71,7 +71,7 @@ export const typeDefs = gql`
   type CreateAccountOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     startingBalance: String!
     destination: AccountID!
@@ -80,7 +80,7 @@ export const typeDefs = gql`
   type ManageDatumOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     name: String!
     value: String
@@ -89,7 +89,7 @@ export const typeDefs = gql`
   type ManageOfferOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     priceComponents: OfferPriceComponents!
     price: String!
@@ -102,7 +102,7 @@ export const typeDefs = gql`
   type PathPaymentOperation implements Operation {
     id: String!
     kind: OperationKind!
-    account: AccountID!
+    opSource: AccountID!
     dateTime: DateTime!
     sendMax: String!
     amountSent: String!
