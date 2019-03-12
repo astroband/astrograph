@@ -90,9 +90,15 @@ function refineAccountMergeOpXDR(body: any) {
 function refineManageDatumOpXDR(body: any) {
   return {};
 }
+
 function refineAllowTrustOpXDR(body: any) {
-  return {};
+  return {
+    trustor: publicKeyFromBuffer(body.trustor().value()),
+    authorize: body.authorize(),
+    asset: body.asset().value().toString().replace(/\0/g, "")
+  };
 }
+
 function refineBumpSequenceOpXDR(body: any) {
   return {
     bumpTo: body.bumpTo().toString()

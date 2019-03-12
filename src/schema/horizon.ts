@@ -46,9 +46,9 @@ export const typeDefs = gql`
     kind: OperationKind!
     opSource: AccountID!
     dateTime: DateTime!
-    trustor: AccountID
-    authorize: Boolean
-    assetCode: AssetCode
+    trustor: AccountID!
+    authorize: Boolean!
+    asset: Asset!
   }
 
   type BumpSequenceOperation implements IOperation {

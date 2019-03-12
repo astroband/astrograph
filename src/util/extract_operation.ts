@@ -1,4 +1,5 @@
-import { Operation, TransactionWithXDR } from "../model";
+import { Asset } from "stellar-base";
+import { Operation, OperationKinds, TransactionWithXDR } from "../model";
 import { refineOperationXDR } from "./xdr_refiner";
 
 export default function extractOperation(tx: TransactionWithXDR, index: number): Operation {
@@ -9,9 +10,14 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
   }
 
   const opObject = refineOperationXDR(opXDR);
+  const opSource = opObject.source || tx.sourceAccount;
+
+  if (opObject.kind === OperationKinds.AllowTrust) {
+    opObject.asset = new Asset(opObject.asset, opSource);
+  }
 
   return {
-    opSource: opObject.source || tx.sourceAccount,
+    opSource,
     txSource: tx.sourceAccount,
     index,
     transactionId: tx.id,
