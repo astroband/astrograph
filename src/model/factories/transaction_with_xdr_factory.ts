@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import stellar from "stellar-base";
 import { Memo } from "stellar-sdk";
 import { IHorizonTransactionData } from "../../datasource/types";
@@ -38,6 +39,7 @@ export class TransactionWithXDRFactory {
 
     const data: ITransactionWithXDR = {
       id: row.txid,
+      index: row.txindex,
       ledgerSeq: row.ledgerseq,
       body: row.txbody,
       bodyXDR,
@@ -81,6 +83,7 @@ export class TransactionWithXDRFactory {
 
     return new TransactionWithXDR({
       id: data.id,
+      index: this.extractTxIndex(data.paging_token),
       ledgerSeq: data.ledger,
       body: data.envelope_xdr,
       bodyXDR,
@@ -112,5 +115,15 @@ export class TransactionWithXDRFactory {
     const maxTime = timeBoundsXDR.maxTime().toInt() !== 0 ? new Date(timeBoundsXDR.maxTime() * 1000) : undefined;
 
     return { minTime, maxTime };
+  }
+
+  // Parses paging token, returned by Horizon, and returns an index
+  // of transaction in ledger
+  // Source: https://github.com/stellar/go/blob/master/services/horizon/internal/toid/main.go
+  // Note: this is a hack, because paging token ought to be opaque,
+  // but for now we ok with it
+  private static extractTxIndex(pagingToken: string): number {
+    const binaryToken = new BigNumber(pagingToken).toString(2).padStart(64, "0");
+    return parseInt(binaryToken.slice(32, 52), 2);
   }
 }
