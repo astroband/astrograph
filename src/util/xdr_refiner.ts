@@ -21,7 +21,7 @@ export function refineOperationXDR(xdr: any) {
       obj = refineChangeTrustOpXDR(xdr.body().changeTrustOp());
       break;
     case t.accountMerge():
-      obj = refineAccountMergeOpXDR(xdr.body().accountMergeOp());
+      obj = refineAccountMergeOpXDR(xdr.body());
       break;
     case t.manageDatum():
       obj = refineManageDataOpXDR(xdr.body().manageDataOp());
@@ -85,7 +85,9 @@ function refineChangeTrustOpXDR(body: any) {
   return {};
 }
 function refineAccountMergeOpXDR(body: any) {
-  return {};
+  return {
+    destination: publicKeyFromBuffer(body.destination().value())
+  };
 }
 
 function refineManageDataOpXDR(body: any) {
