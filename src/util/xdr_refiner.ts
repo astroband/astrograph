@@ -9,28 +9,28 @@ export function refineOperationXDR(xdr: any) {
 
   switch (xdr.body().switch()) {
     case t.createAccount():
-      obj = {};
+      obj = refineCreateAccountOpXDR(xdr.body().createAccountOp());
       break;
     case t.pathPayment():
-      obj = {};
+      obj = refinePathPaymentOpXDR(xdr.body().pathPaymentOp());
       break;
     case t.setOption():
-      obj = {};
+      obj = refineSetOptionOpXDR(xdr.body().setOptionsOp());
       break;
     case t.changeTrust():
-      obj = {};
+      obj = refineChangeTrustOpXDR(xdr.body().changeTrustOp());
       break;
     case t.accountMerge():
-      obj = {};
+      obj = refineAccountMergeOpXDR(xdr.body().accountMergeOp());
       break;
     case t.manageDatum():
-      obj = {};
+      obj = refineManageDatumOpXDR(xdr.body().manageDataOp());
       break;
     case t.allowTrust():
-      obj = {};
+      obj = refineAllowTrustOpXDR(xdr.body().allowTrustOp());
       break;
     case t.bumpSequence():
-      obj = {};
+      obj = refineBumpSequenceOpXDR(xdr.body().bumpSequenceOp());
       break;
     case t.manageOffer():
       obj = refineManageOfferOpXDR(xdr.body().manageOfferOp());
@@ -66,4 +66,33 @@ function refinePaymentOpXDR(body: any) {
     amount: body.amount().toString(),
     asset: stellar.Asset.fromOperation(body.asset())
   };
+}
+
+function refineCreateAccountOpXDR(body: any) {
+  return {
+    startingBalance: body.startingBalance().toString(),
+    destination: publicKeyFromBuffer(body.destination().value())
+  };
+}
+
+function refinePathPaymentOpXDR(body: any) {
+  return {};
+}
+function refineSetOptionOpXDR(body: any) {
+  return {};
+}
+function refineChangeTrustOpXDR(body: any) {
+  return {};
+}
+function refineAccountMergeOpXDR(body: any) {
+  return {};
+}
+function refineManageDatumOpXDR(body: any) {
+  return {};
+}
+function refineAllowTrustOpXDR(body: any) {
+  return {};
+}
+function refineBumpSequenceOpXDR(body: any) {
+  return {};
 }
