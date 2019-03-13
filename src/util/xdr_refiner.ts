@@ -78,7 +78,13 @@ function refineCreateAccountOpXDR(body: any) {
 }
 
 function refinePathPaymentOpXDR(body: any) {
-  return {};
+  return {
+    sendMax: body.sendMax().toString(),
+    amountReceived: body.destAmount().toString(),
+    destinationAccount: publicKeyFromBuffer(body.destination().value()),
+    destinationAsset: Asset.fromOperation(body.destAsset()),
+    sourceAsset: Asset.fromOperation(body.sendAsset())
+  };
 }
 
 function refineSetOptionsOpXDR(body: any) {
