@@ -1,8 +1,15 @@
-import stellar from "stellar-base";
-import { Asset } from "stellar-sdk";
+import { Asset } from "stellar-base";
 
-export default class extends Asset {
-  public static build(type: number, code: string, issuer: string): Asset {
-    return type === stellar.xdr.AssetType.assetTypeNative().value ? Asset.native() : new Asset(code, issuer);
+declare module "stellar-base" {
+  interface Asset {
+    toString(): string;
   }
 }
+
+Asset.prototype.toString = function() {
+  if (this.isNative()) {
+    return "native";
+  }
+
+  return `${this.getCode()}-${this.getIssuer()}`;
+};

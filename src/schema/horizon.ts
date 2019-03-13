@@ -144,6 +144,7 @@ export const typeDefs = gql`
       opSource: [AccountID]
       kind: [OperationKind]
       destination: [AccountID]
+      asset: [AssetID]
     ): IOperation
   }
 

@@ -1,10 +1,10 @@
 import BigNumber from "bignumber.js";
-import stellar from "stellar-base";
+import { Asset, xdr as XDR } from "stellar-base";
 import { publicKeyFromBuffer } from "./xdr/account";
 import { signerKeyFromXDR } from "./xdr/signer";
 
 export function refineOperationXDR(xdr: any) {
-  const t = stellar.xdr.OperationType;
+  const t = XDR.OperationType;
   const source = xdr.sourceAccount() ? publicKeyFromBuffer(xdr.sourceAccount().value()) : null;
   let obj: any;
   const body = xdr.body();
@@ -57,8 +57,8 @@ function refineManageOfferOpXDR(body: any) {
     offerId: body.offerId().toString(),
     price: new BigNumber(body.price().n()).div(body.price().d()).toString(),
     priceComponents: { n: body.price().n(), d: body.price().d() },
-    assetBuying: stellar.Asset.fromOperation(body.buying()),
-    assetSelling: stellar.Asset.fromOperation(body.selling())
+    assetBuying: Asset.fromOperation(body.buying()),
+    assetSelling: Asset.fromOperation(body.selling())
   };
 }
 
@@ -66,7 +66,7 @@ function refinePaymentOpXDR(body: any) {
   return {
     destination: publicKeyFromBuffer(body.destination().value()),
     amount: body.amount().toString(),
-    asset: stellar.Asset.fromOperation(body.asset())
+    asset: Asset.fromOperation(body.asset())
   };
 }
 
@@ -108,7 +108,7 @@ function refineSetOptionsOpXDR(body: any) {
 function refineChangeTrustOpXDR(body: any) {
   return {
     limit: body.limit().toString(),
-    asset: stellar.Asset.fromOperation(body.line())
+    asset: Asset.fromOperation(body.line())
   };
 }
 
