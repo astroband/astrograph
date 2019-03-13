@@ -1,5 +1,6 @@
 import PostgresPubSub from "@udia/graphql-postgres-subscriptions";
 import { Client } from "pg";
+import { Asset } from "stellar-base";
 import { db } from "./database";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger, LedgerHeader, TransactionWithXDR } from "./model";
@@ -7,7 +8,15 @@ import extractOperation from "./util/extract_operation";
 import logger from "./util/logger";
 
 const pgClient = new Client(db.$cn as string);
-export const pubsub = new PostgresPubSub(pgClient);
+
+export const pubsub = new PostgresPubSub(pgClient, (key: string, value: any) => {
+  if (value.hasOwnProperty("code") && value.hasOwnProperty("issuer")) {
+    return value.issuer ? new Asset(value.code, value.issuer) : Asset.native();
+  }
+
+  return value;
+});
+
 pgClient
   .connect()
   .then(() => logger.debug("Connected to PG pubsub"))

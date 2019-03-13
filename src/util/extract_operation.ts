@@ -16,6 +16,8 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
     opObject.asset = new Asset(opObject.asset, opSource);
   }
 
+  delete opObject.source;
+
   return {
     opSource,
     txSource: tx.sourceAccount,

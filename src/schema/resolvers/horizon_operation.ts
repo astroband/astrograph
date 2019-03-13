@@ -1,5 +1,6 @@
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
+import { Asset } from "stellar-base";
 import { OperationFactory } from "../../model/factories/operation_factory";
 import { Operation, OperationKinds } from "../../model/operation";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
@@ -52,6 +53,16 @@ export default {
 
           if (vars.destination && !("destination" in payload && vars.destination.includes(payload.destination))) {
             return false;
+          }
+
+          if (vars.asset) {
+            return Object.entries(payload).some(([key, value]) => {
+              if (!(value instanceof Asset)) {
+                return false;
+              }
+
+              return vars.asset.includes(value.toString());
+            });
           }
 
           return true;
