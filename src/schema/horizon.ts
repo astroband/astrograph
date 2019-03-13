@@ -110,7 +110,6 @@ export const typeDefs = gql`
     destinationAsset: Asset!
     sourceAsset: Asset!
     destinationAccount: AccountID!
-    sourceAccount: AccountID!
   }
 
   type OfferPriceComponents {
@@ -145,7 +144,7 @@ export const typeDefs = gql`
       kind: [OperationKind]
       destination: [AccountID]
       asset: [AssetID]
-    ): IOperation
+    ): IOperation!
   }
 
 `;
