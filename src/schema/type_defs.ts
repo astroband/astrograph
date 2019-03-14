@@ -6,7 +6,15 @@ export const typeDefs = gql`
   scalar TimeBounds
   scalar MemoValue
   scalar DateTime
-  scalar TransactionHash
+
+  enum Order {
+    desc
+    asc
+  }
+
+  type PageInfo {
+    endCursor: String!
+  }
 
   enum Order {
     desc
@@ -166,19 +174,6 @@ export const typeDefs = gql`
     values: OfferValues
   }
 
-  type Transaction {
-    id: String!
-    ledger: Ledger!
-    index: Int!
-    memo: Memo
-    feeAmount: String!
-    sourceAccount: AccountID!
-    timeBounds: TimeBounds
-    feeCharged: String!
-    success: Boolean!
-    resultCode: Int!
-  }
-
   input AssetInput {
     code: AssetCode
     issuer: AccountID
@@ -208,8 +203,6 @@ export const typeDefs = gql`
     trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger!
     ledgers(seq: [Int!]): [Ledger]!
-    transaction(id: TransactionHash!): Transaction
-    transactions(ids: [TransactionHash!]): [Transaction]
     offers(
       seller: AccountID
       selling: AssetInput
