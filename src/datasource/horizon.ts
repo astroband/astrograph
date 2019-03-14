@@ -1,6 +1,6 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 import { AccountID } from "../model/account_id";
-import { HorizonOperationData } from "./types";
+import { IHorizonOperationData } from "./types";
 
 export default class HorizonAPI extends RESTDataSource {
   constructor() {
@@ -13,7 +13,7 @@ export default class HorizonAPI extends RESTDataSource {
     first = 10,
     order = "desc",
     cursor?: string
-  ): Promise<HorizonOperationData[]> {
+  ): Promise<IHorizonOperationData[]> {
     const params: { limit: number; order: string; cursor?: string } = { limit: first, order };
 
     if (cursor) {

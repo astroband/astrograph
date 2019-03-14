@@ -112,7 +112,7 @@ export interface IBumpSequenceOperationData extends IBaseOperationData {
   bump_to: string;
 }
 
-export type HorizonOperationData = IPaymentOperationData &
+export type IHorizonOperationData = IPaymentOperationData &
   ISetOptionsOperationData &
   IAccountMergeOperationData &
   IAllowTrustOperationData &
