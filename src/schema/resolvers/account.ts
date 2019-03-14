@@ -1,14 +1,16 @@
-import _ from "lodash";
-import { Account, DataEntry, Signer, TrustLine } from "../../model";
-import { SignerFactory, TrustLineFactory } from "../../model/factories";
-
 import { withFilter } from "graphql-subscriptions";
-import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
+import _ from "lodash";
+
+import { Account, DataEntry, Signer, TrustLine } from "../../model";
+import { OperationFactory, SignerFactory, TrustLineFactory } from "../../model/factories";
 
 import { db } from "../../database";
+import { IHorizonOperationData } from "../../datasource/types";
 import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
+
+import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 const signersResolver = createBatchResolver<Account, Signer[]>(async (source: any) => {
   const accountIDs = _.map(source, "id");
@@ -68,7 +70,23 @@ export default {
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
     ledger: ledgerResolver,
-    signerFor: signerForResolver
+    signerFor: signerForResolver,
+    operationsConnection: async (subject: Account, args: any, ctx: any) => {
+      const { first, after, order } = args;
+      const data = await ctx.dataSources.horizon.getAccountOperations(subject.id, first, order, after);
+
+      return {
+        edges: data.map((record: IHorizonOperationData) => {
+          return {
+            node: OperationFactory.fromHorizon(record),
+            cursor: record.paging_token
+          };
+        }),
+        pageInfo: {
+          endCursor: data[data.length - 1].paging_token
+        }
+      };
+    }
   },
   Query: {
     account(root: any, args: any, ctx: any, info: any) {

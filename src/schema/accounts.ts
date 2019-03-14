@@ -1,0 +1,90 @@
+import { gql } from "apollo-server";
+
+export const typeDefs = gql`
+  scalar AccountID
+
+  type AccountFlags {
+    authRequired: Boolean!
+    authRevokable: Boolean!
+    authImmutable: Boolean!
+  }
+
+  type AccountThresholds {
+    masterWeight: Int!
+    low: Int!
+    medium: Int!
+    high: Int!
+  }
+
+  interface IAccount {
+    id: AccountID!
+    sequenceNumber: String!
+    numSubentries: Int!
+    inflationDest: AccountID
+    homeDomain: String
+    thresholds: AccountThresholds!
+    flags: AccountFlags!
+    signers: [Signer]
+  }
+
+  type Account implements IAccount {
+    id: AccountID!
+    sequenceNumber: String!
+    numSubentries: Int!
+    inflationDest: AccountID
+    homeDomain: String
+    thresholds: AccountThresholds!
+    flags: AccountFlags!
+    ledger: Ledger!
+    signers: [Signer]
+    data: [DataEntry]
+    trustLines: [TrustLine]
+    signerFor(first: Int!): [Account!]
+    operationsConnection(first: Int, after: String, order: Order): AccountOperationsConnection
+  }
+
+  type AccountOperationsConnection {
+    pageInfo: PageInfo!
+    edges: [AccountOperationsEdge]
+  }
+
+  type AccountOperationsEdge {
+    cursor: String!
+    node: IOperation
+  }
+
+  type AccountValues implements IAccount {
+    id: AccountID!
+    sequenceNumber: String!
+    numSubentries: Int!
+    inflationDest: AccountID
+    homeDomain: String
+    thresholds: AccountThresholds!
+    flags: AccountFlags!
+    signers: [Signer]
+  }
+
+  type AccountSubscriptionPayload {
+    id: AccountID!
+    mutationType: MutationType!
+    values: AccountValues
+  }
+
+  type Signer {
+    account: Account!
+    signer: Account!
+    weight: Int!
+  }
+
+  extend type Query {
+    account(id: AccountID!): Account
+    accounts(id: [AccountID!]!): [Account]
+    accountsSignedBy(id: AccountID!, first: Int!): [Account!]
+    signers(id: AccountID!): [Signer]
+  }
+
+  extend type Subscription {
+    account(args: EventInput): AccountSubscriptionPayload
+  }
+
+`;
