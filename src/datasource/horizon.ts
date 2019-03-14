@@ -29,7 +29,7 @@ export default class HorizonAPI extends RESTDataSource {
     return data._embedded.records;
   }
 
-  public async getTransactions(transactionIds: string[]): Promise<IHorizonTransactionData[]> {
+  public async getTransactionsByIds(transactionIds: string[]): Promise<IHorizonTransactionData[]> {
     const promises = transactionIds.map(id => this.get(`transactions/${id}`));
 
     return Promise.all(promises).then(responses => {
@@ -38,5 +38,29 @@ export default class HorizonAPI extends RESTDataSource {
       });
       return responses;
     });
+  }
+
+  public async getTransactions(
+    limit: number,
+    order?: "asc" | "desc",
+    cursor?: string
+  ): Promise<IHorizonTransactionData[]> {
+    let path = `transactions?limit=${limit}`;
+
+    if (cursor) {
+      path = path + `&cursor=${cursor}`;
+    }
+
+    if (order) {
+      path = path + `&order=${order}`;
+    }
+
+    const response = await this.get(path);
+
+    response._embedded.records.forEach((record: any) => {
+      delete record._links;
+    });
+
+    return response._embedded.records;
   }
 }
