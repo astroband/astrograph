@@ -260,7 +260,6 @@ export const typeDefs = gql`
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
     dataEntries(id: AccountID!): [DataEntry]
-    signers(id: AccountID!): [Signer]
     trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger!
     ledgers(seq: [Int!]): [Ledger]!
