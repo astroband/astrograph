@@ -72,8 +72,20 @@ export default {
     ledger: ledgerResolver,
     signerFor: signerForResolver,
     operationsConnection: async (subject: Account, args: any, ctx: any) => {
-      const { first, after, order } = args;
-      const data = await ctx.dataSources.horizon.getAccountOperations(subject.id, first, order, after);
+      const { first, after, last, before } = args;
+      let data = await ctx.dataSources.horizon.getAccountOperations(
+        subject.id,
+        first || last,
+        last ? "desc" : "asc",
+        last ? before : after
+      );
+
+      // we must keep ascending ordering, because Horizon doesn't do it,
+      // when you request the previous page
+      data = data.sort((a: IHorizonOperationData, b: IHorizonOperationData) => {
+        const [aDate, bDate] = [new Date(a.created_at), new Date(b.created_at)];
+        return aDate.getTime() - bDate.getTime();
+      });
 
       return {
         edges: data.map((record: IHorizonOperationData) => {
