@@ -44,20 +44,16 @@ export default class HorizonAPI extends RESTDataSource {
 
   public async getTransactions(
     limit: number,
-    order?: "asc" | "desc",
+    order: "asc" | "desc" = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
-    let path = `transactions?limit=${limit}`;
+    const params: { limit: number; order: string; cursor?: string } = { limit, order };
 
     if (cursor) {
-      path = path + `&cursor=${cursor}`;
+      params.cursor = cursor;
     }
 
-    if (order) {
-      path = path + `&order=${order}`;
-    }
-
-    const response = await this.get(path);
+    const response = await this.get("transactions", params);
 
     response._embedded.records.forEach((record: any) => {
       delete record._links;

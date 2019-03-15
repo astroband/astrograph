@@ -28,7 +28,7 @@ export const typeDefs = gql`
 
   extend type Query {
     transaction(id: TransactionHash!): Transaction
-    transactions(first: Int!, order: Order, after: String): TransactionsConnection
+    transactions(first: Int, after: String, last: Int, before: String): TransactionsConnection
   }
 
 `;
