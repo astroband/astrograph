@@ -76,15 +76,15 @@ export default {
       let data = await ctx.dataSources.horizon.getAccountOperations(
         subject.id,
         first || last,
-        last ? "desc" : "asc",
+        last ? "asc" : "desc",
         last ? before : after
       );
 
-      // we must keep ascending ordering, because Horizon doesn't do it,
+      // we must keep descending ordering, because Horizon doesn't do it,
       // when you request the previous page
       data = data.sort((a: IHorizonOperationData, b: IHorizonOperationData) => {
         const [aDate, bDate] = [new Date(a.created_at), new Date(b.created_at)];
-        return aDate.getTime() - bDate.getTime();
+        return bDate.getTime() - aDate.getTime();
       });
 
       return {
