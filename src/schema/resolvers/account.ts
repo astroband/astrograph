@@ -65,7 +65,7 @@ export default {
     trustLines: trustLinesResolver,
     ledger: ledgerResolver,
     signerFor: signerForResolver,
-    operationsConnection: async (subject: Account, args: any, ctx: any) => {
+    operations: async (subject: Account, args: any, ctx: any) => {
       const { first, after, last, before } = args;
       let data = await ctx.dataSources.horizon.getAccountOperations(
         subject.id,
@@ -76,10 +76,9 @@ export default {
 
       // we must keep descending ordering, because Horizon doesn't do it,
       // when you request the previous page
-      data = data.sort((a: IHorizonOperationData, b: IHorizonOperationData) => {
-        const [aDate, bDate] = [new Date(a.created_at), new Date(b.created_at)];
-        return bDate.getTime() - aDate.getTime();
-      });
+      if (last) {
+        data = data.reverse();
+      }
 
       return {
         edges: data.map((record: IHorizonOperationData) => {
