@@ -13,7 +13,7 @@ export const typeDefs = gql`
   }
 
   type PageInfo {
-    endCursor: String!
+    endCursor: String
   }
 
   enum MemoType {
