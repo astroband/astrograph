@@ -1,7 +1,7 @@
 import { OperationKinds } from "../../model/operation";
 
 export default {
-  IOperation: {
+  Operation: {
     __resolveType(obj: any, context: any, info: any) {
       switch (obj.kind) {
         case OperationKinds.Payment:

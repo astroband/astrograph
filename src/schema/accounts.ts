@@ -40,17 +40,17 @@ export const typeDefs = gql`
     data: [DataEntry]
     trustLines: [TrustLine]
     signerFor(first: Int!): [Account!]
-    operationsConnection(first: Int, after: String, order: Order): AccountOperationsConnection
+    operationsConnection(first: Int, after: String, order: Order): OperationsConnection
   }
 
-  type AccountOperationsConnection {
+  type OperationsConnection {
     pageInfo: PageInfo!
-    edges: [AccountOperationsEdge]
+    edges: [OperationsEdge]
   }
 
-  type AccountOperationsEdge {
+  type OperationsEdge {
     cursor: String!
-    node: IOperation
+    node: Operation
   }
 
   type AccountValues implements IAccount {
