@@ -1,6 +1,6 @@
 import _ from "lodash";
-import { Account, DataEntry, Signer, TrustLine } from "../../model";
-import { SignerFactory, TrustLineFactory } from "../../model/factories";
+import { Account, DataEntry, TrustLine } from "../../model";
+import { TrustLineFactory } from "../../model/factories";
 
 import { withFilter } from "graphql-subscriptions";
 import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
@@ -9,20 +9,6 @@ import { db } from "../../database";
 import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
-
-const signersResolver = createBatchResolver<Account, Signer[]>(async (source: any) => {
-  const accountIDs = _.map(source, "id");
-  const signers = await db.signers.findAllByAccountIDs(accountIDs);
-
-  const map = joinToMap(accountIDs, signers);
-
-  for (const [accountID, accountSigners] of map) {
-    const account = source.find((acc: Account) => acc.id === accountID);
-    accountSigners.unshift(SignerFactory.self(account.id, account.thresholds.masterWeight));
-  }
-
-  return signers;
-});
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
@@ -57,18 +43,11 @@ const accountSubscription = (event: string) => {
   };
 };
 
-const signerForResolver = async (subject: Account, args: any) => {
-  const accounts = db.accounts.findAllBySigner(subject.id, args.first);
-  return [subject].concat(await accounts);
-};
-
 export default {
   Account: {
-    signers: signersResolver,
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
-    ledger: ledgerResolver,
-    signerFor: signerForResolver
+    ledger: ledgerResolver
   },
   Query: {
     account(root: any, args: any, ctx: any, info: any) {

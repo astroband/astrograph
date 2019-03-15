@@ -129,7 +129,6 @@ export const typeDefs = gql`
     signers: [Signer]
     data: [DataEntry]
     trustLines: [TrustLine]
-    signerFor(first: Int!): [Account!]
   }
 
   type AccountValues implements IAccount {
