@@ -8,14 +8,7 @@ Object {
       "ledger": Object {
         "seq": 4,
       },
-      "signers": Array [
-        Object {
-          "account": Object {
-            "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
-          },
-          "weight": 1,
-        },
-      ],
+      "signers": null,
       "trustLines": Array [
         Object {
           "asset": Object {
@@ -30,20 +23,7 @@ Object {
       "ledger": Object {
         "seq": 3,
       },
-      "signers": Array [
-        Object {
-          "account": Object {
-            "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
-          },
-          "weight": 1,
-        },
-        Object {
-          "account": Object {
-            "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
-          },
-          "weight": 1,
-        },
-      ],
+      "signers": null,
       "trustLines": Array [
         Object {
           "asset": Object {
@@ -161,39 +141,7 @@ Object {
       "seq": 4,
     },
     "sequenceNumber": "8589934593",
-    "signerFor": Array [
-      Object {
-        "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
-        "trustLines": Array [
-          Object {
-            "asset": Object {
-              "code": "XLM",
-              "issuer": null,
-              "native": true,
-            },
-          },
-        ],
-      },
-      Object {
-        "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
-        "trustLines": Array [
-          Object {
-            "asset": Object {
-              "code": "XLM",
-              "issuer": null,
-              "native": true,
-            },
-          },
-        ],
-      },
-    ],
-    "signers": Array [
-      Object {
-        "signer": Object {
-          "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
-        },
-      },
-    ],
+    "signers": null,
     "thresholds": Object {
       "high": 0,
       "low": 0,

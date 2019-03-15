@@ -37,15 +37,5 @@
         ledgerVersion
       }
     }
-    signerFor(first: 100) {
-      id
-      trustLines {
-      	asset {
-          code
-          native
-          issuer
-        }
-      }
-    }
   }
 }
