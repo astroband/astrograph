@@ -3,7 +3,7 @@ import { OperationKinds } from "../../model/operation";
 import { Connection } from "../../storage/connection";
 import { AccountOperationsQuery } from "../../storage/queries/account_operations";
 import { AssetOperationsQuery } from "../../storage/queries/asset_operations";
-import { schema as horizonSchema } from "../horizon";
+import { typeDefs as horizonSchema } from "../horizon";
 
 export default {
   IOperation: {
