@@ -40,15 +40,15 @@ export const typeDefs = gql`
     data: [DataEntry]
     trustLines: [TrustLine]
     signerFor(first: Int!): [Account!]
-    operations(first: Int, after: String, last: Int, before: String): OperationsConnection
+    operations(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
-  type OperationsConnection {
+  type OperationConnection {
     pageInfo: PageInfo!
-    edges: [OperationsEdge]
+    edges: [OperationEdge]
   }
 
-  type OperationsEdge {
+  type OperationEdge {
     cursor: String!
     node: Operation
   }
