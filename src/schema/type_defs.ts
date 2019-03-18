@@ -13,6 +13,7 @@ export const typeDefs = gql`
   }
 
   type PageInfo {
+    startCursor: String
     endCursor: String
   }
 

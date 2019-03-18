@@ -73,7 +73,8 @@ export default {
           };
         }),
         pageInfo: {
-          endCursor: data[data.length - 1].paging_token
+          startCursor: data.length !== 0 ? data[0].paging_token : null,
+          endCursor: data.length !== 0 ? data[data.length - 1].paging_token : null
         }
       };
     }
