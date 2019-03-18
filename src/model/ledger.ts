@@ -4,4 +4,8 @@ export class Ledger {
   constructor(seq: number) {
     this.seq = seq;
   }
+
+  get id() {
+    return this.seq;
+  }
 }

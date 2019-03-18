@@ -2,11 +2,20 @@ import { gql } from "apollo-server";
 
 export const typeDefs = gql`
   scalar AssetCode
-  scalar AccountID
   scalar OfferID
   scalar TimeBounds
   scalar MemoValue
   scalar DateTime
+
+  enum Order {
+    desc
+    asc
+  }
+
+  type PageInfo {
+    startCursor: String
+    endCursor: String
+  }
 
   enum MemoType {
     id
@@ -60,19 +69,6 @@ export const typeDefs = gql`
     code: AssetCode!
   }
 
-  type AccountFlags {
-    authRequired: Boolean!
-    authRevokable: Boolean!
-    authImmutable: Boolean!
-  }
-
-  type AccountThresholds {
-    masterWeight: Int!
-    low: Int!
-    medium: Int!
-    high: Int!
-  }
-
   interface IDataEntry {
     name: String!
     value: String!
@@ -98,54 +94,6 @@ export const typeDefs = gql`
     name: String!
     mutationType: MutationType!
     values: DataEntryValues
-  }
-
-  type Signer {
-    account: Account!
-    signer: Account!
-    weight: Int!
-  }
-
-  interface IAccount {
-    id: AccountID!
-    sequenceNumber: String!
-    numSubentries: Int!
-    inflationDest: AccountID
-    homeDomain: String
-    thresholds: AccountThresholds!
-    flags: AccountFlags!
-    signers: [Signer]
-  }
-
-  type Account implements IAccount {
-    id: AccountID!
-    sequenceNumber: String!
-    numSubentries: Int!
-    inflationDest: AccountID
-    homeDomain: String
-    thresholds: AccountThresholds!
-    flags: AccountFlags!
-    ledger: Ledger!
-    signers: [Signer]
-    data: [DataEntry]
-    trustLines: [TrustLine]
-  }
-
-  type AccountValues implements IAccount {
-    id: AccountID!
-    sequenceNumber: String!
-    numSubentries: Int!
-    inflationDest: AccountID
-    homeDomain: String
-    thresholds: AccountThresholds!
-    flags: AccountFlags!
-    signers: [Signer]
-  }
-
-  type AccountSubscriptionPayload {
-    id: AccountID!
-    mutationType: MutationType!
-    values: AccountValues
   }
 
   interface ITrustLine {
@@ -255,9 +203,6 @@ export const typeDefs = gql`
   }
 
   type Query {
-    account(id: AccountID!): Account
-    accounts(id: [AccountID!]!): [Account]
-    accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
     trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger!
@@ -277,7 +222,6 @@ export const typeDefs = gql`
   type Subscription {
     ledgerCreated: Ledger
 
-    account(args: EventInput): AccountSubscriptionPayload
     trustLine(args: EventInput): TrustLineSubscriptionPayload
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
     offer(args: OfferEventInput): OfferSubscriptionPayload

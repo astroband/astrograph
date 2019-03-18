@@ -1,14 +1,15 @@
+import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
+
 import { Account, DataEntry, TrustLine } from "../../model";
 import { TrustLineFactory } from "../../model/factories";
-
-import { withFilter } from "graphql-subscriptions";
-import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 import { db } from "../../database";
 import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
+
+import { createBatchResolver, eventMatches, ledgerResolver, operationsResolver } from "./util";
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
@@ -47,7 +48,8 @@ export default {
   Account: {
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
-    ledger: ledgerResolver
+    ledger: ledgerResolver,
+    operations: operationsResolver
   },
   Query: {
     account(root: any, args: any, ctx: any, info: any) {

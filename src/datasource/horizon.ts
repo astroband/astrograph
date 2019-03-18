@@ -1,6 +1,7 @@
 import { RESTDataSource } from "apollo-datasource-rest";
-import { AccountID } from "../model/account_id";
-import { HorizonOperationData } from "./types";
+import { IHorizonOperationData } from "./types";
+
+export type OperationsParent = "transaction" | "account" | "ledger";
 
 export default class HorizonAPI extends RESTDataSource {
   constructor() {
@@ -8,19 +9,20 @@ export default class HorizonAPI extends RESTDataSource {
     this.baseURL = "https://horizon.stellar.org/";
   }
 
-  public async getAccountOperations(
-    accountId: AccountID,
+  public async getOperations(
+    parent: OperationsParent,
+    entityId: string,
     first = 10,
     order = "desc",
     cursor?: string
-  ): Promise<HorizonOperationData[]> {
+  ): Promise<IHorizonOperationData[]> {
     const params: { limit: number; order: string; cursor?: string } = { limit: first, order };
 
     if (cursor) {
       params.cursor = cursor;
     }
 
-    const data = await this.get(`accounts/${accountId}/operations`, params);
+    const data = await this.get(`${parent}s/${entityId}/operations`, params);
 
     data._embedded.records.forEach((record: any) => {
       delete record._links;

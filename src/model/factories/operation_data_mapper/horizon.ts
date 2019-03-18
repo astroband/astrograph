@@ -1,5 +1,5 @@
 import { Asset } from "stellar-sdk";
-import { HorizonOperationData, HorizonOpType } from "../../../datasource/types";
+import { IHorizonOperationData, HorizonOpType } from "../../../datasource/types";
 import {
   IAccountMergeOperation,
   IAllowTrustOperation,
@@ -17,7 +17,7 @@ import {
 } from "../../horizon_operation";
 
 export class DataMapper {
-  public static call(data: HorizonOperationData) {
+  public static call(data: IHorizonOperationData) {
     return new DataMapper(data).call();
   }
 
@@ -48,7 +48,7 @@ export class DataMapper {
 
   private baseData: IBaseOperation;
 
-  constructor(private data: HorizonOperationData) {
+  constructor(private data: IHorizonOperationData) {
     this.baseData = {
       id: data.id,
       kind: DataMapper.mapHorizonOpType(data.type),

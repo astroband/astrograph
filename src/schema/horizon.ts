@@ -1,14 +1,14 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
-  interface IOperation {
+  interface Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
     dateTime: DateTime!
   }
 
-  type PaymentOperation implements IOperation {
+  type PaymentOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -19,7 +19,7 @@ export const typeDefs = gql`
     source: AccountID!
   }
 
-  type SetOptionsOperation implements IOperation {
+  type SetOptionsOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -33,7 +33,7 @@ export const typeDefs = gql`
     inflationDestination: AccountID
   }
 
-  type AccountMergeOperation implements IOperation {
+  type AccountMergeOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -41,7 +41,7 @@ export const typeDefs = gql`
     destination: AccountID!
   }
 
-  type AllowTrustOperation implements IOperation {
+  type AllowTrustOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -51,7 +51,7 @@ export const typeDefs = gql`
     assetCode: AssetCode
   }
 
-  type BumpSequenceOperation implements IOperation {
+  type BumpSequenceOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -59,7 +59,7 @@ export const typeDefs = gql`
     bumpTo: Int!
   }
 
-  type ChangeTrustOperation implements IOperation {
+  type ChangeTrustOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -68,7 +68,7 @@ export const typeDefs = gql`
     asset: Asset!
   }
 
-  type CreateAccountOperation implements IOperation {
+  type CreateAccountOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -77,7 +77,7 @@ export const typeDefs = gql`
     destination: AccountID!
   }
 
-  type ManageDatumOperation implements IOperation {
+  type ManageDatumOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -86,7 +86,7 @@ export const typeDefs = gql`
     value: String
   }
 
-  type ManageOfferOperation implements IOperation {
+  type ManageOfferOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -99,7 +99,7 @@ export const typeDefs = gql`
     assetBuying: Asset!
   }
 
-  type PathPaymentOperation implements IOperation {
+  type PathPaymentOperation implements Operation {
     id: String!
     kind: OperationKind!
     account: AccountID!
@@ -127,15 +127,6 @@ export const typeDefs = gql`
   type SetOptionsSigner {
     account: AccountID
     weight: Int
-  }
-
-  enum SortOrder {
-    desc
-    asc
-  }
-
-  extend type Query {
-    accountOperations(account: AccountID!, first: Int!, order: SortOrder, cursor: String): [IOperation]
   }
 
 `;
