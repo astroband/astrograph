@@ -1,12 +1,13 @@
 import { IHorizonTransactionData } from "../../datasource/types";
 import { Transaction } from "../../model";
 import { TransactionWithXDRFactory } from "../../model/factories";
-import { ledgerResolver, memoResolver } from "./util";
+import { ledgerResolver, memoResolver, operationsResolver } from "./util";
 
 export default {
   Transaction: {
     ledger: ledgerResolver,
-    memo: memoResolver
+    memo: memoResolver,
+    operations: operationsResolver
   },
   Query: {
     async transaction(root: any, args: any, ctx: any, info: any) {
