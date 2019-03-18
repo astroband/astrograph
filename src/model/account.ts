@@ -1,5 +1,4 @@
-import { AccountFlags } from "./account_flags";
-import { AccountThresholds } from "./account_thresholds";
+import { AccountFlags, AccountThresholds, Signer } from "./";
 
 export interface IAccountBase {
   id: string;
@@ -10,6 +9,7 @@ export interface IAccountBase {
   homeDomain: string;
   thresholds: AccountThresholds;
   flags: AccountFlags;
+  signers?: Signer[];
 }
 
 export interface IAccount extends IAccountBase {
@@ -26,6 +26,7 @@ export class Account implements IAccount {
   public thresholds: AccountThresholds;
   public flags: AccountFlags;
   public lastModified: number;
+  public signers?: Signer[];
 
   constructor(data: IAccount) {
     this.id = data.id;
@@ -37,5 +38,6 @@ export class Account implements IAccount {
     this.lastModified = data.lastModified;
     this.thresholds = data.thresholds;
     this.flags = data.flags;
+    this.signers = data.signers;
   }
 }

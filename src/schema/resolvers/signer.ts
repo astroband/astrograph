@@ -1,7 +1,6 @@
 import _ from "lodash";
 import { db } from "../../database";
 import { Account, Signer } from "../../model";
-import { SignerFactory } from "../../model/factories";
 import { createBatchResolver } from "./util";
 
 const accountResolver = createBatchResolver<Signer, Account>((source: any) =>
@@ -16,19 +15,5 @@ export default {
   Signer: {
     account: accountResolver,
     signer: signerResolver
-  },
-  Query: {
-    async signers(root: any, args: any, ctx: any, info: any) {
-      const account = await db.accounts.findByID(args.id);
-
-      if (!account) {
-        return [];
-      }
-
-      const signers = await db.signers.findAllByAccountID(args.id);
-      signers.unshift(SignerFactory.self(account.id, account.thresholds.masterWeight));
-
-      return signers;
-    }
   }
 };

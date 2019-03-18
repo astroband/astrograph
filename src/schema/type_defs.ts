@@ -129,7 +129,6 @@ export const typeDefs = gql`
     signers: [Signer]
     data: [DataEntry]
     trustLines: [TrustLine]
-    signerFor(first: Int!): [Account!]
   }
 
   type AccountValues implements IAccount {
@@ -260,7 +259,6 @@ export const typeDefs = gql`
     accounts(id: [AccountID!]!): [Account]
     accountsSignedBy(id: AccountID!, first: Int!): [Account!]
     assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
-    signers(id: AccountID!): [Signer]
     trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger!
     ledgers(seq: [Int!]): [Ledger]!
