@@ -1,8 +1,8 @@
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
 
-import { Account, DataEntry, Signer, TrustLine } from "../../model";
-import { OperationFactory, SignerFactory, TrustLineFactory } from "../../model/factories";
+import { Account, DataEntry, TrustLine } from "../../model";
+import { OperationFactory, TrustLineFactory } from "../../model/factories";
 
 import { db } from "../../database";
 import { IHorizonOperationData } from "../../datasource/types";
@@ -11,20 +11,6 @@ import { joinToMap } from "../../util/array";
 import { ACCOUNT, pubsub } from "../../pubsub";
 
 import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
-
-const signersResolver = createBatchResolver<Account, Signer[]>(async (source: any) => {
-  const accountIDs = _.map(source, "id");
-  const signers = await db.signers.findAllByAccountIDs(accountIDs);
-
-  const map = joinToMap(accountIDs, signers);
-
-  for (const [accountID, accountSigners] of map) {
-    const account = source.find((acc: Account) => acc.id === accountID);
-    accountSigners.unshift(SignerFactory.self(account.id, account.thresholds.masterWeight));
-  }
-
-  return signers;
-});
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
@@ -64,7 +50,6 @@ export default {
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
     ledger: ledgerResolver,
-    signerFor: signerForResolver,
     operations: async (subject: Account, args: any, ctx: any) => {
       const { first, after, last, before } = args;
       let data = await ctx.dataSources.horizon.getAccountOperations(
