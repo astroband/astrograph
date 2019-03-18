@@ -2,15 +2,14 @@ import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
 
 import { Account, DataEntry, TrustLine } from "../../model";
-import { OperationFactory, TrustLineFactory } from "../../model/factories";
+import { TrustLineFactory } from "../../model/factories";
 
 import { db } from "../../database";
-import { IHorizonOperationData } from "../../datasource/types";
 import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
 
-import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
+import { createBatchResolver, eventMatches, ledgerResolver, operationsResolver } from "./util";
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
@@ -50,34 +49,7 @@ export default {
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
     ledger: ledgerResolver,
-    operations: async (subject: Account, args: any, ctx: any) => {
-      const { first, after, last, before } = args;
-      let data = await ctx.dataSources.horizon.getAccountOperations(
-        subject.id,
-        first || last,
-        last ? "asc" : "desc",
-        last ? before : after
-      );
-
-      // we must keep descending ordering, because Horizon doesn't do it,
-      // when you request the previous page
-      if (last) {
-        data = data.reverse();
-      }
-
-      return {
-        edges: data.map((record: IHorizonOperationData) => {
-          return {
-            node: OperationFactory.fromHorizon(record),
-            cursor: record.paging_token
-          };
-        }),
-        pageInfo: {
-          startCursor: data.length !== 0 ? data[0].paging_token : null,
-          endCursor: data.length !== 0 ? data[data.length - 1].paging_token : null
-        }
-      };
-    }
+    operations: operationsResolver
   },
   Query: {
     account(root: any, args: any, ctx: any, info: any) {
