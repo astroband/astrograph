@@ -39,6 +39,7 @@ export default {
       subscribe: withFilter(
         () => pubsub.asyncIterator(NEW_OPERATION),
         (payload: Operation, vars) => {
+          console.log(payload.opSource);
           if (vars.txSource && !vars.txSource.includes(payload.txSource)) {
             return false;
           }

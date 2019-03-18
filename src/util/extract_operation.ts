@@ -19,7 +19,7 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
     opObject.asset = new Asset(opObject.asset, opSource);
   }
 
-  if (opObject.kind === OperationKinds.PathPayment) {
+  if (opObject.kind === OperationKinds.PathPayment && tx.success) {
     opObject.amountSent = getSentAmount(tx, index, opObject.destinationAccount);
   }
 

@@ -37,11 +37,14 @@ export function refineOperationXDR(xdr: any) {
     case t.manageOffer():
       obj = refineManageOfferOpXDR(body.manageOfferOp());
       break;
+    case t.createPassiveOffer():
+      obj = refineCreatePassiveOfferOpXDR(body.createPassiveOfferOp());
+      break;
     case t.payment():
       obj = refinePaymentOpXDR(body.paymentOp());
       break;
     default:
-      throw new Error("Unknown operation XDR");
+      throw new Error(`Unknown operation XDR type "${xdr.body().switch().value}"`);
   }
 
   return {
@@ -55,6 +58,16 @@ function refineManageOfferOpXDR(body: any) {
   return {
     amount: body.amount().toString(),
     offerId: body.offerId().toString(),
+    price: new BigNumber(body.price().n()).div(body.price().d()).toString(),
+    priceComponents: { n: body.price().n(), d: body.price().d() },
+    assetBuying: Asset.fromOperation(body.buying()),
+    assetSelling: Asset.fromOperation(body.selling())
+  };
+}
+
+function refineCreatePassiveOfferOpXDR(body: any) {
+  return {
+    amount: body.amount().toString(),
     price: new BigNumber(body.price().n()).div(body.price().d()).toString(),
     priceComponents: { n: body.price().n(), d: body.price().d() },
     assetBuying: Asset.fromOperation(body.buying()),
@@ -90,7 +103,7 @@ function refinePathPaymentOpXDR(body: any) {
 function refineSetOptionsOpXDR(body: any) {
   const options: any = {
     masterWeight: body.masterWeight(),
-    homeDomain: body.homeDomain().toString(),
+    homeDomain: body.homeDomain() ? body.homeDomain().toString() : undefined,
     clearFlags: body.clearFlags(),
     setFlags: body.setFlags(),
     thresholds: {
@@ -98,7 +111,7 @@ function refineSetOptionsOpXDR(body: any) {
       medium: body.medThreshold(),
       low: body.lowThreshold()
     },
-    inflationDestination: publicKeyFromBuffer(body.inflationDest().value())
+    inflationDestination: body.inflationDest() ? publicKeyFromBuffer(body.inflationDest().value()) : undefined
   };
 
   if (body.signer()) {

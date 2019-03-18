@@ -14,6 +14,7 @@ export enum OperationKinds {
   CreateAccount = "createAccount",
   ManageData = "manageDatum",
   ManageOffer = "manageOffer",
+  CreatePassiveOffer = "createPassiveOffer",
   PathPayment = "pathPayment"
 }
 
