@@ -2,7 +2,7 @@ import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Asset, Memo } from "stellar-sdk";
 import { OperationsParent } from "../../datasource/horizon";
 import { IHorizonOperationData } from "../../datasource/types";
-import { Account, Ledger, MutationType, Transaction } from "../../model";
+import { Account, Ledger, MutationType, Operation, Transaction } from "../../model";
 import { OperationFactory } from "../../model/factories/operation_factory";
 
 export function createBatchResolver<T, R>(loadFn: any) {
@@ -75,13 +75,16 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
     data = data.reverse();
   }
 
+  const edges = data.map((record: IHorizonOperationData) => {
+    return {
+      node: OperationFactory.fromHorizon(record),
+      cursor: record.paging_token
+    };
+  });
+
   return {
-    edges: data.map((record: IHorizonOperationData) => {
-      return {
-        node: OperationFactory.fromHorizon(record),
-        cursor: record.paging_token
-      };
-    }),
+    nodes: edges.map((edge: { node: Operation, cursor: string }) => edge.node),
+    edges,
     pageInfo: {
       startCursor: data.length !== 0 ? data[0].paging_token : null,
       endCursor: data.length !== 0 ? data[data.length - 1].paging_token : null

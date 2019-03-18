@@ -45,6 +45,7 @@ export const typeDefs = gql`
 
   type OperationConnection {
     pageInfo: PageInfo!
+    nodes: [Operation]
     edges: [OperationEdge]
   }
 
