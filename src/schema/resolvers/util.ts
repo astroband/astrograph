@@ -1,16 +1,15 @@
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Asset, Memo } from "stellar-sdk";
-import { Account, Ledger, MutationType, Transaction } from "../../model";
-import { IHorizonOperationData } from "../../datasource/types";
-import { OperationFactory } from "../../model/factories/operation_factory";
 import { OperationsParent } from "../../datasource/horizon";
+import { IHorizonOperationData } from "../../datasource/types";
+import { Account, Ledger, MutationType, Transaction } from "../../model";
+import { OperationFactory } from "../../model/factories/operation_factory";
 
 export function createBatchResolver<T, R>(loadFn: any) {
   return create<T, R>(async (source: ReadonlyArray<T>, args: any, context: any) => loadFn(source, args, context));
 }
 
 export function ledgerResolver(obj: any) {
-  console.log(obj);
   const seq = obj.lastModified || obj.ledgerSeq;
   return new Ledger(seq);
 }

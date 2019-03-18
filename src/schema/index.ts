@@ -1,7 +1,7 @@
 import { makeExecutableSchema, mergeSchemas } from "apollo-server";
 
-import { typeDefs as horizonTypeDefs } from "./horizon";
 import { typeDefs as accountsTypeDefs } from "./accounts";
+import { typeDefs as horizonTypeDefs } from "./horizon";
 import resolvers from "./resolvers";
 import { typeDefs } from "./type_defs";
 
