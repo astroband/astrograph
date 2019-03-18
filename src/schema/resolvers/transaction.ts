@@ -1,4 +1,5 @@
 import { IHorizonTransactionData } from "../../datasource/types";
+import { Transaction } from "../../model";
 import { TransactionWithXDRFactory } from "../../model/factories";
 import { ledgerResolver, memoResolver } from "./util";
 
@@ -26,15 +27,19 @@ export default {
         records = records.reverse();
       }
 
+      const edges = records.map((record: IHorizonTransactionData) => {
+        return {
+          node: TransactionWithXDRFactory.fromHorizon(record),
+          cursor: record.paging_token
+        };
+      });
+
       return {
-        edges: records.map((record: IHorizonTransactionData) => {
-          return {
-            node: TransactionWithXDRFactory.fromHorizon(record),
-            cursor: record.paging_token
-          };
-        }),
+        nodes: edges.map((edge: { cursor: string; node: Transaction }) => edge.node),
+        edges,
         pageInfo: {
-          endCursor: records[records.length - 1].paging_token
+          startCursor: records.length !== 0 ? records[0].paging_token : null,
+          endCursor: records.length !== 0 ? records[records.length - 1].paging_token : null
         }
       };
     }

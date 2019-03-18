@@ -16,19 +16,20 @@ export const typeDefs = gql`
     resultCode: Int!
   }
 
-  type TransactionsConnection {
+  type TransactionConnection {
     pageInfo: PageInfo!
-    edges: [TransactionsEdge]
+    nodes: [Transaction]
+    edges: [TransactionEdge]
   }
 
-  type TransactionsEdge {
+  type TransactionEdge {
     cursor: String!
     node: Transaction
   }
 
   extend type Query {
     transaction(id: TransactionHash!): Transaction
-    transactions(first: Int, after: String, last: Int, before: String): TransactionsConnection
+    transactions(first: Int, after: String, last: Int, before: String): TransactionConnection
   }
 
 `;
