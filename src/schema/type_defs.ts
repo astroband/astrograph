@@ -13,15 +13,6 @@ export const typeDefs = gql`
   }
 
   type PageInfo {
-    endCursor: String!
-  }
-
-  enum Order {
-    desc
-    asc
-  }
-
-  type PageInfo {
     startCursor: String
     endCursor: String
   }

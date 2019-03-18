@@ -83,7 +83,7 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
   });
 
   return {
-    nodes: edges.map((edge: { node: Operation, cursor: string }) => edge.node),
+    nodes: edges.map((edge: { node: Operation; cursor: string }) => edge.node),
     edges,
     pageInfo: {
       startCursor: data.length !== 0 ? data[0].paging_token : null,
