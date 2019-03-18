@@ -9,7 +9,7 @@ export const typeDefs = gql`
     index: Int!
     memo: Memo
     feeAmount: Int!
-    sourceAccount: AccountID!
+    sourceAccount: Account!
     timeBounds: TimeBounds
     feeCharged: Int!
     success: Boolean!

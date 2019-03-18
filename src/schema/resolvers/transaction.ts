@@ -1,10 +1,14 @@
+import { db } from "../../database";
 import { IHorizonTransactionData } from "../../datasource/types";
-import { Transaction } from "../../model";
+import { Account, Transaction } from "../../model";
 import { TransactionWithXDRFactory } from "../../model/factories";
-import { ledgerResolver, memoResolver, operationsResolver } from "./util";
+import { createBatchResolver, ledgerResolver, memoResolver, operationsResolver } from "./util";
 
 export default {
   Transaction: {
+    sourceAccount: createBatchResolver<Transaction, Account>((source: any) => {
+      return db.accounts.findAllByIDs(source.map((obj: Transaction) => obj.sourceAccount));
+    }),
     ledger: ledgerResolver,
     memo: memoResolver,
     operations: operationsResolver
