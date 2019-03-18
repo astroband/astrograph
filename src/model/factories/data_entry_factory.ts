@@ -11,7 +11,7 @@ export class DataEntryFactory {
   public static fromDb(row: IDataEntryTableRow): DataEntry {
     const data: IDataEntry = {
       accountID: row.accountid,
-      name: row.dataname,
+      name: Buffer.from(row.dataname, "base64").toString(),
       value: Buffer.from(row.datavalue, "base64").toString(),
       lastModified: row.lastmodified
     };

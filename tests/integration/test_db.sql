@@ -323,7 +323,7 @@ CREATE TABLE public.upgradehistory (
 -- Data for Name: accountdata; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.accountdata VALUES ('GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT', 'test_data', 'dGVzdF92YWx1ZQ==', 4);
+INSERT INTO public.accountdata VALUES ('GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT', 'dGVzdF9kYXRh', 'dGVzdF92YWx1ZQ==', 4);
 
 
 --

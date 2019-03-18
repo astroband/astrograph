@@ -33,10 +33,5 @@ export default {
   },
   Subscription: {
     dataEntry: dataEntrySubscription(DATA_ENTRY)
-  },
-  Query: {
-    dataEntries(root: any, args: any, ctx: any, info: any) {
-      return db.dataEntries.findAllByAccountID(args.id);
-    }
   }
 };

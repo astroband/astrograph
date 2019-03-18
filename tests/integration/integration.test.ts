@@ -14,7 +14,6 @@ const testCases = [
   "Assets",
   "Single account query",
   "Accounts signed by",
-  "Data entries",
   "Signers",
   "Ledgers",
   "Trust lines"
