@@ -8,10 +8,10 @@ export const typeDefs = gql`
     ledger: Ledger!
     index: Int!
     memo: Memo
-    feeAmount: String!
+    feeAmount: Int!
     sourceAccount: AccountID!
     timeBounds: TimeBounds
-    feeCharged: String!
+    feeCharged: Int!
     success: Boolean!
     resultCode: Int!
     operations(first: Int, after: String, last: Int, before: String): OperationConnection
