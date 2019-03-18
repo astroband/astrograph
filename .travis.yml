@@ -1,9 +1,16 @@
 dist: xenial
 language: node_js
+
 addons:
   postgresql: 10
   sonarcloud:
     organization: astroband
+cache:
+  directories:
+    - "$HOME/.cache/yarn"
+    - "$HOME/.sonar/cache"
+git:
+  depth: false
 services:
   - postgresql
 
