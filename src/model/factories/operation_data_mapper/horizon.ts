@@ -1,5 +1,5 @@
 import { Asset } from "stellar-sdk";
-import { IHorizonOperationData, HorizonOpType } from "../../../datasource/types";
+import { HorizonOpType, IHorizonOperationData } from "../../../datasource/types";
 import {
   IAccountMergeOperation,
   IAllowTrustOperation,

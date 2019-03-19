@@ -1,4 +1,4 @@
-import { Asset } from "./asset";
+import { Asset } from "stellar-sdk";
 
 export interface IOfferBase {
   id: string;

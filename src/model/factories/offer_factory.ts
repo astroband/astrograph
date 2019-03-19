@@ -1,5 +1,4 @@
-import stellar from "stellar-base";
-import { Asset } from "../asset";
+import { Asset, xdr as XDR } from "stellar-base";
 import { IOffer, IOfferBase, Offer } from "../offer";
 
 import { calculateOfferPrice } from "../../util/offer";
@@ -8,12 +7,8 @@ import { toFloatAmountString } from "../../util/stellar";
 export interface IOfferTableRow {
   offerid: string;
   sellerid: string;
-  sellingassettype: number;
-  sellingassetcode: string;
-  sellingissuer: string;
-  buyingassettype: number;
-  buyingassetcode: string;
-  buyingissuer: string;
+  sellingasset: string;
+  buyingasset: string;
   amount: string;
   pricen: number;
   priced: number;
@@ -23,17 +18,17 @@ export interface IOfferTableRow {
 }
 
 export class OfferFactory {
-  public static fromDb(row: IOfferTableRow): Offer | null | IOffer | Asset {
+  public static fromDb(row: IOfferTableRow): Offer {
     const data: IOffer = {
       id: row.offerid,
       sellerID: row.sellerid,
-      selling: Asset.fromDb(row.sellingassettype, row.sellingassetcode, row.sellingissuer),
-      buying: Asset.fromDb(row.buyingassettype, row.buyingassetcode, row.buyingissuer),
+      selling: Asset.fromOperation(XDR.Asset.fromXDR(row.sellingasset, "base64")),
+      buying: Asset.fromOperation(XDR.Asset.fromXDR(row.buyingasset, "base64")),
       amount: toFloatAmountString(row.amount),
       priceN: row.pricen,
       priceD: row.priced,
       price: calculateOfferPrice(row.pricen, row.priced),
-      passive: (row.flags && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0,
+      passive: (row.flags && XDR.OfferEntryFlags.passiveFlag().value) > 0,
       lastModified: row.lastmodified
     };
 
@@ -54,7 +49,7 @@ export class OfferFactory {
       priceN,
       priceD,
       price: calculateOfferPrice(priceN, priceD),
-      passive: (xdr.flags() && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0
+      passive: (xdr.flags() && XDR.OfferEntryFlags.passiveFlag().value) > 0
     };
   }
 }

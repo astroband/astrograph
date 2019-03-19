@@ -1,9 +1,6 @@
-import { UserInputError } from "apollo-server";
 import { IDatabase } from "pg-promise";
 import squel from "squel";
-import stellar from "stellar-base";
-import { IAssetInput } from "../model";
-import { OfferFactory } from "../model/factories";
+import { AssetFactory, OfferFactory } from "../model/factories";
 
 export default class OffersRepo {
   private db: IDatabase<any>;
@@ -15,8 +12,8 @@ export default class OffersRepo {
   public async findAll(
     criteria?: {
       seller?: string;
-      selling?: IAssetInput;
-      buying?: IAssetInput;
+      selling?: string;
+      buying?: string;
     },
     limit?: number,
     offset?: number,
@@ -64,17 +61,18 @@ export default class OffersRepo {
     return this.db.one(queryBuilder.toString(), [], c => +c.count);
   }
 
-  private appendAsset(queryBuilder: any, prefix: string, asset?: IAssetInput) {
-    if (asset) {
-      if (asset.issuer && asset.code) {
-        queryBuilder.where(`${prefix}issuer = ?`, asset.issuer);
-        queryBuilder.where(`${prefix}assetcode = ?`, asset.code);
-      } else {
-        if (asset.code.toUpperCase() !== "XLM") {
-          throw new UserInputError("Set issuer or use code XLM");
-        }
-        queryBuilder.where(`${prefix}assettype = ?`, stellar.xdr.AssetType.assetTypeNative().value);
-      }
+  private appendAsset(queryBuilder: any, prefix: string, assetId?: string) {
+    if (!assetId) {
+      return;
     }
+
+    const asset = AssetFactory.fromId(assetId);
+    queryBuilder.where(
+      `${prefix}asset = ?`,
+      asset
+        .toXDRObject()
+        .toXDR()
+        .toString("base64")
+    );
   }
 }
