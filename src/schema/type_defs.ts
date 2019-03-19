@@ -2,6 +2,7 @@ import { gql } from "apollo-server";
 
 export const typeDefs = gql`
   scalar AssetCode
+  scalar AssetID
   scalar OfferID
   scalar TimeBounds
   scalar MemoValue

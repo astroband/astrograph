@@ -1,8 +1,8 @@
 // This module holds definitions of operations data types,
 // which we serve from GraphQL server. These are "processed" counterparts
 // of data that is stored in Dgraph
+import { Asset } from "stellar-sdk";
 import { AccountID } from "./account_id";
-import { Asset } from "./asset";
 
 export enum OperationKinds {
   Payment = "payment",
@@ -14,19 +14,20 @@ export enum OperationKinds {
   CreateAccount = "createAccount",
   ManageData = "manageDatum",
   ManageOffer = "manageOffer",
+  CreatePassiveOffer = "createPassiveOffer",
   PathPayment = "pathPayment"
 }
 
 export interface IBaseOperation {
   kind: OperationKinds;
-  account: AccountID;
+  opSource: AccountID | null;
+  txSource: AccountID;
   transactionId: string;
   index: number;
   dateTime: Date;
 }
 
 export interface IPaymentOperation extends IBaseOperation {
-  source: AccountID | null;
   destination: AccountID;
   asset: Asset;
   amount: string;
@@ -83,6 +84,8 @@ export interface IManageOfferOperation extends IBaseOperation {
   offerId: string;
   price: number;
   priceComponents: { n: string; d: string };
+  assetBuying: Asset;
+  assetSelling: Asset;
 }
 
 export interface IPathPaymentOperation extends IBaseOperation {

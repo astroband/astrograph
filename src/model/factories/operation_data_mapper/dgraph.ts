@@ -30,7 +30,8 @@ export class DataMapper {
   constructor(private data: DgraphOperationsData) {
     this.baseData = {
       kind: data["op.kind"],
-      account: data["op.source"][accountIdPredicate],
+      txSource: data["op.source"][accountIdPredicate],
+      opSource: data["op.source"][accountIdPredicate],
       index: parseInt(data["op.index"], 10),
       dateTime: new Date(data["op.ledger"].close_time),
       transactionId: data["op.transaction"]["tx.id"]
@@ -57,6 +58,8 @@ export class DataMapper {
         return this.mapManageData();
       case OperationKinds.ManageOffer:
         return this.mapManageOffer();
+      case OperationKinds.CreatePassiveOffer:
+        return this.mapManageOffer(); // hack just to compile
       case OperationKinds.PathPayment:
         return this.mapPathPayment();
     }

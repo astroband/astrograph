@@ -1,7 +1,6 @@
 import stellar from "stellar-base";
-import { Asset } from "stellar-sdk";
+import { Asset } from "../";
 import { MAX_INT64 } from "../../util";
-import AssetBuilder from "../../util/asset";
 import { Account } from "../account";
 import { ITrustLine, TrustLine } from "../trust_line";
 
@@ -25,7 +24,7 @@ export class TrustLineFactory {
       balance: row.balance,
       limit: row.tlimit,
       lastModified: row.lastmodified,
-      asset: AssetBuilder.build(row.assettype, row.assetcode, row.issuer),
+      asset: Asset.fromDb(row.assettype, row.assetcode, row.issuer),
       authorized: (row.flags & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0
     };
 
