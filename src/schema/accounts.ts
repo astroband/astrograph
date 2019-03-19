@@ -39,7 +39,6 @@ export const typeDefs = gql`
     signers: [Signer]
     data: [DataEntry]
     trustLines: [TrustLine]
-    signerFor(first: Int!): [Account!]
     operations(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
