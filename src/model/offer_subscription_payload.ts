@@ -1,6 +1,6 @@
-import { OfferValuesFactory } from "./factories/offer_values_factory";
+import { Asset } from "stellar-sdk";
 
-import { Asset } from "./asset";
+import { OfferValuesFactory } from "./factories/offer_values_factory";
 import { IMutationType, MutationType } from "./mutation_type";
 import { OfferValues } from "./offer_values";
 

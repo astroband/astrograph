@@ -1,6 +1,5 @@
+import { Asset } from "stellar-base";
 import { TrustLineValuesFactory } from "./factories/trust_line_values_factory";
-
-import { Asset } from "./asset";
 import { IMutationType, MutationType } from "./mutation_type";
 import { TrustLineValues } from "./trust_line_values";
 
@@ -21,7 +20,7 @@ export class NativeTrustLineSubscriptionPayload implements IMutationType {
     }
   }
 
-  get asset(): Asset {
+  get asset() {
     return Asset.native();
   }
 }

@@ -1,4 +1,4 @@
-import { Asset } from "./asset";
+import { Asset } from "stellar-sdk";
 import { IOfferBase } from "./offer";
 
 export type IOfferValues = IOfferBase;

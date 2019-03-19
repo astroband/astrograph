@@ -1,5 +1,5 @@
+import { Asset } from "stellar-sdk";
 import { AccountID } from "./account_id";
-import { Asset } from "./asset";
 import { AssetCode } from "./asset_code";
 
 export enum OperationKinds {

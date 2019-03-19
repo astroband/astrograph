@@ -4,7 +4,6 @@ export * from "./account_thresholds";
 export * from "./account_flags";
 export * from "./account_values";
 export * from "./account_subscription_payload";
-export * from "./asset";
 export * from "./asset_input";
 export * from "./data_entry";
 export * from "./data_entry_subscription_payload";

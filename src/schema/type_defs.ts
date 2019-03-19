@@ -3,7 +3,6 @@ import { gql } from "apollo-server";
 export const typeDefs = gql`
   scalar AssetCode
   scalar AssetID
-  scalar OfferID
   scalar TimeBounds
   scalar MemoValue
   scalar DateTime
@@ -128,44 +127,6 @@ export const typeDefs = gql`
     values: TrustLineValues
   }
 
-  interface IOffer {
-    id: OfferID!
-    seller: Account!
-    selling: Asset!
-    buying: Asset!
-    amount: Float!
-    price: String!
-    passive: Boolean!
-  }
-
-  type Offer implements IOffer {
-    id: OfferID!
-    seller: Account!
-    selling: Asset!
-    buying: Asset!
-    amount: Float!
-    price: String!
-    passive: Boolean!
-    ledger: Ledger!
-  }
-
-  type OfferValues implements IOffer {
-    id: OfferID!
-    seller: Account!
-    selling: Asset!
-    buying: Asset!
-    amount: Float!
-    price: String!
-    passive: Boolean!
-  }
-
-  type OfferSubscriptionPayload {
-    accountID: AccountID!
-    mutationType: MutationType!
-    offerID: OfferID!
-    values: OfferValues
-  }
-
   input AssetInput {
     code: AssetCode
     issuer: AccountID
@@ -177,32 +138,11 @@ export const typeDefs = gql`
     idIn: [AccountID!]
   }
 
-  input OfferEventInput {
-    mutationTypeIn: [MutationType!]
-    idEq: AccountID
-    idIn: [AccountID!]
-    buyingAssetEq: AssetInput
-    sellingAssetEq: AssetInput
-  }
-
-  enum OfferOrderByInput {
-    id_DESC
-    id_ASC
-  }
-
   type Query {
     assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
     trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger!
     ledgers(seq: [Int!]): [Ledger]!
-    offers(
-      seller: AccountID
-      selling: AssetInput
-      buying: AssetInput
-      orderBy: OfferOrderByInput
-      first: Int!
-      offset: Int
-    ): [Offer]
   }
 
   type Subscription {
@@ -210,7 +150,6 @@ export const typeDefs = gql`
 
     trustLine(args: EventInput): TrustLineSubscriptionPayload
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
-    offer(args: OfferEventInput): OfferSubscriptionPayload
   }
 
 `;

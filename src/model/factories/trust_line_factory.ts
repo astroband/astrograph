@@ -1,8 +1,8 @@
-import stellar from "stellar-base";
-import { Asset } from "../";
+import { Asset, xdr as XDR } from "stellar-base";
 import { MAX_INT64 } from "../../util";
 import { Account } from "../account";
 import { ITrustLine, TrustLine } from "../trust_line";
+import { AssetFactory } from "./";
 
 export interface ITrustLineTableRow {
   accountid: string;
@@ -24,8 +24,8 @@ export class TrustLineFactory {
       balance: row.balance,
       limit: row.tlimit,
       lastModified: row.lastmodified,
-      asset: Asset.fromDb(row.assettype, row.assetcode, row.issuer),
-      authorized: (row.flags & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0
+      asset: AssetFactory.fromDb(row.assettype, row.assetcode, row.issuer),
+      authorized: (row.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0
     };
 
     return new TrustLine(data);
