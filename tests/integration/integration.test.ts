@@ -13,7 +13,6 @@ Network.useTestNetwork();
 const testCases = [
   "Assets",
   "Single account query",
-  "Accounts signed by",
   "Ledgers",
   "Trust lines"
 ];
