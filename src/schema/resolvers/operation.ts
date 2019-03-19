@@ -1,6 +1,5 @@
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
-import { OperationFactory } from "../../model/factories/operation_factory";
 import { Operation, OperationKinds } from "../../model/operation";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
 
@@ -71,14 +70,6 @@ export default {
       resolve(payload: any, args: any, ctx: any, info: any) {
         return payload;
       }
-    }
-  },
-  Query: {
-    async accountOperations(root: any, args: any, ctx: any, info: any) {
-      const { account, first, cursor, order } = args;
-      const data = await ctx.dataSources.horizon.getAccountOperations(account, first, order, cursor);
-
-      return data.map(OperationFactory.fromHorizon);
     }
   }
 };
