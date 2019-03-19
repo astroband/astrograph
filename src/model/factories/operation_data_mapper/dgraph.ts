@@ -58,6 +58,8 @@ export class DataMapper {
         return this.mapManageData();
       case OperationKinds.ManageOffer:
         return this.mapManageOffer();
+      case OperationKinds.CreatePassiveOffer:
+        return this.mapManageOffer(); // hack just to compile
       case OperationKinds.PathPayment:
         return this.mapPathPayment();
     }

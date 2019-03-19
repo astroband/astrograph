@@ -134,7 +134,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    accountOperations(account: AccountID!, first: Int!, order: SortOrder, cursor: String): [IOperation]
+    accountOperations(account: AccountID!, first: Int!, order: SortOrder, cursor: String): [Operation]
   }
 
   extend type Subscription {
@@ -144,7 +144,7 @@ export const typeDefs = gql`
       kind: [OperationKind]
       destination: [AccountID]
       asset: [AssetID]
-    ): IOperation!
+    ): Operation!
   }
 
 `;

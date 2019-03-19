@@ -1,12 +1,11 @@
 import { withFilter } from "graphql-subscriptions";
-import _ from "lodash";
 import { Asset } from "stellar-base";
 import { OperationFactory } from "../../model/factories/operation_factory";
 import { Operation, OperationKinds } from "../../model/operation";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
 
 export default {
-  IOperation: {
+  Operation: {
     __resolveType(obj: any, context: any, info: any) {
       switch (obj.kind) {
         case OperationKinds.Payment:
@@ -39,7 +38,6 @@ export default {
       subscribe: withFilter(
         () => pubsub.asyncIterator(NEW_OPERATION),
         (payload: Operation, vars) => {
-          console.log(payload.opSource);
           if (vars.txSource && !vars.txSource.includes(payload.txSource)) {
             return false;
           }

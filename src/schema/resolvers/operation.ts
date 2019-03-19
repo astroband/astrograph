@@ -1,9 +1,8 @@
-import _ from "lodash";
-import { OperationKinds } from "../../model/operation";
-import { Connection } from "../../storage/connection";
-import { AccountOperationsQuery } from "../../storage/queries/account_operations";
-import { AssetOperationsQuery } from "../../storage/queries/asset_operations";
-import { typeDefs as horizonSchema } from "../horizon";
+import { withFilter } from "graphql-subscriptions";
+import { Asset } from "stellar-base";
+import { OperationFactory } from "../../model/factories/operation_factory";
+import { Operation, OperationKinds } from "../../model/operation";
+import { NEW_OPERATION, pubsub } from "../../pubsub";
 
 export default {
   Operation: {
@@ -34,32 +33,52 @@ export default {
       return null;
     }
   },
+  Subscription: {
+    operations: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(NEW_OPERATION),
+        (payload: Operation, vars) => {
+          if (vars.txSource && !vars.txSource.includes(payload.txSource)) {
+            return false;
+          }
+
+          if (vars.opSource && !vars.opSource.includes(payload.opSource)) {
+            return false;
+          }
+
+          if (vars.kind && !vars.kind.includes(payload.kind)) {
+            return false;
+          }
+
+          if (vars.destination && !("destination" in payload && vars.destination.includes(payload.destination))) {
+            return false;
+          }
+
+          if (vars.asset) {
+            return Object.entries(payload).some(([key, value]) => {
+              if (!(value instanceof Asset)) {
+                return false;
+              }
+
+              return vars.asset.includes(value.toString());
+            });
+          }
+
+          return true;
+        }
+      ),
+
+      resolve(payload: any, args: any, ctx: any, info: any) {
+        return payload;
+      }
+    }
+  },
   Query: {
-    assetOperations(root: any, args: any, ctx: any, info: any) {
-      const { asset, kinds, first, offset } = args;
-      const conn = new Connection();
+    async accountOperations(root: any, args: any, ctx: any, info: any) {
+      const { account, first, cursor, order } = args;
+      const data = await ctx.dataSources.horizon.getAccountOperations(account, first, order, cursor);
 
-      const query = new AssetOperationsQuery(conn, asset, kinds, first, offset);
-
-      return query.call();
-    },
-    dgraphAccountOperations(root: any, args: any, ctx: any, info: any) {
-      const { account, kinds, first, offset, filters } = args;
-      const conn = new Connection();
-
-      const query = new AccountOperationsQuery(conn, account, kinds, filters, first, offset);
-
-      return query.call();
-    },
-    accountOperations(root: any, args: any, context: any, info: any) {
-      return info.mergeInfo.delegateToSchema({
-        schema: horizonSchema,
-        operations: "query",
-        fieldName: "accountOperations",
-        args,
-        context,
-        info
-      });
+      return data.map(OperationFactory.fromHorizon);
     }
   }
 };
