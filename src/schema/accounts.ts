@@ -80,8 +80,6 @@ export const typeDefs = gql`
   extend type Query {
     account(id: AccountID!): Account
     accounts(id: [AccountID!]!): [Account]
-    accountsSignedBy(id: AccountID!, first: Int!): [Account!]
-    signers(id: AccountID!): [Signer]
   }
 
   extend type Subscription {

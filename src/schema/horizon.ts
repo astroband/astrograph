@@ -133,10 +133,6 @@ export const typeDefs = gql`
     asc
   }
 
-  extend type Query {
-    accountOperations(account: AccountID!, first: Int!, order: SortOrder, cursor: String): [Operation]
-  }
-
   extend type Subscription {
     operations(
       txSource: [AccountID]
