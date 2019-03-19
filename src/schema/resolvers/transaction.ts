@@ -15,7 +15,7 @@ export default {
   },
   Query: {
     async transaction(root: any, args: any, ctx: any, info: any) {
-      const records = await ctx.dataSources.horizon.getTransactionsById([args.id]);
+      const records = await ctx.dataSources.horizon.getTransactionsByIds([args.id]);
       return TransactionWithXDRFactory.fromHorizon(records[0]);
     },
     async transactions(root: any, args: any, ctx: any, info: any) {

@@ -1,4 +1,5 @@
 import { RESTDataSource } from "apollo-datasource-rest";
+import { AccountID } from "../model/account_id";
 import { IHorizonOperationData, IHorizonTransactionData } from "./types";
 
 export type OperationsParent = "transaction" | "account" | "ledger";
@@ -32,14 +33,9 @@ export default class HorizonAPI extends RESTDataSource {
   }
 
   public async getTransactionsByIds(transactionIds: string[]): Promise<IHorizonTransactionData[]> {
-    const promises = transactionIds.map(id => this.get(`transactions/${id}`));
+    const promises = transactionIds.map(id => this.request(`transactions/${id}`));
 
-    return Promise.all(promises).then(responses => {
-      responses.forEach((record: IHorizonTransactionData & { _links: object }) => {
-        delete record._links;
-      });
-      return responses;
-    });
+    return Promise.all(promises);
   }
 
   public async getTransactions(
@@ -47,18 +43,48 @@ export default class HorizonAPI extends RESTDataSource {
     order: "asc" | "desc" = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
-    const params: { limit: number; order: string; cursor?: string } = { limit, order };
+    return this.request("transactions", limit, order, cursor);
+  }
 
-    if (cursor) {
-      params.cursor = cursor;
-    }
+  public async getAccountTransactions(
+    accountId: AccountID,
+    limit: number,
+    order: "asc" | "desc" = "desc",
+    cursor?: string
+  ): Promise<IHorizonTransactionData[]> {
+    return this.request(`accounts/${accountId}/transactions`, limit, order, cursor);
+  }
 
-    const response = await this.get("transactions", params);
+  public async getLedgerTransactions(
+    ledgerSeq: number,
+    limit: number,
+    order: "asc" | "desc" = "desc",
+    cursor?: string
+  ): Promise<IHorizonTransactionData[]> {
+    return this.request(`ledgers/${ledgerSeq}/transactions`, limit, order, cursor);
+  }
 
-    response._embedded.records.forEach((record: any) => {
-      delete record._links;
+  private async request(url: string, limit?: number, order?: "asc" | "desc", cursor?: string) {
+    const params = { limit, order, cursor };
+
+    Object.keys(params).forEach(key => {
+      if (!params[key]) {
+        delete params[key];
+      }
     });
 
-    return response._embedded.records;
+    const response = await this.get(url, params);
+
+    if (response._embedded) {
+      response._embedded.records.forEach((record: any) => {
+        delete record._links;
+      });
+
+      return response._embedded.records;
+    }
+
+    delete response._links;
+
+    return response;
   }
 }
