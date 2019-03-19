@@ -165,19 +165,6 @@ export const typeDefs = gql`
     values: OfferValues
   }
 
-  type Transaction {
-    id: String!
-    ledger: Ledger!
-    index: Int!
-    memo: Memo
-    feeAmount: String!
-    sourceAccount: String!
-    timeBounds: TimeBounds
-    feeCharged: String!
-    success: Boolean!
-    resultCode: Int!
-  }
-
   input AssetInput {
     code: AssetCode
     issuer: AccountID
@@ -207,8 +194,6 @@ export const typeDefs = gql`
     trustLines(id: AccountID!): [TrustLine]
     ledger(seq: Int!): Ledger!
     ledgers(seq: [Int!]): [Ledger]!
-    transaction(id: String!): Transaction
-    transactions(id: [String!]): [Transaction]
     offers(
       seller: AccountID
       selling: AssetInput

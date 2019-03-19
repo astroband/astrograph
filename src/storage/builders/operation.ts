@@ -39,7 +39,7 @@ export class OperationBuilder extends Builder {
     this.current = NQuad.blank(OperationBuilder.key(tx.ledgerSeq, this.index, n));
 
     if (n > 0) {
-      this.prev = NQuad.blank(OperationBuilder.key(tx.ledgerSeq, tx.index, n - 1));
+      this.prev = NQuad.blank(OperationBuilder.key(tx.ledgerSeq, this.index, n - 1));
     }
 
     this.xdr = tx.operationsXDR[n];
@@ -94,7 +94,7 @@ export class OperationBuilder extends Builder {
   }
 
   protected pushRoot() {
-    const tx = TransactionBuilder.keyNQuad(this.tx.ledgerSeq, this.tx.index);
+    const tx = TransactionBuilder.keyNQuad(this.tx.ledgerSeq, this.index);
 
     const kind = this.xdr.body().switch().name;
 
