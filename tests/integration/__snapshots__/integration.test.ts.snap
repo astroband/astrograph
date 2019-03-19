@@ -1,42 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Integration tests Accounts signed by 1`] = `
-Object {
-  "accountsSignedBy": Array [
-    Object {
-      "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
-      "ledger": Object {
-        "seq": 4,
-      },
-      "signers": null,
-      "trustLines": Array [
-        Object {
-          "asset": Object {
-            "code": "XLM",
-          },
-          "authorized": true,
-        },
-      ],
-    },
-    Object {
-      "id": "GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC",
-      "ledger": Object {
-        "seq": 3,
-      },
-      "signers": null,
-      "trustLines": Array [
-        Object {
-          "asset": Object {
-            "code": "XLM",
-          },
-          "authorized": true,
-        },
-      ],
-    },
-  ],
-}
-`;
-
 exports[`Integration tests Assets 1`] = `
 Object {
   "assets": Array [
