@@ -20,7 +20,7 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
   }
 
   if (opObject.kind === OperationKinds.PathPayment && tx.success) {
-    opObject.amountSent = getSentAmount(tx, index, opObject.destinationAccount);
+    opObject.amountSent = getSentAmount(tx, index, opSource);
   }
 
   delete opObject.source;
@@ -34,17 +34,17 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
   };
 }
 
-function getSentAmount(tx: TransactionWithXDR, index: number, destination: AccountID) {
+function getSentAmount(tx: TransactionWithXDR, index: number, source: AccountID) {
   const changes = ChangesExtractor.call(tx)[index + 1].filter(c => {
     return (
       c.type === ChangeType.Updated &&
       (c.entry === EntryType.Trustline || c.entry === EntryType.Account) &&
-      publicKeyFromXDR(c.data.value()) === destination
+      publicKeyFromXDR(c.data.value()) === source
     );
   });
 
   const lastChange = changes[changes.length - 1];
   const data = lastChange.entry === EntryType.Account ? lastChange.data.account() : lastChange.data.trustLine();
 
-  return new BigNumber(data.balance().toString()).minus(lastChange.prevState.balance).toString();
+  return new BigNumber(lastChange.prevState.balance).minus(data.balance().toString()).toString();
 }
