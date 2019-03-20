@@ -1,6 +1,5 @@
-import stellar from "stellar-base";
+import { Asset, xdr as XDR } from "stellar-base";
 
-import { Asset } from "../asset";
 import { IOfferValues, OfferValues } from "../offer_values";
 
 import { publicKeyFromBuffer } from "../../util/xdr";
@@ -20,7 +19,7 @@ export class OfferValuesFactory {
       price: xdr.price().toString(),
       priceN: xdr.price().n(),
       priceD: xdr.price().d(),
-      passive: (xdr.flags().value && stellar.xdr.OfferEntryFlags.passiveFlag().value) > 0
+      passive: (xdr.flags().value && XDR.OfferEntryFlags.passiveFlag().value) > 0
     };
 
     return new OfferValues(data);

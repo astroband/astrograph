@@ -1,10 +1,9 @@
-import { Account, Asset, MutationType, Offer } from "../../model";
-
 import { withFilter } from "graphql-subscriptions";
 import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
 
 import { db } from "../../database";
-
+import { Account, MutationType, Offer } from "../../model";
+import { AssetFactory } from "../../model/factories";
 import { OFFER, pubsub } from "../../pubsub";
 
 const accountResolver = createBatchResolver<Offer, Account>((source: any) =>
@@ -13,8 +12,8 @@ const accountResolver = createBatchResolver<Offer, Account>((source: any) =>
 
 const offerMatches = (variables: any, payload: any): boolean => {
   if (eventMatches(variables.args, payload.id, payload.mutationType)) {
-    const selling = Asset.fromInput(variables.args.sellingAssetEq);
-    const buying = Asset.fromInput(variables.args.buyingAssetEq);
+    const selling = AssetFactory.fromInput(variables.args.sellingAssetEq);
+    const buying = AssetFactory.fromInput(variables.args.buyingAssetEq);
 
     if ((selling || buying) && payload.mutationType === MutationType.Remove) {
       return false;
