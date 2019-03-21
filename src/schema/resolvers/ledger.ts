@@ -1,7 +1,7 @@
 import { db } from "../../database";
 import { Ledger, LedgerHeader } from "../../model";
 import { pubsub } from "../../pubsub";
-import { createBatchResolver } from "./util";
+import { createBatchResolver, transactionsResolver } from "./util";
 
 const LEDGER_CREATED = "LEDGER_CREATED";
 
@@ -11,7 +11,8 @@ const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>((source: 
 
 export default {
   Ledger: {
-    header: ledgerHeaderResolver
+    header: ledgerHeaderResolver,
+    transactions: transactionsResolver
   },
   Query: {
     ledger(root: any, args: any, ctx: any, info: any) {

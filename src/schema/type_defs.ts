@@ -61,6 +61,7 @@ export const typeDefs = gql`
   type Ledger {
     seq: Int!
     header: LedgerHeader
+    transactions(first: Int, last: Int, before: String, after: String): TransactionConnection
   }
 
   type Asset {
