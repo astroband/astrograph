@@ -84,7 +84,7 @@ export default class OffersRepo {
     return this.db.one(queryBuilder.toString(), [], c => +c.count);
   }
 
-  public async getBestBid(selling: Asset, buying: Asset) {
+  public async getBestAsk(selling: Asset, buying: Asset) {
     const queryBuilder = squel
       .select()
       .field("MIN(price)", "minPrice")
@@ -94,18 +94,6 @@ export default class OffersRepo {
     this.appendAsset(queryBuilder, "buying", buying.toString());
 
     return this.db.one(queryBuilder.toString(), [], r => r.minPrice);
-  }
-
-  public async getBestAsk(selling: Asset, buying: Asset) {
-    const queryBuilder = squel
-      .select()
-      .field("MAX(price)", "maxPrice")
-      .from("offers");
-
-    this.appendAsset(queryBuilder, "buying", selling.toString());
-    this.appendAsset(queryBuilder, "selling", buying.toString());
-
-    return this.db.one(queryBuilder.toString(), [], r => r.maxPrice);
   }
 
   private appendAsset(queryBuilder: any, prefix: string, assetId?: string) {
