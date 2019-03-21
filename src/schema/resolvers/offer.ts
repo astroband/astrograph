@@ -11,21 +11,26 @@ const accountResolver = createBatchResolver<Offer, Account>((source: any) =>
 );
 
 const offerMatches = (variables: any, payload: any): boolean => {
-  if (eventMatches(variables.args, payload.id, payload.mutationType)) {
-    const selling = AssetFactory.fromInput(variables.args.sellingAssetEq);
-    const buying = AssetFactory.fromInput(variables.args.buyingAssetEq);
+  const sellingAssetEq = variables.args.sellingAssetEq;
+  const buyingAssetEq = variables.args.buyingAssetEq;
 
-    if ((selling || buying) && payload.mutationType === MutationType.Remove) {
-      return false;
-    }
+  if (!eventMatches(variables.args, payload.id, payload.mutationType)) {
+    return false;
+  }
 
-    if (selling && payload.selling && !selling.equals(payload.selling)) {
-      return false;
-    }
+  const selling = sellingAssetEq ? AssetFactory.fromInput(sellingAssetEq) : undefined;
+  const buying = buyingAssetEq ? AssetFactory.fromInput(buyingAssetEq) : undefined;
 
-    if (buying && payload.buying && !buying.equals(payload.buying)) {
-      return false;
-    }
+  if ((selling || buying) && payload.mutationType === MutationType.Remove) {
+    return false;
+  }
+
+  if (selling && payload.selling && !selling.equals(payload.selling)) {
+    return false;
+  }
+
+  if (buying && payload.buying && !buying.equals(payload.buying)) {
+    return false;
   }
 
   return true;
@@ -50,6 +55,11 @@ export default {
     selling: assetResolver,
     buying: assetResolver,
     ledger: ledgerResolver
+  },
+  OfferValues: {
+    seller: accountResolver,
+    selling: assetResolver,
+    buying: assetResolver
   },
   Query: {
     offers(root: any, args: any, ctx: any, info: any) {
