@@ -1,5 +1,6 @@
 import { IDatabase } from "pg-promise";
 import squel from "squel";
+import { Asset } from "stellar-sdk";
 import { AssetFactory, OfferFactory } from "../model/factories";
 
 export default class OffersRepo {
@@ -59,6 +60,30 @@ export default class OffersRepo {
       .from("offers");
 
     return this.db.one(queryBuilder.toString(), [], c => +c.count);
+  }
+
+  public async getBestBid(selling: Asset, buying: Asset) {
+    const queryBuilder = squel
+      .select()
+      .field("MIN(price)", "minPrice")
+      .from("offers");
+
+    this.appendAsset(queryBuilder, "selling", selling.toString());
+    this.appendAsset(queryBuilder, "buying", buying.toString());
+
+    return this.db.one(queryBuilder.toString(), [], r => r.minPrice);
+  }
+
+  public async getBestAsk(selling: Asset, buying: Asset) {
+    const queryBuilder = squel
+      .select()
+      .field("MAX(price)", "maxPrice")
+      .from("offers");
+
+    this.appendAsset(queryBuilder, "buying", selling.toString());
+    this.appendAsset(queryBuilder, "selling", buying.toString());
+
+    return this.db.one(queryBuilder.toString(), [], r => r.maxPrice);
   }
 
   private appendAsset(queryBuilder: any, prefix: string, assetId?: string) {

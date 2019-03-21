@@ -54,6 +54,13 @@ export const typeDefs = gql`
     id_ASC
   }
 
+  type Tick {
+    selling: AssetID
+    buying: AssetID
+    bestBid: Float
+    bestAsk: Float
+  }
+
   extend type Query {
     offers(
       seller: AccountID
@@ -67,6 +74,7 @@ export const typeDefs = gql`
 
   extend type Subscription {
     offer(args: OfferEventInput): OfferSubscriptionPayload
+    tick(selling: AssetID, buying: AssetID): Tick
   }
 
 `;

@@ -26,7 +26,7 @@ export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
 
       for (const changes of changesGroups) {
         for (const change of changes) {
-          if (change.entry !== "account") {
+          if (change.entry !== EntryType.Account) {
             this.pushChanges(change);
             continue;
           }

@@ -4,7 +4,7 @@ import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from
 import { db } from "../../database";
 import { Account, MutationType, Offer } from "../../model";
 import { AssetFactory } from "../../model/factories";
-import { OFFER, pubsub } from "../../pubsub";
+import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
 const accountResolver = createBatchResolver<Offer, Account>((source: any) =>
   db.accounts.findAllByIDs(source.map((r: Offer) => r.sellerID))
@@ -77,6 +77,17 @@ export default {
     }
   },
   Subscription: {
-    offer: offerSubscription(OFFER)
+    offer: offerSubscription(OFFER),
+    tick: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(OFFERS_TICK),
+        (payload, variables) => {
+          return payload.selling === variables.selling && payload.buying === variables.buying;
+        }
+      ),
+      resolve(payload: any, args: any, ctx: any, info: any) {
+        return payload;
+      }
+    }
   }
 };
