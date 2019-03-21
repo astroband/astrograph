@@ -81,9 +81,7 @@ export default {
     tick: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(OFFERS_TICK),
-        (payload, variables) => {
-          return payload.selling === variables.selling && payload.buying === variables.buying;
-        }
+        (payload, variables) => payload.selling === variables.selling && payload.buying === variables.buying
       ),
       resolve(payload: any, args: any, ctx: any, info: any) {
         return payload;

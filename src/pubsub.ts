@@ -57,11 +57,14 @@ export class Publisher {
             const selling = offerAssets.selling;
             const buying = offerAssets.buying;
 
+            const bestAsk = await db.offers.getBestAsk(selling, buying);
+            const bestAskInv = await db.offers.getBestAsk(buying, selling);
+
             pubsub.publish(OFFERS_TICK, {
               selling: selling.toString(),
               buying: buying.toString(),
-              bestBid: await db.offers.getBestBid(selling, buying),
-              bestAsk: await db.offers.getBestAsk(selling, buying)
+              bestAsk,
+              bestBid: 1 / bestAskInv
             });
 
             Publisher.updateOffersCache(entry);
