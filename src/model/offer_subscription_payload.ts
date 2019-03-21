@@ -16,7 +16,7 @@ export class OfferSubscriptionPayload implements IMutationType {
 
   constructor(mutationType: MutationType, xdr: any) {
     this.mutationType = mutationType;
-    this.offerId = xdr.offerId();
+    this.offerId = xdr.offerId().toString();
     this.accountID = publicKeyFromBuffer(xdr.sellerId().value());
 
     if (mutationType !== MutationType.Remove) {

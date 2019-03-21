@@ -53,6 +53,28 @@ export default class OffersRepo {
     return res.map(a => OfferFactory.fromDb(a));
   }
 
+  public async getIdAssetsMap() {
+    const queryBuilder = squel
+      .select()
+      .field("offerid")
+      .field("sellingasset")
+      .field("buyingasset")
+      .from("offers");
+
+    const rows = await this.db.manyOrNone(queryBuilder.toString());
+
+    const res: Map<string, { selling: Asset; buying: Asset }> = new Map();
+
+    rows.forEach(row => {
+      res.set(row.offerid, {
+        selling: AssetFactory.fromXDR(row.sellingasset),
+        buying: AssetFactory.fromXDR(row.buyingasset)
+      });
+    });
+
+    return res;
+  }
+
   public async count() {
     const queryBuilder = squel
       .select()

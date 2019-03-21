@@ -1,5 +1,6 @@
 import PostgresPubSub from "@udia/graphql-postgres-subscriptions";
 import { Client } from "pg";
+import { Asset } from "stellar-sdk";
 import { db } from "./database";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger, LedgerHeader, MutationType, OfferSubscriptionPayload, TransactionWithXDR } from "./model";
@@ -33,6 +34,8 @@ export const OFFER = "OFFER";
 export const NEW_OPERATION = "NEW_OPERATION";
 export const OFFERS_TICK = "OFFERS_TICK";
 
+let offersCache: Map<string, { selling: Asset; buying: Asset }>;
+
 export class Publisher {
   public static async publish(header: LedgerHeader, transactions: TransactionWithXDR[]) {
     const collection = new SubscriptionPayloadCollection(transactions);
@@ -41,17 +44,28 @@ export class Publisher {
 
     for (const entry of collection) {
       for (const m of Publisher.eventMap) {
-        if (m.payloadClassName === entry.constructor.name) {
-          pubsub.publish(m.event, entry);
+        if (m.payloadClassName !== entry.constructor.name) {
+          continue;
         }
 
-        if (entry instanceof OfferSubscriptionPayload && entry.mutationType !== MutationType.Remove) {
-          pubsub.publish(OFFERS_TICK, {
-            selling: entry.selling!.toString(),
-            buying: entry.buying!.toString(),
-            bestBid: await db.offers.getBestBid(entry.selling!, entry.buying!),
-            bestAsk: await db.offers.getBestAsk(entry.selling!, entry.buying!)
-          });
+        pubsub.publish(m.event, entry);
+
+        if (entry instanceof OfferSubscriptionPayload) {
+          const offerAssets = offersCache.get(entry.offerId);
+
+          if (offerAssets) {
+            const selling = offerAssets.selling;
+            const buying = offerAssets.buying;
+
+            pubsub.publish(OFFERS_TICK, {
+              selling: selling.toString(),
+              buying: buying.toString(),
+              bestBid: await db.offers.getBestBid(selling, buying),
+              bestAsk: await db.offers.getBestAsk(selling, buying)
+            });
+
+            Publisher.updateOffersCache(entry);
+          }
         }
       }
     }
@@ -63,6 +77,10 @@ export class Publisher {
     }
   }
 
+  public static async cacheOffers() {
+    offersCache = await db.offers.getIdAssetsMap();
+  }
+
   private static eventMap = [
     { payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT },
     { payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE },
@@ -70,4 +88,19 @@ export class Publisher {
     { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY },
     { payloadClassName: "OfferSubscriptionPayload", event: OFFER }
   ];
+
+  private static updateOffersCache(entry: OfferSubscriptionPayload) {
+    switch (entry.mutationType) {
+      case MutationType.Remove:
+        offersCache.delete(entry.offerId);
+        break;
+      case MutationType.Create:
+      case MutationType.Update:
+        offersCache.set(entry.offerId, {
+          selling: entry.selling!,
+          buying: entry.buying!
+        });
+        break;
+    }
+  }
 }
