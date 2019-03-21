@@ -70,6 +70,7 @@ export const typeDefs = gql`
       first: Int!
       offset: Int
     ): [Offer]
+    tick(selling: AssetID!, buying: AssetID!): Tick
   }
 
   extend type Subscription {
