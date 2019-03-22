@@ -1,8 +1,8 @@
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Asset, Memo } from "stellar-sdk";
-import { OperationsParent } from "../../datasource/horizon";
+import HorizonAPI from "../../datasource/horizon";
 import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
-import { Account, Ledger, MutationType, Operation, Transaction } from "../../model";
+import { Account, Ledger, MutationType, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 
 export function createBatchResolver<T, R>(loadFn: any) {
@@ -48,26 +48,20 @@ export function eventMatches(args: any, id: string, mutationType: MutationType):
 }
 
 export async function operationsResolver(obj: any, args: any, ctx: any) {
-  let parent: OperationsParent;
+  let data: IHorizonOperationData[];
+  const dataSource: HorizonAPI = ctx.dataSources.horizon;
+  const { first, after, last, before } = args;
+  const pagingArgs = [first || last, last ? "asc" : "desc", last ? before : after];
 
   if (obj instanceof Transaction) {
-    parent = "transaction";
+    data = await dataSource.getTransactionOperations(obj.id, ...pagingArgs);
   } else if (obj instanceof Account) {
-    parent = "account";
+    data = await dataSource.getAccountOperations(obj.id, ...pagingArgs);
   } else if (obj instanceof Ledger) {
-    parent = "ledger";
+    data = await dataSource.getLedgerOperations(obj.id, ...pagingArgs);
   } else {
     throw new Error(`Cannot fetch operations for ${obj.constructor}`);
   }
-
-  const { first, after, last, before } = args;
-  let data = await ctx.dataSources.horizon.getOperations(
-    parent,
-    obj.id,
-    first || last,
-    last ? "asc" : "desc",
-    last ? before : after
-  );
 
   // we must keep descending ordering, because Horizon doesn't do it,
   // when you request the previous page
@@ -83,7 +77,7 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
   });
 
   return {
-    nodes: edges.map((edge: { node: Operation; cursor: string }) => edge.node),
+    nodes: edges.map(edge => edge.node),
     edges,
     pageInfo: {
       startCursor: data.length !== 0 ? data[0].paging_token : null,

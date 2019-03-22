@@ -49,21 +49,6 @@ export const typeDefs = gql`
     type: MemoType!
   }
 
-  type LedgerHeader {
-    ledgerVersion: Int!
-    previousLedgerHash: String!
-    txSetResultHash: String!
-    baseFee: Int!
-    baseReserve: Int!
-    maxTxSetSize: Int!
-  }
-
-  type Ledger {
-    seq: Int!
-    header: LedgerHeader
-    transactions(first: Int, last: Int, before: String, after: String): TransactionConnection
-  }
-
   type Asset {
     native: Boolean!
     issuer: AccountID
@@ -142,13 +127,9 @@ export const typeDefs = gql`
   type Query {
     assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
     trustLines(id: AccountID!): [TrustLine]
-    ledger(seq: Int!): Ledger!
-    ledgers(seq: [Int!]): [Ledger]!
   }
 
   type Subscription {
-    ledgerCreated: Ledger
-
     trustLine(args: EventInput): TrustLineSubscriptionPayload
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
   }

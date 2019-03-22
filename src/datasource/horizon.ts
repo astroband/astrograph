@@ -2,7 +2,7 @@ import { RESTDataSource } from "apollo-datasource-rest";
 import { AccountID } from "../model/account_id";
 import { IHorizonOperationData, IHorizonTransactionData } from "./types";
 
-export type OperationsParent = "transaction" | "account" | "ledger";
+type SortOrder = "desc" | "asc";
 
 export default class HorizonAPI extends RESTDataSource {
   constructor() {
@@ -10,26 +10,20 @@ export default class HorizonAPI extends RESTDataSource {
     this.baseURL = "https://horizon.stellar.org/";
   }
 
-  public async getOperations(
-    parent: OperationsParent,
-    entityId: string,
-    first = 10,
-    order = "desc",
-    cursor?: string
-  ): Promise<IHorizonOperationData[]> {
-    const params: { limit: number; order: string; cursor?: string } = { limit: first, order };
+  public async getOperations(limit = 10, order: SortOrder = "desc", cursor?: string): Promise<IHorizonOperationData[]> {
+    return this.request("operations", limit, order, cursor);
+  }
 
-    if (cursor) {
-      params.cursor = cursor;
-    }
+  public async getAccountOperations(accountId: AccountID, limit = 10, order: SortOrder = "desc", cursor?: string) {
+    return this.request(`accounts/${accountId}/operations`, limit, order, cursor);
+  }
 
-    const data = await this.get(`${parent}s/${entityId}/operations`, params);
+  public async getLedgerOperations(ledgerSeq: number, limit = 10, order: SortOrder = "desc", cursor?: string) {
+    return this.request(`ledgers/${ledgerSeq}/operations`, limit, order, cursor);
+  }
 
-    data._embedded.records.forEach((record: any) => {
-      delete record._links;
-    });
-
-    return data._embedded.records;
+  public async getTransactionOperations(transactionId: string, limit = 10, order: SortOrder = "desc", cursor?: string) {
+    return this.request(`transactions/${transactionId}/operations`, limit, order, cursor);
   }
 
   public async getTransactionsByIds(transactionIds: string[]): Promise<IHorizonTransactionData[]> {
@@ -40,7 +34,7 @@ export default class HorizonAPI extends RESTDataSource {
 
   public async getTransactions(
     limit: number,
-    order: "asc" | "desc" = "desc",
+    order: SortOrder = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
     return this.request("transactions", limit, order, cursor);
@@ -49,7 +43,7 @@ export default class HorizonAPI extends RESTDataSource {
   public async getAccountTransactions(
     accountId: AccountID,
     limit: number,
-    order: "asc" | "desc" = "desc",
+    order: SortOrder = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
     return this.request(`accounts/${accountId}/transactions`, limit, order, cursor);
@@ -58,13 +52,13 @@ export default class HorizonAPI extends RESTDataSource {
   public async getLedgerTransactions(
     ledgerSeq: number,
     limit: number,
-    order: "asc" | "desc" = "desc",
+    order: SortOrder = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
     return this.request(`ledgers/${ledgerSeq}/transactions`, limit, order, cursor);
   }
 
-  private async request(url: string, limit?: number, order?: "asc" | "desc", cursor?: string) {
+  private async request(url: string, limit?: number, order?: SortOrder, cursor?: string) {
     const params = { limit, order, cursor };
 
     Object.keys(params).forEach(key => {
