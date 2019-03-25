@@ -1,4 +1,4 @@
-import stellar from "stellar-base";
+import { Asset, xdr as XDR } from "stellar-base";
 import { Transaction, TransactionWithXDR } from "./model";
 import { AccountValuesFactory } from "./model/factories/account_values_factory";
 
@@ -16,8 +16,8 @@ export enum EntryType {
   Offer = "offer"
 }
 
-const changeType = stellar.xdr.LedgerEntryChangeType;
-const ledgerEntryType = stellar.xdr.LedgerEntryType;
+const changeType = XDR.LedgerEntryChangeType;
+const ledgerEntryType = XDR.LedgerEntryType;
 
 export interface IChange {
   type: string;
@@ -48,24 +48,32 @@ export class ChangesExtractor {
 
           const result: IChange = { type, entry, data, seq: this.tx.ledgerSeq, tx: this.tx };
 
-          if (type === ChangeType.Updated && group[i - 1].switch() === changeType.ledgerEntryState()) {
-            const prevState = group[i - 1].state();
-            result.prevState = { ledgerSeq: prevState.lastModifiedLedgerSeq() };
+          if (!group[i - 1] || group[i - 1].switch() !== changeType.ledgerEntryState()) {
+            return result;
+          }
 
-            if (entry === EntryType.Account) {
-              result.accountChanges = this.getAccountChanges(data.account(), prevState);
-              result.prevState.balance = prevState
-                .data()
+          result.prevState = { ledgerSeq: group[i - 1].state().lastModifiedLedgerSeq() };
+
+          const prevStateData = group[i - 1].state().data();
+
+          switch (entry) {
+            case EntryType.Account:
+              result.accountChanges = this.getAccountChanges(data.account(), prevStateData);
+              result.prevState.balance = prevStateData
                 .account()
                 .balance()
                 .toString();
-            } else if (entry === EntryType.Trustline) {
-              result.prevState.balance = prevState
-                .data()
+              break;
+            case EntryType.Trustline:
+              result.prevState.balance = prevStateData
                 .trustLine()
                 .balance()
                 .toString();
-            }
+              break;
+            case EntryType.Offer:
+              result.prevState.selling = Asset.fromOperation(prevStateData.offer().selling());
+              result.prevState.buying = Asset.fromOperation(prevStateData.offer().buying());
+              break;
           }
 
           return result;
@@ -128,7 +136,7 @@ export class ChangesExtractor {
   }
 
   private getAccountChanges(accountData: any, stateXDR: any) {
-    const accountState = stateXDR.data().account();
+    const accountState = stateXDR.account();
 
     if (!accountState) {
       return [];

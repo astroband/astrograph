@@ -1,15 +1,12 @@
 import * as Sentry from "@sentry/node";
 import { Cursor, Worker } from "./ingest";
 import init from "./init";
-import { Publisher } from "./pubsub";
 import logger from "./util/logger";
 import { DEBUG_LEDGER, INGEST_INTERVAL } from "./util/secrets";
 
 init();
 
-Publisher.cacheOffers().then(async () => {
-  const cursor = await Cursor.build(DEBUG_LEDGER);
-
+Cursor.build(DEBUG_LEDGER).then(cursor => {
   logger.info(
     `Staring ingest every ${INGEST_INTERVAL} ms. from ${
       DEBUG_LEDGER === -1 ? "first ledger" : DEBUG_LEDGER || "lastest ledger"
