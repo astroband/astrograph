@@ -1,4 +1,5 @@
-import { Asset, xdr as XDR } from "stellar-base";
+import { xdr as XDR } from "stellar-base";
+import { Asset } from "stellar-sdk";
 import { Transaction, TransactionWithXDR } from "./model";
 import { AccountValuesFactory } from "./model/factories/account_values_factory";
 
@@ -52,29 +53,11 @@ export class ChangesExtractor {
             return result;
           }
 
-          result.prevState = { ledgerSeq: group[i - 1].state().lastModifiedLedgerSeq() };
-
-          const prevStateData = group[i - 1].state().data();
-
-          switch (entry) {
-            case EntryType.Account:
-              result.accountChanges = this.getAccountChanges(data.account(), prevStateData);
-              result.prevState.balance = prevStateData
-                .account()
-                .balance()
-                .toString();
-              break;
-            case EntryType.Trustline:
-              result.prevState.balance = prevStateData
-                .trustLine()
-                .balance()
-                .toString();
-              break;
-            case EntryType.Offer:
-              result.prevState.selling = Asset.fromOperation(prevStateData.offer().selling());
-              result.prevState.buying = Asset.fromOperation(prevStateData.offer().buying());
-              break;
+          if (entry === EntryType.Account) {
+            result.accountChanges = this.getAccountChanges(data.account(), group[i - 1].state().data());
           }
+
+          result.prevState = this.buildPrevState(group[i - 1].state(), entry);
 
           return result;
         })
@@ -146,5 +129,34 @@ export class ChangesExtractor {
     const accountValues2 = AccountValuesFactory.fromXDR(accountState);
 
     return accountValues1.diffAttrs(accountValues2);
+  }
+
+  private buildPrevState(ledgerEntryState: any, entry: EntryType) {
+    const result: { ledgerSeq: number; balance?: string; selling?: Asset; buying?: Asset } = {
+      ledgerSeq: ledgerEntryState.lastModifiedLedgerSeq()
+    };
+
+    const prevStateData = ledgerEntryState.data();
+
+    switch (entry) {
+      case EntryType.Account:
+        result.balance = prevStateData
+          .account()
+          .balance()
+          .toString();
+        break;
+      case EntryType.Trustline:
+        result.balance = prevStateData
+          .trustLine()
+          .balance()
+          .toString();
+        break;
+      case EntryType.Offer:
+        result.selling = Asset.fromOperation(prevStateData.offer().selling());
+        result.buying = Asset.fromOperation(prevStateData.offer().buying());
+        break;
+    }
+
+    return result;
   }
 }
