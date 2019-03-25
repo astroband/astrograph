@@ -11,19 +11,19 @@ export default class HorizonAPI extends RESTDataSource {
   }
 
   public async getOperations(limit = 10, order: SortOrder = "desc", cursor?: string): Promise<IHorizonOperationData[]> {
-    return this.request("operations", limit, order, cursor);
+    return this.request("operations", { pagingOptions: { limit, order, cursor } });
   }
 
   public async getAccountOperations(accountId: AccountID, limit = 10, order: SortOrder = "desc", cursor?: string) {
-    return this.request(`accounts/${accountId}/operations`, limit, order, cursor);
+    return this.request(`accounts/${accountId}/operations`, { pagingOptions: { limit, order, cursor } });
   }
 
   public async getLedgerOperations(ledgerSeq: number, limit = 10, order: SortOrder = "desc", cursor?: string) {
-    return this.request(`ledgers/${ledgerSeq}/operations`, limit, order, cursor);
+    return this.request(`ledgers/${ledgerSeq}/operations`, { pagingOptions: { limit, order, cursor } });
   }
 
   public async getTransactionOperations(transactionId: string, limit = 10, order: SortOrder = "desc", cursor?: string) {
-    return this.request(`transactions/${transactionId}/operations`, limit, order, cursor);
+    return this.request(`transactions/${transactionId}/operations`, { pagingOptions: { limit, order, cursor } });
   }
 
   public async getTransactionsByIds(transactionIds: string[]): Promise<IHorizonTransactionData[]> {
@@ -37,7 +37,7 @@ export default class HorizonAPI extends RESTDataSource {
     order: SortOrder = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
-    return this.request("transactions", limit, order, cursor);
+    return this.request("transactions", { pagingOptions: { limit, order, cursor } });
   }
 
   public async getAccountTransactions(
@@ -46,7 +46,7 @@ export default class HorizonAPI extends RESTDataSource {
     order: SortOrder = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
-    return this.request(`accounts/${accountId}/transactions`, limit, order, cursor);
+    return this.request(`accounts/${accountId}/transactions`, { pagingOptions: { limit, order, cursor } });
   }
 
   public async getLedgerTransactions(
@@ -55,19 +55,26 @@ export default class HorizonAPI extends RESTDataSource {
     order: SortOrder = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
-    return this.request(`ledgers/${ledgerSeq}/transactions`, limit, order, cursor);
+    return this.request(`ledgers/${ledgerSeq}/transactions`, { pagingOptions: { limit, order, cursor } });
   }
 
-  private async request(url: string, limit?: number, order?: SortOrder, cursor?: string) {
-    const params = { limit, order, cursor };
+  private async request(
+    url: string,
+    params?: {
+      pagingOptions?: { limit?: number; order?: SortOrder; cursor?: string };
+      cacheTtl?: number;
+    }
+  ) {
+    const pagingOptions = (params && params.pagingOptions) || {};
+    const cacheTtl = (params && params.cacheTtl) || 7 * 24 * 60 * 60; // cache for a week by default
 
-    Object.keys(params).forEach(key => {
-      if (!params[key]) {
-        delete params[key];
+    Object.keys(pagingOptions).forEach(key => {
+      if (!pagingOptions[key]) {
+        delete pagingOptions[key];
       }
     });
 
-    const response = await this.get(url, params);
+    const response = await this.get(url, pagingOptions, { cacheOptions: { ttl: cacheTtl } });
 
     if (response._embedded) {
       response._embedded.records.forEach((record: any) => {
