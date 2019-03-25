@@ -1,5 +1,6 @@
 import { Asset } from "stellar-sdk";
 import { HorizonOpType, IHorizonOperationData } from "../../../datasource/types";
+import { parsePagingToken } from "../../../util/horizon";
 import {
   IAccountMergeOperation,
   IAllowTrustOperation,
@@ -14,7 +15,7 @@ import {
   ISetOptionsOperation,
   Operation,
   OperationKinds
-} from "../../horizon_operation";
+} from "../../operation";
 
 export class DataMapper {
   public static call(data: IHorizonOperationData) {
@@ -51,10 +52,11 @@ export class DataMapper {
   constructor(private data: IHorizonOperationData) {
     this.baseData = {
       id: data.id,
+      index: parsePagingToken(data.paging_token).opIndex,
       kind: DataMapper.mapHorizonOpType(data.type),
-      account: data.source_account,
+      sourceAccount: data.source_account,
       dateTime: new Date(data.created_at),
-      transactionId: data.transaction_hash
+      tx: { id: data.transaction_hash }
     };
   }
 
@@ -77,6 +79,8 @@ export class DataMapper {
       case OperationKinds.ManageData:
         return this.mapManageData();
       case OperationKinds.ManageOffer:
+        return this.mapManageOffer();
+      case OperationKinds.CreatePassiveOffer:
         return this.mapManageOffer();
       case OperationKinds.PathPayment:
         return this.mapPathPayment();
@@ -133,7 +137,7 @@ export class DataMapper {
       ...{
         trustor: this.data.trustor,
         authorize: this.data.authorize,
-        assetCode: this.data.asset_code
+        asset: new Asset(this.data.asset_code, this.baseData.sourceAccount)
       }
     };
   }
@@ -185,7 +189,7 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{
-        offerId: this.data.offer_id,
+        offerId: this.data.offer_id.toString(),
         amount: this.data.amount,
         price: this.data.price,
         priceComponents: {

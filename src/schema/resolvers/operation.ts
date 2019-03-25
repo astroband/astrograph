@@ -1,12 +1,21 @@
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
-import { Operation, OperationKinds } from "../../model/operation";
+import { Operation, OperationKinds, Transaction } from "../../model";
+import { TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
 
 export default {
   Operation: {
-    __resolveType(obj: any, context: any, info: any) {
-      switch (obj.kind) {
+    async transaction(operation: Operation, args: any, ctx: any) {
+      if (operation.tx instanceof Transaction) {
+        return operation.tx;
+      }
+
+      const records = await ctx.dataSources.horizon.getTransactionsByIds([operation.tx.id]);
+      return TransactionWithXDRFactory.fromHorizon(records[0]);
+    },
+    __resolveType(operation: Operation) {
+      switch (operation.kind) {
         case OperationKinds.Payment:
           return "PaymentOperation";
         case OperationKinds.SetOption:
@@ -37,11 +46,11 @@ export default {
       subscribe: withFilter(
         () => pubsub.asyncIterator(NEW_OPERATION),
         (payload: Operation, vars) => {
-          if (vars.txSource && !vars.txSource.includes(payload.txSource)) {
+          if (vars.txSource && !vars.txSource.includes(payload.tx.sourceAccount)) {
             return false;
           }
 
-          if (vars.opSource && !vars.opSource.includes(payload.opSource)) {
+          if (vars.opSource && !vars.opSource.includes(payload.sourceAccount)) {
             return false;
           }
 

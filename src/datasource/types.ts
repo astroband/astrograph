@@ -2,6 +2,8 @@ import { MemoHash, MemoID, MemoNone, MemoReturn, MemoText } from "stellar-sdk";
 import { AccountID } from "../model/account_id";
 import { AssetCode } from "../model/asset_code";
 
+export type HorizonAccountFlag = "auth_required" | "auth_immutable" | "auth_revocable";
+
 type HorizonAssetType = "native" | "alphanum4" | "alphanum12";
 export type HorizonOpType =
   | "create_account"
@@ -77,9 +79,9 @@ export interface ISetOptionsOperationData extends IBaseOperationData {
   home_domain: string;
   inflation_dest: string;
   set_flags: number[];
-  set_flags_s: string[];
+  set_flags_s: HorizonAccountFlag[];
   clear_flags: number[];
-  clear_flags_s: string[];
+  clear_flags_s: HorizonAccountFlag[];
 }
 
 export interface IChangeTrustOperationData extends IBaseOperationData {

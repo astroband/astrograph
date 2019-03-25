@@ -26,10 +26,9 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
   delete opObject.source;
 
   return {
-    opSource,
-    txSource: tx.sourceAccount,
+    sourceAccount: opSource,
+    tx,
     index,
-    transactionId: tx.id,
     ...opObject
   };
 }

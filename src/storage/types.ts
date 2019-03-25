@@ -81,9 +81,9 @@ export interface IManageDataOperationData extends IOperationData {
 }
 
 export interface IManageOfferOperationData extends IOperationData {
-  price_n: string;
-  price_d: string;
-  price: number;
+  price_n: number;
+  price_d: number;
+  price: string;
   offer_id: string;
   "manage_offer_op.asset_selling": IAssetData;
   "manage_offer_op.asset_buying": IAssetData;
