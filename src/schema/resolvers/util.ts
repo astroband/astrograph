@@ -1,10 +1,10 @@
 import { fieldsList } from "graphql-fields-list";
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Asset, Memo } from "stellar-sdk";
+import { db } from "../../database";
 import HorizonAPI from "../../datasource/horizon";
 import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
-import { Account, AccountID, Ledger, MutationType, Operation, Transaction } from "../../model";
-import { db } from "../../database";
+import { Account, AccountID, Ledger, MutationType, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 
 export function createBatchResolver<T, R>(loadFn: any) {

@@ -51,7 +51,7 @@ export const typeDefs = gql`
 
   type Asset {
     native: Boolean!
-    issuer: AccountID
+    issuer: Account
     code: AssetCode!
   }
 
@@ -69,14 +69,14 @@ export const typeDefs = gql`
   }
 
   type DataEntryValues implements IDataEntry {
-    accountID: AccountID!
+    account: Account!
     name: String!
     value: String!
     ledger: Ledger!
   }
 
   type DataEntrySubscriptionPayload {
-    accountID: AccountID!
+    account: Account!
     name: String!
     mutationType: MutationType!
     values: DataEntryValues
@@ -99,7 +99,7 @@ export const typeDefs = gql`
   }
 
   type TrustLineValues implements ITrustLine {
-    accountID: AccountID!
+    account: Account!
     asset: Asset!
     limit: String!
     balance: String!
@@ -107,7 +107,7 @@ export const typeDefs = gql`
   }
 
   type TrustLineSubscriptionPayload {
-    accountID: AccountID!
+    account: Account!
     asset: Asset!
     mutationType: MutationType!
     values: TrustLineValues
@@ -126,7 +126,6 @@ export const typeDefs = gql`
 
   type Query {
     assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
-    trustLines(id: AccountID!): [TrustLine]
   }
 
   type Subscription {

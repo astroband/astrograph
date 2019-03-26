@@ -1,6 +1,8 @@
 import { db } from "../../database";
+import { accountResolver } from "./util";
 
 export default {
+  Asset: { issuer: accountResolver },
   Query: {
     async assets(root: any, args: any, ctx: any, info: any) {
       const data = await db.assets.findAll(args.code, args.issuer, args.first, args.offset);

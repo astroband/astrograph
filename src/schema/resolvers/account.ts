@@ -15,14 +15,19 @@ const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: a
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
 );
 
-const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: any) => {
-  const accountIDs = _.map(source, "id");
+const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: Account[]) => {
+  const accountIDs = source.map(s => s.id);
   const trustLines = await db.trustLines.findAllByAccountIDs(accountIDs);
 
   const map = joinToMap(accountIDs, trustLines);
 
   for (const [accountID, accountTrustLines] of map) {
     const account = source.find((acc: Account) => acc.id === accountID);
+
+    if (!account) {
+      continue;
+    }
+
     accountTrustLines.unshift(TrustLineFactory.nativeForAccount(account));
   }
 
