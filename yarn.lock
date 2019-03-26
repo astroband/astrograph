@@ -2434,6 +2434,11 @@ graphql-extensions@0.5.2:
   dependencies:
     "@apollographql/apollo-tools" "^0.3.3"
 
+graphql-fields-list@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/graphql-fields-list/-/graphql-fields-list-2.1.1.tgz#768ca72f4c3b219cfa0191405fdc2e51217bc57b"
+  integrity sha512-ga8PDi5KFysbvQnn8888qgI1Z8BeJKsUeN2cwRhNXIZbweeXL4qs7EeFQ7p10xGAUCroI5zOWTytD2ZWOKA2Qg==
+
 graphql-relay@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/graphql-relay/-/graphql-relay-0.6.0.tgz#18ec36b772cfcb3dbb9bd369c3f8004cf42c7b93"

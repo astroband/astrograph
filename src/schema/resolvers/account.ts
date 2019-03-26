@@ -9,7 +9,7 @@ import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
 
-import { createBatchResolver, eventMatches, ledgerResolver, operationsResolver } from "./util";
+import { accountResolver, createBatchResolver, eventMatches, ledgerResolver, operationsResolver } from "./util";
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
@@ -49,7 +49,8 @@ export default {
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
     ledger: ledgerResolver,
-    operations: operationsResolver
+    operations: operationsResolver,
+    inflationDestination: accountResolver
   },
   Query: {
     account(root: any, args: any, ctx: any, info: any) {

@@ -3,9 +3,11 @@ import { Asset } from "stellar-base";
 import { Operation, OperationKinds, Transaction } from "../../model";
 import { TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
+import { accountResolver } from "./util";
 
 export default {
   Operation: {
+    sourceAccount: accountResolver,
     async transaction(operation: Operation, args: any, ctx: any) {
       if (operation.tx instanceof Transaction) {
         return operation.tx;
@@ -41,6 +43,13 @@ export default {
       return null;
     }
   },
+  PaymentOperation: { destination: accountResolver },
+  SetOptionsOperation: { inflationDestination: accountResolver },
+  AccountMergeOperation: { destination: accountResolver },
+  AllowTrustOperation: { trustor: accountResolver },
+  CreateAccountOperation: { destination: accountResolver },
+  PathPaymentOperation: { destinationAccount: accountResolver },
+  SetOptionsSigner: { account: accountResolver },
   Subscription: {
     operations: {
       subscribe: withFilter(

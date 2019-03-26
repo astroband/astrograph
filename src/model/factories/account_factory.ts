@@ -25,7 +25,7 @@ export class AccountFactory {
       balance: row.balance,
       sequenceNumber: row.seqnum,
       numSubentries: row.numsubentries,
-      inflationDest: row.inflationdest,
+      inflationDestination: row.inflationdest,
       homeDomain: row.homedomain,
       lastModified: row.lastmodified,
       thresholds: AccountThresholdsFactory.fromValue(row.thresholds),

@@ -1,11 +1,11 @@
-import { AccountFlags, AccountThresholds, Signer } from "./";
+import { AccountFlags, AccountID, AccountThresholds, Signer } from "./";
 
 export interface IAccountBase {
   id: string;
   balance: string;
   sequenceNumber: string;
   numSubentries: number;
-  inflationDest: string;
+  inflationDestination: AccountID;
   homeDomain: string;
   thresholds: AccountThresholds;
   flags: AccountFlags;
@@ -21,7 +21,7 @@ export class Account implements IAccount {
   public balance: string;
   public sequenceNumber: string;
   public numSubentries: number;
-  public inflationDest: string;
+  public inflationDestination: AccountID;
   public homeDomain: string;
   public thresholds: AccountThresholds;
   public flags: AccountFlags;
@@ -33,7 +33,7 @@ export class Account implements IAccount {
     this.balance = data.balance;
     this.sequenceNumber = data.sequenceNumber;
     this.numSubentries = data.numSubentries;
-    this.inflationDest = data.inflationDest;
+    this.inflationDestination = data.inflationDestination;
     this.homeDomain = data.homeDomain;
     this.lastModified = data.lastModified;
     this.thresholds = data.thresholds;
