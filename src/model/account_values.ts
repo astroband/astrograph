@@ -12,7 +12,7 @@ export class AccountValues implements IAccountValues {
   public balance: string;
   public sequenceNumber: string;
   public numSubentries: number;
-  public inflationDest: string;
+  public inflationDestination: string;
   public homeDomain: string;
   public thresholds: AccountThresholds;
   public flags: AccountFlags;
@@ -23,7 +23,7 @@ export class AccountValues implements IAccountValues {
     this.balance = data.balance;
     this.sequenceNumber = data.sequenceNumber;
     this.numSubentries = data.numSubentries;
-    this.inflationDest = data.inflationDest;
+    this.inflationDestination = data.inflationDestination;
     this.homeDomain = data.homeDomain;
     this.thresholds = data.thresholds;
     this.flags = data.flags;
@@ -38,7 +38,7 @@ export class AccountValues implements IAccountValues {
 
     const changedAttrs: string[] = [];
 
-    const easyToCompareAttrs = ["balance", "sequenceNumber", "numSubentries", "inflationDest", "homeDomain"];
+    const easyToCompareAttrs = ["balance", "sequenceNumber", "numSubentries", "inflationDestination", "homeDomain"];
 
     for (const attr of easyToCompareAttrs) {
       if (this[attr] !== other[attr]) {

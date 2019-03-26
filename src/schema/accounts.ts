@@ -20,7 +20,7 @@ export const typeDefs = gql`
     id: AccountID!
     sequenceNumber: String!
     numSubentries: Int!
-    inflationDest: AccountID
+    inflationDestination: Account
     homeDomain: String
     thresholds: AccountThresholds!
     flags: AccountFlags!
@@ -31,7 +31,7 @@ export const typeDefs = gql`
     id: AccountID!
     sequenceNumber: String!
     numSubentries: Int!
-    inflationDest: AccountID
+    inflationDestination: Account
     homeDomain: String
     thresholds: AccountThresholds!
     flags: AccountFlags!
@@ -57,7 +57,7 @@ export const typeDefs = gql`
     id: AccountID!
     sequenceNumber: String!
     numSubentries: Int!
-    inflationDest: AccountID
+    inflationDestination: Account
     homeDomain: String
     thresholds: AccountThresholds!
     flags: AccountFlags!

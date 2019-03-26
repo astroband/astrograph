@@ -9,20 +9,25 @@ import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
 
-import { createBatchResolver, eventMatches, ledgerResolver, operationsResolver } from "./util";
+import { accountResolver, createBatchResolver, eventMatches, ledgerResolver, operationsResolver } from "./util";
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
 );
 
-const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: any) => {
-  const accountIDs = _.map(source, "id");
+const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: Account[]) => {
+  const accountIDs = source.map(s => s.id);
   const trustLines = await db.trustLines.findAllByAccountIDs(accountIDs);
 
   const map = joinToMap(accountIDs, trustLines);
 
   for (const [accountID, accountTrustLines] of map) {
     const account = source.find((acc: Account) => acc.id === accountID);
+
+    if (!account) {
+      continue;
+    }
+
     accountTrustLines.unshift(TrustLineFactory.nativeForAccount(account));
   }
 
@@ -49,7 +54,8 @@ export default {
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
     ledger: ledgerResolver,
-    operations: operationsResolver
+    operations: operationsResolver,
+    inflationDestination: accountResolver
   },
   Query: {
     account(root: any, args: any, ctx: any, info: any) {

@@ -5,7 +5,9 @@ Object {
   "assets": Array [
     Object {
       "code": "KHL",
-      "issuer": "GBTVGCI5OYBGDMCNKYFVSETXK6TTOQ4DRJBAC5K2PUUNSVB24PPSQ26Q",
+      "issuer": Object {
+        "id": "GBTVGCI5OYBGDMCNKYFVSETXK6TTOQ4DRJBAC5K2PUUNSVB24PPSQ26Q",
+      },
       "native": false,
     },
   ],
@@ -52,7 +54,7 @@ Object {
       "authRevokable": false,
     },
     "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
-    "inflationDest": null,
+    "inflationDestination": null,
     "ledger": Object {
       "header": Object {
         "ledgerVersion": 10,
@@ -80,28 +82,5 @@ Object {
       },
     ],
   },
-}
-`;
-
-exports[`Integration tests Trust lines 1`] = `
-Object {
-  "trustLines": Array [
-    Object {
-      "asset": Object {
-        "code": "XLM",
-        "native": true,
-      },
-      "authorized": true,
-      "balance": "999.9999900",
-    },
-    Object {
-      "asset": Object {
-        "code": "KHL",
-        "native": false,
-      },
-      "authorized": true,
-      "balance": "0.0000000",
-    },
-  ],
 }
 `;

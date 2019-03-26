@@ -1,12 +1,16 @@
+import { fieldsList } from "graphql-fields-list";
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Asset, Memo } from "stellar-sdk";
+import { db } from "../../database";
 import HorizonAPI from "../../datasource/horizon";
 import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
-import { Account, Ledger, MutationType, Transaction } from "../../model";
+import { Account, AccountID, Ledger, MutationType, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 
 export function createBatchResolver<T, R>(loadFn: any) {
-  return create<T, R>(async (source: ReadonlyArray<T>, args: any, context: any) => loadFn(source, args, context));
+  return create<T, R>(async (source: ReadonlyArray<T>, args: any, context: any, info: any) =>
+    loadFn(source, args, context, info)
+  );
 }
 
 export function ledgerResolver(obj: any) {
@@ -26,6 +30,20 @@ export function memoResolver(obj: any) {
     value: memo.getPlainValue()
   };
 }
+
+export const accountResolver = createBatchResolver<any, Account[]>(
+  (source: any, args: any, context: any, info: any) => {
+    const requestedFields = fieldsList(info);
+    const ids: AccountID[] = source.map((s: any) => s[info.fieldName]);
+
+    // if user requested only "id", we can return it right away
+    if (requestedFields.length === 1 && requestedFields[0] === "id") {
+      return ids.map(id => (id ? { id } : null));
+    }
+
+    return db.accounts.findAllByIDs(ids);
+  }
+);
 
 export function assetResolver(obj: any, args: any, ctx: any, info: any) {
   const field = info.fieldName || "asset";

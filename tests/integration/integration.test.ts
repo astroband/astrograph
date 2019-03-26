@@ -13,8 +13,7 @@ Network.useTestNetwork();
 const testCases = [
   "Assets",
   "Single account query",
-  "Ledgers",
-  "Trust lines"
+  "Ledgers"
 ];
 
 async function importDbDump() {

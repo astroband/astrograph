@@ -23,7 +23,7 @@ let subject: TrustLine;
 describe("constructor", () => {
   subject = TrustLineFactory.fromDb(data);
 
-  it("sets account id", () => expect(subject.accountID).toEqual(data.accountid));
+  it("sets account id", () => expect(subject.account).toEqual(data.accountid));
   it("sets lastModified", () => expect(subject.lastModified).toEqual(data.lastmodified));
   it("formats limit", () => expect(subject.limit).toEqual("922337203685.4775807"));
   it("formats balance", () => expect(subject.balance).toEqual("960.0000000"));
@@ -41,7 +41,7 @@ describe("static buildFakeNative(account)", () => {
     const fake = TrustLineFactory.nativeForAccount(account);
 
     expect(fake).toMatchObject({
-      accountID: account.id,
+      account: account.id,
       balance: toFloatAmountString(account.balance),
       limit: toFloatAmountString(MAX_INT64),
       authorized: true,

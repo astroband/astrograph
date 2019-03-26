@@ -1,15 +1,7 @@
-import { Account, DataEntry } from "../../model";
-
 import { withFilter } from "graphql-subscriptions";
-import { createBatchResolver, eventMatches, ledgerResolver } from "./util";
-
-import { db } from "../../database";
+import { accountResolver, eventMatches, ledgerResolver } from "./util";
 
 import { DATA_ENTRY, pubsub } from "../../pubsub";
-
-const accountResolver = createBatchResolver<DataEntry, Account>((source: any) =>
-  db.accounts.findAllByIDs(source.map((r: DataEntry) => r.accountID))
-);
 
 const dataEntrySubscription = (event: string) => {
   return {
@@ -27,10 +19,10 @@ const dataEntrySubscription = (event: string) => {
 };
 
 export default {
-  DataEntry: {
-    account: accountResolver,
-    ledger: ledgerResolver
-  },
+  IDataEntry: { ledger: ledgerResolver },
+  DataEntry: { account: accountResolver },
+  DataEntryValues: { account: accountResolver },
+  DataEntrySubscriptionPayload: { account: accountResolver },
   Subscription: {
     dataEntry: dataEntrySubscription(DATA_ENTRY)
   }
