@@ -33,6 +33,26 @@ const SUBSCRIPTION = gql`
 `;
 
 apolloClient
+  .query({
+    query: gql`
+      query tick($selling: AssetID!, $buying: AssetID!) {
+        tick(selling: $selling, buying: $buying) {
+          bestBid
+          bestAsk
+        }
+      }
+    `,
+    variables: {
+      selling: SELLING,
+      buying: BUYING
+    }
+  })
+  .then((result: { data: any }) => {
+    const tick = result.data.tick;
+    console.log(`Current values BID/ASK ${tick.bestBid}/${tick.bestAsk}`);
+  });
+
+apolloClient
   .subscribe({
     fetchPolicy: "network-only",
     query: SUBSCRIPTION,
