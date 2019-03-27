@@ -9,13 +9,16 @@ import { SubscriptionClient } from "subscriptions-transport-ws";
 import ws from "ws";
 
 const GRAPHQL_ENDPOINT = "wss://astrograph.evilmartians.io/graphql"
+const SELLING = "USD-GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK"
+const BUYING = "native"
 
 const client = new SubscriptionClient(GRAPHQL_ENDPOINT, { reconnect: true, timeout: 60000 }, ws);
 const link = new WebSocketLink(client);
 const cache = new InMemoryCache();
 const apolloClient = new ApolloClient({ link, cache });
 
-console.log("Connecting to GraphQL...");
+console.log(`Connecting to GraphQL at ${GRAPHQL_ENDPOINT}...`);
+console.log(`Assets: ${SELLING}/${BUYING}`)
 
 const SUBSCRIPTION = gql`
   subscription tick($selling: AssetID!, $buying: AssetID!) {
@@ -34,14 +37,15 @@ apolloClient
     fetchPolicy: "network-only",
     query: SUBSCRIPTION,
     variables: {
-      selling: "USD-GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK",
-      buying: "native"
+      selling: SELLING,
+      buying: BUYING
     }
   })
   .subscribe({
     next(data: any) {
       const values = data.data.tick;
       console.log(
+        `[${new Date().toISOString()}]`,
         "BID/ASK:",
         `${values.bestBid}/${values.bestAsk}`
       );
