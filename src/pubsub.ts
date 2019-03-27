@@ -2,7 +2,7 @@ import PostgresPubSub from "@udia/graphql-postgres-subscriptions";
 import { Client } from "pg";
 import { db } from "./database";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
-import { Ledger, LedgerHeader, TransactionWithXDR } from "./model";
+import { Ledger, LedgerHeader, OfferSubscriptionPayload, TransactionWithXDR } from "./model";
 import { AssetFactory } from "./model/factories/asset_factory";
 import extractOperation from "./util/extract_operation";
 import logger from "./util/logger";
@@ -31,17 +31,32 @@ export const TRUST_LINE = "TRUST_LINE";
 export const DATA_ENTRY = "DATA_ENTRY";
 export const OFFER = "OFFER";
 export const NEW_OPERATION = "NEW_OPERATION";
+export const OFFERS_TICK = "OFFERS_TICK";
 
 export class Publisher {
-  public static publish(header: LedgerHeader, transactions: TransactionWithXDR[]) {
+  public static async publish(header: LedgerHeader, transactions: TransactionWithXDR[]) {
     const collection = new SubscriptionPayloadCollection(transactions);
 
     pubsub.publish(LEDGER_CREATED, new Ledger(header.ledgerSeq));
 
     for (const entry of collection) {
       for (const m of Publisher.eventMap) {
-        if (m.payloadClassName === entry.constructor.name) {
-          pubsub.publish(m.event, entry);
+        if (m.payloadClassName !== entry.constructor.name) {
+          continue;
+        }
+
+        pubsub.publish(m.event, entry);
+
+        if (entry instanceof OfferSubscriptionPayload) {
+          const bestAsk = await db.offers.getBestAsk(entry.selling, entry.buying);
+          const bestAskInv = await db.offers.getBestAsk(entry.buying, entry.selling);
+
+          pubsub.publish(OFFERS_TICK, {
+            selling: entry.selling.toString(),
+            buying: entry.buying.toString(),
+            bestAsk,
+            bestBid: 1 / bestAskInv
+          });
         }
       }
     }

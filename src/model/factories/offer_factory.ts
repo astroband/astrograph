@@ -3,6 +3,7 @@ import { IOffer, IOfferBase, Offer } from "../offer";
 
 import { calculateOfferPrice } from "../../util/offer";
 import { toFloatAmountString } from "../../util/stellar";
+import { AssetFactory } from "./";
 
 export interface IOfferTableRow {
   offerid: string;
@@ -22,8 +23,8 @@ export class OfferFactory {
     const data: IOffer = {
       id: row.offerid,
       sellerID: row.sellerid,
-      selling: Asset.fromOperation(XDR.Asset.fromXDR(row.sellingasset, "base64")),
-      buying: Asset.fromOperation(XDR.Asset.fromXDR(row.buyingasset, "base64")),
+      selling: AssetFactory.fromXDR(row.sellingasset),
+      buying: AssetFactory.fromXDR(row.buyingasset),
       amount: toFloatAmountString(row.amount),
       priceN: row.pricen,
       priceD: row.priced,
