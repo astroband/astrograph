@@ -39,6 +39,8 @@ export class Publisher {
 
     pubsub.publish(LEDGER_CREATED, new Ledger(header.ledgerSeq));
 
+    const assetsBidTicks: Set<string> = new Set();
+
     for (const entry of collection) {
       for (const m of Publisher.eventMap) {
         if (m.payloadClassName !== entry.constructor.name) {
@@ -48,18 +50,23 @@ export class Publisher {
         pubsub.publish(m.event, entry);
 
         if (entry instanceof OfferSubscriptionPayload) {
-          const bestAsk = await db.offers.getBestAsk(entry.selling, entry.buying);
-          const bestAskInv = await db.offers.getBestAsk(entry.buying, entry.selling);
-
-          pubsub.publish(OFFERS_TICK, {
-            selling: entry.selling.toString(),
-            buying: entry.buying.toString(),
-            bestAsk,
-            bestBid: 1 / bestAskInv
-          });
+          assetsBidTicks.add(`${entry.selling}/${entry.buying}`);
         }
       }
     }
+
+    assetsBidTicks.forEach(async tick => {
+      const [selling, buying] = tick.split("/").map(id => AssetFactory.fromId(id));
+      const bestAsk = await db.offers.getBestAsk(selling, buying);
+      const bestAskInv = await db.offers.getBestAsk(buying, selling);
+
+      pubsub.publish(OFFERS_TICK, {
+        selling: selling.toString(),
+        buying: buying.toString(),
+        bestAsk,
+        bestBid: 1 / bestAskInv
+      });
+    });
 
     for (const tx of transactions) {
       for (let index = 0; index < tx.operationsXDR.length; index++) {

@@ -2,7 +2,7 @@ import { AccountFlagsFactory } from "./account_flags_factory";
 import { AccountThresholdsFactory } from "./account_thresholds_factory";
 import { SignerFactory } from "./signer_factory";
 
-import { AccountValues, IAccountValues } from "../account_values";
+import { AccountValues, IAccountValues } from "../";
 
 import { publicKeyFromXDR } from "../../util/xdr";
 
