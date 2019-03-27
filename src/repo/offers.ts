@@ -1,5 +1,6 @@
 import { IDatabase } from "pg-promise";
 import squel from "squel";
+import { Asset } from "stellar-sdk";
 import { AssetFactory, OfferFactory } from "../model/factories";
 
 export default class OffersRepo {
@@ -52,6 +53,28 @@ export default class OffersRepo {
     return res.map(a => OfferFactory.fromDb(a));
   }
 
+  public async getIdAssetsMap() {
+    const queryBuilder = squel
+      .select()
+      .field("offerid")
+      .field("sellingasset")
+      .field("buyingasset")
+      .from("offers");
+
+    const rows = await this.db.manyOrNone(queryBuilder.toString());
+
+    const res: Map<string, { selling: Asset; buying: Asset }> = new Map();
+
+    rows.forEach(row => {
+      res.set(row.offerid, {
+        selling: AssetFactory.fromXDR(row.sellingasset),
+        buying: AssetFactory.fromXDR(row.buyingasset)
+      });
+    });
+
+    return res;
+  }
+
   public async count() {
     const queryBuilder = squel
       .select()
@@ -59,6 +82,18 @@ export default class OffersRepo {
       .from("offers");
 
     return this.db.one(queryBuilder.toString(), [], c => +c.count);
+  }
+
+  public async getBestAsk(selling: Asset, buying: Asset) {
+    const queryBuilder = squel
+      .select()
+      .field("MIN(price)", "minPrice")
+      .from("offers");
+
+    this.appendAsset(queryBuilder, "selling", selling.toString());
+    this.appendAsset(queryBuilder, "buying", buying.toString());
+
+    return this.db.one(queryBuilder.toString(), [], r => r.minPrice);
   }
 
   private appendAsset(queryBuilder: any, prefix: string, assetId?: string) {

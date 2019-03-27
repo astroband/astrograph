@@ -26,7 +26,7 @@ export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
 
       for (const changes of changesGroups) {
         for (const change of changes) {
-          if (change.entry !== "account") {
+          if (change.entry !== EntryType.Account) {
             this.pushChanges(change);
             continue;
           }
@@ -76,7 +76,7 @@ export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
         this.push(new DataEntrySubscriptionPayload(mutationType, change.data.data()));
         break;
       case EntryType.Offer:
-        this.push(new OfferSubscriptionPayload(mutationType, change.data.offer()));
+        this.push(new OfferSubscriptionPayload(mutationType, change));
         break;
     }
   }

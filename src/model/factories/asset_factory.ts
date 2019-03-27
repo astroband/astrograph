@@ -27,4 +27,8 @@ export class AssetFactory {
 
     return new Asset(code, issuer);
   }
+
+  public static fromXDR(xdr: any, encoding = "base64") {
+    return Asset.fromOperation(XDR.Asset.fromXDR(xdr, encoding));
+  }
 }
