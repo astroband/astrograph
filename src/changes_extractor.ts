@@ -53,7 +53,7 @@ export class ChangesExtractor {
             return result;
           }
 
-          if (entry === EntryType.Account) {
+          if (entry === EntryType.Account && type !== ChangeType.Removed) {
             result.accountChanges = this.getAccountChanges(data.account(), group[i - 1].state().data());
           }
 
