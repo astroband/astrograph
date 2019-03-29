@@ -20,7 +20,7 @@ export interface ITrustLineTableRow {
 export class TrustLineFactory {
   public static fromDb(row: ITrustLineTableRow): TrustLine {
     const data: ITrustLine = {
-      accountID: row.accountid,
+      account: row.accountid,
       balance: row.balance,
       limit: row.tlimit,
       lastModified: row.lastmodified,
@@ -33,7 +33,7 @@ export class TrustLineFactory {
 
   public static nativeForAccount(account: Account): ITrustLine {
     return new TrustLine({
-      accountID: account.id,
+      account: account.id,
       asset: Asset.native(),
       balance: account.balance,
       limit: MAX_INT64,

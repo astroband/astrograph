@@ -3,7 +3,7 @@ query {
     code: "KHL"
   ) {
     code
-    issuer
+    issuer { id }
     native
   }
 }

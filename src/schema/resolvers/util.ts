@@ -38,7 +38,7 @@ export const accountResolver = createBatchResolver<any, Account[]>(
 
     // if user requested only "id", we can return it right away
     if (requestedFields.length === 1 && requestedFields[0] === "id") {
-      return ids.map(id => ({ id }));
+      return ids.map(id => (id ? { id } : null));
     }
 
     return db.accounts.findAllByIDs(ids);

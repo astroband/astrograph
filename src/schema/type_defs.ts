@@ -90,7 +90,7 @@ export const typeDefs = gql`
   }
 
   type TrustLine implements ITrustLine {
-    account: Account!
+    account: Account
     asset: Asset!
     limit: String!
     balance: String!
@@ -99,7 +99,7 @@ export const typeDefs = gql`
   }
 
   type TrustLineValues implements ITrustLine {
-    account: Account!
+    account: Account
     asset: Asset!
     limit: String!
     balance: String!

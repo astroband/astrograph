@@ -12,7 +12,7 @@
       high
     }
     id
-    inflationDest
+    inflationDestination { id }
     sequenceNumber
     data {
       name
@@ -28,7 +28,7 @@
       asset {
         code
         native
-        issuer
+        issuer { id }
       }
     }
     ledger {
