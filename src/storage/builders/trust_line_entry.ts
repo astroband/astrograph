@@ -11,7 +11,7 @@ export class TrustLineEntryBuilder extends Builder {
       "trust_line_entry",
       trustLine.asset.code,
       trustLine.asset.issuer || "",
-      trustLine.accountID,
+      trustLine.account,
       balance || trustLine.balance,
       ledgerSeq
     );
@@ -36,7 +36,7 @@ export class TrustLineEntryBuilder extends Builder {
 
   public build(): NQuads {
     this.pushKey();
-    this.pushBuilder(new AccountBuilder(this.trustLine.accountID), "account");
+    this.pushBuilder(new AccountBuilder(this.trustLine.account), "account");
     this.pushBuilder(new AssetBuilder(this.trustLine.asset), "asset");
     this.pushValues({
       "type.trust_line_entry": "",

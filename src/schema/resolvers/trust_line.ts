@@ -7,7 +7,7 @@ const trustLineSubscription = (event: string) => {
     subscribe: withFilter(
       () => pubsub.asyncIterator([event]),
       (payload, variables) => {
-        return eventMatches(variables.args, payload.accountID, payload.mutationType);
+        return eventMatches(variables.args, payload.account, payload.mutationType);
       }
     ),
 

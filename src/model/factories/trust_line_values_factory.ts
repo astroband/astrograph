@@ -8,7 +8,7 @@ export class TrustLineValuesFactory {
   public static fromXDR(xdr: any): TrustLineValues {
     return new TrustLineValues({
       asset: Asset.fromOperation(xdr.asset()),
-      accountID: publicKeyFromXDR(xdr),
+      account: publicKeyFromXDR(xdr),
       balance: xdr.balance().toString(),
       limit: xdr.limit().toString(),
       authorized: (xdr.flags() & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0
@@ -17,7 +17,7 @@ export class TrustLineValuesFactory {
 
   public static fakeNativeFromXDR(xdr: any): TrustLineValues {
     return new TrustLineValues({
-      accountID: publicKeyFromXDR(xdr),
+      account: publicKeyFromXDR(xdr),
       asset: Asset.native(),
       limit: MAX_INT64,
       authorized: true,
