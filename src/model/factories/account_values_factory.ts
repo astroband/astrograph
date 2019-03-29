@@ -19,7 +19,7 @@ export class AccountValuesFactory {
       balance: xdr.balance().toString(),
       sequenceNumber: xdr.seqNum().toString(),
       numSubentries: xdr.numSubEntries(),
-      inflationDest: xdr.inflationDest() || null,
+      inflationDestination: xdr.inflationDest() || null,
       homeDomain: xdr.homeDomain(),
       thresholds,
       flags: AccountFlagsFactory.fromValue(xdr.flags()),

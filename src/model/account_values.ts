@@ -38,7 +38,7 @@ export class AccountValues implements IAccountValues {
 
     const changedAttrs: string[] = [];
 
-    const easyToCompareAttrs = ["balance", "sequenceNumber", "numSubentries", "inflationDest", "homeDomain"];
+    const easyToCompareAttrs = ["balance", "sequenceNumber", "numSubentries", "inflationDestination", "homeDomain"];
 
     for (const attr of easyToCompareAttrs) {
       if (this[attr] !== other[attr]) {
