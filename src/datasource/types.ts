@@ -10,6 +10,7 @@ export type HorizonOpType =
   | "payment"
   | "path_payment"
   | "manage_offer"
+  | "create_passive_offer"
   | "set_options"
   | "change_trust"
   | "allow_trust"
@@ -69,6 +70,18 @@ export interface IManageOfferOperationData extends IBaseOperationData {
   selling_asset_type: HorizonAssetType;
 }
 
+export interface ICreatePassiveOfferOperationData extends IBaseOperationData {
+  amount: string;
+  price: string;
+  price_r: { n: number; d: number };
+  buying_asset_type: HorizonAssetType;
+  buying_asset_code: AssetCode;
+  buying_asset_issuer: AccountID;
+  selling_asset_type: HorizonAssetType;
+  selling_asset_code: AssetCode;
+  selling_asset_issuer: AccountID;
+}
+
 export interface ISetOptionsOperationData extends IBaseOperationData {
   signer_key: AccountID;
   signer_weight: number;
@@ -124,6 +137,7 @@ export type IHorizonOperationData = IPaymentOperationData &
   ICreateAccountOperationData &
   IManageDataOperationData &
   IManageOfferOperationData &
+  ICreatePassiveOfferOperationData &
   IPathPaymentOperationData;
 
 export interface IHorizonTransactionData {

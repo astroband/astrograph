@@ -109,6 +109,19 @@ export const typeDefs = gql`
     assetBuying: Asset!
   }
 
+  type CreatePassiveOfferOperation implements Operation {
+    id: String!
+    kind: OperationKind!
+    sourceAccount: AccountID!
+    dateTime: DateTime!
+    transaction: Transaction!
+    priceComponents: OfferPriceComponents!
+    price: String!
+    amount: String!
+    assetSelling: Asset!
+    assetBuying: Asset!
+  }
+
   type PathPaymentOperation implements Operation {
     id: String!
     kind: OperationKind!

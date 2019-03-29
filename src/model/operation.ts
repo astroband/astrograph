@@ -86,6 +86,14 @@ export interface IManageOfferOperation extends IBaseOperation {
   assetSelling: Asset;
 }
 
+export interface ICreatePassiveOfferOperation extends IBaseOperation {
+  amount: string;
+  price: string;
+  priceComponents: { n: number; d: number };
+  assetBuying: Asset;
+  assetSelling: Asset;
+}
+
 // This is more of a "effect" of particular path payment
 // Horizon returns data this way, so we use it too
 export interface IPathPaymentOperation extends IBaseOperation {
@@ -118,4 +126,5 @@ export type Operation =
   | IManageDataOperation
   | IManageOfferOperation
   | IPathPaymentOperation
+  | ICreatePassiveOfferOperation
   | IDgraphPathPaymentOperation;

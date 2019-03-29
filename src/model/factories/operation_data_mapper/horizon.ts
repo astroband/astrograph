@@ -8,6 +8,7 @@ import {
   IBumpSequenceOperation,
   IChangeTrustOperation,
   ICreateAccountOperation,
+  ICreatePassiveOfferOperation,
   IManageDataOperation,
   IManageOfferOperation,
   IPathPaymentOperation,
@@ -32,6 +33,8 @@ export class DataMapper {
         return OperationKinds.PathPayment;
       case "manage_offer":
         return OperationKinds.ManageOffer;
+      case "create_passive_offer":
+        return OperationKinds.CreatePassiveOffer;
       case "set_options":
         return OperationKinds.SetOption;
       case "change_trust":
@@ -81,7 +84,7 @@ export class DataMapper {
       case OperationKinds.ManageOffer:
         return this.mapManageOffer();
       case OperationKinds.CreatePassiveOffer:
-        return this.mapManageOffer();
+        return this.mapCreatePassiveOffer();
       case OperationKinds.PathPayment:
         return this.mapPathPayment();
     }
@@ -172,6 +175,32 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{ name: this.data.name, value: this.data.value }
+    };
+  }
+
+  private mapCreatePassiveOffer(): ICreatePassiveOfferOperation {
+    const assetBuying =
+      this.data.buying_asset_type === "native"
+        ? Asset.native()
+        : new Asset(this.data.buying_asset_code, this.data.buying_asset_issuer);
+
+    const assetSelling =
+      this.data.selling_asset_type === "native"
+        ? Asset.native()
+        : new Asset(this.data.selling_asset_code, this.data.selling_asset_issuer);
+
+    return {
+      ...this.baseData,
+      ...{
+        amount: this.data.amount,
+        price: this.data.price,
+        priceComponents: {
+          n: this.data.price_r.n,
+          d: this.data.price_r.d
+        },
+        assetBuying,
+        assetSelling
+      }
     };
   }
 

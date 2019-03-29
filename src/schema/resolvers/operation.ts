@@ -34,6 +34,8 @@ export default {
           return "ManageDatumOperation";
         case OperationKinds.ManageOffer:
           return "ManageOfferOperation";
+        case OperationKinds.CreatePassiveOffer:
+          return "CreatePassiveOfferOperation";
         case OperationKinds.PathPayment:
           return "PathPaymentOperation";
       }
