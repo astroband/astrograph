@@ -2,12 +2,15 @@ import { MemoHash, MemoID, MemoNone, MemoReturn, MemoText } from "stellar-sdk";
 import { AccountID } from "../model/account_id";
 import { AssetCode } from "../model/asset_code";
 
+export type HorizonAccountFlag = "auth_required" | "auth_immutable" | "auth_revocable";
+
 type HorizonAssetType = "native" | "alphanum4" | "alphanum12";
 export type HorizonOpType =
   | "create_account"
   | "payment"
   | "path_payment"
   | "manage_offer"
+  | "create_passive_offer"
   | "set_options"
   | "change_trust"
   | "allow_trust"
@@ -67,6 +70,18 @@ export interface IManageOfferOperationData extends IBaseOperationData {
   selling_asset_type: HorizonAssetType;
 }
 
+export interface ICreatePassiveOfferOperationData extends IBaseOperationData {
+  amount: string;
+  price: string;
+  price_r: { n: number; d: number };
+  buying_asset_type: HorizonAssetType;
+  buying_asset_code: AssetCode;
+  buying_asset_issuer: AccountID;
+  selling_asset_type: HorizonAssetType;
+  selling_asset_code: AssetCode;
+  selling_asset_issuer: AccountID;
+}
+
 export interface ISetOptionsOperationData extends IBaseOperationData {
   signer_key: AccountID;
   signer_weight: number;
@@ -77,9 +92,9 @@ export interface ISetOptionsOperationData extends IBaseOperationData {
   home_domain: string;
   inflation_dest: string;
   set_flags: number[];
-  set_flags_s: string[];
+  set_flags_s: HorizonAccountFlag[];
   clear_flags: number[];
-  clear_flags_s: string[];
+  clear_flags_s: HorizonAccountFlag[];
 }
 
 export interface IChangeTrustOperationData extends IBaseOperationData {
@@ -122,6 +137,7 @@ export type IHorizonOperationData = IPaymentOperationData &
   ICreateAccountOperationData &
   IManageDataOperationData &
   IManageOfferOperationData &
+  ICreatePassiveOfferOperationData &
   IPathPaymentOperationData;
 
 export interface IHorizonTransactionData {

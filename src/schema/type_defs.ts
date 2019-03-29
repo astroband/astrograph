@@ -41,6 +41,7 @@ export const typeDefs = gql`
     createAccount
     manageDatum
     manageOffer
+    createPassiveOffer
     pathPayment
   }
 

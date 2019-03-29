@@ -9,12 +9,13 @@ import {
   ICreateAccountOperation,
   IManageDataOperation,
   IManageOfferOperation,
-  IPathPaymentOperation,
+  IDgraphPathPaymentOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
   OperationKinds
 } from "../../operation";
+import { AccountFlagsFactory } from "../account_flags_factory";
 
 const accountIdPredicate = "account.id";
 const assetIssuerPredicate = "asset.issuer";
@@ -30,11 +31,13 @@ export class DataMapper {
   constructor(private data: DgraphOperationsData) {
     this.baseData = {
       kind: data["op.kind"],
-      txSource: data["op.source"][accountIdPredicate],
-      opSource: data["op.source"][accountIdPredicate],
+      sourceAccount: data["op.source"][accountIdPredicate],
       index: parseInt(data["op.index"], 10),
       dateTime: new Date(data["op.ledger"].close_time),
-      transactionId: data["op.transaction"]["tx.id"]
+      tx: {
+        id: data["op.transaction"]["tx.id"],
+        sourceAccount: data["op.transaction"]["tx.source"][accountIdPredicate]
+      }
     };
   }
 
@@ -100,8 +103,8 @@ export class DataMapper {
       ...{
         masterWeight: parseInt(this.data.master_weight, 10),
         homeDomain: this.data.home_domain,
-        clearFlags: parseInt(this.data.clear_flags, 10),
-        setFlags: parseInt(this.data.set_flags, 10),
+        clearFlags: AccountFlagsFactory.fromValue(parseInt(this.data.clear_flags, 10)).toHorizonFormat(),
+        setFlags: AccountFlagsFactory.fromValue(parseInt(this.data.set_flags, 10)).toHorizonFormat(),
         thresholds: {
           high: parseInt(this.data.thresholds.high, 10),
           medium: parseInt(this.data.thresholds.med, 10),
@@ -193,7 +196,7 @@ export class DataMapper {
     };
   }
 
-  private mapPathPayment(): IPathPaymentOperation {
+  private mapPathPayment(): IDgraphPathPaymentOperation {
     const destinationAssetData = this.data["path_payment_op.asset_destination"];
     const sourceAssetData = this.data["path_payment_op.asset_source"];
 

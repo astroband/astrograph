@@ -1,5 +1,6 @@
 import { Asset } from "stellar-sdk";
 import { HorizonOpType, IHorizonOperationData } from "../../../datasource/types";
+import { parsePagingToken } from "../../../util/horizon";
 import {
   IAccountMergeOperation,
   IAllowTrustOperation,
@@ -7,6 +8,7 @@ import {
   IBumpSequenceOperation,
   IChangeTrustOperation,
   ICreateAccountOperation,
+  ICreatePassiveOfferOperation,
   IManageDataOperation,
   IManageOfferOperation,
   IPathPaymentOperation,
@@ -14,7 +16,7 @@ import {
   ISetOptionsOperation,
   Operation,
   OperationKinds
-} from "../../horizon_operation";
+} from "../../operation";
 
 export class DataMapper {
   public static call(data: IHorizonOperationData) {
@@ -31,6 +33,8 @@ export class DataMapper {
         return OperationKinds.PathPayment;
       case "manage_offer":
         return OperationKinds.ManageOffer;
+      case "create_passive_offer":
+        return OperationKinds.CreatePassiveOffer;
       case "set_options":
         return OperationKinds.SetOption;
       case "change_trust":
@@ -51,10 +55,11 @@ export class DataMapper {
   constructor(private data: IHorizonOperationData) {
     this.baseData = {
       id: data.id,
+      index: parsePagingToken(data.paging_token).opIndex,
       kind: DataMapper.mapHorizonOpType(data.type),
-      account: data.source_account,
+      sourceAccount: data.source_account,
       dateTime: new Date(data.created_at),
-      transactionId: data.transaction_hash
+      tx: { id: data.transaction_hash }
     };
   }
 
@@ -78,6 +83,8 @@ export class DataMapper {
         return this.mapManageData();
       case OperationKinds.ManageOffer:
         return this.mapManageOffer();
+      case OperationKinds.CreatePassiveOffer:
+        return this.mapCreatePassiveOffer();
       case OperationKinds.PathPayment:
         return this.mapPathPayment();
     }
@@ -133,7 +140,7 @@ export class DataMapper {
       ...{
         trustor: this.data.trustor,
         authorize: this.data.authorize,
-        assetCode: this.data.asset_code
+        asset: new Asset(this.data.asset_code, this.baseData.sourceAccount)
       }
     };
   }
@@ -171,6 +178,32 @@ export class DataMapper {
     };
   }
 
+  private mapCreatePassiveOffer(): ICreatePassiveOfferOperation {
+    const assetBuying =
+      this.data.buying_asset_type === "native"
+        ? Asset.native()
+        : new Asset(this.data.buying_asset_code, this.data.buying_asset_issuer);
+
+    const assetSelling =
+      this.data.selling_asset_type === "native"
+        ? Asset.native()
+        : new Asset(this.data.selling_asset_code, this.data.selling_asset_issuer);
+
+    return {
+      ...this.baseData,
+      ...{
+        amount: this.data.amount,
+        price: this.data.price,
+        priceComponents: {
+          n: this.data.price_r.n,
+          d: this.data.price_r.d
+        },
+        assetBuying,
+        assetSelling
+      }
+    };
+  }
+
   private mapManageOffer(): IManageOfferOperation {
     const assetBuying =
       this.data.buying_asset_type === "native"
@@ -185,7 +218,7 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{
-        offerId: this.data.offer_id,
+        offerId: this.data.offer_id.toString(),
         amount: this.data.amount,
         price: this.data.price,
         priceComponents: {

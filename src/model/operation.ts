@@ -1,8 +1,6 @@
-// This module holds definitions of operations data types,
-// which we serve from GraphQL server. These are "processed" counterparts
-// of data that is stored in Dgraph
 import { Asset } from "stellar-sdk";
-import { AccountID } from "./account_id";
+import { HorizonAccountFlag } from "../datasource/types";
+import { AccountID } from "./";
 
 export enum OperationKinds {
   Payment = "payment",
@@ -19,10 +17,10 @@ export enum OperationKinds {
 }
 
 export interface IBaseOperation {
+  id?: string;
   kind: OperationKinds;
-  opSource: AccountID | null;
-  txSource: AccountID;
-  transactionId: string;
+  sourceAccount: AccountID;
+  tx: { id: string; sourceAccount?: AccountID };
   index: number;
   dateTime: Date;
 }
@@ -36,8 +34,8 @@ export interface IPaymentOperation extends IBaseOperation {
 export interface ISetOptionsOperation extends IBaseOperation {
   masterWeight: number;
   homeDomain: string;
-  clearFlags: number;
-  setFlags: number;
+  clearFlags: HorizonAccountFlag[];
+  setFlags: HorizonAccountFlag[];
   thresholds: {
     high: number;
     medium: number;
@@ -82,13 +80,33 @@ export interface IManageDataOperation extends IBaseOperation {
 export interface IManageOfferOperation extends IBaseOperation {
   amount: string;
   offerId: string;
-  price: number;
-  priceComponents: { n: string; d: string };
+  price: string;
+  priceComponents: { n: number; d: number };
   assetBuying: Asset;
   assetSelling: Asset;
 }
 
+export interface ICreatePassiveOfferOperation extends IBaseOperation {
+  amount: string;
+  price: string;
+  priceComponents: { n: number; d: number };
+  assetBuying: Asset;
+  assetSelling: Asset;
+}
+
+// This is more of a "effect" of particular path payment
+// Horizon returns data this way, so we use it too
 export interface IPathPaymentOperation extends IBaseOperation {
+  sendMax: string;
+  amountSent: string;
+  amountReceived: string;
+  destinationAccount: AccountID;
+  destinationAsset: Asset;
+  sourceAsset: Asset;
+}
+
+// This is a "legacy" interface, we ingest path payments to DGraph in this format
+export interface IDgraphPathPaymentOperation extends IBaseOperation {
   sendMax: string;
   destinationAmount: string;
   destinationAccount: AccountID;
@@ -107,4 +125,6 @@ export type Operation =
   | ICreateAccountOperation
   | IManageDataOperation
   | IManageOfferOperation
-  | IPathPaymentOperation;
+  | IPathPaymentOperation
+  | ICreatePassiveOfferOperation
+  | IDgraphPathPaymentOperation;
