@@ -4,7 +4,7 @@ import { db } from "./database";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger, LedgerHeader, OfferSubscriptionPayload, TransactionWithXDR } from "./model";
 import { AssetFactory } from "./model/factories/asset_factory";
-import extractOperation from "./util/extract_operation";
+// import extractOperation from "./util/extract_operation";
 import logger from "./util/logger";
 
 const pgClient = new Client(db.$cn as string);
@@ -68,11 +68,11 @@ export class Publisher {
       });
     });
 
-    for (const tx of transactions) {
-      for (let index = 0; index < tx.operationsXDR.length; index++) {
-        pubsub.publish(NEW_OPERATION, extractOperation(tx, index));
-      }
-    }
+    // for (const tx of transactions) {
+    //   for (let index = 0; index < tx.operationsXDR.length; index++) {
+    //     pubsub.publish(NEW_OPERATION, extractOperation(tx, index));
+    //   }
+    // }
   }
 
   private static eventMap = [

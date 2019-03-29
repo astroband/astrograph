@@ -8,9 +8,9 @@ import { gql } from "apollo-server";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import ws from "ws";
 
-import { ACCOUNT_ID, GRAPHQL_ENDPOINT } from "./args";
+import { ACCOUNT_ID } from "./args";
 
-const client = new SubscriptionClient(GRAPHQL_ENDPOINT, { reconnect: true }, ws);
+const client = new SubscriptionClient("ws://localhost:4000/graphql", { reconnect: true }, ws);
 
 const link = new WebSocketLink(client);
 const cache = new InMemoryCache();
@@ -26,6 +26,7 @@ const SUBSCRIPTION = gql`
       values {
         asset {
           code
+          issuer { id }
           native
         }
         balance
@@ -51,9 +52,11 @@ apolloClient
   .subscribe({
     next(data: any) {
       const values = data.data.trustLine.values;
+      const assetId = values.asset.native ? values.asset.code : `${values.asset.code}-${values.asset.issuer.id}`;
+
       console.log(
         "New balance for",
-        values.asset.code,
+        assetId,
         "is now",
         values.balance,
         "with limit",
