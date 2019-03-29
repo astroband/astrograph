@@ -111,7 +111,7 @@ export const typeDefs = gql`
   type CreatePassiveOfferOperation implements Operation {
     id: String!
     kind: OperationKind!
-    sourceAccount: AccountID!
+    sourceAccount: Account!
     dateTime: DateTime!
     transaction: Transaction!
     priceComponents: OfferPriceComponents!
