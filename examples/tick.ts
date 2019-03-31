@@ -7,7 +7,6 @@ import { WebSocketLink } from "apollo-link-ws";
 import { gql } from "apollo-server";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import ws from "ws";
-import { Query } from "pg";
 
 // That's our Astrograph public instance URL, "wss" protocol used for "secure web socket",
 // websocket over https.
