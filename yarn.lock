@@ -1742,13 +1742,6 @@ detect-newline@^2.1.0:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
   integrity sha1-9B8cEL5LAOh7XxPaaAdZ8sW/0+I=
 
-dgraph-js@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/dgraph-js/-/dgraph-js-1.2.1.tgz#39bf8ea9510c17856f8ab355a7e03cc5e2a62f9d"
-  integrity sha512-PHNT/WidlQ0EV2iZnAzPcwI43brJ035+exwpbFxLg7qKtDiqx/NlRWoJiYl4+ZK6jdSASCgLym+uXtWrp8MrOw==
-  dependencies:
-    google-protobuf "^3.5.0"
-
 diagnostics@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/diagnostics/-/diagnostics-1.1.1.tgz#cab6ac33df70c9d9a727490ae43ac995a769b22a"
@@ -2399,11 +2392,6 @@ globals@^9.18.0:
   version "9.18.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-9.18.0.tgz#aa3896b3e69b487f17e31ed2143d69a8e30c2d8a"
   integrity sha512-S0nG3CLEQiY/ILxqtztTWH/3iRRdyBLw6KMDxnKMchrtbj2OFmehVh0WUCfW3DUrIgx/qFrJPICrq4Z4sTR9UQ==
-
-google-protobuf@^3.5.0:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.6.1.tgz#7ef58e2bea137a93cdaf5cfd5afa5f6abdd92025"
-  integrity sha512-SJYemeX5GjDLPnadcmCNQePQHCS4Hl5fOcI/JawqDIYFhCmrtYAjcx/oTQx/Wi8UuCuZQhfvftbmPePPAYHFtA==
 
 got@^6.7.1:
   version "6.7.1"
