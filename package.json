@@ -20,6 +20,7 @@
     "big.js": "^5.1.2",
     "bignumber.js": "^8.0.1",
     "bluebird": "^3.5.3",
+    "dgraph-js": "^1.2.1",
     "dotenv": "^6.0.0",
     "graphql": "^14.1.1",
     "graphql-fields-list": "^2.1.1",
@@ -93,7 +94,10 @@
     "test:coverage": "jest --coverage",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
-    "bench": "ts-node ./benchmark/index.ts"
+    "bench": "ts-node ./benchmark/index.ts",
+    "export": "yarn build && node ./dist/export.js",
+    "export-offers": "yarn build && node ./dist/export-offers.js",
+    "dgraph-migrate": "ts-node ./src/migrate.ts"
   },
   "license": "MIT",
   "private": true,

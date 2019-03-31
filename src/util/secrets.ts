@@ -24,5 +24,8 @@ export const BIND_ADDRESS = process.env.BIND_ADDRESS || "0.0.0.0";
 export const DEBUG_LEDGER = Number.parseInt(process.env.DEBUG_LEDGER || "", 10);
 export const INGEST_INTERVAL = Number.parseInt(process.env.INGEST_INTERVAL || "", 10) || 2000;
 
+export const DGRAPH_QUERY_URL = process.env.DGRAPH_QUERY_URL || process.env.DGRAPH_URL;
+export const DGRAPH_INGEST_URL = process.env.DGRAPH_INGEST_URL || process.env.DGRAPH_URL;
+
 export const STELLAR_NETWORK = process.env.STELLAR_NETWORK || "pubnet";
 export const SENTRY_DSN = process.env.SENTRY_DSN;
