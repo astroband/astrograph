@@ -1,6 +1,6 @@
 import { RESTDataSource } from "apollo-datasource-rest";
-import { AccountID } from "../model/account_id";
-import { IHorizonOperationData, IHorizonTransactionData } from "./types";
+import { AccountID, IAssetInput } from "../model";
+import { IHorizonAssetData, IHorizonOperationData, IHorizonTransactionData } from "./types";
 
 type SortOrder = "desc" | "asc";
 
@@ -58,23 +58,46 @@ export default class HorizonAPI extends RESTDataSource {
     return this.request(`ledgers/${ledgerSeq}/transactions`, { pagingOptions: { limit, order, cursor } });
   }
 
+  public async getAssets(
+    criteria: IAssetInput,
+    limit: number,
+    order: SortOrder = "asc",
+    cursor?: string
+  ): Promise<IHorizonAssetData[]> {
+    return this.request(`assets`, {
+      asset_code: criteria.code,
+      asset_issuer: criteria.issuer,
+      limit,
+      order,
+      cursor,
+      cacheTtl: 600
+    });
+  }
+
   private async request(
     url: string,
-    params?: {
-      pagingOptions?: { limit?: number; order?: SortOrder; cursor?: string };
+    params: {
+      [key: string]: any;
+      limit?: number;
+      order?: SortOrder;
+      cursor?: string;
       cacheTtl?: number;
-    }
+    } = {}
   ) {
-    const pagingOptions = (params && params.pagingOptions) || {};
-    const cacheTtl = (params && params.cacheTtl) || 7 * 24 * 60 * 60; // cache for a week by default
+    let cacheTtl = 7 * 24 * 60 * 60; // cache for a week by default
 
-    Object.keys(pagingOptions).forEach(key => {
-      if (!pagingOptions[key]) {
-        delete pagingOptions[key];
+    if (params.cacheTtl) {
+      cacheTtl = params.cacheTtl;
+      delete params.cacheTtl;
+    }
+
+    Object.keys(params).forEach(key => {
+      if (!params[key]) {
+        delete params[key];
       }
     });
 
-    const response = await this.get(url, pagingOptions, { cacheOptions: { ttl: cacheTtl } });
+    const response = await this.get(url, params, { cacheOptions: { ttl: cacheTtl } });
 
     if (response._embedded) {
       response._embedded.records.forEach((record: any) => {
