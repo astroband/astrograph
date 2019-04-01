@@ -75,14 +75,11 @@ export default class HorizonAPI extends RESTDataSource {
   }
 
   public async getOrderBook(selling: IAssetInput, buying: IAssetInput): Promise<IHorizonOrderBookData> {
-    const sellingType = this.predictAssetCode(selling.code);
-    const buyingType = this.predictAssetCode(buying.code);
-
     return this.request("order_book", {
-      selling_asset_type: sellingType,
+      selling_asset_type: this.predictAssetType(selling.code),
       selling_asset_code: selling.code,
       selling_asset_issuer: selling.issuer,
-      buying_asset_type: buyingType,
+      buying_asset_type: this.predictAssetType(buying.code),
       buying_asset_code: buying.code,
       buying_asset_issuer: buying.issuer
     });
@@ -126,8 +123,11 @@ export default class HorizonAPI extends RESTDataSource {
     return response;
   }
 
-  private predictAssetCode(code: string | undefined): string {
+  private predictAssetType(code: string | undefined): string {
     if (code === undefined) {
+      return "native";
+    }
+    if (code === "native") {
       return "native";
     }
     return code.length > 4 ? "credit_alphanum12" : "credit_alphanum4";
