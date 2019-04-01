@@ -7,11 +7,12 @@ export const typeDefs = gql`
   }
 
   type OrderBook {
-    bids: [OrderBookItem!],
+    bids: [OrderBookItem!]
     asks: [OrderBookItem!]
   }
 
-  type Query {
+  extend type Query {
     orderBook(selling: AssetInput!, buying: AssetInput!): OrderBook
   }
-`
+
+`;

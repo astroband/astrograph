@@ -170,6 +170,6 @@ export interface IHorizonOrderBookEntry {
 }
 
 export interface IHorizonOrderBookData {
-  bids: IHorizonOrderBookEntry[],
-  asks: IHorizonOrderBookEntry[]
+  bids: IHorizonOrderBookEntry[];
+  asks: IHorizonOrderBookEntry[];
 }
