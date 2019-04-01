@@ -4,7 +4,7 @@ import { AssetCode } from "../model/asset_code";
 
 export type HorizonAccountFlag = "auth_required" | "auth_immutable" | "auth_revocable";
 
-type HorizonAssetType = "native" | "alphanum4" | "alphanum12";
+type HorizonAssetType = "native" | "credit_alphanum4" | "credit_alphanum12";
 export type HorizonOpType =
   | "create_account"
   | "payment"
@@ -152,4 +152,14 @@ export interface IHorizonTransactionData {
   result_meta_xdr: string;
   fee_meta_xdr: string;
   memo_type: typeof MemoNone | typeof MemoID | typeof MemoHash | typeof MemoReturn | typeof MemoText;
+}
+
+export interface IHorizonAssetData {
+  asset_type: HorizonAssetType;
+  asset_code: AssetCode;
+  asset_issuer: AccountID;
+  paging_token: string;
+  amount: string;
+  num_accounts: number;
+  flags: { [flag in HorizonAccountFlag]: boolean };
 }

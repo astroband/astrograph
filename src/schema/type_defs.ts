@@ -1,8 +1,6 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
-  scalar AssetCode
-  scalar AssetID
   scalar TimeBounds
   scalar MemoValue
   scalar DateTime
@@ -48,12 +46,6 @@ export const typeDefs = gql`
   type Memo {
     value: MemoValue
     type: MemoType!
-  }
-
-  type Asset {
-    native: Boolean!
-    issuer: Account
-    code: AssetCode!
   }
 
   interface IDataEntry {
@@ -114,19 +106,10 @@ export const typeDefs = gql`
     values: TrustLineValues
   }
 
-  input AssetInput {
-    code: AssetCode
-    issuer: AccountID
-  }
-
   input EventInput {
     mutationTypeIn: [MutationType!]
     idEq: AccountID
     idIn: [AccountID!]
-  }
-
-  type Query {
-    assets(code: AssetCode, issuer: AccountID, first: Int, offset: Int): [Asset]
   }
 
   type Subscription {
