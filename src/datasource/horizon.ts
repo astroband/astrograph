@@ -1,6 +1,12 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 import { AccountID, IAssetInput } from "../model";
-import { IHorizonAssetData, IHorizonOperationData, IHorizonOrderBookData, IHorizonTransactionData } from "./types";
+import { 
+  HorizonAssetType,
+  IHorizonAssetData,
+  IHorizonOperationData,
+  IHorizonOrderBookData,
+  IHorizonTransactionData
+} from "./types";
 
 type SortOrder = "desc" | "asc";
 
@@ -123,7 +129,7 @@ export default class HorizonAPI extends RESTDataSource {
     return response;
   }
 
-  private predictAssetType(code: string | undefined): string {
+  private predictAssetType(code: string | undefined): HorizonAssetType {
     if (code === undefined) {
       return "native";
     }

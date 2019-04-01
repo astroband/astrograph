@@ -1,9 +1,11 @@
 export default {
   Query: {
     async orderBook(root: any, args: any, ctx: any, info: any) {
+      const { buying, selling } = args;
+
       const r = await ctx.dataSources.horizon.getOrderBook(
-        { code: "USD", issuer: "GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK"},
-        { code: "native" }
+        { code: selling.code, issuer: selling.issuer },
+        { code: buying.code, issuer: buying.issuer }
       );
 
       return {
