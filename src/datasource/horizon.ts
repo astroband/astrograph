@@ -1,6 +1,12 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 import { AccountID, IAssetInput } from "../model";
-import { IHorizonAssetData, IHorizonOperationData, IHorizonTransactionData } from "./types";
+import { 
+  HorizonAssetType,
+  IHorizonAssetData,
+  IHorizonOperationData,
+  IHorizonOrderBookData,
+  IHorizonTransactionData
+} from "./types";
 
 type SortOrder = "desc" | "asc";
 
@@ -74,6 +80,18 @@ export default class HorizonAPI extends RESTDataSource {
     });
   }
 
+  public async getOrderBook(selling: IAssetInput, buying: IAssetInput, limit?: number): Promise<IHorizonOrderBookData> {
+    return this.request("order_book", {
+      selling_asset_type: this.predictAssetType(selling.code),
+      selling_asset_code: selling.code,
+      selling_asset_issuer: selling.issuer,
+      buying_asset_type: this.predictAssetType(buying.code),
+      buying_asset_code: buying.code,
+      buying_asset_issuer: buying.issuer,
+      limit
+    });
+  }
+
   private async request(
     url: string,
     params: {
@@ -110,5 +128,15 @@ export default class HorizonAPI extends RESTDataSource {
     delete response._links;
 
     return response;
+  }
+
+  private predictAssetType(code: string | undefined): HorizonAssetType {
+    if (code === undefined) {
+      return "native";
+    }
+    if (code === "native") {
+      return "native";
+    }
+    return code.length > 4 ? "credit_alphanum12" : "credit_alphanum4";
   }
 }

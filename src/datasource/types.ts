@@ -4,7 +4,7 @@ import { AssetCode } from "../model/asset_code";
 
 export type HorizonAccountFlag = "auth_required" | "auth_immutable" | "auth_revocable";
 
-type HorizonAssetType = "native" | "credit_alphanum4" | "credit_alphanum12";
+export type HorizonAssetType = "native" | "credit_alphanum4" | "credit_alphanum12";
 export type HorizonOpType =
   | "create_account"
   | "payment"
@@ -162,4 +162,14 @@ export interface IHorizonAssetData {
   amount: string;
   num_accounts: number;
   flags: { [flag in HorizonAccountFlag]: boolean };
+}
+
+export interface IHorizonOrderBookEntry {
+  price: string;
+  amount: string;
+}
+
+export interface IHorizonOrderBookData {
+  bids: IHorizonOrderBookEntry[];
+  asks: IHorizonOrderBookEntry[];
 }
