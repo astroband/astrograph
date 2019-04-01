@@ -163,3 +163,13 @@ export interface IHorizonAssetData {
   num_accounts: number;
   flags: { [flag in HorizonAccountFlag]: boolean };
 }
+
+export interface IHorizonOrderBookEntry {
+  price: string;
+  amount: string;
+}
+
+export interface IHorizonOrderBookData {
+  bids: IHorizonOrderBookEntry[],
+  asks: IHorizonOrderBookEntry[]
+}
