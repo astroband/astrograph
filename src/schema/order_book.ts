@@ -12,7 +12,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    orderBook(selling: AssetInput!, buying: AssetInput!): OrderBook
+    orderBook(selling: AssetInput!, buying: AssetInput!, limit: Int): OrderBook
   }
 
 `;
