@@ -187,5 +187,5 @@ export interface IHorizonPaymentPathData {
     asset_type: HorizonAssetType;
     asset_code: AssetCode;
     asset_issuer: AccountID;
-  }>
+  }>;
 }

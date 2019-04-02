@@ -6,6 +6,10 @@ export class AssetFactory {
     return type === XDR.AssetType.assetTypeNative().value ? Asset.native() : new Asset(code, issuer);
   }
 
+  public static fromHorizonResponse(type: string, code: string, issuer: string) {
+    return type === "native" ? Asset.native() : new Asset(code, issuer);
+  }
+
   public static fromInput(arg: IAssetInput) {
     if (arg.issuer && arg.code) {
       return new Asset(arg.code, arg.issuer);

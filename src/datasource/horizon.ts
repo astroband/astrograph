@@ -1,6 +1,7 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 import { AccountID, IAssetInput } from "../model";
-import { 
+
+import {
   HorizonAssetType,
   IHorizonAssetData,
   IHorizonOperationData,
@@ -95,18 +96,18 @@ export default class HorizonAPI extends RESTDataSource {
   }
 
   public async getPaymentPath(
-    sourceAccount: AccountID,
-    destinationAccount: AccountID,
-    asset: IAssetInput,
-    amount: string
-): Promise<IHorizonPaymentPathData> {
+    sourceAccountID: AccountID,
+    destinationAccountID: AccountID,
+    destinationAmount: string,
+    destinationAsset: IAssetInput
+  ): Promise<IHorizonPaymentPathData> {
     return this.request("paths", {
-      source_account: sourceAccount,
-      destination_account: destinationAccount,
-      destination_asset_type: this.predictAssetType(asset.code),
-      destination_asset_code: asset.code,
-      destination_asset_issuer: asset.issuer,
-      destination_amount: amount,
+      source_account: sourceAccountID,
+      destination_account: destinationAccountID,
+      destination_asset_type: this.predictAssetType(destinationAsset.code),
+      destination_asset_code: destinationAsset.code,
+      destination_asset_issuer: destinationAsset.issuer,
+      destination_amount: destinationAmount,
       cacheTtl: 120
     });
   }

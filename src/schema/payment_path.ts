@@ -2,10 +2,10 @@ import { gql } from "apollo-server";
 
 export const typeDefs = gql`
   type PaymentPath {
-    source_asset: Asset!
-    source_amount: Float!
-    destination_asset: Asset!
-    destination_amount: Float!
+    sourceAsset: Asset!
+    sourceAmount: Float!
+    destinationAsset: Asset!
+    destinationAmount: Float!
     path: [Asset!]
   }
 
