@@ -1,6 +1,20 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
+  enum OperationKind {
+    payment
+    setOption
+    accountMerge
+    allowTrust
+    bumpSequence
+    changeTrust
+    createAccount
+    manageDatum
+    manageOffer
+    createPassiveOffer
+    pathPayment
+  }
+
   interface Operation {
     id: String!
     kind: OperationKind!

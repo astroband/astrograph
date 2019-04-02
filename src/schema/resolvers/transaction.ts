@@ -2,7 +2,7 @@ import { db } from "../../database";
 import { IHorizonTransactionData } from "../../datasource/types";
 import { Account, Transaction } from "../../model";
 import { TransactionWithXDRFactory } from "../../model/factories";
-import { createBatchResolver, ledgerResolver, memoResolver, operationsResolver } from "./util";
+import { createBatchResolver, effectsResolver, ledgerResolver, memoResolver, operationsResolver } from "./util";
 
 export default {
   Transaction: {
@@ -11,7 +11,8 @@ export default {
     }),
     ledger: ledgerResolver,
     memo: memoResolver,
-    operations: operationsResolver
+    operations: operationsResolver,
+    effects: effectsResolver
   },
   Query: {
     async transaction(root: any, args: any, ctx: any, info: any) {

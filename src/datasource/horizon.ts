@@ -4,6 +4,7 @@ import { AccountID, IAssetInput } from "../model";
 import {
   HorizonAssetType,
   IHorizonAssetData,
+  IHorizonEffectData,
   IHorizonOperationData,
   IHorizonOrderBookData,
   IHorizonPaymentPathData,
@@ -138,6 +139,37 @@ export default class HorizonAPI extends RESTDataSource {
       order,
       cacheTtl: 60 * 5
     });
+  }
+
+  public async getEffects(limit = 10, order: SortOrder = "desc", cursor?: string): Promise<IHorizonEffectData[]> {
+    return this.request("effects", { limit, order, cursor, cacheTtl: 10 });
+  }
+
+  public async getTransactionEffects(
+    transactionId: string,
+    limit = 10,
+    order: SortOrder = "desc",
+    cursor?: string
+  ): Promise<IHorizonEffectData[]> {
+    return this.request(`transactions/${transactionId}/effects`, { limit, order, cursor, cacheTtl: 10 });
+  }
+
+  public async getAccountEffects(
+    accountId: AccountID,
+    limit = 10,
+    order: SortOrder = "desc",
+    cursor?: string
+  ): Promise<IHorizonEffectData[]> {
+    return this.request(`accounts/${accountId}/effects`, { limit, order, cursor, cacheTtl: 10 });
+  }
+
+  public async getLedgerEffects(
+    ledgerSeq: number,
+    limit = 10,
+    order: SortOrder = "desc",
+    cursor?: string
+  ): Promise<IHorizonEffectData[]> {
+    return this.request(`ledgers/${ledgerSeq}/effects`, { limit, order, cursor, cacheTtl: 10 });
   }
 
   private async request(

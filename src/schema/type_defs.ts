@@ -29,20 +29,6 @@ export const typeDefs = gql`
     REMOVE
   }
 
-  enum OperationKind {
-    payment
-    setOption
-    accountMerge
-    allowTrust
-    bumpSequence
-    changeTrust
-    createAccount
-    manageDatum
-    manageOffer
-    createPassiveOffer
-    pathPayment
-  }
-
   type Memo {
     value: MemoValue
     type: MemoType!
