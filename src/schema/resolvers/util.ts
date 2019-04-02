@@ -48,11 +48,16 @@ export const accountResolver = createBatchResolver<any, Account[]>(
 export function assetResolver(obj: any, args: any, ctx: any, info: any) {
   const field = info.fieldName || "asset";
   const asset = obj[field] as Asset;
-  return {
-    code: asset.getCode(),
-    issuer: asset.getIssuer(),
-    native: asset.isNative()
+
+  const res = (a: Asset): any => {
+    return { code: a.getCode(), issuer: a.getIssuer(), native: a.isNative() };
   };
+
+  if (Array.isArray(asset)) {
+    return asset.map(a => res(a));
+  };
+
+  return res(asset);
 }
 
 export function eventMatches(args: any, id: string, mutationType: MutationType): boolean {

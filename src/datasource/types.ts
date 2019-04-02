@@ -173,3 +173,19 @@ export interface IHorizonOrderBookData {
   bids: IHorizonOrderBookEntry[];
   asks: IHorizonOrderBookEntry[];
 }
+
+export interface IHorizonPaymentPathData {
+  source_asset_type: HorizonAssetType;
+  source_asset_code: AssetCode;
+  source_asset_issuer: AccountID;
+  source_amount: string;
+  destination_asset_type: HorizonAssetType;
+  destination_asset_code: AssetCode;
+  destination_asset_issuer: AccountID;
+  destination_amount: string;
+  path: Array<{
+    asset_type: HorizonAssetType;
+    asset_code: AssetCode;
+    asset_issuer: AccountID;
+  }>;
+}

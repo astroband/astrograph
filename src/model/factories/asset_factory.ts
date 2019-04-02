@@ -1,9 +1,14 @@
 import { Asset, xdr as XDR } from "stellar-base";
 import { IAssetInput } from "../asset_input";
+import { HorizonAssetType } from "../../datasource/types";
 
 export class AssetFactory {
   public static fromDb(type: number, code: string, issuer: string) {
     return type === XDR.AssetType.assetTypeNative().value ? Asset.native() : new Asset(code, issuer);
+  }
+
+  public static fromHorizonResponse(type: HorizonAssetType, code: string, issuer: string) {
+    return type === "native" ? Asset.native() : new Asset(code, issuer);
   }
 
   public static fromInput(arg: IAssetInput) {
