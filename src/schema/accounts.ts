@@ -40,6 +40,7 @@ export const typeDefs = gql`
     data: [DataEntry]
     trustLines: [TrustLine]
     operations(first: Int, after: String, last: Int, before: String): OperationConnection
+    offers(selling: AssetID, buying: AssetID, first: Int, after: String, last: Int, before: String): OfferConnection
   }
 
   type OperationConnection {

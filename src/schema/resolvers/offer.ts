@@ -1,5 +1,5 @@
 import { withFilter } from "graphql-subscriptions";
-import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
+import { assetResolver, createBatchResolver, eventMatches, ledgerResolver, offersResolver } from "./util";
 
 import { db } from "../../database";
 import { Account, MutationType, Offer } from "../../model";
@@ -62,19 +62,7 @@ export default {
     buying: assetResolver
   },
   Query: {
-    offers(root: any, args: any, ctx: any, info: any) {
-      const { first, offset, orderBy, ...criteria } = args;
-      const columnsMap = { id: "offerid" };
-      let orderColumn = "offerid";
-      let orderDir: "ASC" | "DESC" = "DESC";
-
-      if (orderBy) {
-        [orderColumn, orderDir] = orderBy.split("_");
-        orderColumn = columnsMap[orderColumn];
-      }
-
-      return db.offers.findAll(criteria, first, offset, [orderColumn, orderDir]);
-    },
+    offers: offersResolver,
     async tick(root: any, args: any, ctx: any, info: any) {
       const selling = AssetFactory.fromId(args.selling);
       const buying = AssetFactory.fromId(args.buying);

@@ -48,6 +48,7 @@ export const accountResolver = createBatchResolver<any, Account[]>(
 export function assetResolver(obj: any, args: any, ctx: any, info: any) {
   const field = info.fieldName || "asset";
   const asset = obj[field] as Asset;
+
   return {
     code: asset.getCode(),
     issuer: asset.getIssuer(),
@@ -100,6 +101,27 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
     pageInfo: {
       startCursor: data.length !== 0 ? data[0].paging_token : null,
       endCursor: data.length !== 0 ? data[data.length - 1].paging_token : null
+    }
+  };
+}
+
+export async function offersResolver(obj: any, args: any, ctx: any) {
+  const { first, last, after, before, ...criteria } = args;
+
+  if (obj instanceof Account) {
+    criteria.seller = obj.id;
+  }
+
+  const offers = await db.offers.findAll(criteria, { first, last, after, before });
+
+  const edges = offers.map(offer => ({ node: offer, cursor: offer.id }));
+
+  return {
+    nodes: edges.map(edge => edge.node),
+    edges,
+    pageInfo: {
+      startCursor: offers.length !== 0 ? offers[0].id : null,
+      endCursor: offers.length !== 0 ? offers[offers.length - 1].id : null
     }
   };
 }

@@ -16,20 +16,25 @@ export default class OffersRepo {
       selling?: string;
       buying?: string;
     },
-    limit?: number,
-    offset?: number,
-    order?: [string, "ASC" | "DESC"]
+    paging: {
+      first?: number;
+      last?: number;
+      after?: string;
+      before?: string;
+    } = {}
   ) {
     const queryBuilder = squel
       .select()
       .field("*")
       .from("offers");
 
-    if (!order) {
-      order = ["offerid", "DESC"];
-    }
+    queryBuilder.order("offerid", paging.before !== undefined);
 
-    queryBuilder.order(order[0], order[1] === "ASC");
+    if (paging.after) {
+      queryBuilder.where("offerid < ?", paging.after);
+    } else if (paging.before) {
+      queryBuilder.where("offerid > ?", paging.before);
+    }
 
     if (criteria) {
       if (criteria.seller) {
@@ -40,17 +45,16 @@ export default class OffersRepo {
       this.appendAsset(queryBuilder, "buying", criteria.buying);
     }
 
+    const limit = paging.first || paging.last;
+
     if (limit) {
       queryBuilder.limit(limit);
     }
 
-    if (offset) {
-      queryBuilder.offset(offset);
-    }
-
     const res = await this.db.manyOrNone(queryBuilder.toString());
+    const offers = res.map(a => OfferFactory.fromDb(a));
 
-    return res.map(a => OfferFactory.fromDb(a));
+    return paging.before ? offers.reverse() : offers;
   }
 
   public async getIdAssetsMap() {

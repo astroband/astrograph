@@ -24,6 +24,17 @@ export const typeDefs = gql`
     ledger: Ledger!
   }
 
+  type OfferConnection {
+    pageInfo: PageInfo!
+    nodes: [Offer]
+    edges: [OfferEdge]
+  }
+
+  type OfferEdge {
+    cursor: String!
+    node: Offer
+  }
+
   type OfferValues implements IOffer {
     id: OfferID!
     seller: Account!
@@ -49,11 +60,6 @@ export const typeDefs = gql`
     sellingAssetEq: AssetInput
   }
 
-  enum OfferOrderByInput {
-    id_DESC
-    id_ASC
-  }
-
   type Tick {
     selling: AssetID
     buying: AssetID
@@ -64,12 +70,13 @@ export const typeDefs = gql`
   extend type Query {
     offers(
       seller: AccountID
-      selling: AssetCode
-      buying: AssetCode
-      orderBy: OfferOrderByInput
-      first: Int!
-      offset: Int
-    ): [Offer]
+      selling: AssetID
+      buying: AssetID
+      first: Int
+      after: String
+      last: Int
+      before: String
+    ): OfferConnection
     tick(selling: AssetID!, buying: AssetID!): Tick
   }
 
