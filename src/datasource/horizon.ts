@@ -5,6 +5,7 @@ import {
   IHorizonAssetData,
   IHorizonOperationData,
   IHorizonOrderBookData,
+  IHorizonPaymentPathData,
   IHorizonTransactionData
 } from "./types";
 
@@ -88,7 +89,25 @@ export default class HorizonAPI extends RESTDataSource {
       buying_asset_type: this.predictAssetType(buying.code),
       buying_asset_code: buying.code,
       buying_asset_issuer: buying.issuer,
-      limit
+      limit,
+      cacheTtl: 15
+    });
+  }
+
+  public async getPaymentPath(
+    sourceAccount: AccountID,
+    destinationAccount: AccountID,
+    asset: Asset,
+    amount: string
+): Promise<IHorizonPaymentPathData> {
+    return this.request("paths", {
+      source_account: sourceAccount,
+      destination_account: destinationAccount,
+      destination_asset_type: this.predictAssetType(asset.code),
+      destination_asset_code: asset.code,
+      destination_asset_issuer: asset.issuer,
+      destination_amount: amount,
+      cacheTtl: 120
     });
   }
 
