@@ -82,6 +82,8 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
     data = await dataSource.getAccountOperations(obj.id, ...pagingArgs);
   } else if (obj instanceof Ledger) {
     data = await dataSource.getLedgerOperations(obj.id, ...pagingArgs);
+  } else if (obj === undefined) {
+    data = await dataSource.getOperations(...pagingArgs);
   } else {
     throw new Error(`Cannot fetch operations for ${obj.constructor}`);
   }

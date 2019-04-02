@@ -3,7 +3,7 @@ import { Asset } from "stellar-base";
 import { Operation, OperationKinds, Transaction } from "../../model";
 import { TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
-import { accountResolver } from "./util";
+import { accountResolver, operationsResolver } from "./util";
 
 export default {
   Operation: {
@@ -52,6 +52,7 @@ export default {
   CreateAccountOperation: { destination: accountResolver },
   PathPaymentOperation: { destinationAccount: accountResolver },
   SetOptionsSigner: { account: accountResolver },
+  Query: { operations: operationsResolver },
   Subscription: {
     operations: {
       subscribe: withFilter(
