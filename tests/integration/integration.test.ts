@@ -1,14 +1,25 @@
+import { ApolloServer } from "apollo-server";
+import { createTestClient } from "apollo-server-testing";
 import { execSync } from "child_process";
 import fs from "fs";
-import { graphql } from "graphql";
 import path from "path";
 import { Client as dbClient } from "pg";
 import { Network } from "stellar-base";
+import HorizonAPI from "../../src/datasource/horizon";
 import schema from "../../src/schema";
 import logger from "../../src/util/logger";
 import * as secrets from "../../src/util/secrets";
 
 Network.useTestNetwork();
+
+jest.mock("../../src/datasource/horizon");
+
+const server = new ApolloServer({
+  schema,
+  dataSources: () => ({ horizon: new HorizonAPI() }),
+});
+
+const queryServer = createTestClient(server).query;
 
 const testCases = [
   "Assets",
@@ -54,8 +65,8 @@ describe("Integration tests", () => {
     const queryFile = caseName.toLowerCase().replace(/ /g, "_");
     const query = fs.readFileSync(`${__dirname}/integration_queries/${queryFile}.gql`, "utf8");
 
-    const { data } = await graphql(schema, query);
+    const response = await queryServer({ query });
 
-    expect(data).toMatchSnapshot();
+    expect(response.data).toMatchSnapshot();
   });
 });

@@ -2,8 +2,10 @@ query {
   assets(
     code: "KHL"
   ) {
-    code
-    issuer { id }
-    native
+    nodes {
+      code
+      issuer { id }
+      native
+    }
   }
 }

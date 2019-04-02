@@ -64,6 +64,7 @@
     "apollo-client": "^2.4.1",
     "apollo-link-http": "^1.5.4",
     "apollo-link-ws": "^1.0.8",
+    "apollo-server-testing": "^2.4.8",
     "codecov": "^3.1.0",
     "jest": "^23.6.0",
     "jest-sonar-reporter": "^2.0.0",
