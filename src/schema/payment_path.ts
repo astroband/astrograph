@@ -13,7 +13,7 @@ export const typeDefs = gql`
     findPaymentPaths(
       sourceAccountID: AccountID!
       destinationAccountID: AccountID!
-      destinationAsset: Asset!
+      destinationAsset: AssetInput!
       destinationAmount: Float!
     ): [PaymentPath!]
   }

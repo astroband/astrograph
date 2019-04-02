@@ -97,7 +97,7 @@ export default class HorizonAPI extends RESTDataSource {
   public async getPaymentPath(
     sourceAccount: AccountID,
     destinationAccount: AccountID,
-    asset: Asset,
+    asset: IAssetInput,
     amount: string
 ): Promise<IHorizonPaymentPathData> {
     return this.request("paths", {
