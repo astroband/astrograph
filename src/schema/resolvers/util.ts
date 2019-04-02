@@ -55,7 +55,7 @@ export function assetResolver(obj: any, args: any, ctx: any, info: any) {
 
   if (Array.isArray(asset)) {
     return asset.map(a => res(a));
-  };
+  }
 
   return res(asset);
 }

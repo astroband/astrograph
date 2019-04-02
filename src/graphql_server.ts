@@ -2,7 +2,7 @@ import init from "./init";
 
 import * as Sentry from "@sentry/node";
 
-import { ApolloError, ApolloServer } from "apollo-server";
+import { ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 
 import HorizonAPI from "./datasource/horizon";
@@ -20,7 +20,7 @@ const server = new ApolloServer({
   debug: true,
   cors: true,
   dataSources: () => ({ horizon: new HorizonAPI() }),
-  formatError: (error: ApolloError) => {
+  formatError: (error: GraphQLError) => {
     logger.error(error);
 
     if (!error.originalError || error.originalError.constructor.name !== "UserInputError") {
