@@ -7,6 +7,7 @@ import {
   IHorizonOperationData,
   IHorizonOrderBookData,
   IHorizonPaymentPathData,
+  IHorizonTradeAggregationData,
   IHorizonTransactionData
 } from "./types";
 
@@ -109,6 +110,33 @@ export default class HorizonAPI extends RESTDataSource {
       destination_asset_issuer: destinationAsset.issuer,
       destination_amount: destinationAmount,
       cacheTtl: 120
+    });
+  }
+
+  public async getTradeAggregations(
+    baseAsset: IAssetInput,
+    counterAsset: IAssetInput,
+    startTime: number,
+    endTime: number,
+    resolution: number,
+    limit: number,
+    offset: number,
+    order: SortOrder = "asc"
+  ): Promise<IHorizonTradeAggregationData> {
+    return this.request("trade_aggregations", {
+      base_asset_type: this.predictAssetType(baseAsset.code),
+      base_asset_code: baseAsset.code,
+      base_asset_issuer: baseAsset.issuer,
+      counter_asset_type: this.predictAssetType(counterAsset.code),
+      counter_asset_code: counterAsset.code,
+      counter_asset_issuer: counterAsset.issuer,
+      start_time: startTime,
+      end_time: endTime,
+      resolution,
+      limit,
+      offset,
+      order,
+      cacheTtl: 60 * 5
     });
   }
 

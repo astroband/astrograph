@@ -1,6 +1,6 @@
 import { Asset, xdr as XDR } from "stellar-base";
-import { IAssetInput } from "../asset_input";
 import { HorizonAssetType } from "../../datasource/types";
+import { IAssetInput } from "../asset_input";
 
 export class AssetFactory {
   public static fromDb(type: number, code: string, issuer: string) {

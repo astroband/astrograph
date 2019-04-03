@@ -7,6 +7,7 @@ import operationResolvers from "./operation";
 import orderBookResolvers from "./order_book";
 import paymentPathResolvers from "./payment_path";
 import signerResolvers from "./signer";
+import tradeAggregationsResolvers from "./trade_aggregations";
 import transactionResolvers from "./transaction";
 import trustLineResolvers from "./trust_line";
 
@@ -21,5 +22,6 @@ export default [
   transactionResolvers,
   trustLineResolvers,
   orderBookResolvers,
-  paymentPathResolvers
+  paymentPathResolvers,
+  tradeAggregationsResolvers
 ];
