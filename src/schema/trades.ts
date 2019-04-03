@@ -4,13 +4,13 @@ export const typeDefs = gql`
   type Trade {
     ID: String
     ledgerCloseTime: DateTime!
-    offer: Offer!
-    baseOffer: Offer!
-    baseAccount: Account!
+    offer: Offer
+    baseOffer: Offer
+    baseAccount: Account
     baseAmount: Float!
     baseAsset: Asset!
-    counterOffer: Offer!
-    counterAccount: Account!
+    counterOffer: Offer
+    counterAccount: Account
     counterAmount: Float!
     counterAsset: Asset!
     baseIsSeller: Boolean

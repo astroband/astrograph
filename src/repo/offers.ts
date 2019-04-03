@@ -1,7 +1,13 @@
+import _ from "lodash";
 import { IDatabase } from "pg-promise";
 import squel from "squel";
 import { Asset } from "stellar-sdk";
-import { AssetFactory, OfferFactory } from "../model/factories";
+import { Offer } from "../model";
+import { AssetFactory, IOfferTableRow, OfferFactory } from "../model/factories";
+
+const sql = {
+  selectOffersIn: "SELECT * FROM offers WHERE offerid IN ($1:csv) ORDER BY offerid ASC"
+};
 
 export default class OffersRepo {
   private db: IDatabase<any>;
@@ -96,6 +102,17 @@ export default class OffersRepo {
     return this.db.one(queryBuilder.toString(), [], r => r.minPrice);
   }
 
+  public async findAllByIDs(ids: string[]): Promise<Array<Offer | null>> {
+    if (ids.length === 0) {
+      return new Array<Offer | null>();
+    }
+
+    const res = await this.db.manyOrNone(sql.selectOffersIn, [_.uniq(ids)]);
+    const offers = res.map((v: IOfferTableRow) => OfferFactory.fromDb(v));
+
+    return ids.map<Offer | null>(id => offers.find(a => a.id === id) || null);
+  }
+
   private appendAsset(queryBuilder: any, prefix: string, assetId?: string) {
     if (!assetId) {
       return;
@@ -110,4 +127,5 @@ export default class OffersRepo {
         .toString("base64")
     );
   }
+  
 }

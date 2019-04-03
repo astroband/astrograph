@@ -1,15 +1,27 @@
 import { db } from "../../database";
 import { HorizonAssetType, IHorizonTradeData } from "../../datasource/types";
-import { Account, Trade } from "../../model";
+import { Account, Offer, Trade } from "../../model";
 import { AssetFactory } from "../../model/factories";
 import { assetResolver, createBatchResolver } from "./util";
 
-const baseAccountResolver = createBatchResolver<Trade, Account>((source: any) => {
-  return db.accounts.findAllByIDs(source.map((t: Trade) => t.baseAccountID))
-});
+const baseAccountResolver = createBatchResolver<Trade, Account>((source: any) =>
+  db.accounts.findAllByIDs(source.map((t: Trade) => t.baseAccountID))
+);
 
 const counterAccountResolver = createBatchResolver<Trade, Account>((source: any) =>
   db.accounts.findAllByIDs(source.map((t: Trade) => t.counterAccountID))
+);
+
+const offerResolver = createBatchResolver<Trade, Offer>((source: any) =>
+  db.offers.findAllByIDs(source.map((t: Offer) => t.id))
+);
+
+const baseOfferResolver = createBatchResolver<Trade, Offer>((source: any) =>
+  db.offers.findAllByIDs(source.map((t: Offer) => t.id))
+);
+
+const counterOfferResolver = createBatchResolver<Trade, Offer>((source: any) =>
+  db.offers.findAllByIDs(source.map((t: Offer) => t.id))
 );
 
 export default {
@@ -17,7 +29,10 @@ export default {
     baseAsset: assetResolver,
     counterAsset: assetResolver,
     baseAccount: baseAccountResolver,
-    counterAccount: counterAccountResolver
+    counterAccount: counterAccountResolver,
+    offer: offerResolver,
+    baseOffer: baseOfferResolver,
+    counterOffer: counterOfferResolver
   },
   Query: {
     async trades(root: any, args: any, ctx: any, info: any) {
@@ -57,7 +72,7 @@ export default {
               record.counter_asset_type as HorizonAssetType,
               record.counter_asset_code,
               record.counter_asset_issuer
-            ),
+            )
           },
           cursor: record.paging_token
         };
