@@ -13,11 +13,6 @@ export const typeDefs = gql`
     close: Float!
   }
 
-  enum TradeAggregationOrderByInput {
-    ASC
-    DESC
-  }
-
   extend type Query {
     tradeAggregations(
       baseAsset: AssetInput!
@@ -26,7 +21,8 @@ export const typeDefs = gql`
       endTime: Int
       resolution: Int!
       limit: Int
-      orderBy: TradeAggregationOrderByInput
+      orderBy: Order,
+      offset: Int
     ): [TradeAggregation!]
   }
 

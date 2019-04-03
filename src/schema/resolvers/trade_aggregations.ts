@@ -3,7 +3,7 @@ import { IHorizonTradeAggregationData } from "../../datasource/types";
 export default {
   Query: {
     async tradeAggregations(root: any, args: any, ctx: any, info: any) {
-      const { baseAsset, counterAsset, startTime, endTime, resolution, limit } = args;
+      const { baseAsset, counterAsset, startTime, endTime, resolution, offset, limit } = args;
 
       let order: "asc" | "desc" = "desc";
       if (args.orderBy) {
@@ -17,6 +17,7 @@ export default {
         endTime,
         resolution,
         limit,
+        offset,
         order
       );
 

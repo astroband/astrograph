@@ -120,7 +120,8 @@ export default class HorizonAPI extends RESTDataSource {
     endTime: number,
     resolution: number,
     limit: number,
-    order: "asc" | "desc" | undefined
+    offset: number,
+    order: SortOrder = "asc"
   ): Promise<IHorizonTradeAggregationData> {
     return this.request("trade_aggregations", {
       base_asset_type: this.predictAssetType(baseAsset.code),
@@ -133,6 +134,7 @@ export default class HorizonAPI extends RESTDataSource {
       end_time: endTime,
       resolution,
       limit,
+      offset,
       order,
       cacheTtl: 60 * 5
     });
