@@ -4,6 +4,7 @@ import { HorizonAssetType, IHorizonTradeData } from "../../datasource/types";
 import { Offer, Trade } from "../../model";
 import { AssetFactory } from "../../model/factories";
 import { accountResolver, assetResolver, createBatchResolver } from "./util";
+import { calculateOfferPrice } from "../../util/offer";
 
 export const offerResolver = createBatchResolver<any, Offer[]>((source: any, args: any, context: any, info: any) => {
   const requestedFields = fieldsList(info);
@@ -66,7 +67,9 @@ export default {
               record.counter_asset_type as HorizonAssetType,
               record.counter_asset_code,
               record.counter_asset_issuer
-            )
+            ),
+            baseIsSeller: record.base_is_seller,
+            price: calculateOfferPrice(record.price.d, record.price.n)
           },
           cursor: record.paging_token
         };

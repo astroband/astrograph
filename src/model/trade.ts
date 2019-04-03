@@ -10,7 +10,7 @@ export interface ITrade {
   counterOffer: string;
   counterAccount: string;
   counterAsset: Asset;
-
+  price: string;
 }
 
 export class Trade implements ITrade {
@@ -23,6 +23,7 @@ export class Trade implements ITrade {
   public counterOffer: string;
   public counterAccount: string;
   public counterAsset: Asset;
+  public price: string;
 
   constructor(data: ITrade) {
     this.ledgerCloseTime = data.ledgerCloseTime;
@@ -34,5 +35,6 @@ export class Trade implements ITrade {
     this.counterOffer = data.baseOffer;
     this.counterAccount = data.counterAccount;
     this.counterAsset = data.counterAsset;
+    this.price = data.price;
   }
 }

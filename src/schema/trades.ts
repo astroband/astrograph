@@ -14,6 +14,7 @@ export const typeDefs = gql`
     counterAmount: Float!
     counterAsset: Asset!
     baseIsSeller: Boolean
+    price: Float
   }
 
   type TradeConnection {
