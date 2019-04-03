@@ -2,37 +2,37 @@ import { Asset } from "stellar-sdk";
 
 export interface ITrade {
   ledgerCloseTime: string;
-  offerID: string;
-  baseOfferID: string;
-  baseAccountID: string;
+  offer: string;
+  baseOffer: string;
+  baseAccount: string;
   baseAmount: string;
   baseAsset: Asset;
-  counterOfferID: string;
-  counterAccountID: string;
+  counterOffer: string;
+  counterAccount: string;
   counterAsset: Asset;
 
 }
 
 export class Trade implements ITrade {
   public ledgerCloseTime: string;
-  public offerID: string;
-  public baseOfferID: string;
-  public baseAccountID: string;
+  public offer: string;
+  public baseOffer: string;
+  public baseAccount: string;
   public baseAmount: string;
   public baseAsset: Asset;
-  public counterOfferID: string;
-  public counterAccountID: string;
+  public counterOffer: string;
+  public counterAccount: string;
   public counterAsset: Asset;
 
   constructor(data: ITrade) {
     this.ledgerCloseTime = data.ledgerCloseTime;
-    this.offerID = data.offerID;
-    this.baseOfferID = data.baseOfferID;
-    this.baseAccountID = data.baseAccountID;
+    this.offer = data.offer;
+    this.baseOffer = data.baseOffer;
+    this.baseAccount = data.baseAccount;
     this.baseAmount = data.baseAmount;
     this.baseAsset = data.baseAsset;
-    this.counterOfferID = data.baseOfferID;
-    this.counterAccountID = data.counterAccountID;
+    this.counterOffer = data.baseOffer;
+    this.counterAccount = data.counterAccount;
     this.counterAsset = data.counterAsset;
   }
 }
