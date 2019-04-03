@@ -30,8 +30,8 @@ export const typeDefs = gql`
 
   extend type Query {
     trades(
-      baseAsset: AssetInput!
-      counterAsset: AssetInput!
+      baseAsset: AssetInput
+      counterAsset: AssetInput
       offerID: Int
       first: Int
       after: String
@@ -40,4 +40,11 @@ export const typeDefs = gql`
     ): TradeConnection!
   }
 
+  extend type Account {
+    trades(first: Int, after: String, last: Int, before: String): TradeConnection!
+  }
+
+  extend type Offer {
+    trades(first: Int, after: String, last: Int, before: String): TradeConnection!
+  }
 `;

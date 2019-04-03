@@ -142,21 +142,57 @@ export default class HorizonAPI extends RESTDataSource {
   }
 
   public async getTrades(
-    baseAsset: IAssetInput,
-    counterAsset: IAssetInput,
+    baseAsset?: IAssetInput,
+    counterAsset?: IAssetInput,
     offerID?: number,
     limit?: number,
     order: SortOrder = "asc",
     cursor?: string
   ): Promise<IHorizonTradeData> {
-    return this.request("trades", {
-      base_asset_type: this.predictAssetType(baseAsset.code),
-      base_asset_code: baseAsset.code,
-      base_asset_issuer: baseAsset.issuer,
-      counter_asset_type: this.predictAssetType(counterAsset.code),
-      counter_asset_code: counterAsset.code,
-      counter_asset_issuer: counterAsset.issuer,
+    const params: any = {
       offer_id: offerID,
+      limit,
+      order,
+      cursor,
+      cacheTtl: 60 * 15
+    };
+
+    if (baseAsset) {
+      params.base_asset_type = this.predictAssetType(baseAsset.code);
+      params.base_asset_code = baseAsset.code;
+      params.base_asset_issuer = baseAsset.issuer;
+    }
+
+    if (counterAsset) {
+      params.counter_asset_type = this.predictAssetType(counterAsset.code);
+      params.counter_asset_code = counterAsset.code;
+      params.counter_asset_issuer = counterAsset.issuer;
+    }
+
+    return this.request("trades", params);
+  }
+
+  public async getAccountTrades(
+    accountID: AccountID,
+    limit?: number,
+    order: SortOrder = "asc",
+    cursor?: string
+  ): Promise<IHorizonTradeData> {
+    return this.request(`/account/${accountID}/trades`, {
+      limit,
+      order,
+      cursor,
+      cacheTtl: 60 * 15
+    });
+  }
+
+  public async getOfferTrades(
+    offerID: string,
+    limit?: number,
+    order: SortOrder = "asc",
+    cursor?: string
+  ): Promise<IHorizonTradeData> {
+    return this.request(`/offers/${offerID}/trades`, {
       limit,
       order,
       cursor,

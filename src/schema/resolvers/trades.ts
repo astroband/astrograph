@@ -28,6 +28,13 @@ export default {
     baseOffer: offerResolver,
     counterOffer: offerResolver
   },
+  Account: {
+    async trades(root: any, args: any, ctx: any, info: any) {
+      //const { first, last, after, before } = args;
+
+      return {};
+    }
+  },
   Query: {
     async trades(root: any, args: any, ctx: any, info: any) {
       const { first, last, after, before } = args;
