@@ -178,7 +178,7 @@ export default class HorizonAPI extends RESTDataSource {
     order: SortOrder = "asc",
     cursor?: string
   ): Promise<IHorizonTradeData> {
-    return this.request(`/account/${accountID}/trades`, {
+    return this.request(`/accounts/${accountID}/trades`, {
       limit,
       order,
       cursor,

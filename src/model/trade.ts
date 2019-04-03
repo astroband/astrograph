@@ -10,6 +10,7 @@ export interface ITrade {
   counterOffer: string;
   counterAccount: string;
   counterAsset: Asset;
+  baseIsSeller: boolean;
   price: string;
 }
 
@@ -23,6 +24,7 @@ export class Trade implements ITrade {
   public counterOffer: string;
   public counterAccount: string;
   public counterAsset: Asset;
+  public baseIsSeller: boolean;
   public price: string;
 
   constructor(data: ITrade) {
@@ -35,6 +37,7 @@ export class Trade implements ITrade {
     this.counterOffer = data.baseOffer;
     this.counterAccount = data.counterAccount;
     this.counterAsset = data.counterAsset;
+    this.baseIsSeller = data.baseIsSeller;
     this.price = data.price;
   }
 }

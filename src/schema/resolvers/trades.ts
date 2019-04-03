@@ -1,12 +1,11 @@
 import { fieldsList } from "graphql-fields-list";
 import { db } from "../../database";
-import { HorizonAssetType, IHorizonTradeData } from "../../datasource/types";
+import { IHorizonTradeData } from "../../datasource/types";
 import { Offer, Trade } from "../../model";
-import { AssetFactory } from "../../model/factories";
+import { TradeFactory } from "../../model/factories/trade_factory";
 import { accountResolver, assetResolver, createBatchResolver } from "./util";
-import { calculateOfferPrice } from "../../util/offer";
 
-export const offerResolver = createBatchResolver<any, Offer[]>((source: any, args: any, context: any, info: any) => {
+const offerResolver = createBatchResolver<any, Offer[]>((source: any, args: any, context: any, info: any) => {
   const requestedFields = fieldsList(info);
   const ids: string[] = source.map((s: any) => s[info.fieldName]);
 
@@ -17,6 +16,30 @@ export const offerResolver = createBatchResolver<any, Offer[]>((source: any, arg
 
   return db.offers.findAllByIDs(ids);
 });
+
+const makeConnection = (last: string, records: IHorizonTradeData[]) => {
+  // we must keep descending ordering, because Horizon doesn't do it,
+  // when you request the previous page
+  if (last) {
+    records = records.reverse();
+  }
+
+  const edges = records.map((record: IHorizonTradeData) => {
+    return {
+      node: TradeFactory.fromHorizonResponse(record),
+      cursor: record.paging_token
+    };
+  });
+
+  return {
+    nodes: edges.map((edge: { cursor: string; node: Trade }) => edge.node),
+    edges,
+    pageInfo: {
+      startCursor: records.length !== 0 ? records[0].paging_token : null,
+      endCursor: records.length !== 0 ? records[records.length - 1].paging_token : null
+    }
+  };
+}
 
 export default {
   Trade: {
@@ -30,9 +53,30 @@ export default {
   },
   Account: {
     async trades(root: any, args: any, ctx: any, info: any) {
-      //const { first, last, after, before } = args;
+      const { first, last, after, before } = args;
 
-      return {};
+      const records = await ctx.dataSources.horizon.getAccountTrades(
+        root.id,
+        first || last,
+        last ? "asc" : "desc",
+        last ? before : after
+      );
+
+      return makeConnection(last, records);
+    }
+  },
+  Offer: {
+    async trades(root: any, args: any, ctx: any, info: any) {
+      const { first, last, after, before } = args;
+
+      const records = await ctx.dataSources.horizon.getOfferTrades(
+        root.id,
+        first || last,
+        last ? "asc" : "desc",
+        last ? before : after
+      );
+
+      return makeConnection(last, records);
     }
   },
   Query: {
@@ -40,7 +84,7 @@ export default {
       const { first, last, after, before } = args;
       const { baseAsset, counterAsset, offerID } = args;
 
-      let records = await ctx.dataSources.horizon.getTrades(
+      const records = await ctx.dataSources.horizon.getTrades(
         baseAsset,
         counterAsset,
         offerID,
@@ -49,47 +93,7 @@ export default {
         last ? before : after
       );
 
-      // we must keep descending ordering, because Horizon doesn't do it,
-      // when you request the previous page
-      if (last) {
-        records = records.reverse();
-      }
-
-      const edges = records.map((record: IHorizonTradeData) => {
-        return {
-          node: {
-            ledgerCloseTime: record.ledger_close_time,
-            offer: record.offer_id,
-            baseOffer: record.base_offer_id,
-            baseAccount: record.base_account,
-            baseAmount: record.base_amount,
-            baseAsset: AssetFactory.fromHorizonResponse(
-              record.base_asset_type as HorizonAssetType,
-              record.base_asset_code,
-              record.base_asset_issuer
-            ),
-            counterOffer: record.counter_offer_id,
-            counterAccount: record.counter_account,
-            counterAsset: AssetFactory.fromHorizonResponse(
-              record.counter_asset_type as HorizonAssetType,
-              record.counter_asset_code,
-              record.counter_asset_issuer
-            ),
-            baseIsSeller: record.base_is_seller,
-            price: calculateOfferPrice(record.price.d, record.price.n)
-          },
-          cursor: record.paging_token
-        };
-      });
-
-      return {
-        nodes: edges.map((edge: { cursor: string; node: Trade }) => edge.node),
-        edges,
-        pageInfo: {
-          startCursor: records.length !== 0 ? records[0].paging_token : null,
-          endCursor: records.length !== 0 ? records[records.length - 1].paging_token : null
-        }
-      };
+      return makeConnection(last, records);
     }
   }
 };
