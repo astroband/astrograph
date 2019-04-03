@@ -1,3 +1,3 @@
 import { accountResolver } from "./util";
 
-export default { Signer: { account: accountResolver, signer: accountResolver } };
+export default { Signer: { account: accountResolver } };

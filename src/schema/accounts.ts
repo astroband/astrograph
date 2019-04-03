@@ -61,7 +61,7 @@ export const typeDefs = gql`
 
   type Signer {
     account: Account!
-    signer: Account!
+    signer: AccountID!
     weight: Int!
   }
 
