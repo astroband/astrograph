@@ -1,6 +1,7 @@
 import { MemoHash, MemoID, MemoNone, MemoReturn, MemoText } from "stellar-sdk";
 import { AccountID } from "../model/account_id";
 import { AssetCode } from "../model/asset_code";
+import { TimeStats } from "apollo-engine-reporting-protobuf";
 
 export type HorizonAccountFlag = "auth_required" | "auth_immutable" | "auth_revocable";
 
@@ -200,4 +201,28 @@ export interface IHorizonTradeAggregationData {
   low: string;
   open: string;
   close: string;
+}
+
+export interface IHorizonTradeData {
+  id: string;
+  paging_token: string;
+  ledger_close_time: string;
+  offer_id: number;
+  base_offer_id: number;
+  base_account: string;
+  base_amount: string;
+  base_asset_type: string;
+  base_asset_code: string;
+  base_asset_issuer: string;
+  counter_offer_id: number;
+  counter_account: string;
+  counter_amount: string;
+  counter_asset_type: string;
+  counter_asset_code: string;
+  counter_asset_issuer: string;
+  base_is_seller: boolean;
+  price: {
+    n: number;
+    d: number;
+  };
 }

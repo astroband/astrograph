@@ -3,14 +3,14 @@ import { gql } from "apollo-server";
 export const typeDefs = gql`
   type Trade {
     ID: String
-    ledgerCloseTime: Date!
-    offerID: Int!
-    baseOfferID: Int!
-    baseAccountID: AccountID!
+    ledgerCloseTime: DateTime!
+    offer: Offer!
+    baseOffer: Offer!
+    baseAccount: Account!
     baseAmount: Float!
     baseAsset: Asset!
-    counterOfferID: AccountID!
-    counterAccountID: AccountID!
+    counterOffer: Offer!
+    counterAccount: Account!
     counterAmount: Float!
     counterAsset: Asset!
     baseIsSeller: Boolean
@@ -22,7 +22,7 @@ export const typeDefs = gql`
     edges: [TradeEdge]
   }
 
-  type TransactionEdge {
+  type TradeEdge {
     cursor: String!
     node: Trade
   }
@@ -36,8 +36,7 @@ export const typeDefs = gql`
       after: String
       last: Int
       before: String
-      orderBy: Order
-    ): [TradeConnection!]
+    ): TradeConnection!
   }
 
 `;

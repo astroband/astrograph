@@ -17,6 +17,7 @@ export * from "./offer_values";
 export * from "./offer_subscription_payload";
 export * from "./transaction";
 export * from "./transaction_with_xdr";
+export * from "./trade";
 export * from "./trust_line";
 export * from "./trust_line_values";
 export * from "./trust_line_subscription_payload";

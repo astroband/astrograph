@@ -8,7 +8,8 @@ import {
   IHorizonOrderBookData,
   IHorizonPaymentPathData,
   IHorizonTradeAggregationData,
-  IHorizonTransactionData
+  IHorizonTransactionData,
+  IHorizonTradeData
 } from "./types";
 
 type SortOrder = "desc" | "asc";
@@ -137,6 +138,29 @@ export default class HorizonAPI extends RESTDataSource {
       offset,
       order,
       cacheTtl: 60 * 5
+    });
+  }
+
+  public async getTrades(
+    baseAsset: IAssetInput,
+    counterAsset: IAssetInput,
+    offerID?: number,
+    limit?: number,
+    order: SortOrder = "asc",
+    cursor?: string
+  ): Promise<IHorizonTradeData> {
+    return this.request("trades", {
+      base_asset_type: this.predictAssetType(baseAsset.code),
+      base_asset_code: baseAsset.code,
+      base_asset_issuer: baseAsset.issuer,
+      counter_asset_type: this.predictAssetType(counterAsset.code),
+      counter_asset_code: counterAsset.code,
+      counter_asset_issuer: counterAsset.issuer,
+      offer_id: offerID,
+      limit,
+      order,
+      cursor,
+      cacheTtl: 60 * 15
     });
   }
 
