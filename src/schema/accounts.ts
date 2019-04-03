@@ -42,17 +42,6 @@ export const typeDefs = gql`
     operations(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
-  type OperationConnection {
-    pageInfo: PageInfo!
-    nodes: [Operation]
-    edges: [OperationEdge]
-  }
-
-  type OperationEdge {
-    cursor: String!
-    node: Operation
-  }
-
   type AccountValues implements IAccount {
     id: AccountID!
     sequenceNumber: String!

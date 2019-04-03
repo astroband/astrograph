@@ -1,6 +1,5 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 import { AccountID, IAssetInput } from "../model";
-
 import {
   HorizonAssetType,
   IHorizonAssetData,
@@ -20,19 +19,19 @@ export default class HorizonAPI extends RESTDataSource {
   }
 
   public async getOperations(limit = 10, order: SortOrder = "desc", cursor?: string): Promise<IHorizonOperationData[]> {
-    return this.request("operations", { pagingOptions: { limit, order, cursor } });
+    return this.request("operations", { limit, order, cursor });
   }
 
   public async getAccountOperations(accountId: AccountID, limit = 10, order: SortOrder = "desc", cursor?: string) {
-    return this.request(`accounts/${accountId}/operations`, { pagingOptions: { limit, order, cursor } });
+    return this.request(`accounts/${accountId}/operations`, { limit, order, cursor });
   }
 
   public async getLedgerOperations(ledgerSeq: number, limit = 10, order: SortOrder = "desc", cursor?: string) {
-    return this.request(`ledgers/${ledgerSeq}/operations`, { pagingOptions: { limit, order, cursor } });
+    return this.request(`ledgers/${ledgerSeq}/operations`, { limit, order, cursor });
   }
 
   public async getTransactionOperations(transactionId: string, limit = 10, order: SortOrder = "desc", cursor?: string) {
-    return this.request(`transactions/${transactionId}/operations`, { pagingOptions: { limit, order, cursor } });
+    return this.request(`transactions/${transactionId}/operations`, { limit, order, cursor });
   }
 
   public async getTransactionsByIds(transactionIds: string[]): Promise<IHorizonTransactionData[]> {
@@ -46,7 +45,7 @@ export default class HorizonAPI extends RESTDataSource {
     order: SortOrder = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
-    return this.request("transactions", { pagingOptions: { limit, order, cursor } });
+    return this.request("transactions", { limit, order, cursor });
   }
 
   public async getAccountTransactions(
@@ -55,7 +54,7 @@ export default class HorizonAPI extends RESTDataSource {
     order: SortOrder = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
-    return this.request(`accounts/${accountId}/transactions`, { pagingOptions: { limit, order, cursor } });
+    return this.request(`accounts/${accountId}/transactions`, { limit, order, cursor });
   }
 
   public async getLedgerTransactions(
@@ -64,7 +63,7 @@ export default class HorizonAPI extends RESTDataSource {
     order: SortOrder = "desc",
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
-    return this.request(`ledgers/${ledgerSeq}/transactions`, { pagingOptions: { limit, order, cursor } });
+    return this.request(`ledgers/${ledgerSeq}/transactions`, { limit, order, cursor });
   }
 
   public async getAssets(

@@ -151,9 +151,19 @@ export const typeDefs = gql`
     weight: Int
   }
 
-  enum SortOrder {
-    desc
-    asc
+  type OperationConnection {
+    pageInfo: PageInfo!
+    nodes: [Operation]
+    edges: [OperationEdge]
+  }
+
+  type OperationEdge {
+    cursor: String!
+    node: Operation
+  }
+
+  extend type Query {
+    operations(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
   extend type Subscription {
