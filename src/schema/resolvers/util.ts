@@ -74,7 +74,7 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
   let data: IHorizonOperationData[];
   const dataSource: HorizonAPI = ctx.dataSources.horizon;
   const { first, after, last, before } = args;
-  const pagingArgs = [first || last, last ? "asc" : "desc", last ? before : after];
+  const pagingArgs = [first || last, last && before ? "asc" : "desc", last ? before : after];
 
   if (obj instanceof Transaction) {
     data = await dataSource.getTransactionOperations(obj.id, ...pagingArgs);
@@ -90,7 +90,7 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
 
   // we must keep descending ordering, because Horizon doesn't do it,
   // when you request the previous page
-  if (last) {
+  if (last && before) {
     data = data.reverse();
   }
 
@@ -115,7 +115,7 @@ export async function transactionsResolver(obj: any, args: any, ctx: any) {
   let data: IHorizonTransactionData[];
   const dataSource = ctx.dataSources.horizon;
   const { first, after, last, before } = args;
-  const pagingArgs = [first || last, last ? "asc" : "desc", last ? before : after];
+  const pagingArgs = [first || last, last && before ? "asc" : "desc", last ? before : after];
 
   if (obj instanceof Ledger) {
     data = await dataSource.getLedgerTransactions(obj.id, ...pagingArgs);
@@ -127,7 +127,7 @@ export async function transactionsResolver(obj: any, args: any, ctx: any) {
 
   // we must keep descending ordering, because Horizon doesn't do it,
   // when you request the previous page
-  if (last) {
+  if (last && before) {
     data = data.reverse();
   }
 
