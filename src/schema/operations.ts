@@ -163,6 +163,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
+    operation(id: String): Operation
     operations(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
