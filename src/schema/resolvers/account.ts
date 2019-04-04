@@ -1,15 +1,23 @@
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
 
-import { Account, DataEntry, TrustLine } from "../../model";
-import { TrustLineFactory } from "../../model/factories";
+import { IHorizonOperationData } from "../../datasource/types";
+import { Account, DataEntry, Operation, TrustLine } from "../../model";
+import { OperationFactory, TrustLineFactory } from "../../model/factories";
 
 import { db } from "../../database";
 import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
 
-import { accountResolver, createBatchResolver, eventMatches, ledgerResolver, operationsResolver } from "./util";
+import {
+  accountResolver,
+  createBatchResolver,
+  eventMatches,
+  ledgerResolver,
+  makeConnection,
+  operationsResolver
+} from "./util";
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
@@ -55,6 +63,10 @@ export default {
     trustLines: trustLinesResolver,
     ledger: ledgerResolver,
     operations: operationsResolver,
+    async payments(root: Account, args: any, ctx: any) {
+      const records = await ctx.dataSources.horizon.getAccountPayments(root.id, args);
+      return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
+    },
     inflationDestination: accountResolver
   },
   Query: {

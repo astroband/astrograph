@@ -127,5 +127,4 @@ export default class OffersRepo {
         .toString("base64")
     );
   }
-  
 }

@@ -17,6 +17,7 @@ export const typeDefs = gql`
     header: LedgerHeader
     transactions(first: Int, last: Int, before: String, after: String): TransactionConnection
     operations(first: Int, last: Int, before: String, after: String): OperationConnection
+    payments(first: Int, last: Int, before: String, after: String): OperationConnection
   }
 
   extend type Query {

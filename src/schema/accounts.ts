@@ -40,6 +40,7 @@ export const typeDefs = gql`
     data: [DataEntry]
     trustLines: [TrustLine]
     operations(first: Int, after: String, last: Int, before: String): OperationConnection
+    payments(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
   type AccountValues implements IAccount {

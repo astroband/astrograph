@@ -47,4 +47,5 @@ export const typeDefs = gql`
   extend type Offer {
     trades(first: Int, after: String, last: Int, before: String): TradeConnection!
   }
+
 `;

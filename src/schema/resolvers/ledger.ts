@@ -1,7 +1,9 @@
 import { db } from "../../database";
-import { Ledger, LedgerHeader } from "../../model";
+import { IHorizonOperationData } from "../../datasource/types";
+import { Ledger, LedgerHeader, Operation } from "../../model";
+import { OperationFactory } from "../../model/factories/operation_factory";
 import { pubsub } from "../../pubsub";
-import { createBatchResolver, operationsResolver, transactionsResolver } from "./util";
+import { createBatchResolver, makeConnection, operationsResolver, transactionsResolver } from "./util";
 
 const LEDGER_CREATED = "LEDGER_CREATED";
 
@@ -13,7 +15,11 @@ export default {
   Ledger: {
     header: ledgerHeaderResolver,
     transactions: transactionsResolver,
-    operations: operationsResolver
+    operations: operationsResolver,
+    async payments(root: Ledger, args: any, ctx: any) {
+      const records = await ctx.dataSources.horizon.getLedgerPayments(root.seq, args);
+      return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
+    }
   },
   Query: {
     ledger(root: any, args: any, ctx: any, info: any) {

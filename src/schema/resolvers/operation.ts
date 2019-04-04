@@ -1,9 +1,10 @@
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
+import { IHorizonOperationData } from "../../datasource/types";
 import { Operation, OperationKinds, Transaction } from "../../model";
-import { TransactionWithXDRFactory } from "../../model/factories";
+import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
-import { accountResolver, operationsResolver } from "./util";
+import { accountResolver, makeConnection, operationsResolver } from "./util";
 
 export default {
   Operation: {
@@ -52,7 +53,14 @@ export default {
   CreateAccountOperation: { destination: accountResolver },
   PathPaymentOperation: { destinationAccount: accountResolver },
   SetOptionsSigner: { account: accountResolver },
-  Query: { operations: operationsResolver },
+  Query: {
+    operations: operationsResolver,
+    async payments(root: any, args: any, ctx: any) {
+      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.horizon.getPayments(args), r =>
+        OperationFactory.fromHorizon(r)
+      );
+    }
+  },
   Subscription: {
     operations: {
       subscribe: withFilter(

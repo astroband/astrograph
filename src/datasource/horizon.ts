@@ -7,11 +7,23 @@ import {
   IHorizonOrderBookData,
   IHorizonPaymentPathData,
   IHorizonTradeAggregationData,
-  IHorizonTransactionData,
-  IHorizonTradeData
+  IHorizonTradeData,
+  IHorizonTransactionData
 } from "./types";
 
 type SortOrder = "desc" | "asc";
+
+interface IForwardPagingParams {
+  first: number;
+  after: string;
+}
+
+interface IBackwardPagingParams {
+  last: number;
+  before: string;
+}
+
+type PagingParams = IForwardPagingParams & IBackwardPagingParams;
 
 export default class HorizonAPI extends RESTDataSource {
   constructor() {
@@ -21,6 +33,58 @@ export default class HorizonAPI extends RESTDataSource {
 
   public async getOperations(limit = 10, order: SortOrder = "desc", cursor?: string): Promise<IHorizonOperationData[]> {
     return this.request("operations", { limit, order, cursor });
+  }
+
+  public async getPayments(pagingParams: PagingParams): Promise<IHorizonOperationData[]> {
+    const records = await this.request("payments", { ...this.parseCursorPagination(pagingParams), cacheTtl: 5 });
+
+    if (pagingParams.last && pagingParams.before) {
+      return records.reverse();
+    }
+
+    return records;
+  }
+
+  public async getAccountPayments(accountId: AccountID, pagingParams: PagingParams): Promise<IHorizonOperationData[]> {
+    const records = await this.request(`accounts/${accountId}/payments`, {
+      ...this.parseCursorPagination(pagingParams),
+      cacheTtl: 5
+    });
+
+    if (pagingParams.last && pagingParams.before) {
+      return records.reverse();
+    }
+
+    return records;
+  }
+
+  public async getLedgerPayments(ledgerSeq: number, pagingParams: PagingParams): Promise<IHorizonOperationData[]> {
+    const records = await this.request(`ledgers/${ledgerSeq}/payments`, {
+      ...this.parseCursorPagination(pagingParams),
+      cacheTtl: 5
+    });
+
+    if (pagingParams.last && pagingParams.before) {
+      return records.reverse();
+    }
+
+    return records;
+  }
+
+  public async getTransactionPayments(
+    transactionId: string,
+    pagingParams: PagingParams
+  ): Promise<IHorizonOperationData[]> {
+    const records = await this.request(`transactions/${transactionId}/payments`, {
+      ...this.parseCursorPagination(pagingParams),
+      cacheTtl: 5
+    });
+
+    if (pagingParams.last && pagingParams.before) {
+      return records.reverse();
+    }
+
+    return records;
   }
 
   public async getAccountOperations(accountId: AccountID, limit = 10, order: SortOrder = "desc", cursor?: string) {
@@ -245,5 +309,13 @@ export default class HorizonAPI extends RESTDataSource {
       return "native";
     }
     return code.length > 4 ? "credit_alphanum12" : "credit_alphanum4";
+  }
+
+  private parseCursorPagination(args: PagingParams) {
+    return {
+      limit: args.first || args.last,
+      order: (args.last ? "asc" : "desc") as SortOrder,
+      cursor: args.last ? args.before : args.after
+    };
   }
 }
