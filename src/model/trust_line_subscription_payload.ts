@@ -1,11 +1,11 @@
 import { Asset } from "stellar-sdk";
-import { TrustLineValuesFactory } from "../model/factories/trust_line_values_factory";
-import { TrustLineValues } from "../model/trust_line_values";
+import { AccountID, TrustLineValues } from "../model";
+import { TrustLineValuesFactory } from "../model/factories";
 import { publicKeyFromXDR } from "../util/xdr";
 import { IMutationType, MutationType } from "./mutation_type";
 
 export class TrustLineSubscriptionPayload implements IMutationType {
-  public accountID: string;
+  public account: AccountID;
   public asset: Asset;
   public mutationType: MutationType;
   public values: TrustLineValues | null = null;
@@ -13,7 +13,7 @@ export class TrustLineSubscriptionPayload implements IMutationType {
   constructor(mutationType: MutationType, xdr: any) {
     this.mutationType = mutationType;
 
-    this.accountID = publicKeyFromXDR(xdr);
+    this.account = publicKeyFromXDR(xdr);
     this.asset = Asset.fromOperation(xdr.asset());
 
     if (this.mutationType !== MutationType.Remove) {
