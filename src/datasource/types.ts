@@ -1,7 +1,6 @@
 import { MemoHash, MemoID, MemoNone, MemoReturn, MemoText } from "stellar-sdk";
 import { AccountID } from "../model/account_id";
 import { AssetCode } from "../model/asset_code";
-import { TimeStats } from "apollo-engine-reporting-protobuf";
 
 export type HorizonAccountFlag = "auth_required" | "auth_immutable" | "auth_revocable";
 
