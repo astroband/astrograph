@@ -1,3 +1,4 @@
+import { UserInputError } from "apollo-server";
 import { fieldsList } from "graphql-fields-list";
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Asset, Memo } from "stellar-sdk";
@@ -74,7 +75,18 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
   let data: IHorizonOperationData[];
   const dataSource: HorizonAPI = ctx.dataSources.horizon;
   const { first, after, last, before } = args;
-  const pagingArgs = [first || last, last && before ? "asc" : "desc", last ? before : after];
+
+  let order;
+
+  if (last) {
+    order = "desc";
+  } else if (first) {
+    order = "asc";
+  } else {
+    throw new UserInputError("Missing paging parameters");
+  }
+
+  const pagingArgs = [first || last, order, last ? before : after];
 
   if (obj instanceof Transaction) {
     data = await dataSource.getTransactionOperations(obj.id, ...pagingArgs);
@@ -90,7 +102,7 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
 
   // we must keep descending ordering, because Horizon doesn't do it,
   // when you request the previous page
-  if (last && before) {
+  if (first && after) {
     data = data.reverse();
   }
 
@@ -115,7 +127,18 @@ export async function transactionsResolver(obj: any, args: any, ctx: any) {
   let data: IHorizonTransactionData[];
   const dataSource = ctx.dataSources.horizon;
   const { first, after, last, before } = args;
-  const pagingArgs = [first || last, last && before ? "asc" : "desc", last ? before : after];
+
+  let order;
+
+  if (last) {
+    order = "desc";
+  } else if (first) {
+    order = "asc";
+  } else {
+    throw new Error("Missing paging parameters");
+  }
+
+  const pagingArgs = [first || last, order, last ? before : after];
 
   if (obj instanceof Ledger) {
     data = await dataSource.getLedgerTransactions(obj.id, ...pagingArgs);
@@ -127,7 +150,7 @@ export async function transactionsResolver(obj: any, args: any, ctx: any) {
 
   // we must keep descending ordering, because Horizon doesn't do it,
   // when you request the previous page
-  if (last && before) {
+  if (first && after) {
     data = data.reverse();
   }
 
