@@ -19,7 +19,7 @@
       value
     }
     signers {
-      signer { id }
+      signer
     }
     trustLines {
       account {
