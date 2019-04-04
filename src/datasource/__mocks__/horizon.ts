@@ -2,12 +2,7 @@ import { IAssetInput } from "../../model/asset_input";
 import { IHorizonAssetData } from "../types";
 
 export default class HorizonAPI {
-  public getAssets(
-    criteria: IAssetInput,
-    limit: number,
-    order: "desc" | "asc",
-    cursor?: string
-  ): IHorizonAssetData[] {
+  public getAssets(criteria: IAssetInput, limit: number, order: "desc" | "asc", cursor?: string): IHorizonAssetData[] {
     return [
       {
         asset_type: "credit_alphanum4",
