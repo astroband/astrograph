@@ -39,7 +39,7 @@ export const typeDefs = gql`
     signers: [Signer]
     data: [DataEntry]
     trustLines: [TrustLine]
-    operations(first: Int, after: String, last: Int, before: String): OperationConnection
+    operations(first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
   }
 
   type AccountValues implements IAccount {

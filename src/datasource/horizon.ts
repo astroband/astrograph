@@ -1,5 +1,6 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 import { AccountID, IAssetInput } from "../model";
+import { SortOrder } from "../util/paging";
 import {
   HorizonAssetType,
   IHorizonAssetData,
@@ -7,11 +8,9 @@ import {
   IHorizonOrderBookData,
   IHorizonPaymentPathData,
   IHorizonTradeAggregationData,
-  IHorizonTransactionData,
-  IHorizonTradeData
+  IHorizonTradeData,
+  IHorizonTransactionData
 } from "./types";
-
-type SortOrder = "desc" | "asc";
 
 export default class HorizonAPI extends RESTDataSource {
   constructor() {
@@ -19,19 +18,33 @@ export default class HorizonAPI extends RESTDataSource {
     this.baseURL = "https://horizon.stellar.org/";
   }
 
-  public async getOperations(limit = 10, order: SortOrder = "desc", cursor?: string): Promise<IHorizonOperationData[]> {
+  public async getOperations(
+    limit = 10,
+    order: SortOrder = SortOrder.DESC,
+    cursor?: string
+  ): Promise<IHorizonOperationData[]> {
     return this.request("operations", { limit, order, cursor });
   }
 
-  public async getAccountOperations(accountId: AccountID, limit = 10, order: SortOrder = "desc", cursor?: string) {
+  public async getAccountOperations(
+    accountId: AccountID,
+    limit = 10,
+    order: SortOrder = SortOrder.DESC,
+    cursor?: string
+  ) {
     return this.request(`accounts/${accountId}/operations`, { limit, order, cursor });
   }
 
-  public async getLedgerOperations(ledgerSeq: number, limit = 10, order: SortOrder = "desc", cursor?: string) {
+  public async getLedgerOperations(ledgerSeq: number, limit = 10, order: SortOrder = SortOrder.DESC, cursor?: string) {
     return this.request(`ledgers/${ledgerSeq}/operations`, { limit, order, cursor });
   }
 
-  public async getTransactionOperations(transactionId: string, limit = 10, order: SortOrder = "desc", cursor?: string) {
+  public async getTransactionOperations(
+    transactionId: string,
+    limit = 10,
+    order: SortOrder = SortOrder.DESC,
+    cursor?: string
+  ) {
     return this.request(`transactions/${transactionId}/operations`, { limit, order, cursor });
   }
 
@@ -43,7 +56,7 @@ export default class HorizonAPI extends RESTDataSource {
 
   public async getTransactions(
     limit: number,
-    order: SortOrder = "desc",
+    order: SortOrder = SortOrder.DESC,
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
     return this.request("transactions", { limit, order, cursor });
@@ -52,7 +65,7 @@ export default class HorizonAPI extends RESTDataSource {
   public async getAccountTransactions(
     accountId: AccountID,
     limit: number,
-    order: SortOrder = "desc",
+    order: SortOrder = SortOrder.DESC,
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
     return this.request(`accounts/${accountId}/transactions`, { limit, order, cursor });
@@ -61,7 +74,7 @@ export default class HorizonAPI extends RESTDataSource {
   public async getLedgerTransactions(
     ledgerSeq: number,
     limit: number,
-    order: SortOrder = "desc",
+    order: SortOrder = SortOrder.DESC,
     cursor?: string
   ): Promise<IHorizonTransactionData[]> {
     return this.request(`ledgers/${ledgerSeq}/transactions`, { limit, order, cursor });
@@ -70,7 +83,7 @@ export default class HorizonAPI extends RESTDataSource {
   public async getAssets(
     criteria: IAssetInput,
     limit: number,
-    order: SortOrder = "asc",
+    order: SortOrder = SortOrder.ASC,
     cursor?: string
   ): Promise<IHorizonAssetData[]> {
     return this.request(`assets`, {
@@ -121,7 +134,7 @@ export default class HorizonAPI extends RESTDataSource {
     resolution: number,
     limit: number,
     offset: number,
-    order: SortOrder = "asc"
+    order: SortOrder = SortOrder.ASC
   ): Promise<IHorizonTradeAggregationData> {
     return this.request("trade_aggregations", {
       base_asset_type: this.predictAssetType(baseAsset.code),
@@ -145,7 +158,7 @@ export default class HorizonAPI extends RESTDataSource {
     counterAsset?: IAssetInput,
     offerID?: number,
     limit?: number,
-    order: SortOrder = "asc",
+    order: SortOrder = SortOrder.ASC,
     cursor?: string
   ): Promise<IHorizonTradeData> {
     const params: any = {
@@ -174,7 +187,7 @@ export default class HorizonAPI extends RESTDataSource {
   public async getAccountTrades(
     accountID: AccountID,
     limit?: number,
-    order: SortOrder = "asc",
+    order: SortOrder = SortOrder.ASC,
     cursor?: string
   ): Promise<IHorizonTradeData> {
     return this.request(`/accounts/${accountID}/trades`, {
@@ -188,7 +201,7 @@ export default class HorizonAPI extends RESTDataSource {
   public async getOfferTrades(
     offerID: string,
     limit?: number,
-    order: SortOrder = "asc",
+    order: SortOrder = SortOrder.ASC,
     cursor?: string
   ): Promise<IHorizonTradeData> {
     return this.request(`/offers/${offerID}/trades`, {

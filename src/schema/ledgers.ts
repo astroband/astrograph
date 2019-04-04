@@ -16,7 +16,7 @@ export const typeDefs = gql`
     seq: LedgerSeq!
     header: LedgerHeader
     transactions(first: Int, last: Int, before: String, after: String): TransactionConnection
-    operations(first: Int, last: Int, before: String, after: String): OperationConnection
+    operations(first: Int, last: Int, before: String, after: String, order: Order): OperationConnection
   }
 
   extend type Query {

@@ -7,6 +7,7 @@ import HorizonAPI from "../../datasource/horizon";
 import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
 import { Account, AccountID, Ledger, MutationType, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { invertSortOrder, SortOrder } from "../../util/paging";
 
 export function createBatchResolver<T, R>(loadFn: any) {
   return create<T, R>(async (source: ReadonlyArray<T>, args: any, context: any, info: any) =>
@@ -74,19 +75,13 @@ export function eventMatches(args: any, id: string, mutationType: MutationType):
 export async function operationsResolver(obj: any, args: any, ctx: any) {
   let data: IHorizonOperationData[];
   const dataSource: HorizonAPI = ctx.dataSources.horizon;
-  const { first, after, last, before } = args;
+  const { first, after, last, before, order = SortOrder.DESC } = args;
 
-  let order;
-
-  if (last) {
-    order = "desc";
-  } else if (first) {
-    order = "asc";
-  } else {
+  if (!first && !last) {
     throw new UserInputError("Missing paging parameters");
   }
 
-  const pagingArgs = [first || last, order, last ? before : after];
+  const pagingArgs = [first || last, before ? invertSortOrder(order) : order, last ? before : after];
 
   if (obj instanceof Transaction) {
     data = await dataSource.getTransactionOperations(obj.id, ...pagingArgs);
@@ -102,7 +97,7 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
 
   // we must keep descending ordering, because Horizon doesn't do it,
   // when you request the previous page
-  if (first && after) {
+  if (before) {
     data = data.reverse();
   }
 
