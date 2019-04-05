@@ -1,3 +1,4 @@
+import { ITimeBounds } from "../../../src/model";
 import transactionWithXDRFactory from "../../factories/transaction_with_xdr";
 
 describe("constructor", () => {
@@ -40,7 +41,7 @@ describe("constructor", () => {
   });
 
   describe("time bounds", () => {
-    const cases = [
+    const cases: Array<[string, string, ITimeBounds?]> = [
       [
         "time bounds are not set",
         "AAAAAGL8HQvQkbK2HA3WVjRrKmjX00fG8sLI7m0ERwJW/AX3AAAAZAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAnj+71iuHPvMz3z5b4OhuBG6xCaey+w2TeGT1exLwKIsAAAACVAvkAAAAAAAAAAABVvwF9wAAAEBPmjDcP4OFniA+mYO5QeWnJrZ2OE9eqD9S2zqP4nYy7MEfj7yrp47fYZhkNjbZGlCGB1qIQAGs/BJmaYZlfsgP",

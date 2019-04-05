@@ -1,8 +1,8 @@
-import { AccountFlags } from "../../../src/model/account_flags";
+import { AccountFlags, IAccountFlags } from "../../../src/model";
 import { AccountFlagsFactory } from "../../../src/model/factories";
 
 describe("constructor & factory", () => {
-  const cases = [
+  const cases: Array<[string, number, IAccountFlags]> = [
     ["000", 0, { authRequired: false, authRevokable: false, authImmutable: false }],
     ["001", 1, { authRequired: true, authRevokable: false, authImmutable: false }],
     ["010", 2, { authRequired: false, authRevokable: true, authImmutable: false }],

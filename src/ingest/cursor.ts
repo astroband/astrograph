@@ -1,6 +1,5 @@
 import { db } from "../database";
-import { LedgerHeader } from "../model";
-import { TransactionWithXDR } from "../model/transaction_with_xdr";
+import { LedgerHeader, TransactionWithXDR } from "../model";
 
 export interface ICursorResult {
   header: LedgerHeader;
