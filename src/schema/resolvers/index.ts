@@ -1,6 +1,7 @@
 import accountResolvers from "./account";
 import assetResolvers from "./asset";
 import dataEntryResolvers from "./data_entry";
+import effectResolvers from "./effect";
 import ledgerResolvers from "./ledger";
 import offerResolvers from "./offer";
 import operationResolvers from "./operation";
@@ -14,6 +15,7 @@ import trustLineResolvers from "./trust_line";
 
 export default [
   accountResolvers,
+  effectResolvers,
   assetResolvers,
   dataEntryResolvers,
   ledgerResolvers,

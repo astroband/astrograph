@@ -13,6 +13,7 @@ import { ACCOUNT, pubsub } from "../../pubsub";
 import {
   accountResolver,
   createBatchResolver,
+  effectsResolver,  
   eventMatches,
   ledgerResolver,
   makeConnection,
@@ -67,6 +68,7 @@ export default {
       const records = await ctx.dataSources.horizon.getAccountPayments(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
+    effects: effectsResolver,
     inflationDestination: accountResolver
   },
   Query: {

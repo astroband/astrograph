@@ -41,6 +41,18 @@ export const typeDefs = gql`
     trustLines: [TrustLine]
     operations(first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
     payments(first: Int, after: String, last: Int, before: String): OperationConnection
+    effects(first: Int, after: String, last: Int, before: String): EffectConnection
+  }
+
+  type OperationConnection {
+    pageInfo: PageInfo!
+    nodes: [Operation]
+    edges: [OperationEdge]
+  }
+
+  type OperationEdge {
+    cursor: String!
+    node: Operation
   }
 
   type AccountValues implements IAccount {

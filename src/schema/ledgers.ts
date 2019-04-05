@@ -18,6 +18,7 @@ export const typeDefs = gql`
     transactions(first: Int, last: Int, before: String, after: String): TransactionConnection
     operations(first: Int, last: Int, before: String, after: String, order: Order): OperationConnection
     payments(first: Int, last: Int, before: String, after: String): OperationConnection
+    effects(first: Int, last: Int, before: String, after: String): EffectConnection
   }
 
   extend type Query {

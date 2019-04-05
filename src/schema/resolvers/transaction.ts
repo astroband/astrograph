@@ -1,8 +1,16 @@
 import { db } from "../../database";
+
 import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
 import { Account, Operation, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
-import { createBatchResolver, ledgerResolver, makeConnection, memoResolver, operationsResolver } from "./util";
+import {
+  createBatchResolver,
+  effectsResolver,
+  ledgerResolver,
+  makeConnection,
+  memoResolver,
+  operationsResolver
+} from "./util";
 
 export default {
   Transaction: {
@@ -15,7 +23,8 @@ export default {
     async payments(root: Transaction, args: any, ctx: any) {
       const records = await ctx.dataSources.horizon.getTransactionPayments(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
-    }
+    },
+    effects: effectsResolver
   },
   Query: {
     async transaction(root: any, args: any, ctx: any, info: any) {
