@@ -54,6 +54,10 @@ export default class HorizonAPI extends RESTDataSource {
     return Promise.all(promises);
   }
 
+  public async getOperationById(operationId: string): Promise<IHorizonOperationData> {
+    return this.request(`operations/${operationId}`);
+  }
+
   public async getTransactions(
     limit: number,
     order: SortOrder = SortOrder.DESC,

@@ -1,7 +1,7 @@
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
 import { Operation, OperationKinds, Transaction } from "../../model";
-import { TransactionWithXDRFactory } from "../../model/factories";
+import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
 import { accountResolver, operationsResolver } from "./util";
 
@@ -52,7 +52,13 @@ export default {
   CreateAccountOperation: { destination: accountResolver },
   PathPaymentOperation: { destinationAccount: accountResolver },
   SetOptionsSigner: { account: accountResolver },
-  Query: { operations: operationsResolver },
+  Query: {
+    async operation(root: any, args: { id: string }, ctx: any) {
+      const response = await ctx.dataSources.horizon.getOperationById(args.id);
+      return OperationFactory.fromHorizon(response);
+    },
+    operations: operationsResolver
+  },
   Subscription: {
     operations: {
       subscribe: withFilter(

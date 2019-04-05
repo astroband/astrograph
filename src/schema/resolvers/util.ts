@@ -1,4 +1,3 @@
-import { UserInputError } from "apollo-server";
 import { fieldsList } from "graphql-fields-list";
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Asset, Memo } from "stellar-sdk";
@@ -76,10 +75,6 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
   let data: IHorizonOperationData[];
   const dataSource: HorizonAPI = ctx.dataSources.horizon;
   const { first, after, last, before, order = SortOrder.DESC } = args;
-
-  if (!first && !last) {
-    throw new UserInputError("Missing paging parameters");
-  }
 
   const pagingArgs = [first || last, before ? invertSortOrder(order) : order, last ? before : after];
 
