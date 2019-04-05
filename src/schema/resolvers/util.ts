@@ -14,6 +14,28 @@ export function createBatchResolver<T, R>(loadFn: any) {
   );
 }
 
+interface IWithPagingToken {
+  paging_token: string;
+}
+
+export function makeConnection<T extends IWithPagingToken, R>(records: T[], nodeBuilder: (r: T) => R) {
+  const edges = records.map(record => {
+    return {
+      node: nodeBuilder(record),
+      cursor: record.paging_token
+    };
+  });
+
+  return {
+    nodes: edges.map(edge => edge.node),
+    edges,
+    pageInfo: {
+      startCursor: records.length !== 0 ? records[0].paging_token : null,
+      endCursor: records.length !== 0 ? records[records.length - 1].paging_token : null
+    }
+  };
+}
+
 export function ledgerResolver(obj: any) {
   const seq = obj.lastModified || obj.ledgerSeq;
   return new Ledger(seq);

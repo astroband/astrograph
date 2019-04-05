@@ -1,9 +1,10 @@
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
+import { IHorizonOperationData } from "../../datasource/types";
 import { Operation, OperationKinds, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
-import { accountResolver, operationsResolver } from "./util";
+import { accountResolver, makeConnection, operationsResolver } from "./util";
 
 export default {
   Operation: {
@@ -57,7 +58,12 @@ export default {
       const response = await ctx.dataSources.horizon.getOperationById(args.id);
       return OperationFactory.fromHorizon(response);
     },
-    operations: operationsResolver
+    operations: operationsResolver,
+    async payments(root: any, args: any, ctx: any) {
+      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.horizon.getPayments(args), r =>
+        OperationFactory.fromHorizon(r)
+      );
+    }
   },
   Subscription: {
     operations: {

@@ -39,7 +39,7 @@ const makeConnection = (last: string, records: IHorizonTradeData[]) => {
       endCursor: records.length !== 0 ? records[records.length - 1].paging_token : null
     }
   };
-}
+};
 
 export default {
   Trade: {

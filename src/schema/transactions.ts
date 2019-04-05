@@ -15,6 +15,7 @@ export const typeDefs = gql`
     success: Boolean!
     resultCode: Int!
     operations(first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
+    payments(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
   type TransactionConnection {

@@ -165,6 +165,7 @@ export const typeDefs = gql`
   extend type Query {
     operations(first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
     operation(id: String): Operation
+    payments(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
   extend type Subscription {
