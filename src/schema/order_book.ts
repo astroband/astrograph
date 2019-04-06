@@ -17,5 +17,4 @@ export const typeDefs = gql`
     "Get order book details"
     orderBook(selling: AssetInput!, buying: AssetInput!, limit: Int): OrderBook
   }
-
 `;

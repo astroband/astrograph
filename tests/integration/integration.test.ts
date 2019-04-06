@@ -16,16 +16,12 @@ jest.mock("../../src/datasource/horizon");
 
 const server = new ApolloServer({
   schema,
-  dataSources: () => ({ horizon: new HorizonAPI() }),
+  dataSources: () => ({ horizon: new HorizonAPI() })
 });
 
 const queryServer = createTestClient(server).query;
 
-const testCases = [
-  "Assets",
-  "Single account query",
-  "Ledgers"
-];
+const testCases = ["Assets", "Single account query", "Ledgers"];
 
 async function importDbDump() {
   const client = new dbClient({
@@ -66,7 +62,7 @@ describe("Integration tests", () => {
     const query = fs.readFileSync(`${__dirname}/integration_queries/${queryFile}.gql`, "utf8");
 
     const response = await queryServer({ query });
-    
+
     expect(response.data).toMatchSnapshot();
   });
 });

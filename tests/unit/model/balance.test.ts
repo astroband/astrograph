@@ -1,8 +1,8 @@
 import { Asset } from "stellar-sdk";
 import { Balance } from "../../../src/model";
 import { BalanceFactory } from "../../../src/model/factories";
-import { toFloatAmountString } from "../../../src/util/stellar";
 import { MAX_INT64 } from "../../../src/util";
+import { toFloatAmountString } from "../../../src/util/stellar";
 import AccountFactory from "../../factories/account";
 
 const data = {

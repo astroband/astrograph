@@ -1,4 +1,3 @@
-import Long from "long";
 import { ChangesExtractor, ChangeType, EntryType } from "../../src/changes_extractor";
 import { LedgerStateParser } from "../../src/ledger_state_parser";
 import TransactionFactory from "../factories/transaction_with_xdr";
@@ -6,36 +5,28 @@ import TransactionFactory from "../factories/transaction_with_xdr";
 jest.mock("../../src/changes_extractor");
 
 function offerChangeXDRMock(id: number) {
-  const offer = jest.fn();
-  const offerId = jest.fn();
-
-  offerId.mockImplementation(() => Long.fromNumber(id));
-  offer.mockImplementation(() => ({ offerId }));
-
-  return { offer };
+  return {
+    offer: () => ({ offerId: () => ({ toInt: () => id }) })
+  };
 }
 
 describe("LedgerStateParser", () => {
   describe("deletedOfferIds getter", () => {
     it("returns ids of removed offers in given transactions set", () => {
       const changesExtractorCallMock = jest.fn();
-      changesExtractorCallMock 
-        .mockReturnValueOnce(
+      changesExtractorCallMock
+        .mockReturnValueOnce([
+          [{ type: ChangeType.Removed, entry: EntryType.Offer, data: offerChangeXDRMock(15) }],
+          [{ type: ChangeType.Removed, entry: EntryType.Account }]
+        ])
+        .mockReturnValueOnce([
           [
-            [{ type: ChangeType.Removed, entry: EntryType.Offer, data: offerChangeXDRMock(15) }],
-            [{ type: ChangeType.Removed, entry: EntryType.Account }]
+            { type: ChangeType.Updated, entry: EntryType.Trustline },
+            { type: ChangeType.Removed, entry: EntryType.Offer, data: offerChangeXDRMock(20) }
           ]
-        )
-        .mockReturnValueOnce(
-          [
-            [
-              { type: ChangeType.Updated, entry: EntryType.Trustline },
-              { type: ChangeType.Removed, entry: EntryType.Offer, data: offerChangeXDRMock(20) }
-            ],
-          ]
-        );
+        ]);
 
-      ChangesExtractor.call = changesExtractorCallMock ;
+      ChangesExtractor.call = changesExtractorCallMock;
 
       const txs = [TransactionFactory.build(), TransactionFactory.build()];
       const subject = new LedgerStateParser(txs);

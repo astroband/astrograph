@@ -1,6 +1,9 @@
 import { Memo, MemoHash, MemoReturn, MemoText } from "stellar-sdk";
 import logger from "./logger";
 
+/* TODO: fix all stellar-base / stellar-sdk + TS hackery */
+
+/* tslint:disable */
 declare module "stellar-sdk" {
   interface Memo {
     getPlainValue(): string | null;

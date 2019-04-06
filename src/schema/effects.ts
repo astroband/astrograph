@@ -256,5 +256,4 @@ export const typeDefs = gql`
     "Get list of the effects"
     effects(first: Int, last: Int, after: String, before: String): EffectConnection
   }
-
 `;

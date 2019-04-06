@@ -7,7 +7,7 @@
   "rules": {
     "prettier": true,
     "object-literal-sort-keys": false,
-    "no-implicit-dependencies": true,
+    "no-implicit-dependencies": [true, "dev"],
     "no-namespace": [true, "allow-declarations"],
     "no-bitwise": false
   }

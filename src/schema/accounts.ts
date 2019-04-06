@@ -135,5 +135,4 @@ export const typeDefs = gql`
     "Subscribe on account updates"
     account(args: EventInput): AccountSubscriptionPayload
   }
-
 `;

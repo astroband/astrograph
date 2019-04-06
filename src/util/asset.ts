@@ -1,5 +1,8 @@
 import { Asset } from "stellar-base";
 
+/* TODO: fix all stellar-base / stellar-sdk + TS hackery */
+
+/* tslint:disable */
 declare module "stellar-base" {
   interface Asset {
     toString(): string;

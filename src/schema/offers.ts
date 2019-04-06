@@ -96,5 +96,4 @@ export const typeDefs = gql`
     "Subscribe on best bid/ask updates"
     tick(selling: AssetID, buying: AssetID): Tick
   }
-
 `;

@@ -26,5 +26,4 @@ export const typeDefs = gql`
       destinationAmount: Float!
     ): [PaymentPath!]
   }
-
 `;
