@@ -1,7 +1,7 @@
 import { IHorizonEffectData } from "../../datasource/types";
 import { Effect, EffectKinds } from "../../model";
 import { EffectFactory } from "../../model/factories";
-import { accountResolver } from "./util";
+import * as resolvers from "./shared";
 
 export default {
   Effect: {
@@ -59,7 +59,7 @@ export default {
           return null;
       }
     },
-    account: accountResolver
+    account: resolvers.account
   },
   Query: {
     async effects(root: any, args: any, ctx: any, info: any) {

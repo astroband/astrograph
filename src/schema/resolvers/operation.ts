@@ -4,11 +4,13 @@ import { IHorizonOperationData } from "../../datasource/types";
 import { Operation, OperationKinds, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
-import { accountResolver, makeConnection, operationsResolver } from "./util";
+import { makeConnection, operationsResolver } from "./util";
+
+import * as resolvers from "./shared";
 
 export default {
   Operation: {
-    sourceAccount: accountResolver,
+    sourceAccount: resolvers.account,
     async transaction(operation: Operation, args: any, ctx: any) {
       if (operation.tx instanceof Transaction) {
         return operation.tx;
@@ -46,13 +48,13 @@ export default {
       return null;
     }
   },
-  PaymentOperation: { destination: accountResolver },
-  SetOptionsOperation: { inflationDestination: accountResolver },
-  AccountMergeOperation: { destination: accountResolver },
-  AllowTrustOperation: { trustor: accountResolver },
-  CreateAccountOperation: { destination: accountResolver },
-  PathPaymentOperation: { destinationAccount: accountResolver },
-  SetOptionsSigner: { account: accountResolver },
+  PaymentOperation: { destination: resolvers.account },
+  SetOptionsOperation: { inflationDestination: resolvers.account },
+  AccountMergeOperation: { destination: resolvers.account },
+  AllowTrustOperation: { trustor: resolvers.account },
+  CreateAccountOperation: { destination: resolvers.account },
+  PathPaymentOperation: { destinationAccount: resolvers.account },
+  SetOptionsSigner: { account: resolvers.account },
   Query: {
     async operation(root: any, args: { id: string }, ctx: any) {
       const response = await ctx.dataSources.horizon.getOperationById(args.id);

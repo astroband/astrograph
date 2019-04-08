@@ -1,12 +1,12 @@
 import { IHorizonPaymentPathData } from "../../datasource/types";
 import { AssetFactory } from "../../model/factories";
-import { assetResolver } from "./util";
+import * as resolvers from "./shared";
 
 export default {
   PaymentPath: {
-    sourceAsset: assetResolver,
-    destinationAsset: assetResolver,
-    path: assetResolver
+    sourceAsset: resolvers.asset,
+    destinationAsset: resolvers.asset,
+    path: resolvers.asset
   },
   Query: {
     async findPaymentPaths(root: any, args: any, ctx: any, info: any) {

@@ -3,7 +3,9 @@ import { db } from "../../database";
 import { IHorizonTradeData } from "../../datasource/types";
 import { Offer, Trade } from "../../model";
 import { TradeFactory } from "../../model/factories/trade_factory";
-import { accountResolver, assetResolver, createBatchResolver } from "./util";
+import { createBatchResolver } from "./util";
+
+import * as resolvers from "./shared";
 
 const offerResolver = createBatchResolver<any, Offer[]>((source: any, args: any, context: any, info: any) => {
   const requestedFields = fieldsList(info);
@@ -43,10 +45,10 @@ const makeConnection = (last: string, records: IHorizonTradeData[]) => {
 
 export default {
   Trade: {
-    baseAsset: assetResolver,
-    counterAsset: assetResolver,
-    baseAccount: accountResolver,
-    counterAccount: accountResolver,
+    baseAsset: resolvers.asset,
+    counterAsset: resolvers.asset,
+    baseAccount: resolvers.account,
+    counterAccount: resolvers.account,
     offer: offerResolver,
     baseOffer: offerResolver,
     counterOffer: offerResolver

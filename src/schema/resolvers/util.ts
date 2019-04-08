@@ -36,11 +36,6 @@ export function makeConnection<T extends IWithPagingToken, R>(records: T[], node
   };
 }
 
-export function ledgerResolver(obj: any) {
-  const seq = obj.lastModified || obj.ledgerSeq;
-  return new Ledger(seq);
-}
-
 export function memoResolver(obj: any) {
   if (!obj.memo) {
     return null;
@@ -52,35 +47,6 @@ export function memoResolver(obj: any) {
     type: memo.type,
     value: memo.getPlainValue()
   };
-}
-
-export const accountResolver = createBatchResolver<any, Account[]>(
-  (source: any, args: any, context: any, info: any) => {
-    const requestedFields = fieldsList(info);
-    const ids: AccountID[] = source.map((s: any) => s[info.fieldName]);
-
-    // if user requested only "id", we can return it right away
-    if (requestedFields.length === 1 && requestedFields[0] === "id") {
-      return ids.map(id => (id ? { id } : null));
-    }
-
-    return db.accounts.findAllByIDs(ids);
-  }
-);
-
-export function assetResolver(obj: any, args: any, ctx: any, info: any) {
-  const field = info.fieldName || "asset";
-  const asset = obj[field] as Asset;
-
-  const res = (a: Asset): any => {
-    return { code: a.getCode(), issuer: a.getIssuer(), native: a.isNative() };
-  };
-
-  if (Array.isArray(asset)) {
-    return asset.map(a => res(a));
-  }
-
-  return res(asset);
 }
 
 export function eventMatches(args: any, id: string, mutationType: MutationType): boolean {

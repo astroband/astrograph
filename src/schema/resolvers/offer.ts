@@ -1,9 +1,9 @@
 import { withFilter } from "graphql-subscriptions";
 import * as resolvers from "./shared";
-import { assetResolver, createBatchResolver, eventMatches } from "./util";
+import { eventMatches } from "./util";
 
 import { db } from "../../database";
-import { Account, MutationType, Offer } from "../../model";
+import { MutationType } from "../../model";
 import { AssetFactory } from "../../model/factories";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
@@ -49,14 +49,14 @@ const offerSubscription = (event: string) => {
 export default {
   Offer: {
     seller: resolvers.account,
-    selling: assetResolver,
-    buying: assetResolver,
+    selling: resolvers.asset,
+    buying: resolvers.asset,
     ledger: resolvers.ledger
   },
   OfferValues: {
     seller: resolvers.account,
-    selling: assetResolver,
-    buying: assetResolver
+    selling: resolvers.asset,
+    buying: resolvers.asset
   },
   Query: {
     offers(root: any, args: any, ctx: any, info: any) {
