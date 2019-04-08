@@ -1,6 +1,8 @@
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
 
+import resolvers from "./shared";
+
 import { IHorizonOperationData } from "../../datasource/types";
 import { Account, DataEntry, Operation, TrustLine } from "../../model";
 import { OperationFactory, TrustLineFactory } from "../../model/factories";
@@ -11,7 +13,6 @@ import { joinToMap } from "../../util/array";
 import { ACCOUNT, pubsub } from "../../pubsub";
 
 import {
-  accountResolver,
   createBatchResolver,
   effectsResolver,  
   eventMatches,
@@ -69,7 +70,7 @@ export default {
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
     effects: effectsResolver,
-    inflationDestination: accountResolver
+    inflationDestination: resolvers.account
   },
   Query: {
     async account(root: any, args: any, ctx: any, info: any) {
