@@ -2,11 +2,11 @@ import stellar from "stellar-base";
 import { Asset } from "stellar-sdk";
 import { MAX_INT64 } from "../../util";
 import { publicKeyFromXDR } from "../../util/xdr/account";
-import { TrustLineValues } from "../trust_line_values";
+import { BalanceValues } from "../balance_values";
 
-export class TrustLineValuesFactory {
-  public static fromXDR(xdr: any): TrustLineValues {
-    return new TrustLineValues({
+export class BalanceValuesFactory {
+  public static fromXDR(xdr: any): BalanceValues {
+    return new BalanceValues({
       asset: Asset.fromOperation(xdr.asset()),
       account: publicKeyFromXDR(xdr),
       balance: xdr.balance().toString(),
@@ -15,8 +15,8 @@ export class TrustLineValuesFactory {
     });
   }
 
-  public static fakeNativeFromXDR(xdr: any): TrustLineValues {
-    return new TrustLineValues({
+  public static fakeNativeFromXDR(xdr: any): BalanceValues {
+    return new BalanceValues({
       account: publicKeyFromXDR(xdr),
       asset: Asset.native(),
       limit: MAX_INT64,

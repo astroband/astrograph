@@ -6,8 +6,8 @@ import * as resolvers from "./shared";
 import { createBatchResolver, effectsResolver,  eventMatches, makeConnection, operationsResolver } from "./util";
 
 import { IHorizonOperationData } from "../../datasource/types";
-import { Account, DataEntry, Operation, TrustLine } from "../../model";
-import { OperationFactory, TrustLineFactory } from "../../model/factories";
+import { Account, Balance, DataEntry, Operation } from "../../model";
+import { BalanceFactory, OperationFactory } from "../../model/factories";
 
 import { db } from "../../database";
 import { joinToMap } from "../../util/array";
@@ -18,23 +18,23 @@ const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: a
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
 );
 
-const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: Account[]) => {
+const balancesResolver = createBatchResolver<Account, Balance[]>(async (source: Account[]) => {
   const accountIDs = source.map(s => s.id);
-  const trustLines = await db.trustLines.findAllByAccountIDs(accountIDs);
+  const balances = await db.trustLines.findAllByAccountIDs(accountIDs);
 
-  const map = joinToMap(accountIDs, trustLines);
+  const map = joinToMap(accountIDs, balances);
 
-  for (const [accountID, accountTrustLines] of map) {
+  for (const [accountID, accountBalances] of map) {
     const account = source.find((acc: Account) => acc.id === accountID);
 
     if (!account) {
       continue;
     }
 
-    accountTrustLines.unshift(TrustLineFactory.nativeForAccount(account));
+    accountBalances.unshift(BalanceFactory.nativeForAccount(account));
   }
 
-  return trustLines;
+  return balances;
 });
 
 const accountSubscription = (event: string) => {
@@ -55,7 +55,7 @@ const accountSubscription = (event: string) => {
 export default {
   Account: {
     data: dataEntriesResolver,
-    trustLines: trustLinesResolver,
+    balances: balancesResolver,
     ledger: resolvers.ledger,
     operations: operationsResolver,
     async payments(root: Account, args: any, ctx: any) {

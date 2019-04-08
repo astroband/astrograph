@@ -58,6 +58,18 @@ Object {
 exports[`Integration tests Single account query 1`] = `
 Object {
   "account": Object {
+    "balances": Array [
+      Object {
+        "account": Object {
+          "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
+        },
+        "asset": Object {
+          "code": "XLM",
+          "issuer": null,
+          "native": true,
+        },
+      },
+    ],
     "data": Array [
       Object {
         "name": "test_data",
@@ -85,18 +97,6 @@ Object {
       "masterWeight": 1,
       "medium": 0,
     },
-    "trustLines": Array [
-      Object {
-        "account": Object {
-          "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
-        },
-        "asset": Object {
-          "code": "XLM",
-          "issuer": null,
-          "native": true,
-        },
-      },
-    ],
   },
 }
 `;

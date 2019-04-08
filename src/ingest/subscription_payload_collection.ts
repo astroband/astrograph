@@ -3,16 +3,16 @@ import {
   AccountSubscriptionPayload,
   DataEntrySubscriptionPayload,
   MutationType,
-  NativeTrustLineSubscriptionPayload,
+  NativeBalanceSubscriptionPayload,
   OfferSubscriptionPayload,
   TransactionWithXDR,
-  TrustLineSubscriptionPayload
+  BalanceSubscriptionPayload
 } from "../model";
 
 export type SubscriptionPayload =
   | AccountSubscriptionPayload
-  | TrustLineSubscriptionPayload
-  | NativeTrustLineSubscriptionPayload
+  | BalanceSubscriptionPayload
+  | NativeBalanceSubscriptionPayload
   | DataEntrySubscriptionPayload
   | OfferSubscriptionPayload;
 
@@ -36,7 +36,7 @@ export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
           }
 
           if (change.accountChanges.includes("balance")) {
-            this.push(new NativeTrustLineSubscriptionPayload(MutationType.Update, change.data.account()));
+            this.push(new NativeBalanceSubscriptionPayload(MutationType.Update, change.data.account()));
           }
 
           // if there are some changes besides balance
@@ -70,7 +70,7 @@ export class SubscriptionPayloadCollection extends Array<SubscriptionPayload> {
         this.push(new AccountSubscriptionPayload(mutationType, change.data.account()));
         break;
       case EntryType.Trustline:
-        this.push(new TrustLineSubscriptionPayload(mutationType, change.data.trustLine()));
+        this.push(new BalanceSubscriptionPayload(mutationType, change.data.trustLine()));
         break;
       case EntryType.Data:
         this.push(new DataEntrySubscriptionPayload(mutationType, change.data.data()));

@@ -1,14 +1,14 @@
 import { withFilter } from "graphql-subscriptions";
-import { TrustLineSubscriptionPayload } from "../../model";
-import { pubsub, TRUST_LINE } from "../../pubsub";
+import { BalanceSubscriptionPayload } from "../../model";
+import { pubsub, BALANCE } from "../../pubsub";
 import * as resolvers from "./shared";
 import { eventMatches } from "./util";
 
-const trustLineSubscription = (event: string) => {
+const balanceSubscription = (event: string) => {
   return {
     subscribe: withFilter(
       () => pubsub.asyncIterator(event),
-      (payload: TrustLineSubscriptionPayload, variables) => {
+      (payload: BalanceSubscriptionPayload, variables) => {
         return eventMatches(variables.args, payload.account, payload.mutationType);
       }
     ),
@@ -20,12 +20,12 @@ const trustLineSubscription = (event: string) => {
 };
 
 export default {
-  TrustLine: {
+  Balance: {
     account: resolvers.account,
     ledger: resolvers.ledger,
     asset: resolvers.asset
   },
-  TrustLineSubscriptionPayload: { account: resolvers.account },
-  TrustLineValues: { account: resolvers.account },
-  Subscription: { trustLine: trustLineSubscription(TRUST_LINE) }
+  BalanceSubscriptionPayload: { account: resolvers.account },
+  BalanceValues: { account: resolvers.account },
+  Subscription: { balance: balanceSubscription(BALANCE) }
 };

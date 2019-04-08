@@ -38,7 +38,7 @@ export const typeDefs = gql`
     ledger: Ledger!
     signers: [Signer]
     data: [DataEntry]
-    trustLines: [TrustLine]
+    balances: [Balance]
     operations(first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
     payments(first: Int, after: String, last: Int, before: String): OperationConnection
     effects(first: Int, after: String, last: Int, before: String): EffectConnection

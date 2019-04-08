@@ -61,14 +61,14 @@ export const typeDefs = gql`
     values: DataEntryValues
   }
 
-  interface ITrustLine {
+  interface IBalance {
     asset: Asset!
     limit: String!
     balance: String!
     authorized: Boolean!
   }
 
-  type TrustLine implements ITrustLine {
+  type Balance implements IBalance {
     account: Account
     asset: Asset!
     limit: String!
@@ -77,7 +77,7 @@ export const typeDefs = gql`
     ledger: Ledger!
   }
 
-  type TrustLineValues implements ITrustLine {
+  type BalanceValues implements IBalance {
     account: Account
     asset: Asset!
     limit: String!
@@ -85,11 +85,11 @@ export const typeDefs = gql`
     authorized: Boolean!
   }
 
-  type TrustLineSubscriptionPayload {
+  type BalanceSubscriptionPayload {
     account: Account!
     asset: Asset!
     mutationType: MutationType!
-    values: TrustLineValues
+    values: BalanceValues
   }
 
   input EventInput {
@@ -99,7 +99,7 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    trustLine(args: EventInput): TrustLineSubscriptionPayload
+    balance(args: EventInput): BalanceSubscriptionPayload
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
   }
 
