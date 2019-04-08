@@ -7,10 +7,6 @@ import { Account, MutationType, Offer } from "../../model";
 import { AssetFactory } from "../../model/factories";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
-const accountResolver = createBatchResolver<Offer, Account>((source: any) =>
-  db.accounts.findAllByIDs(source.map((r: Offer) => r.sellerID))
-);
-
 const offerMatches = (variables: any, payload: any): boolean => {
   const sellingAssetEq = variables.args.sellingAssetEq;
   const buyingAssetEq = variables.args.buyingAssetEq;
@@ -52,13 +48,13 @@ const offerSubscription = (event: string) => {
 
 export default {
   Offer: {
-    seller: accountResolver,
+    seller: resolvers.account,
     selling: assetResolver,
     buying: assetResolver,
     ledger: resolvers.ledger
   },
   OfferValues: {
-    seller: accountResolver,
+    seller: resolvers.account,
     selling: assetResolver,
     buying: assetResolver
   },

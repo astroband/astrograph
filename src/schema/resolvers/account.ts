@@ -3,6 +3,8 @@ import _ from "lodash";
 
 import * as resolvers from "./shared";
 
+import { createBatchResolver, effectsResolver,  eventMatches, makeConnection, operationsResolver } from "./util";
+
 import { IHorizonOperationData } from "../../datasource/types";
 import { Account, DataEntry, Operation, TrustLine } from "../../model";
 import { OperationFactory, TrustLineFactory } from "../../model/factories";
@@ -11,14 +13,6 @@ import { db } from "../../database";
 import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
-
-import {
-  createBatchResolver,
-  effectsResolver,  
-  eventMatches,
-  makeConnection,
-  operationsResolver
-} from "./util";
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
