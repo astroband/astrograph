@@ -42,6 +42,7 @@ export const typeDefs = gql`
     operations(first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
     payments(first: Int, after: String, last: Int, before: String): OperationConnection
     effects(first: Int, after: String, last: Int, before: String): EffectConnection
+    trades(first: Int, after: String, last: Int, before: String): TradeConnection
   }
 
   type AccountValues implements IAccount {

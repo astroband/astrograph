@@ -13,7 +13,6 @@ import {
   IHorizonTransactionData
 } from "./types";
 
-
 interface IForwardPagingParams {
   first: number;
   after: string;
@@ -43,11 +42,7 @@ export default class HorizonAPI extends RESTDataSource {
   public async getPayments(pagingParams: PagingParams): Promise<IHorizonOperationData[]> {
     const records = await this.request("payments", { ...this.parseCursorPagination(pagingParams), cacheTtl: 5 });
 
-    if (pagingParams.last && pagingParams.before) {
-      return records.reverse();
-    }
-
-    return records;
+    return this.properlyOrdered(records, pagingParams);
   }
 
   public async getAccountPayments(accountId: AccountID, pagingParams: PagingParams): Promise<IHorizonOperationData[]> {
@@ -56,11 +51,7 @@ export default class HorizonAPI extends RESTDataSource {
       cacheTtl: 5
     });
 
-    if (pagingParams.last && pagingParams.before) {
-      return records.reverse();
-    }
-
-    return records;
+    return this.properlyOrdered(records, pagingParams);
   }
 
   public async getLedgerPayments(ledgerSeq: number, pagingParams: PagingParams): Promise<IHorizonOperationData[]> {
@@ -69,11 +60,7 @@ export default class HorizonAPI extends RESTDataSource {
       cacheTtl: 5
     });
 
-    if (pagingParams.last && pagingParams.before) {
-      return records.reverse();
-    }
-
-    return records;
+    return this.properlyOrdered(records, pagingParams);
   }
 
   public async getTransactionPayments(
@@ -85,11 +72,7 @@ export default class HorizonAPI extends RESTDataSource {
       cacheTtl: 5
     });
 
-    if (pagingParams.last && pagingParams.before) {
-      return records.reverse();
-    }
-
-    return records;
+    return this.properlyOrdered(records, pagingParams);
   }
 
   public async getAccountOperations(
@@ -150,20 +133,15 @@ export default class HorizonAPI extends RESTDataSource {
     return this.request(`ledgers/${ledgerSeq}/transactions`, { limit, order, cursor });
   }
 
-  public async getAssets(
-    criteria: IAssetInput,
-    limit: number,
-    order: SortOrder = SortOrder.ASC,
-    cursor?: string
-  ): Promise<IHorizonAssetData[]> {
-    return this.request(`assets`, {
+  public async getAssets(criteria: IAssetInput, pagingParams: PagingParams): Promise<IHorizonAssetData[]> {
+    const records = await this.request("assets", {
+      ...this.parseCursorPagination(pagingParams),
       asset_code: criteria.code,
       asset_issuer: criteria.issuer,
-      limit,
-      order,
-      cursor,
       cacheTtl: 600
     });
+
+    return this.properlyOrdered(records, pagingParams);
   }
 
   public async getOrderBook(selling: IAssetInput, buying: IAssetInput, limit?: number): Promise<IHorizonOrderBookData> {
@@ -202,9 +180,7 @@ export default class HorizonAPI extends RESTDataSource {
     startTime: number,
     endTime: number,
     resolution: number,
-    limit: number,
-    offset: number,
-    order: SortOrder = SortOrder.ASC
+    pagingParams: PagingParams
   ): Promise<IHorizonTradeAggregationData> {
     return this.request("trade_aggregations", {
       base_asset_type: this.predictAssetType(baseAsset.code),
@@ -216,9 +192,7 @@ export default class HorizonAPI extends RESTDataSource {
       start_time: startTime,
       end_time: endTime,
       resolution,
-      limit,
-      offset,
-      order,
+      ...this.parseCursorPagination(pagingParams),
       cacheTtl: 60 * 5
     });
   }
@@ -367,5 +341,13 @@ export default class HorizonAPI extends RESTDataSource {
       order: (args.last ? "asc" : "desc") as SortOrder,
       cursor: args.last ? args.before : args.after
     };
+  }
+
+  private properlyOrdered(records: any[], pagingParams: PagingParams): any[] {
+    if (pagingParams.last && pagingParams.before) {
+      return records.reverse();
+    }
+
+    return records;
   }
 }

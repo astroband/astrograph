@@ -40,10 +40,6 @@ export const typeDefs = gql`
     ): TradeConnection!
   }
 
-  extend type Account {
-    trades(first: Int, after: String, last: Int, before: String): TradeConnection!
-  }
-
   extend type Offer {
     trades(first: Int, after: String, last: Int, before: String): TradeConnection!
   }

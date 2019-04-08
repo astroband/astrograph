@@ -20,9 +20,8 @@ export const typeDefs = gql`
       startTime: Int
       endTime: Int
       resolution: Int!
-      limit: Int
-      orderBy: Order
-      offset: Int
+      first: Int
+      last: Int
     ): [TradeAggregation!]
   }
 
