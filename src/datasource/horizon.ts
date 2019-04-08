@@ -256,8 +256,11 @@ export default class HorizonAPI extends RESTDataSource {
     });
   }
 
-  public async getEffects(limit = 10, order: SortOrder = SortOrder.DESC, cursor?: string): Promise<IHorizonEffectData[]> {
-    return this.request("effects", { limit, order, cursor, cacheTtl: 10 });
+  public async getEffects(pagingParams: PagingParams): Promise<IHorizonEffectData[]> {
+    return this.properlyOrdered(
+      await this.request("effects", { ...this.parseCursorPagination(pagingParams), cacheTtl: 10 }),
+      pagingParams
+    );
   }
 
   public async getTransactionEffects(
