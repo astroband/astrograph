@@ -1,10 +1,8 @@
-import { fieldsList } from "graphql-fields-list";
 import { createBatchResolver as create } from "graphql-resolve-batch";
-import { Asset, Memo } from "stellar-sdk";
-import { db } from "../../database";
+import { Memo } from "stellar-sdk";
 import HorizonAPI from "../../datasource/horizon";
 import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
-import { Account, AccountID, Ledger, MutationType, Transaction } from "../../model";
+import { Account, Ledger, MutationType, Transaction } from "../../model";
 import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { invertSortOrder, SortOrder } from "../../util/paging";
 

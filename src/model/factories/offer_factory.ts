@@ -22,7 +22,7 @@ export class OfferFactory {
   public static fromDb(row: IOfferTableRow): Offer {
     const data: IOffer = {
       id: row.offerid,
-      sellerID: row.sellerid,
+      seller: row.sellerid,
       selling: AssetFactory.fromXDR(row.sellingasset),
       buying: AssetFactory.fromXDR(row.buyingasset),
       amount: toFloatAmountString(row.amount),
@@ -43,7 +43,7 @@ export class OfferFactory {
 
     return {
       id: xdr.offerId().toInt(),
-      sellerID: xdr.sellerId().value(),
+      seller: xdr.sellerId().value(),
       selling: Asset.fromOperation(xdr.selling()),
       buying: Asset.fromOperation(xdr.buying()),
       amount: xdr.amount().toInt(),

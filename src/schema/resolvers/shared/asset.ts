@@ -8,7 +8,7 @@ export function asset(obj: any, args: any, ctx: any, info: any) {
     return { code: a.getCode(), issuer: a.getIssuer(), native: a.isNative() };
   };
 
-  if (Array.isArray(asset)) {
+  if (Array.isArray(value)) {
     return value.map(a => res(a));
   }
 
