@@ -1,9 +1,9 @@
 import { IHorizonAssetData } from "../../datasource/types";
-import { accountResolver } from "./util";
+import * as resolvers from "./shared";
 
 export default {
-  Asset: { issuer: accountResolver },
-  AssetWithInfo: { issuer: accountResolver },
+  Asset: { issuer: resolvers.account },
+  AssetWithInfo: { issuer: resolvers.account },
   Query: {
     async assets(root: any, args: any, ctx: any, info: any) {
       const { code, issuer, first, last, after, before } = args;

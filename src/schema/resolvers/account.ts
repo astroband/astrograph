@@ -1,7 +1,7 @@
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
 
-import resolvers from "./shared";
+import * as resolvers from "./shared";
 
 import { IHorizonOperationData } from "../../datasource/types";
 import { Account, DataEntry, Operation, TrustLine } from "../../model";
@@ -16,7 +16,6 @@ import {
   createBatchResolver,
   effectsResolver,  
   eventMatches,
-  ledgerResolver,
   makeConnection,
   operationsResolver
 } from "./util";
@@ -63,7 +62,7 @@ export default {
   Account: {
     data: dataEntriesResolver,
     trustLines: trustLinesResolver,
-    ledger: ledgerResolver,
+    ledger: resolvers.ledger,
     operations: operationsResolver,
     async payments(root: Account, args: any, ctx: any) {
       const records = await ctx.dataSources.horizon.getAccountPayments(root.id, args);
