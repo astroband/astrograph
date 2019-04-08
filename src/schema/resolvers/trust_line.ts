@@ -1,7 +1,8 @@
 import { withFilter } from "graphql-subscriptions";
 import { TrustLineSubscriptionPayload } from "../../model";
 import { pubsub, TRUST_LINE } from "../../pubsub";
-import { accountResolver, assetResolver, eventMatches, ledgerResolver } from "./util";
+import * as resolvers from "./shared";
+import { assetResolver, eventMatches } from "./util";
 
 const trustLineSubscription = (event: string) => {
   return {
@@ -20,11 +21,11 @@ const trustLineSubscription = (event: string) => {
 
 export default {
   TrustLine: {
-    account: accountResolver,
-    ledger: ledgerResolver,
+    account: resolvers.account,
+    ledger: resolvers.ledger,
     asset: assetResolver
   },
-  TrustLineSubscriptionPayload: { account: accountResolver },
-  TrustLineValues: { account: accountResolver },
+  TrustLineSubscriptionPayload: { account: resolvers.account },
+  TrustLineValues: { account: resolvers.account },
   Subscription: { trustLine: trustLineSubscription(TRUST_LINE) }
 };

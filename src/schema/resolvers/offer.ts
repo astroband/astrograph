@@ -1,5 +1,6 @@
 import { withFilter } from "graphql-subscriptions";
-import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
+import * as resolvers from "./shared";
+import { assetResolver, createBatchResolver, eventMatches } from "./util";
 
 import { db } from "../../database";
 import { Account, MutationType, Offer } from "../../model";
@@ -54,7 +55,7 @@ export default {
     seller: accountResolver,
     selling: assetResolver,
     buying: assetResolver,
-    ledger: ledgerResolver
+    ledger: resolvers.ledger
   },
   OfferValues: {
     seller: accountResolver,

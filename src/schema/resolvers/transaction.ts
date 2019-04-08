@@ -1,23 +1,18 @@
 import { db } from "../../database";
 
+import * as resolvers from "./shared";
+import { createBatchResolver, effectsResolver, makeConnection, memoResolver, operationsResolver } from "./util";
+
 import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
 import { Account, Operation, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
-import {
-  createBatchResolver,
-  effectsResolver,
-  ledgerResolver,
-  makeConnection,
-  memoResolver,
-  operationsResolver
-} from "./util";
 
 export default {
   Transaction: {
     sourceAccount: createBatchResolver<Transaction, Account>((source: any) => {
       return db.accounts.findAllByIDs(source.map((obj: Transaction) => obj.sourceAccount));
     }),
-    ledger: ledgerResolver,
+    ledger: resolvers.ledger,
     memo: memoResolver,
     operations: operationsResolver,
     async payments(root: Transaction, args: any, ctx: any) {
