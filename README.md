@@ -23,9 +23,10 @@ You can install Astrograph, using [yarn](https://yarnpkg.com/):
 ```shell
 $ git clone https://github.com/astroband/astrograph
 $ cd astrograph
-$ yarn              # install dependencies
-$ yarn run dev      # for developing purposes
-$ yarn run prod     # for live setup
+$ yarn                        # install dependencies
+$ yarn run dev                # for developing purposes
+$ yarn run prod               # for live setup
+$ yarn ts-node src/ingestd.ts # live ingesting for subscriptions
 ``` 
 
 ## Configure
@@ -58,6 +59,8 @@ DBUSER="john"
 In order to develop locally, you need to get the stellar-core database. The easiest way to get it is to run stellar-core node in docker (check [docker-stellar-core](https://github.com/mobius-network/docker-stellar-core)) and let it ingest some ledgers.
 
 After `yarn run dev` [GraphQL playground](https://www.npmjs.com/package/graphql-playground) will be available on `http://localhost:4000`
+
+Also, in order for subscriptions to work, live ingesting should be started. You can start it with `yarn ts-node src/ingestd.ts` command.
 
 ### Testing
 
