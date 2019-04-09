@@ -196,7 +196,7 @@ subscription {
     values {
       asset {
         code
-        issuer
+        issuer { id }
         native
       }
       balance
