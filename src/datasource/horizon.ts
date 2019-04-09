@@ -105,12 +105,11 @@ export default class HorizonAPI extends RESTDataSource {
     return this.request(`operations/${operationId}`);
   }
 
-  public async getTransactions(
-    limit: number,
-    order: SortOrder = SortOrder.DESC,
-    cursor?: string
-  ): Promise<IHorizonTransactionData[]> {
-    return this.request("transactions", { limit, order, cursor });
+  public async getTransactions(pagingParams: PagingParams): Promise<IHorizonTransactionData[]> {
+    return this.properlyOrdered(
+      await this.request("transactions", this.parseCursorPagination(pagingParams)),
+      pagingParams
+    );
   }
 
   public async getAccountTransactions(

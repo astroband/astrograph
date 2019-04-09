@@ -1,6 +1,5 @@
 import { fieldsList } from "graphql-fields-list";
 import { createBatchResolver as create } from "graphql-resolve-batch";
-import { Memo } from "stellar-sdk";
 import { IHorizonTransactionData } from "../../datasource/types";
 import { Account, Ledger, MutationType, Transaction } from "../../model";
 import { TransactionWithXDRFactory } from "../../model/factories";
@@ -40,19 +39,6 @@ export function makeConnection<T extends IWithPagingToken, R>(records: T[], node
       startCursor: records.length !== 0 ? records[0].paging_token : null,
       endCursor: records.length !== 0 ? records[records.length - 1].paging_token : null
     }
-  };
-}
-
-export function memoResolver(obj: any) {
-  if (!obj.memo) {
-    return null;
-  }
-
-  const memo = obj.memo as Memo;
-
-  return {
-    type: memo.type,
-    value: memo.getPlainValue()
   };
 }
 
