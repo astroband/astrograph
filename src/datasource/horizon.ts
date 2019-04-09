@@ -194,18 +194,14 @@ export default class HorizonAPI extends RESTDataSource {
   }
 
   public async getTrades(
+    pagingParams: PagingParams,
     baseAsset?: IAssetInput,
     counterAsset?: IAssetInput,
-    offerID?: number,
-    limit?: number,
-    order: SortOrder = SortOrder.ASC,
-    cursor?: string
+    offerID?: number
   ): Promise<IHorizonTradeData> {
     const params: any = {
       offer_id: offerID,
-      limit,
-      order,
-      cursor,
+      ...this.parseCursorPagination(pagingParams),
       cacheTtl: 60 * 15
     };
 
