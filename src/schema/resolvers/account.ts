@@ -5,9 +5,9 @@ import * as resolvers from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import { IHorizonEffectData, IHorizonOperationData } from "../../datasource/types";
-import { Account, Balance, DataEntry, Effect, Operation } from "../../model";
-import { BalanceFactory, EffectFactory, OperationFactory } from "../../model/factories";
+import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
+import { Account, Balance, DataEntry, Effect, Operation, Transaction } from "../../model";
+import { BalanceFactory, EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 
 import { db } from "../../database";
 import { joinToMap } from "../../util/array";
@@ -70,6 +70,12 @@ export default {
     effects: async (root: Account, args: any, ctx: any) => {
       const records = await ctx.dataSources.horizon.getAccountEffects(root.id, args);
       return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
+    },
+    transactions: async (root: Account, args: any, ctx: any) => {
+      return makeConnection<IHorizonTransactionData, Transaction>(
+        await ctx.dataSources.horizon.getAccountTransactions(root.id, args),
+        r => TransactionWithXDRFactory.fromHorizon(r)
+      );
     },
     inflationDestination: resolvers.account
   },

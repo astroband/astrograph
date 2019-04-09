@@ -1,9 +1,9 @@
 import { db } from "../../database";
-import { IHorizonEffectData, IHorizonOperationData } from "../../datasource/types";
-import { Effect, Ledger, LedgerHeader, Operation } from "../../model";
-import { EffectFactory, OperationFactory } from "../../model/factories";
+import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
+import { Effect, Ledger, LedgerHeader, Operation, Transaction } from "../../model";
+import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { pubsub } from "../../pubsub";
-import { createBatchResolver, makeConnection, transactionsResolver } from "./util";
+import { createBatchResolver, makeConnection } from "./util";
 
 const LEDGER_CREATED = "LEDGER_CREATED";
 
@@ -14,7 +14,12 @@ const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>((source: 
 export default {
   Ledger: {
     header: ledgerHeaderResolver,
-    transactions: transactionsResolver,
+    transactions: async (root: Ledger, args: any, ctx: any) => {
+      return makeConnection<IHorizonTransactionData, Transaction>(
+        await ctx.dataSources.horizon.getLedgerTransactions(root.seq, args),
+        r => TransactionWithXDRFactory.fromHorizon(r)
+      );
+    },
     operations: async (root: Ledger, args: any, ctx: any) => {
       return makeConnection<IHorizonOperationData, Operation>(
         await ctx.dataSources.horizon.getLedgerOperations(root.seq, args),

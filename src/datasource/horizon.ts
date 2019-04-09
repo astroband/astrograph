@@ -114,20 +114,19 @@ export default class HorizonAPI extends RESTDataSource {
 
   public async getAccountTransactions(
     accountId: AccountID,
-    limit: number,
-    order: SortOrder = SortOrder.DESC,
-    cursor?: string
+    pagingParams: PagingParams
   ): Promise<IHorizonTransactionData[]> {
-    return this.request(`accounts/${accountId}/transactions`, { limit, order, cursor });
+    return this.properlyOrdered(
+      await this.request(`accounts/${accountId}/transactions`, this.parseCursorPagination(pagingParams)),
+      pagingParams
+    );
   }
 
-  public async getLedgerTransactions(
-    ledgerSeq: number,
-    limit: number,
-    order: SortOrder = SortOrder.DESC,
-    cursor?: string
-  ): Promise<IHorizonTransactionData[]> {
-    return this.request(`ledgers/${ledgerSeq}/transactions`, { limit, order, cursor });
+  public async getLedgerTransactions(seq: number, pagingParams: PagingParams): Promise<IHorizonTransactionData[]> {
+    return this.properlyOrdered(
+      await this.request(`ledgers/${seq}/transactions`, this.parseCursorPagination(pagingParams)),
+      pagingParams
+    );
   }
 
   public async getAssets(criteria: IAssetInput, pagingParams: PagingParams): Promise<IHorizonAssetData[]> {
