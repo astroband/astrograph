@@ -20,8 +20,8 @@ console.log("Connecting to GraphQL...");
 console.log("Account ID:", ACCOUNT_ID);
 
 const SUBSCRIPTION = gql`
-  subscription trustLine($args: EventInput!) {
-    trustLine(args: $args) {
+  subscription balance($args: EventInput!) {
+    balance(args: $args) {
       account {
         id
       }
@@ -53,7 +53,7 @@ apolloClient
   })
   .subscribe({
     next(data: any) {
-      const values = data.data.trustLine.values;
+      const values = data.data.balance.values;
       const assetId = values.asset.native ? values.asset.code : `${values.asset.code}-${values.asset.issuer.id}`;
 
       console.log(

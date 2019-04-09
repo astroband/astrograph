@@ -18,9 +18,9 @@ console.log("Account ID:", ACCOUNT_ID);
 client
   .query({
     query: gql`
-      query trustLines($id: AccountID!) {
+      query balances($id: AccountID!) {
         account(id: $id) {
-          trustLines {
+          balances {
             balance
             limit
             asset {
@@ -37,7 +37,7 @@ client
     }
   })
   .then((result: { data: any }) => {
-    for (const t of result.data.account.trustLines) {
+    for (const t of result.data.account.balances) {
       const assetId = t.asset.native ? t.asset.code : `${t.asset.code}-${t.asset.issuer.id}`;
       console.log("Balance", t.balance, assetId, "with limit", t.limit);
     }

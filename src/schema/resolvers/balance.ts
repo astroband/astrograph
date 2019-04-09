@@ -26,6 +26,9 @@ export default {
     asset: resolvers.asset
   },
   BalanceSubscriptionPayload: { account: resolvers.account },
-  BalanceValues: { account: resolvers.account },
+  BalanceValues: {
+    account: resolvers.account,
+    asset: resolvers.asset
+  },
   Subscription: { balance: balanceSubscription(BALANCE) }
 };
