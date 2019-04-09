@@ -47,16 +47,24 @@ export const typeDefs = gql`
 
   "Represents a single [account](https://www.stellar.org/developers/guides/concepts/accounts.html) on Stellar network"
   type Account implements IAccount {
+    "Account's [public key](https://www.stellar.org/developers/guides/concepts/accounts.html#account-id)"
     id: AccountID!
+    "The current transaction sequence number of the account"
     sequenceNumber: String!
+    "Number of other [entries](https://www.stellar.org/developers/guides/concepts/ledger.html#ledger-entries) the account owns"
     numSubentries: Int!
+    "Account designated to receive [inflation](https://www.stellar.org/developers/guides/concepts/inflation.html)"
     inflationDestination: Account
+    "A domain name that can be added to the account. [More info](https://www.stellar.org/developers/guides/concepts/accounts.html#home-domain)"
     homeDomain: String
+    "Thresholds for different access levels this account set"
     thresholds: AccountThresholds!
+    "Flags used, by issuers of assets"
     flags: AccountFlags!
+    "[Signers](https://www.stellar.org/developers/guides/concepts/multi-sig.html) of the account"
+    signers: [Signer]
     "Ledger, in which account was modified last time"
     ledger: Ledger!
-    signers: [Signer]
     "[Data entries](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data), attached to the account"
     data: [DataEntry]
     "[Trustlines](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) of this account"
@@ -79,13 +87,21 @@ export const typeDefs = gql`
 
   "Represents a current account state, which is broadcasted to subscribers on account's update"
   type AccountValues implements IAccount {
+    "Account's [public key](https://www.stellar.org/developers/guides/concepts/accounts.html#account-id)"
     id: AccountID!
+    "The current transaction sequence number of the account"
     sequenceNumber: String!
+    "Number of other [entries](https://www.stellar.org/developers/guides/concepts/ledger.html#ledger-entries) the account owns"
     numSubentries: Int!
+    "Account designated to receive [inflation](https://www.stellar.org/developers/guides/concepts/inflation.html)"
     inflationDestination: Account
+    "A domain name that can be added to the account. [More info](https://www.stellar.org/developers/guides/concepts/accounts.html#home-domain)"
     homeDomain: String
+    "Thresholds for different access levels this account set"
     thresholds: AccountThresholds!
+    "Flags used, by issuers of assets"
     flags: AccountFlags!
+    "[Signers](https://www.stellar.org/developers/guides/concepts/multi-sig.html) of the account"
     signers: [Signer]
   }
 

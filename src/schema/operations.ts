@@ -30,10 +30,14 @@ export const typeDefs = gql`
 
   "Represents [payment operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#payment)"
   type PaymentOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     "Account address that received the payment"
     destination: Account!
@@ -45,10 +49,14 @@ export const typeDefs = gql`
 
   "Represents [set options operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#set-options)"
   type SetOptionsOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     "Indicates which flags to clear"
     clearFlags: Int
@@ -68,10 +76,14 @@ export const typeDefs = gql`
 
   "Represents [account merge operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#account-merge)"
   type AccountMergeOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     "The account that receives the remaining XLM balance of the source account"
     destination: Account!
@@ -79,10 +91,14 @@ export const typeDefs = gql`
 
   "Represents [allow trust operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#allow-trust)"
   type AllowTrustOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     "The account of the recipient of the trustline"
     trustor: Account!
@@ -94,10 +110,14 @@ export const typeDefs = gql`
 
   "Represents [bump sequence operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#bump-sequence)"
   type BumpSequenceOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     "Desired value for the operation’s source account sequence number"
     bumpTo: Int!
@@ -105,10 +125,14 @@ export const typeDefs = gql`
 
   "Represents [change trust operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#change-trust)"
   type ChangeTrustOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     "The limit of the trustline"
     limit: String!
@@ -118,10 +142,14 @@ export const typeDefs = gql`
 
   "Represents [create account operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#create-account)"
   type CreateAccountOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     "Amount of XLM to send to the newly created account"
     startingBalance: String!
@@ -131,10 +159,14 @@ export const typeDefs = gql`
 
   "Represents [manage data operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data)"
   type ManageDatumOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     name: String!
     value: String
@@ -142,10 +174,14 @@ export const typeDefs = gql`
 
   "Represents [manage offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-offer)"
   type ManageOfferOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     "Rational representation of the price"
     priceComponents: OfferPriceComponents!
@@ -162,10 +198,14 @@ export const typeDefs = gql`
 
   "Represents [create passive offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#create-passive-offer)"
   type CreatePassiveOfferOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     priceComponents: OfferPriceComponents!
     price: String!
@@ -176,10 +216,14 @@ export const typeDefs = gql`
 
   "Represents [path payment operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#path-payment)"
   type PathPaymentOperation implements Operation {
+    "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
+    "Account on which behalf operation was executed"
     sourceAccount: Account!
+    "When operations was executed"
     dateTime: DateTime!
+    "Transaction that contains this operation"
     transaction: Transaction!
     "Max send amount"
     sendMax: String!
