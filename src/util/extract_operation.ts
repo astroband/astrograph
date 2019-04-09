@@ -34,7 +34,8 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
 }
 
 function getSentAmount(tx: TransactionWithXDR, index: number, source: AccountID) {
-  const changes = ChangesExtractor.call(tx)[index + 1].filter(c => {
+  // we should skip fee changes and transaction changes, that's why +2. Not sure, why it's working, need more research
+  const changes = ChangesExtractor.call(tx)[index + 2].filter(c => {
     return (
       c.type === ChangeType.Updated &&
       (c.entry === EntryType.Trustline || c.entry === EntryType.Account) &&
@@ -43,6 +44,7 @@ function getSentAmount(tx: TransactionWithXDR, index: number, source: AccountID)
   });
 
   const lastChange = changes[changes.length - 1];
+
   const data = lastChange.entry === EntryType.Account ? lastChange.data.account() : lastChange.data.trustLine();
 
   return new BigNumber(lastChange.prevState.balance).minus(data.balance().toString()).toString();
