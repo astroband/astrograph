@@ -10,4 +10,3 @@ export function invertSortOrder(order: SortOrder) {
 
   return SortOrder.DESC;
 }
-

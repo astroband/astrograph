@@ -1,11 +1,13 @@
 import { withFilter } from "graphql-subscriptions";
 import * as resolvers from "./shared";
-import { eventMatches } from "./util";
+import { eventMatches, makeConnection } from "./util";
 
 import { db } from "../../database";
-import { MutationType } from "../../model";
-import { AssetFactory } from "../../model/factories";
+import { MutationType, Offer, Trade } from "../../model";
+import { AssetFactory, TradeFactory } from "../../model/factories";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
+
+import { IHorizonTradeData } from "../../datasource/types";
 
 const offerMatches = (variables: any, payload: any): boolean => {
   const sellingAssetEq = variables.args.sellingAssetEq;
@@ -51,7 +53,11 @@ export default {
     seller: resolvers.account,
     selling: resolvers.asset,
     buying: resolvers.asset,
-    ledger: resolvers.ledger
+    ledger: resolvers.ledger,
+    trades: async (root: Offer, args: any, ctx: any, info: any) => {
+      const records = await ctx.dataSources.horizon.getOfferTrades(root.id, args);
+      return makeConnection<IHorizonTradeData, Trade>(records, r => TradeFactory.fromHorizon(r));
+    }
   },
   OfferValues: {
     seller: resolvers.account,

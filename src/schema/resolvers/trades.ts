@@ -26,20 +26,6 @@ export default {
     baseOffer: offerResolver,
     counterOffer: offerResolver
   },
-  Offer: {
-    async trades(root: any, args: any, ctx: any, info: any) {
-      const { first, last, after, before } = args;
-
-      const records = await ctx.dataSources.horizon.getOfferTrades(
-        root.id,
-        first || last,
-        last ? "asc" : "desc",
-        last ? before : after
-      );
-
-      return makeConnection(last, records);
-    }
-  },
   Query: {
     trades: async (root: any, args: any, ctx: any, info: any) => {
       const { baseAsset, counterAsset, offerID } = args;

@@ -5,9 +5,21 @@ import * as resolvers from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import { IHorizonEffectData, IHorizonOperationData, IHorizonTradeData, IHorizonTransactionData } from "../../datasource/types";
+import {
+  IHorizonEffectData,
+  IHorizonOperationData,
+  IHorizonTradeData,
+  IHorizonTransactionData
+} from "../../datasource/types";
+
 import { Account, Balance, DataEntry, Effect, Operation, Trade, Transaction } from "../../model";
-import { BalanceFactory, EffectFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
+import {
+  BalanceFactory,
+  EffectFactory,
+  OperationFactory,
+  TradeFactory,
+  TransactionWithXDRFactory
+} from "../../model/factories";
 
 import { db } from "../../database";
 import { joinToMap } from "../../util/array";

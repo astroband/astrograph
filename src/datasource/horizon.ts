@@ -230,18 +230,14 @@ export default class HorizonAPI extends RESTDataSource {
     );
   }
 
-  public async getOfferTrades(
-    offerID: string,
-    limit?: number,
-    order: SortOrder = SortOrder.ASC,
-    cursor?: string
-  ): Promise<IHorizonTradeData> {
-    return this.request(`/offers/${offerID}/trades`, {
-      limit,
-      order,
-      cursor,
-      cacheTtl: 60 * 15
-    });
+  public async getOfferTrades(offerID: string, pagingParams: PagingParams): Promise<IHorizonTradeData[]> {
+    return this.properlyOrdered(
+      await this.request(`/offers/${offerID}/trades`, {
+        ...this.parseCursorPagination(pagingParams),
+        cacheTtl: 60 * 15
+      }),
+      pagingParams
+    );
   }
 
   public async getEffects(pagingParams: PagingParams): Promise<IHorizonEffectData[]> {
