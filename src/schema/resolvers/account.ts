@@ -3,7 +3,7 @@ import _ from "lodash";
 
 import * as resolvers from "./shared";
 
-import { createBatchResolver,  eventMatches, makeConnection, operationsResolver } from "./util";
+import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
 import { IHorizonEffectData, IHorizonOperationData } from "../../datasource/types";
 import { Account, Balance, DataEntry, Effect, Operation } from "../../model";
@@ -57,7 +57,12 @@ export default {
     data: dataEntriesResolver,
     balances: balancesResolver,
     ledger: resolvers.ledger,
-    operations: operationsResolver,
+    operations: async (root: Account, args: any, ctx: any) => {
+      return makeConnection<IHorizonOperationData, Operation>(
+        await ctx.dataSources.horizon.getAccountOperations(root.id, args),
+        r => OperationFactory.fromHorizon(r)
+      );
+    },
     payments: async (root: Account, args: any, ctx: any) => {
       const records = await ctx.dataSources.horizon.getAccountPayments(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
@@ -69,11 +74,11 @@ export default {
     inflationDestination: resolvers.account
   },
   Query: {
-    async account(root: any, args: any, ctx: any, info: any) {
+    account: async (root: any, args: any, ctx: any, info: any) => {
       const acc = await db.accounts.findByID(args.id);
       return acc;
     },
-    accounts(root: any, args: any, ctx: any, info: any) {
+    accounts: async (root: any, args: any, ctx: any, info: any) => {
       return db.accounts.findAllByIDs(args.id);
     }
   },

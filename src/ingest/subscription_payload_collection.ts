@@ -1,12 +1,12 @@
 import { ChangesExtractor, ChangeType, EntryType, IChange } from "../changes_extractor";
 import {
   AccountSubscriptionPayload,
+  BalanceSubscriptionPayload,
   DataEntrySubscriptionPayload,
   MutationType,
   NativeBalanceSubscriptionPayload,
   OfferSubscriptionPayload,
-  TransactionWithXDR,
-  BalanceSubscriptionPayload
+  TransactionWithXDR
 } from "../model";
 
 export type SubscriptionPayload =

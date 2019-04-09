@@ -1,7 +1,7 @@
 import { db } from "../../database";
 
 import * as resolvers from "./shared";
-import { createBatchResolver, makeConnection, memoResolver, operationsResolver } from "./util";
+import { createBatchResolver, makeConnection, memoResolver } from "./util";
 
 import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
 import { Account, Effect, Operation, Transaction } from "../../model";
@@ -14,7 +14,12 @@ export default {
     }),
     ledger: resolvers.ledger,
     memo: memoResolver,
-    operations: operationsResolver,
+    operations: async (root: Transaction, args: any, ctx: any) => {
+      return makeConnection<IHorizonOperationData, Operation>(
+        await ctx.dataSources.horizon.getTransactionOperations(root.id, args),
+        r => OperationFactory.fromHorizon(r)
+      );
+    },
     payments: async (root: Transaction, args: any, ctx: any) => {
       const records = await ctx.dataSources.horizon.getTransactionPayments(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));

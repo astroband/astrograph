@@ -1,10 +1,8 @@
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Memo } from "stellar-sdk";
-import HorizonAPI from "../../datasource/horizon";
-import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
+import { IHorizonTransactionData } from "../../datasource/types";
 import { Account, Ledger, MutationType, Transaction } from "../../model";
-import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
-import { invertSortOrder, SortOrder } from "../../util/paging";
+import { TransactionWithXDRFactory } from "../../model/factories";
 
 export function createBatchResolver<T, R>(loadFn: any) {
   return create<T, R>(async (source: ReadonlyArray<T>, args: any, context: any, info: any) =>
@@ -55,48 +53,6 @@ export function eventMatches(args: any, id: string, mutationType: MutationType):
   const conditions = [idEq, idIn, mutationTypeIn].filter(c => c !== null);
 
   return conditions.every(c => c === true);
-}
-
-export async function operationsResolver(obj: any, args: any, ctx: any) {
-  let data: IHorizonOperationData[];
-  const dataSource: HorizonAPI = ctx.dataSources.horizon;
-  const { first, after, last, before, order = SortOrder.DESC } = args;
-
-  const pagingArgs = [first || last, before ? invertSortOrder(order) : order, last ? before : after];
-
-  if (obj instanceof Transaction) {
-    data = await dataSource.getTransactionOperations(obj.id, ...pagingArgs);
-  } else if (obj instanceof Account) {
-    data = await dataSource.getAccountOperations(obj.id, ...pagingArgs);
-  } else if (obj instanceof Ledger) {
-    data = await dataSource.getLedgerOperations(obj.id, ...pagingArgs);
-  } else if (obj === undefined) {
-    data = await dataSource.getOperations(...pagingArgs);
-  } else {
-    throw new Error(`Cannot fetch operations for ${obj.constructor}`);
-  }
-
-  // we must keep descending ordering, because Horizon doesn't do it,
-  // when you request the previous page
-  if (before) {
-    data = data.reverse();
-  }
-
-  const edges = data.map((record: IHorizonOperationData) => {
-    return {
-      node: OperationFactory.fromHorizon(record),
-      cursor: record.paging_token
-    };
-  });
-
-  return {
-    nodes: edges.map(edge => edge.node),
-    edges,
-    pageInfo: {
-      startCursor: data.length !== 0 ? data[0].paging_token : null,
-      endCursor: data.length !== 0 ? data[data.length - 1].paging_token : null
-    }
-  };
 }
 
 export async function transactionsResolver(obj: any, args: any, ctx: any) {

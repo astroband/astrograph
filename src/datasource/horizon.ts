@@ -31,14 +31,6 @@ export default class HorizonAPI extends RESTDataSource {
     this.baseURL = "https://horizon.stellar.org/";
   }
 
-  public async getOperations(
-    limit = 10,
-    order: SortOrder = SortOrder.DESC,
-    cursor?: string
-  ): Promise<IHorizonOperationData[]> {
-    return this.request("operations", { limit, order, cursor });
-  }
-
   public async getPayments(pagingParams: PagingParams): Promise<IHorizonOperationData[]> {
     const records = await this.request("payments", { ...this.parseCursorPagination(pagingParams), cacheTtl: 5 });
 
@@ -75,26 +67,32 @@ export default class HorizonAPI extends RESTDataSource {
     return this.properlyOrdered(records, pagingParams);
   }
 
-  public async getAccountOperations(
-    accountId: AccountID,
-    limit = 10,
-    order: SortOrder = SortOrder.DESC,
-    cursor?: string
-  ) {
-    return this.request(`accounts/${accountId}/operations`, { limit, order, cursor });
+  public async getOperations(pagingParams: PagingParams): Promise<IHorizonOperationData[]> {
+    return this.properlyOrdered(
+      await this.request("operations", this.parseCursorPagination(pagingParams)),
+      pagingParams
+    );
   }
 
-  public async getLedgerOperations(ledgerSeq: number, limit = 10, order: SortOrder = SortOrder.DESC, cursor?: string) {
-    return this.request(`ledgers/${ledgerSeq}/operations`, { limit, order, cursor });
+  public async getAccountOperations(accountId: AccountID, pagingParams: PagingParams) {
+    return this.properlyOrdered(
+      await this.request(`accounts/${accountId}/operations`, this.parseCursorPagination(pagingParams)),
+      pagingParams
+    );
   }
 
-  public async getTransactionOperations(
-    transactionId: string,
-    limit = 10,
-    order: SortOrder = SortOrder.DESC,
-    cursor?: string
-  ) {
-    return this.request(`transactions/${transactionId}/operations`, { limit, order, cursor });
+  public async getLedgerOperations(ledgerSeq: number, pagingParams: PagingParams) {
+    return this.properlyOrdered(
+      await this.request(`ledgers/${ledgerSeq}/operations`, this.parseCursorPagination(pagingParams)),
+      pagingParams
+    );
+  }
+
+  public async getTransactionOperations(transactionId: string, pagingParams: PagingParams) {
+    return this.properlyOrdered(
+      await this.request(`transactions/${transactionId}/operations`, this.parseCursorPagination(pagingParams)),
+      pagingParams
+    );
   }
 
   public async getTransactionsByIds(transactionIds: string[]): Promise<IHorizonTransactionData[]> {

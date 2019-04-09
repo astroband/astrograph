@@ -4,14 +4,14 @@ import { IHorizonOperationData } from "../../datasource/types";
 import { Operation, OperationKinds, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
-import { makeConnection, operationsResolver } from "./util";
+import { makeConnection } from "./util";
 
 import * as resolvers from "./shared";
 
 export default {
   Operation: {
     sourceAccount: resolvers.account,
-    async transaction(operation: Operation, args: any, ctx: any) {
+    transaction: async (operation: Operation, args: any, ctx: any) => {
       if (operation.tx instanceof Transaction) {
         return operation.tx;
       }
@@ -56,12 +56,16 @@ export default {
   PathPaymentOperation: { destinationAccount: resolvers.account },
   SetOptionsSigner: { account: resolvers.account },
   Query: {
-    async operation(root: any, args: { id: string }, ctx: any) {
+    operation: async (root: any, args: { id: string }, ctx: any) => {
       const response = await ctx.dataSources.horizon.getOperationById(args.id);
       return OperationFactory.fromHorizon(response);
     },
-    operations: operationsResolver,
-    async payments(root: any, args: any, ctx: any) {
+    operations: async (root: any, args: { id: string }, ctx: any) => {
+      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.horizon.getOperations(args), r =>
+        OperationFactory.fromHorizon(r)
+      );
+    },
+    payments: async (root: any, args: any, ctx: any) => {
       return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.horizon.getPayments(args), r =>
         OperationFactory.fromHorizon(r)
       );
