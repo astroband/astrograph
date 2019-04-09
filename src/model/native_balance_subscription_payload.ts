@@ -7,13 +7,13 @@ import { publicKeyFromXDR } from "../util/xdr";
 
 export class NativeBalanceSubscriptionPayload implements IMutationType {
   public mutationType: MutationType = MutationType.Update;
-  public accountID: string;
+  public account: string;
   public values: BalanceValues | null = null;
 
   constructor(mutationType: MutationType, xdr: any) {
     this.mutationType = mutationType;
 
-    this.accountID = publicKeyFromXDR(xdr);
+    this.account = publicKeyFromXDR(xdr);
 
     if (this.mutationType !== MutationType.Remove) {
       this.values = BalanceValuesFactory.fakeNativeFromXDR(xdr);

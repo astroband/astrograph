@@ -97,7 +97,7 @@ export class ChangesExtractor {
 
   private getRawChanges(): any[][] {
     const txMetaXDR = this.tx.metaXDR;
-    const rawChanges = [];
+    const rawChanges = [this.tx.feeMetaXDR.changes()];
 
     switch (txMetaXDR.switch()) {
       case 0:
@@ -112,8 +112,6 @@ export class ChangesExtractor {
         }
         break;
     }
-
-    rawChanges.push(this.tx.feeMetaXDR.changes());
 
     return rawChanges;
   }
