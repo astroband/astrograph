@@ -7,7 +7,7 @@ export class AssetFactory {
     return type === XDR.AssetType.assetTypeNative().value ? Asset.native() : new Asset(code, issuer);
   }
 
-  public static fromHorizonResponse(type: HorizonAssetType, code?: string, issuer?: string) {
+  public static fromHorizon(type: HorizonAssetType, code?: string, issuer?: string) {
     return type === "native" ? Asset.native() : new Asset(code, issuer);
   }
 

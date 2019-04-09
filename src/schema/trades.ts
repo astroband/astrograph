@@ -2,7 +2,7 @@ import { gql } from "apollo-server";
 
 export const typeDefs = gql`
   type Trade {
-    ID: String
+    id: String
     ledgerCloseTime: DateTime!
     offer: Offer
     baseOffer: Offer
