@@ -12,11 +12,36 @@ import { BIND_ADDRESS, PORT } from "./util/secrets";
 
 init();
 
+const demoQuery = `{
+  account(id: "GB6NVEN5HSUBKMYCE5ZOWSK5K23TBWRUQLZY3KNMXUZ3AQ2ESC4MY4AQ") {
+    id
+    sequenceNumber
+    balances {
+      asset {
+        native
+        issuer {
+          id
+        }
+        code
+      }
+      balance
+      limit
+      authorized
+    }
+    signers {
+      signer
+      weight
+    }
+  }
+}`;
+
+const endpoint = "/graphql";
+
 const server = new ApolloServer({
   schema,
   tracing: true,
   introspection: true,
-  playground: true,
+  playground: process.env.NODE_ENV === "production" ? { endpoint, tabs: [{ endpoint, query: demoQuery }] } : true,
   debug: true,
   cors: true,
   dataSources: () => ({ horizon: new HorizonAPI() }),
