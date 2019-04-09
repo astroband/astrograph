@@ -17,7 +17,7 @@ export default class AccountsRepo {
     this.db = db;
   }
 
-  // Tries to find a transaction by id;
+  // Tries to find an account by id;
   public findByID(id: string): Promise<Account | null> {
     return this.db.oneOrNone(
       sql.selectAccount,
