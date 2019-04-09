@@ -8,9 +8,9 @@ import { gql } from "apollo-server";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import ws from "ws";
 
-import { ACCOUNT_ID } from "./args";
+import { ACCOUNT_ID, GRAPHQL_ENDPOINT } from "./args";
 
-const client = new SubscriptionClient("ws://localhost:4000/graphql", { reconnect: true }, ws);
+const client = new SubscriptionClient(GRAPHQL_ENDPOINT, { reconnect: true }, ws);
 
 const link = new WebSocketLink(client);
 const cache = new InMemoryCache();
@@ -22,7 +22,9 @@ console.log("Account ID:", ACCOUNT_ID);
 const SUBSCRIPTION = gql`
   subscription trustLine($args: EventInput!) {
     trustLine(args: $args) {
-      accountID
+      account {
+        id
+      }
       values {
         asset {
           code
