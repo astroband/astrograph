@@ -16,6 +16,17 @@ Astrograph was initially developed by Evil Martians for [Mobius](https://mobius.
 <a href="https://evilmartians.com/?utm_source=astrograph">
 <img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54"></a>
 
+## Install
+
+You can install Astrograph, using [yarn](https://yarnpkg.com/):
+
+```shell
+$ git clone https://github.com/astroband/astrograph
+$ cd astrograph
+$ yarn              # install dependencies
+$ yarn run dev      # for developing purposes
+$ yarn run prod     # for live setup
+``` 
 
 ## Configure
 
@@ -41,31 +52,6 @@ DB="stellar_core"
 DBUSER="john"
 ...
 ```
-
-## Install
-
-You can install Astrograph, using [yarn](https://yarnpkg.com/):
-
-```shell
-$ git clone https://github.com/astroband/astrograph
-$ cd astrograph
-$ yarn              # install dependencies
-$ yarn run dev      # for developing purposes
-$ yarn run prod     # for live setup
-```
-
-Also there is a [Dockerfile](Dockerfile). For now you can use it like this:
-
-```shell
-$ docker build -t "astrograph:latest" . # build docker image
-$ docker run -e NODE_ENV=development -e DB=stellar_core -e DBUSER=john -p 4000:4000 astrograph
-```
-
-After that Astrograph server will be available on `http://localhost:4000`.
-
-Using the Docker setup *requires environmental variables only* or settings from the `.env` files are overwritten with default env setup from Dockerfile itself.
-
-Note that currently docker setup was tested only on macOS. If you experience any problems on Linux, please, file an issue.
 
 ## Develop
 
