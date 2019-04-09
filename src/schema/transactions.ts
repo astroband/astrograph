@@ -69,5 +69,4 @@ export const typeDefs = gql`
     "Get list of transactions"
     transactions(first: Int, after: String, last: Int, before: String): TransactionConnection
   }
-
 `;

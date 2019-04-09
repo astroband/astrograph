@@ -102,5 +102,4 @@ export const typeDefs = gql`
     "Subscribe on [data entries](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data) updates"
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
   }
-
 `;

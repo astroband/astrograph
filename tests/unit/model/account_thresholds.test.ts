@@ -1,8 +1,8 @@
-import { AccountThresholds } from "../../../src/model/account_thresholds";
+import { AccountThresholds, IAccountThresholds } from "../../../src/model";
 import { AccountThresholdsFactory } from "../../../src/model/factories";
 
 describe("constructor & factory", () => {
-  const cases = [
+  const cases: Array<[string, string, IAccountThresholds]> = [
     // second element is built like this:
     // Buffer.from([0x1, 0x1, 0x0, 0x1]).toString("base64") == "AQEAAQ=="
     ["0000", "AAAAAA==", { masterWeight: 0, low: 0, medium: 0, high: 0 }],

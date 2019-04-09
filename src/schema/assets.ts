@@ -60,5 +60,4 @@ export const typeDefs = gql`
       before: String
     ): AssetWithInfoConnection
   }
-
 `;

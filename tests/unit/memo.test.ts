@@ -1,5 +1,5 @@
-import "../../src/util/memo";
 import { Memo } from "stellar-sdk";
+import "../../src/util/memo";
 
 describe("getPlainValue()", () => {
   it("leaves Id memos as they are", () => {

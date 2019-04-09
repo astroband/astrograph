@@ -48,5 +48,4 @@ export const typeDefs = gql`
       last: Int
     ): [TradeAggregation!]
   }
-
 `;

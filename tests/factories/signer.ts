@@ -1,5 +1,5 @@
-import stellar from "stellar-base";
 import { Factory } from "rosie";
+import stellar from "stellar-base";
 import { Signer } from "../../src/model/signer";
 
 Factory.define("signer")

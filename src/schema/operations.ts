@@ -289,5 +289,4 @@ export const typeDefs = gql`
       asset: [AssetID]
     ): Operation!
   }
-
 `;

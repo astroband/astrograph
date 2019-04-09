@@ -45,5 +45,4 @@ export const typeDefs = gql`
     "Subscribe to the new ledger creation event"
     ledgerCreated: Ledger
   }
-
 `;

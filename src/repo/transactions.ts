@@ -21,10 +21,8 @@ export default class TransactionsRepo {
 
   // Tries to find a transaction by id;
   public findByID(id: string): Promise<TransactionWithXDR | null> {
-    return this.db.oneOrNone(
-      sql.selectTx,
-      id,
-      (res: ITransactionTableRow) => (res ? TransactionWithXDRFactory.fromDb(res) : null)
+    return this.db.oneOrNone(sql.selectTx, id, (res: ITransactionTableRow) =>
+      res ? TransactionWithXDRFactory.fromDb(res) : null
     );
   }
 
@@ -50,8 +48,7 @@ export default class TransactionsRepo {
 
     const feeMetas = await this.db.many(sql.selectFee, [seq, _.map(txs, "txindex")]);
 
-    return _
-      .chain(txs)
+    return _.chain(txs)
       .map(tx => {
         const meta = _.find(feeMetas, { txindex: tx.txindex }) as { txchanges: string };
         if (!meta) {

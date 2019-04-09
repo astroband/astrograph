@@ -49,5 +49,4 @@ export const typeDefs = gql`
       before: String
     ): TradeConnection!
   }
-
 `;
