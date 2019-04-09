@@ -1,8 +1,13 @@
+import { fieldsList } from "graphql-fields-list";
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Memo } from "stellar-sdk";
 import { IHorizonTransactionData } from "../../datasource/types";
 import { Account, Ledger, MutationType, Transaction } from "../../model";
 import { TransactionWithXDRFactory } from "../../model/factories";
+
+interface IWithPagingToken {
+  paging_token: string;
+}
 
 export function createBatchResolver<T, R>(loadFn: any) {
   return create<T, R>(async (source: ReadonlyArray<T>, args: any, context: any, info: any) =>
@@ -10,8 +15,14 @@ export function createBatchResolver<T, R>(loadFn: any) {
   );
 }
 
-interface IWithPagingToken {
-  paging_token: string;
+export function idOnlyRequested(info: any): boolean {
+  const requestedFields = fieldsList(info);
+
+  if (requestedFields.length === 1 && requestedFields[0] === "id") {
+    return true;
+  }
+
+  return false;
 }
 
 export function makeConnection<T extends IWithPagingToken, R>(records: T[], nodeBuilder: (r: T) => R) {
