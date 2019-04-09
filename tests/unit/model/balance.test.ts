@@ -1,6 +1,6 @@
 import { Asset } from "stellar-sdk";
-import { TrustLine } from "../../../src/model";
-import { TrustLineFactory } from "../../../src/model/factories";
+import { Balance } from "../../../src/model";
+import { BalanceFactory } from "../../../src/model/factories";
 import { toFloatAmountString } from "../../../src/util/stellar";
 import { MAX_INT64 } from "../../../src/util";
 import AccountFactory from "../../factories/account";
@@ -18,10 +18,10 @@ const data = {
   sellingliabilities: ""
 };
 
-let subject: TrustLine;
+let subject: Balance;
 
 describe("constructor", () => {
-  subject = TrustLineFactory.fromDb(data);
+  subject = BalanceFactory.fromDb(data);
 
   it("sets account id", () => expect(subject.account).toEqual(data.accountid));
   it("sets lastModified", () => expect(subject.lastModified).toEqual(data.lastmodified));
@@ -38,7 +38,7 @@ describe("constructor", () => {
 describe("static buildFakeNative(account)", () => {
   it("returns an object with the data of account's trustline on XLM", () => {
     const account = AccountFactory.build();
-    const fake = TrustLineFactory.nativeForAccount(account);
+    const fake = BalanceFactory.nativeForAccount(account);
 
     expect(fake).toMatchObject({
       account: account.id,

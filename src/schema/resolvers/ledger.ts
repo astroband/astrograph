@@ -1,9 +1,9 @@
 import { db } from "../../database";
-import { IHorizonOperationData } from "../../datasource/types";
-import { Ledger, LedgerHeader, Operation } from "../../model";
-import { OperationFactory } from "../../model/factories/operation_factory";
+import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
+import { Effect, Ledger, LedgerHeader, Operation, Transaction } from "../../model";
+import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { pubsub } from "../../pubsub";
-import { createBatchResolver, effectsResolver, makeConnection, operationsResolver, transactionsResolver } from "./util";
+import { createBatchResolver, makeConnection } from "./util";
 
 const LEDGER_CREATED = "LEDGER_CREATED";
 
@@ -14,13 +14,26 @@ const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>((source: 
 export default {
   Ledger: {
     header: ledgerHeaderResolver,
-    transactions: transactionsResolver,
-    operations: operationsResolver,
-    async payments(root: Ledger, args: any, ctx: any) {
+    transactions: async (root: Ledger, args: any, ctx: any) => {
+      return makeConnection<IHorizonTransactionData, Transaction>(
+        await ctx.dataSources.horizon.getLedgerTransactions(root.seq, args),
+        r => TransactionWithXDRFactory.fromHorizon(r)
+      );
+    },
+    operations: async (root: Ledger, args: any, ctx: any) => {
+      return makeConnection<IHorizonOperationData, Operation>(
+        await ctx.dataSources.horizon.getLedgerOperations(root.seq, args),
+        r => OperationFactory.fromHorizon(r)
+      );
+    },
+    payments: async (root: Ledger, args: any, ctx: any) => {
       const records = await ctx.dataSources.horizon.getLedgerPayments(root.seq, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
-    effects: effectsResolver
+    effects: async (root: Ledger, args: any, ctx: any) => {
+      const records = await ctx.dataSources.horizon.getTransactionEffects(root.id, args);
+      return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
+    }
   },
   Query: {
     ledger(root: any, args: any, ctx: any, info: any) {

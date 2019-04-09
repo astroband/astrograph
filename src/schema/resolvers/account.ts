@@ -1,46 +1,52 @@
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
 
-import { IHorizonOperationData } from "../../datasource/types";
-import { Account, DataEntry, Operation, TrustLine } from "../../model";
-import { OperationFactory, TrustLineFactory } from "../../model/factories";
+import * as resolvers from "./shared";
+
+import { createBatchResolver, eventMatches, makeConnection } from "./util";
+
+import {
+  IHorizonEffectData,
+  IHorizonOperationData,
+  IHorizonTradeData,
+  IHorizonTransactionData
+} from "../../datasource/types";
+
+import { Account, Balance, DataEntry, Effect, Operation, Trade, Transaction } from "../../model";
+import {
+  BalanceFactory,
+  EffectFactory,
+  OperationFactory,
+  TradeFactory,
+  TransactionWithXDRFactory
+} from "../../model/factories";
 
 import { db } from "../../database";
 import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
 
-import {
-  accountResolver,
-  createBatchResolver,
-  effectsResolver,  
-  eventMatches,
-  ledgerResolver,
-  makeConnection,
-  operationsResolver
-} from "./util";
-
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
 );
 
-const trustLinesResolver = createBatchResolver<Account, TrustLine[]>(async (source: Account[]) => {
+const balancesResolver = createBatchResolver<Account, Balance[]>(async (source: Account[]) => {
   const accountIDs = source.map(s => s.id);
-  const trustLines = await db.trustLines.findAllByAccountIDs(accountIDs);
+  const balances = await db.trustLines.findAllByAccountIDs(accountIDs);
 
-  const map = joinToMap(accountIDs, trustLines);
+  const map = joinToMap(accountIDs, balances);
 
-  for (const [accountID, accountTrustLines] of map) {
+  for (const [accountID, accountBalances] of map) {
     const account = source.find((acc: Account) => acc.id === accountID);
 
     if (!account) {
       continue;
     }
 
-    accountTrustLines.unshift(TrustLineFactory.nativeForAccount(account));
+    accountBalances.unshift(BalanceFactory.nativeForAccount(account));
   }
 
-  return trustLines;
+  return balances;
 });
 
 const accountSubscription = (event: string) => {
@@ -61,22 +67,43 @@ const accountSubscription = (event: string) => {
 export default {
   Account: {
     data: dataEntriesResolver,
-    trustLines: trustLinesResolver,
-    ledger: ledgerResolver,
-    operations: operationsResolver,
-    async payments(root: Account, args: any, ctx: any) {
+    balances: balancesResolver,
+    ledger: resolvers.ledger,
+    operations: async (root: Account, args: any, ctx: any) => {
+      return makeConnection<IHorizonOperationData, Operation>(
+        await ctx.dataSources.horizon.getAccountOperations(root.id, args),
+        r => OperationFactory.fromHorizon(r)
+      );
+    },
+    payments: async (root: Account, args: any, ctx: any) => {
       const records = await ctx.dataSources.horizon.getAccountPayments(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
-    effects: effectsResolver,
-    inflationDestination: accountResolver
+    effects: async (root: Account, args: any, ctx: any) => {
+      const records = await ctx.dataSources.horizon.getAccountEffects(root.id, args);
+      return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
+    },
+    transactions: async (root: Account, args: any, ctx: any) => {
+      return makeConnection<IHorizonTransactionData, Transaction>(
+        await ctx.dataSources.horizon.getAccountTransactions(root.id, args),
+        r => TransactionWithXDRFactory.fromHorizon(r)
+      );
+    },
+    trades: async (root: Account, args: any, ctx: any, info: any) => {
+      return makeConnection<IHorizonTradeData, Trade>(
+        await ctx.dataSources.horizon.getAccountTrades(root.id, args),
+        r => TradeFactory.fromHorizon(r)
+      );
+    },
+
+    inflationDestination: resolvers.account
   },
   Query: {
-    async account(root: any, args: any, ctx: any, info: any) {
+    account: async (root: any, args: any, ctx: any, info: any) => {
       const acc = await db.accounts.findByID(args.id);
       return acc;
     },
-    accounts(root: any, args: any, ctx: any, info: any) {
+    accounts: async (root: any, args: any, ctx: any, info: any) => {
       return db.accounts.findAllByIDs(args.id);
     }
   },

@@ -1,6 +1,7 @@
 import { Asset } from "stellar-sdk";
 
 export interface ITrade {
+  id: string;
   ledgerCloseTime: string;
   offer: string;
   baseOffer: string;
@@ -15,6 +16,7 @@ export interface ITrade {
 }
 
 export class Trade implements ITrade {
+  public id: string;
   public ledgerCloseTime: string;
   public offer: string;
   public baseOffer: string;
@@ -28,6 +30,7 @@ export class Trade implements ITrade {
   public price: string;
 
   constructor(data: ITrade) {
+    this.id = data.id;
     this.ledgerCloseTime = data.ledgerCloseTime;
     this.offer = data.offer;
     this.baseOffer = data.baseOffer;

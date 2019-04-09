@@ -1,5 +1,6 @@
 import { withFilter } from "graphql-subscriptions";
-import { accountResolver, eventMatches, ledgerResolver } from "./util";
+import * as resolvers from "./shared";
+import { eventMatches } from "./util";
 
 import { DATA_ENTRY, pubsub } from "../../pubsub";
 
@@ -19,9 +20,9 @@ const dataEntrySubscription = (event: string) => {
 };
 
 export default {
-  IDataEntry: { ledger: ledgerResolver },
-  DataEntryValues: { account: accountResolver },
-  DataEntrySubscriptionPayload: { account: accountResolver },
+  IDataEntry: { ledger: resolvers.ledger },
+  DataEntryValues: { account: resolvers.account },
+  DataEntrySubscriptionPayload: { account: resolvers.account },
   Subscription: {
     dataEntry: dataEntrySubscription(DATA_ENTRY)
   }

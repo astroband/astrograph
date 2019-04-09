@@ -55,7 +55,7 @@ export const typeDefs = gql`
     values: DataEntryValues
   }
 
-  interface ITrustLine {
+  interface IBalance {
     asset: Asset!
     limit: String!
     balance: String!
@@ -63,7 +63,7 @@ export const typeDefs = gql`
   }
 
   "Represents a single [trustline](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) of a particular account"
-  type TrustLine implements ITrustLine {
+  type Balance implements IBalance {
     account: Account
     asset: Asset!
     limit: String!
@@ -73,7 +73,7 @@ export const typeDefs = gql`
   }
 
   "Represents a current [trustline](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) state, which is broadcasting to subscribers"
-  type TrustLineValues implements ITrustLine {
+  type BalanceValues implements IBalance {
     account: Account
     asset: Asset!
     limit: String!
@@ -82,11 +82,11 @@ export const typeDefs = gql`
   }
 
   "Represents a [trustline](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) update payload, which is broadcasting to subscribers"
-  type TrustLineSubscriptionPayload {
+  type BalanceSubscriptionPayload {
     account: Account!
     asset: Asset!
     mutationType: MutationType!
-    values: TrustLineValues
+    values: BalanceValues
   }
 
   "Input type, which represents subscription filtering options"
@@ -98,7 +98,7 @@ export const typeDefs = gql`
 
   type Subscription {
     "Subscribe on [trustlines](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) updates"
-    trustLine(args: EventInput): TrustLineSubscriptionPayload
+    balance(args: EventInput): BalanceSubscriptionPayload
     "Subscribe on [data entries](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data) updates"
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
   }

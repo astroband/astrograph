@@ -1,7 +1,8 @@
 import { IHorizonEffectData } from "../../datasource/types";
 import { Effect, EffectKinds } from "../../model";
 import { EffectFactory } from "../../model/factories";
-import { accountResolver } from "./util";
+import * as resolvers from "./shared";
+import { makeConnection } from "./util";
 
 export default {
   Effect: {
@@ -59,38 +60,13 @@ export default {
           return null;
       }
     },
-    account: accountResolver
+    account: resolvers.account
   },
   Query: {
-    async effects(root: any, args: any, ctx: any, info: any) {
-      const { first, last, after, before } = args;
-      let records: IHorizonEffectData[] = await ctx.dataSources.horizon.getEffects(
-        first || last,
-        last ? "asc" : "desc",
-        last ? before : after
+    effects: async (root: any, args: any, ctx: any, info: any) => {
+      return makeConnection(await ctx.dataSources.horizon.getEffects(args), (r: IHorizonEffectData) =>
+        EffectFactory.fromHorizon(r)
       );
-
-      // we must keep descending ordering, because Horizon doesn't do it,
-      // when you request the previous page
-      if (last) {
-        records = records.reverse();
-      }
-
-      const edges = records.map(record => {
-        return {
-          node: EffectFactory.fromHorizon(record),
-          cursor: record.paging_token
-        };
-      });
-
-      return {
-        nodes: edges.map(edge => edge.node),
-        edges,
-        pageInfo: {
-          startCursor: records.length !== 0 ? records[0].paging_token : null,
-          endCursor: records.length !== 0 ? records[records.length - 1].paging_token : null
-        }
-      };
     }
   }
 };

@@ -66,7 +66,7 @@ describe("Integration tests", () => {
     const query = fs.readFileSync(`${__dirname}/integration_queries/${queryFile}.gql`, "utf8");
 
     const response = await queryServer({ query });
-
+    
     expect(response.data).toMatchSnapshot();
   });
 });

@@ -3,7 +3,7 @@ import { gql } from "apollo-server";
 export const typeDefs = gql`
   "Represents single [trade](https://www.stellar.org/developers/horizon/reference/resources/trade.html)(fulfilled offer)"
   type Trade {
-    ID: String
+    id: String
     "When the ledger with this trade was closed"
     ledgerCloseTime: DateTime!
     "The sell offer"
@@ -48,16 +48,6 @@ export const typeDefs = gql`
       last: Int
       before: String
     ): TradeConnection!
-  }
-
-  extend type Account {
-    "Trades that affect this account"
-    trades(first: Int, after: String, last: Int, before: String): TradeConnection!
-  }
-
-  extend type Offer {
-    "Trades for this offer"
-    trades(first: Int, after: String, last: Int, before: String): TradeConnection!
   }
 
 `;

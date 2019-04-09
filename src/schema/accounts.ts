@@ -67,8 +67,8 @@ export const typeDefs = gql`
     ledger: Ledger!
     "[Data entries](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data), attached to the account"
     data: [DataEntry]
-    "[Trustlines](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) of this account"
-    trustLines: [TrustLine]
+    "[Balances](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) of this account"
+    balances: [Balance]
     "A list of [operations](https://www.stellar.org/developers/guides/concepts/operations.html) on the Stellar network that the account performed"
     operations(first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
     """
@@ -83,6 +83,8 @@ export const typeDefs = gql`
     payments(first: Int, after: String, last: Int, before: String): OperationConnection
     "A list of all effects that changed this account"
     effects(first: Int, after: String, last: Int, before: String): EffectConnection
+    trades(first: Int, after: String, last: Int, before: String): TradeConnection
+    transactions(first: Int, last: Int, before: String, after: String): TransactionConnection
   }
 
   "Represents a current account state, which is broadcasted to subscribers on account's update"

@@ -44,9 +44,8 @@ export const typeDefs = gql`
       - 1 week (604800000)
       """
       resolution: Int!
-      limit: Int
-      orderBy: Order
-      offset: Int
+      first: Int
+      last: Int
     ): [TradeAggregation!]
   }
 

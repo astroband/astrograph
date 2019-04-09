@@ -1,14 +1,13 @@
 import { withFilter } from "graphql-subscriptions";
-import { assetResolver, createBatchResolver, eventMatches, ledgerResolver } from "./util";
+import * as resolvers from "./shared";
+import { eventMatches, makeConnection } from "./util";
 
 import { db } from "../../database";
-import { Account, MutationType, Offer } from "../../model";
-import { AssetFactory } from "../../model/factories";
+import { MutationType, Offer, Trade } from "../../model";
+import { AssetFactory, TradeFactory } from "../../model/factories";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
-const accountResolver = createBatchResolver<Offer, Account>((source: any) =>
-  db.accounts.findAllByIDs(source.map((r: Offer) => r.sellerID))
-);
+import { IHorizonTradeData } from "../../datasource/types";
 
 const offerMatches = (variables: any, payload: any): boolean => {
   const sellingAssetEq = variables.args.sellingAssetEq;
@@ -51,18 +50,22 @@ const offerSubscription = (event: string) => {
 
 export default {
   Offer: {
-    seller: accountResolver,
-    selling: assetResolver,
-    buying: assetResolver,
-    ledger: ledgerResolver
+    seller: resolvers.account,
+    selling: resolvers.asset,
+    buying: resolvers.asset,
+    ledger: resolvers.ledger,
+    trades: async (root: Offer, args: any, ctx: any, info: any) => {
+      const records = await ctx.dataSources.horizon.getOfferTrades(root.id, args);
+      return makeConnection<IHorizonTradeData, Trade>(records, r => TradeFactory.fromHorizon(r));
+    }
   },
   OfferValues: {
-    seller: accountResolver,
-    selling: assetResolver,
-    buying: assetResolver
+    seller: resolvers.account,
+    selling: resolvers.asset,
+    buying: resolvers.asset
   },
   Query: {
-    offers(root: any, args: any, ctx: any, info: any) {
+    offers: async (root: any, args: any, ctx: any, info: any) => {
       const { first, offset, orderBy, ...criteria } = args;
       const columnsMap = { id: "offerid" };
       let orderColumn = "offerid";
@@ -75,7 +78,7 @@ export default {
 
       return db.offers.findAll(criteria, first, offset, [orderColumn, orderDir]);
     },
-    async tick(root: any, args: any, ctx: any, info: any) {
+    tick: async (root: any, args: any, ctx: any, info: any) => {
       const selling = AssetFactory.fromId(args.selling);
       const buying = AssetFactory.fromId(args.buying);
       const bestAsk = await db.offers.getBestAsk(selling, buying);

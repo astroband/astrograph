@@ -6,13 +6,13 @@ import { publicKeyFromBuffer } from "../../util/xdr";
 
 export class OfferValuesFactory {
   public static fromXDR(xdr: any): OfferValues {
-    const sellerID = publicKeyFromBuffer(xdr.sellerId().value());
+    const seller = publicKeyFromBuffer(xdr.sellerId().value());
     const selling = Asset.fromOperation(xdr.selling());
     const buying = Asset.fromOperation(xdr.buying());
 
     const data: IOfferValues = {
       id: xdr.offerId(),
-      sellerID,
+      seller,
       selling,
       buying,
       amount: xdr.amount(),

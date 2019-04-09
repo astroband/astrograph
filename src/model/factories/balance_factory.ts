@@ -1,8 +1,8 @@
 import { Asset, xdr as XDR } from "stellar-base";
+import { AssetFactory } from ".";
 import { MAX_INT64 } from "../../util";
 import { Account } from "../account";
-import { ITrustLine, TrustLine } from "../trust_line";
-import { AssetFactory } from "./";
+import { Balance, IBalance } from "../balance";
 
 export interface ITrustLineTableRow {
   accountid: string;
@@ -17,9 +17,9 @@ export interface ITrustLineTableRow {
   sellingliabilities: string;
 }
 
-export class TrustLineFactory {
-  public static fromDb(row: ITrustLineTableRow): TrustLine {
-    const data: ITrustLine = {
+export class BalanceFactory {
+  public static fromDb(row: ITrustLineTableRow): Balance {
+    const data: IBalance = {
       account: row.accountid,
       balance: row.balance,
       limit: row.tlimit,
@@ -28,11 +28,11 @@ export class TrustLineFactory {
       authorized: (row.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0
     };
 
-    return new TrustLine(data);
+    return new Balance(data);
   }
 
-  public static nativeForAccount(account: Account): ITrustLine {
-    return new TrustLine({
+  public static nativeForAccount(account: Account): IBalance {
+    return new Balance({
       account: account.id,
       asset: Asset.native(),
       balance: account.balance,

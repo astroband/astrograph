@@ -27,7 +27,7 @@ export const LEDGER_CREATED = "LEDGER_CREATED";
 // Account events concern all operations happened with account itself and it's signers.
 // TrustLines/DataEntries are not involved.
 export const ACCOUNT = "ACCOUNT";
-export const TRUST_LINE = "TRUST_LINE";
+export const BALANCE = "BALANCE";
 export const DATA_ENTRY = "DATA_ENTRY";
 export const OFFER = "OFFER";
 export const NEW_OPERATION = "NEW_OPERATION";
@@ -77,8 +77,8 @@ export class Publisher {
 
   private static eventMap = [
     { payloadClassName: "AccountSubscriptionPayload", event: ACCOUNT },
-    { payloadClassName: "TrustLineSubscriptionPayload", event: TRUST_LINE },
-    { payloadClassName: "NativeTrustLineSubscriptionPayload", event: TRUST_LINE },
+    { payloadClassName: "BalanceSubscriptionPayload", event: BALANCE },
+    { payloadClassName: "NativeBalanceSubscriptionPayload", event: BALANCE },
     { payloadClassName: "DataEntrySubscriptionPayload", event: DATA_ENTRY },
     { payloadClassName: "OfferSubscriptionPayload", event: OFFER }
   ];

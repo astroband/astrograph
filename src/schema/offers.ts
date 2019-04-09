@@ -29,6 +29,7 @@ export const typeDefs = gql`
     passive: Boolean!
     "The ledger this offer was created in"
     ledger: Ledger!
+    trades(first: Int, after: String, last: Int, before: String): TradeConnection!
   }
 
   "Represents a current offer state, which is broadcasted to subscribers"

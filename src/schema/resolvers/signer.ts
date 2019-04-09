@@ -1,3 +1,3 @@
-import { accountResolver } from "./util";
+import * as resolvers from "./shared";
 
-export default { Signer: { account: accountResolver } };
+export default { Signer: { account: resolvers.account } };
