@@ -86,42 +86,43 @@ Let's go straight to some example queries:
 ### Getting account info
 
 ```graphql
-account(id: "GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK") {
-  flags {
-    authRequired
-    authRevokable
-    authImmutable
-  }
-  thresholds {
-    masterWeight
-    low
-    medium
-    high
-  }
-  id
-  inflationDestination { id }
-  sequenceNumber
-  data {
-    name
-    value
-  }
-  signers {
-    signer
-  }
-  trustLines {
-    account {
-      id
+query {
+  account(id: "GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK") {
+    id
+    inflationDestination { id }
+    sequenceNumber
+    balances {
+      asset {
+        code
+        native
+        issuer { id }
+      }
+      balance
+      limit
     }
-    asset {
-      code
-      native
-      issuer { id }
+    data {
+      name
+      value
     }
-  }
-  ledger {
-    seq
-    header {
-      ledgerVersion
+    signers {
+      signer
+    }
+    ledger {
+      seq
+      header {
+        ledgerVersion
+      }
+    }
+    flags {
+      authRequired
+      authRevokable
+      authImmutable
+    }
+    thresholds {
+      masterWeight
+      low
+      medium
+      high
     }
   }
 }
@@ -131,7 +132,10 @@ There is also a corresponding query for multiple accounts:
 
 ```graphql
 query {
-  accounts(id: ["GCCD6AJOYZCUAQLX32ZJF2MKFFAUJ53PVCFQI3RHWKL3V47QYE2BNAUT", "GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK"]) {
+  accounts(id: [
+    "GCCD6AJOYZCUAQLX32ZJF2MKFFAUJ53PVCFQI3RHWKL3V47QYE2BNAUT",
+    "GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK"
+  ]) {
     # ...
   }
 }
@@ -160,7 +164,10 @@ Here are some examples:
 
 ```graphql
 subscription {
-  account(args: { idEq: "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH", mutationTypeIn: [CREATE] }) {
+  account(args: {
+    idEq: "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+    mutationTypeIn: [CREATE]
+  }) {
    	id
     mutationType
     values {
@@ -180,7 +187,10 @@ subscription {
 
 ```graphql
 subscription {
-  trustLine(args: { mutationTypeIn: [UPDATE], idEq: "GCCD6AJOYZCUAQLX32ZJF2MKFFAUJ53PVCFQI3RHWKL3V47QYE2BNAUT" }) {
+  balance(args: {
+    idEq: "GCCD6AJOYZCUAQLX32ZJF2MKFFAUJ53PVCFQI3RHWKL3V47QYE2BNAUT",
+    mutationTypeIn: [UPDATE]
+  }) {
     mutationType
     account { id }
     values {
