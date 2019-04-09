@@ -1,37 +1,28 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
-  scalar TimeBounds
-  scalar MemoValue
+  "A date-time string in ISO 8601 format"
   scalar DateTime
 
+  "Possible directions in which to order a list of items when provided an \`order\` argument"
   enum Order {
     desc
     asc
   }
 
+  "Information about pagination in a connection"
   type PageInfo {
+    "When paginating backwards, the cursor to continue"
     startCursor: String
+    "When paginating forwards, the cursor to continue"
     endCursor: String
   }
 
-  enum MemoType {
-    id
-    text
-    hash
-    return
-    none
-  }
-
+  "Stellar ledger entities lifecycle events you can subscribe to"
   enum MutationType {
     CREATE
     UPDATE
     REMOVE
-  }
-
-  type Memo {
-    value: MemoValue
-    type: MemoType!
   }
 
   interface IDataEntry {
@@ -40,13 +31,15 @@ export const typeDefs = gql`
     ledger: Ledger!
   }
 
+  "Represents a [Data Entry](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data) (name/value pair) that is attached to a particular account"
   type DataEntry implements IDataEntry {
-    account: Account!
     name: String!
     value: String!
+    "Ledger sequence this data entry was created at"
     ledger: Ledger!
   }
 
+  "Represents a current [Data Entry](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data) (name/value pair) state, which is broadcasted to subscribers"
   type DataEntryValues implements IDataEntry {
     account: Account!
     name: String!
@@ -54,6 +47,7 @@ export const typeDefs = gql`
     ledger: Ledger!
   }
 
+  "Represents a Data Entry update payload, which is broadcasting to subscribers"
   type DataEntrySubscriptionPayload {
     account: Account!
     name: String!
@@ -68,6 +62,7 @@ export const typeDefs = gql`
     authorized: Boolean!
   }
 
+  "Represents a single [trustline](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) of a particular account"
   type Balance implements IBalance {
     account: Account
     asset: Asset!
@@ -77,6 +72,7 @@ export const typeDefs = gql`
     ledger: Ledger!
   }
 
+  "Represents a current [trustline](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) state, which is broadcasting to subscribers"
   type BalanceValues implements IBalance {
     account: Account
     asset: Asset!
@@ -85,6 +81,7 @@ export const typeDefs = gql`
     authorized: Boolean!
   }
 
+  "Represents a [trustline](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) update payload, which is broadcasting to subscribers"
   type BalanceSubscriptionPayload {
     account: Account!
     asset: Asset!
@@ -92,6 +89,7 @@ export const typeDefs = gql`
     values: BalanceValues
   }
 
+  "Input type, which represents subscription filtering options"
   input EventInput {
     mutationTypeIn: [MutationType!]
     idEq: AccountID
@@ -99,7 +97,9 @@ export const typeDefs = gql`
   }
 
   type Subscription {
+    "Subscribe on [trustlines](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) updates"
     balance(args: EventInput): BalanceSubscriptionPayload
+    "Subscribe on [data entries](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data) updates"
     dataEntry(args: EventInput): DataEntrySubscriptionPayload
   }
 

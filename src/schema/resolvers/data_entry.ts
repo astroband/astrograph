@@ -21,7 +21,6 @@ const dataEntrySubscription = (event: string) => {
 
 export default {
   IDataEntry: { ledger: resolvers.ledger },
-  DataEntry: { account: resolvers.account },
   DataEntryValues: { account: resolvers.account },
   DataEntrySubscriptionPayload: { account: resolvers.account },
   Subscription: {

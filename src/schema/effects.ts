@@ -28,8 +28,10 @@ export const typeDefs = gql`
     sequenceBumped
   }
 
+  "Common [effect](https://www.stellar.org/developers/horizon/reference/resources/effect.html) attributes"
   interface Effect {
     id: String!
+    "Account that this effect changed"
     account: Account!
     kind: EffectKind!
     createdAt: DateTime!
@@ -40,6 +42,7 @@ export const typeDefs = gql`
     account: Account!
     kind: EffectKind!
     createdAt: DateTime!
+    "The XLM balance new account was created with"
     startingBalance: String!
   }
 
@@ -250,6 +253,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
+    "Get list of the effects"
     effects(first: Int, last: Int, after: String, before: String): EffectConnection
   }
 
