@@ -1,9 +1,9 @@
 import { createBatchResolver as create } from "graphql-resolve-batch";
 import { Memo } from "stellar-sdk";
 import HorizonAPI from "../../datasource/horizon";
-import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
+import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
 import { Account, Ledger, MutationType, Transaction } from "../../model";
-import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { invertSortOrder, SortOrder } from "../../util/paging";
 
 export function createBatchResolver<T, R>(loadFn: any) {
@@ -95,47 +95,6 @@ export async function operationsResolver(obj: any, args: any, ctx: any) {
     pageInfo: {
       startCursor: data.length !== 0 ? data[0].paging_token : null,
       endCursor: data.length !== 0 ? data[data.length - 1].paging_token : null
-    }
-  };
-}
-
-export async function effectsResolver(obj: any, args: any, ctx: any) {
-  let records: IHorizonEffectData[];
-  const dataSource: HorizonAPI = ctx.dataSources.horizon;
-  const { first, after, last, before } = args;
-  const pagingArgs = [first || last, last ? "asc" : "desc", last ? before : after];
-
-  if (obj instanceof Transaction) {
-    records = []; // await dataSource.getTransactionEffects(obj.id, ...pagingArgs);
-  } else if (obj instanceof Account) {
-    records = await dataSource.getAccountEffects(obj.id, ...pagingArgs);
-  } else if (obj instanceof Ledger) {
-    records = await dataSource.getLedgerEffects(obj.id, ...pagingArgs);
-  } else if (obj === undefined) {
-    records = await dataSource.getEffects(...pagingArgs);
-  } else {
-    throw new Error(`Cannot fetch effects for ${obj.constructor}`);
-  }
-
-  // we must keep descending ordering, because Horizon doesn't do it,
-  // when you request the previous page
-  if (last) {
-    records = records.reverse();
-  }
-
-  const edges = records.map(record => {
-    return {
-      node: EffectFactory.fromHorizon(record),
-      cursor: record.paging_token
-    };
-  });
-
-  return {
-    nodes: edges.map(edge => edge.node),
-    edges,
-    pageInfo: {
-      startCursor: records.length !== 0 ? records[0].paging_token : null,
-      endCursor: records.length !== 0 ? records[records.length - 1].paging_token : null
     }
   };
 }

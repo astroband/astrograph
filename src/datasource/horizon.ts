@@ -263,22 +263,24 @@ export default class HorizonAPI extends RESTDataSource {
     );
   }
 
-  public async getTransactionEffects(
-    transactionId: string,
-    limit = 10,
-    order: SortOrder.DESC,
-    cursor?: string
-  ): Promise<IHorizonEffectData[]> {
-    return this.request(`transactions/${transactionId}/effects`, { limit, order, cursor, cacheTtl: 10 });
+  public async getTransactionEffects(transactionId: string, pagingParams: PagingParams): Promise<IHorizonEffectData[]> {
+    return this.properlyOrdered(
+      await this.request(`transactions/${transactionId}/effects`, {
+        ...this.parseCursorPagination(pagingParams),
+        cacheTtl: 10
+      }),
+      pagingParams
+    );
   }
 
-  public async getAccountEffects(
-    accountId: AccountID,
-    limit = 10,
-    order: SortOrder = SortOrder.DESC,
-    cursor?: string
-  ): Promise<IHorizonEffectData[]> {
-    return this.request(`accounts/${accountId}/effects`, { limit, order, cursor, cacheTtl: 10 });
+  public async getAccountEffects(accountId: AccountID, pagingParams: PagingParams): Promise<IHorizonEffectData[]> {
+    return this.properlyOrdered(
+      await this.request(`accounts/${accountId}/effects`, {
+        ...this.parseCursorPagination(pagingParams),
+        cacheTtl: 10
+      }),
+      pagingParams
+    );
   }
 
   public async getLedgerEffects(

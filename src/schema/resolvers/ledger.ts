@@ -1,9 +1,9 @@
 import { db } from "../../database";
-import { IHorizonOperationData } from "../../datasource/types";
-import { Ledger, LedgerHeader, Operation } from "../../model";
-import { OperationFactory } from "../../model/factories/operation_factory";
+import { IHorizonEffectData, IHorizonOperationData } from "../../datasource/types";
+import { Effect, Ledger, LedgerHeader, Operation } from "../../model";
+import { EffectFactory, OperationFactory } from "../../model/factories";
 import { pubsub } from "../../pubsub";
-import { createBatchResolver, effectsResolver, makeConnection, operationsResolver, transactionsResolver } from "./util";
+import { createBatchResolver, makeConnection, operationsResolver, transactionsResolver } from "./util";
 
 const LEDGER_CREATED = "LEDGER_CREATED";
 
@@ -16,11 +16,14 @@ export default {
     header: ledgerHeaderResolver,
     transactions: transactionsResolver,
     operations: operationsResolver,
-    async payments(root: Ledger, args: any, ctx: any) {
+    payments: async (root: Ledger, args: any, ctx: any) => {
       const records = await ctx.dataSources.horizon.getLedgerPayments(root.seq, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
-    effects: effectsResolver
+    effects: async (root: Ledger, args: any, ctx: any) => {
+      const records = await ctx.dataSources.horizon.getTransactionEffects(root.id, args);
+      return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
+    }
   },
   Query: {
     ledger(root: any, args: any, ctx: any, info: any) {

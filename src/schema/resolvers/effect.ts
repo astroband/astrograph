@@ -63,7 +63,7 @@ export default {
     account: resolvers.account
   },
   Query: {
-    async effects(root: any, args: any, ctx: any, info: any) {
+    effects: async (root: any, args: any, ctx: any, info: any) => {
       return makeConnection(await ctx.dataSources.horizon.getEffects(args), (r: IHorizonEffectData) =>
         EffectFactory.fromHorizon(r)
       );

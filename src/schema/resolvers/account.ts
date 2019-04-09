@@ -3,11 +3,11 @@ import _ from "lodash";
 
 import * as resolvers from "./shared";
 
-import { createBatchResolver, effectsResolver,  eventMatches, makeConnection, operationsResolver } from "./util";
+import { createBatchResolver,  eventMatches, makeConnection, operationsResolver } from "./util";
 
-import { IHorizonOperationData } from "../../datasource/types";
-import { Account, Balance, DataEntry, Operation } from "../../model";
-import { BalanceFactory, OperationFactory } from "../../model/factories";
+import { IHorizonEffectData, IHorizonOperationData } from "../../datasource/types";
+import { Account, Balance, DataEntry, Effect, Operation } from "../../model";
+import { BalanceFactory, EffectFactory, OperationFactory } from "../../model/factories";
 
 import { db } from "../../database";
 import { joinToMap } from "../../util/array";
@@ -58,11 +58,14 @@ export default {
     balances: balancesResolver,
     ledger: resolvers.ledger,
     operations: operationsResolver,
-    async payments(root: Account, args: any, ctx: any) {
+    payments: async (root: Account, args: any, ctx: any) => {
       const records = await ctx.dataSources.horizon.getAccountPayments(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
-    effects: effectsResolver,
+    effects: async (root: Account, args: any, ctx: any) => {
+      const records = await ctx.dataSources.horizon.getAccountEffects(root.id, args);
+      return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
+    },
     inflationDestination: resolvers.account
   },
   Query: {
