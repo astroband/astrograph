@@ -6,7 +6,7 @@ export default {
   Asset: { issuer: resolvers.account },
   AssetWithInfo: { issuer: resolvers.account },
   Query: {
-    async assets(root: any, args: any, ctx: any, info: any) {
+    assets: async (root: any, args: any, ctx: any, info: any) => {
       const { code, issuer } = args;
       const records: IHorizonAssetData[] = await ctx.dataSources.horizon.getAssets(
         code || issuer ? { code, issuer } : {},

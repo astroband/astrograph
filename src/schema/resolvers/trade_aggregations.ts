@@ -2,7 +2,7 @@ import { IHorizonTradeAggregationData } from "../../datasource/types";
 
 export default {
   Query: {
-    async tradeAggregations(root: any, args: any, ctx: any, info: any) {
+    tradeAggregations: async (root: any, args: any, ctx: any, info: any) => {
       const { baseAsset, counterAsset, startTime, endTime, resolution } = args;
 
       const records = await ctx.dataSources.horizon.getTradeAggregations(

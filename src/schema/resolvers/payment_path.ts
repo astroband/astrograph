@@ -9,7 +9,7 @@ export default {
     path: resolvers.asset
   },
   Query: {
-    async findPaymentPaths(root: any, args: any, ctx: any, info: any) {
+    findPaymentPaths: async (root: any, args: any, ctx: any, info: any) => {
       const { sourceAccountID, destinationAccountID, destinationAsset, destinationAmount } = args;
 
       const records = await ctx.dataSources.horizon.getPaymentPath(

@@ -1,6 +1,6 @@
 import { withFilter } from "graphql-subscriptions";
 import { BalanceSubscriptionPayload } from "../../model";
-import { pubsub, BALANCE } from "../../pubsub";
+import { BALANCE, pubsub } from "../../pubsub";
 import * as resolvers from "./shared";
 import { eventMatches } from "./util";
 

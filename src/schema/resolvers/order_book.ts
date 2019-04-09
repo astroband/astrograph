@@ -1,6 +1,6 @@
 export default {
   Query: {
-    async orderBook(root: any, args: any, ctx: any, info: any) {
+    orderBook: async (root: any, args: any, ctx: any, info: any) => {
       const { buying, selling, limit } = args;
 
       const r = await ctx.dataSources.horizon.getOrderBook(
