@@ -66,7 +66,7 @@ export default {
       );
     },
     payments: async (root: any, args: any, ctx: any) => {
-      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.horizon.getPayments(args), r =>
+      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.payments.all(args), r =>
         OperationFactory.fromHorizon(r)
       );
     }

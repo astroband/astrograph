@@ -27,7 +27,7 @@ export default {
       );
     },
     payments: async (root: Ledger, args: any, ctx: any) => {
-      const records = await ctx.dataSources.horizon.getLedgerPayments(root.seq, args);
+      const records = await ctx.dataSources.payments.forLedger(root.seq, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
     effects: async (root: Ledger, args: any, ctx: any) => {

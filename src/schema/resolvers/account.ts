@@ -76,7 +76,7 @@ export default {
       );
     },
     payments: async (root: Account, args: any, ctx: any) => {
-      const records = await ctx.dataSources.horizon.getAccountPayments(root.id, args);
+      const records = await ctx.dataSources.payments.forAccount(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
     effects: async (root: Account, args: any, ctx: any) => {
