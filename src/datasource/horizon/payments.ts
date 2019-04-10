@@ -27,10 +27,7 @@ export class HorizonPaymentsDataSource extends BaseHorizonDataSource {
     return this.properlyOrdered(records, pagingParams);
   }
 
-  public async forTransaction(
-    transactionId: string,
-    pagingParams: PagingParams
-  ): Promise<IHorizonOperationData[]> {
+  public async forTransaction(transactionId: string, pagingParams: PagingParams): Promise<IHorizonOperationData[]> {
     const records = await this.request(`transactions/${transactionId}/payments`, {
       ...this.parseCursorPagination(pagingParams),
       cacheTtl: 5
