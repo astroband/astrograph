@@ -7,6 +7,7 @@ import { WebSocketLink } from "apollo-link-ws";
 import { gql } from "apollo-server";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import ws from "ws";
+import { MutationType } from "../src/model";
 
 import { ACCOUNT_ID, GRAPHQL_ENDPOINT } from "./args";
 
@@ -24,6 +25,11 @@ const SUBSCRIPTION = gql`
     balance(args: $args) {
       account {
         id
+      }
+      mutationType
+      asset {
+        code
+        issuer { id }
       }
       values {
         asset {
@@ -53,7 +59,14 @@ apolloClient
   })
   .subscribe({
     next(data: any) {
-      const values = data.data.balance.values;
+      const payload = data.data.balance;
+
+      if (payload.mutationType === MutationType.Remove) {
+        console.log(`Trustline for ${payload.asset.code}-${payload.asset.issuer.id} is removed`);
+        return;
+      }
+
+      const values = payload.values;
       const assetId = values.asset.native ? values.asset.code : `${values.asset.code}-${values.asset.issuer.id}`;
 
       console.log(

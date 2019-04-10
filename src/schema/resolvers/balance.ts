@@ -25,7 +25,10 @@ export default {
     ledger: resolvers.ledger,
     asset: resolvers.asset
   },
-  BalanceSubscriptionPayload: { account: resolvers.account },
+  BalanceSubscriptionPayload: {
+    account: resolvers.account,
+    asset: resolvers.asset
+  },
   BalanceValues: {
     account: resolvers.account,
     asset: resolvers.asset
