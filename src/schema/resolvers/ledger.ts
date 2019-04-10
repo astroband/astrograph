@@ -22,7 +22,7 @@ export default {
     },
     operations: async (root: Ledger, args: any, ctx: any) => {
       return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.horizon.getLedgerOperations(root.seq, args),
+        await ctx.dataSources.operations.forLedger(root.seq, args),
         r => OperationFactory.fromHorizon(r)
       );
     },

@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/node";
 import { ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 
-import { HorizonPaymentsDataSource } from "./datasource/horizon";
+import { HorizonPaymentsDataSource, HorizonOperationsDataSource } from "./datasource/horizon";
 import schema from "./schema";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
@@ -47,6 +47,7 @@ const server = new ApolloServer({
   dataSources: () => {
     return {
       payments: new HorizonPaymentsDataSource(),
+      operations: new HorizonOperationsDataSource()
     };
   },
   formatError: (error: GraphQLError) => {

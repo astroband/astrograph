@@ -57,11 +57,11 @@ export default {
   SetOptionsSigner: { account: resolvers.account },
   Query: {
     operation: async (root: any, args: { id: string }, ctx: any) => {
-      const response = await ctx.dataSources.horizon.getOperationById(args.id);
+      const response = await ctx.dataSources.operations.byId(args.id);
       return OperationFactory.fromHorizon(response);
     },
     operations: async (root: any, args: { id: string }, ctx: any) => {
-      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.horizon.getOperations(args), r =>
+      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.operations.all(args), r =>
         OperationFactory.fromHorizon(r)
       );
     },

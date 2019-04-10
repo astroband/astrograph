@@ -71,7 +71,7 @@ export default {
     ledger: resolvers.ledger,
     operations: async (root: Account, args: any, ctx: any) => {
       return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.horizon.getAccountOperations(root.id, args),
+        await ctx.dataSources.operations.forAccount(root.id, args),
         r => OperationFactory.fromHorizon(r)
       );
     },

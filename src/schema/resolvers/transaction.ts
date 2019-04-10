@@ -29,7 +29,7 @@ export default {
     },
     operations: async (root: Transaction, args: any, ctx: any) => {
       return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.horizon.getTransactionOperations(root.id, args),
+        await ctx.dataSources.operations.forTransaction(root.id, args),
         r => OperationFactory.fromHorizon(r)
       );
     },
