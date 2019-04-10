@@ -1,6 +1,6 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 import { AccountID, IAssetInput } from "../model";
-import { SortOrder } from "../util/paging";
+import { invertSortOrder, SortOrder } from "../util/paging";
 import {
   HorizonAssetType,
   IHorizonAssetData,
@@ -23,7 +23,7 @@ interface IBackwardPagingParams {
   before: string;
 }
 
-type PagingParams = IForwardPagingParams & IBackwardPagingParams;
+type PagingParams = IForwardPagingParams & IBackwardPagingParams & { order: SortOrder };
 
 export default class HorizonAPI extends RESTDataSource {
   constructor() {
@@ -324,11 +324,17 @@ export default class HorizonAPI extends RESTDataSource {
     return code.length > 4 ? "credit_alphanum12" : "credit_alphanum4";
   }
 
-  private parseCursorPagination(args: PagingParams) {
+  protected parseCursorPagination(args: PagingParams) {
+    const { first, after, last, before, order = SortOrder.DESC } = args;
+
+    if (!first && !last) {
+      throw new Error("Missing paging parameters");
+    }
+
     return {
-      limit: args.first || args.last,
-      order: (args.last ? "asc" : "desc") as SortOrder,
-      cursor: args.last ? args.before : args.after
+      limit: first || last,
+      order: before ? invertSortOrder(order) : order,
+      cursor: last ? before : after
     };
   }
 
