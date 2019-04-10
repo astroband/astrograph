@@ -85,7 +85,7 @@ export default {
     },
     transactions: async (root: Account, args: any, ctx: any) => {
       return makeConnection<IHorizonTransactionData, Transaction>(
-        await ctx.dataSources.horizon.getAccountTransactions(root.id, args),
+        await ctx.dataSources.transactions.forAccount(root.id, args),
         r => TransactionWithXDRFactory.fromHorizon(r)
       );
     },

@@ -44,11 +44,11 @@ export default {
   },
   Query: {
     transaction: async (root: any, args: any, ctx: any, info: any) => {
-      const records = await ctx.dataSources.horizon.getTransactionsByIds([args.id]);
+      const records = await ctx.dataSources.transactions.byIds([args.id]);
       return TransactionWithXDRFactory.fromHorizon(records[0]);
     },
     transactions: async (root: any, args: any, ctx: any, info: any) => {
-      const records = await ctx.dataSources.horizon.getTransactions(args);
+      const records = await ctx.dataSources.transactions.all(args);
       return makeConnection<IHorizonTransactionData, Transaction>(records, r =>
         TransactionWithXDRFactory.fromHorizon(r)
       );

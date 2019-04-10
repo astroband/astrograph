@@ -16,7 +16,7 @@ export default {
     header: ledgerHeaderResolver,
     transactions: async (root: Ledger, args: any, ctx: any) => {
       return makeConnection<IHorizonTransactionData, Transaction>(
-        await ctx.dataSources.horizon.getLedgerTransactions(root.seq, args),
+        await ctx.dataSources.transactions.forLedger(root.seq, args),
         r => TransactionWithXDRFactory.fromHorizon(r)
       );
     },
