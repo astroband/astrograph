@@ -59,12 +59,13 @@ export class Publisher {
       const [selling, buying] = tick.split("/").map(id => AssetFactory.fromId(id));
       const bestAsk = await db.offers.getBestAsk(selling, buying);
       const bestAskInv = await db.offers.getBestAsk(buying, selling);
+      const bestBid = bestAskInv ? 1 / bestAskInv : null;
 
       pubsub.publish(OFFERS_TICK, {
         selling: selling.toString(),
         buying: buying.toString(),
         bestAsk,
-        bestBid: 1 / bestAskInv
+        bestBid
       });
     });
 

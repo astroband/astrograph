@@ -83,12 +83,13 @@ export default {
       const buying = AssetFactory.fromId(args.buying);
       const bestAsk = await db.offers.getBestAsk(selling, buying);
       const bestAskInv = await db.offers.getBestAsk(buying, selling);
+      const bestBid = bestAskInv ? 1 / bestAskInv : null;
 
       return {
         selling: args.selling,
         buying: args.buying,
         bestAsk,
-        bestBid: 1 / bestAskInv
+        bestBid
       };
     }
   },
