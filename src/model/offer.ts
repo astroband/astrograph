@@ -41,4 +41,8 @@ export class Offer implements IOffer {
     this.passive = data.passive;
     this.lastModified = data.lastModified;
   }
+
+  get paging_token() {
+    return this.id;
+  }
 }

@@ -4,6 +4,7 @@ import squel from "squel";
 import { Asset } from "stellar-sdk";
 import { Offer } from "../model";
 import { AssetFactory, IOfferTableRow, OfferFactory } from "../model/factories";
+import { isForward, PagingParams, parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
 
 const sql = {
   selectOffersIn: "SELECT * FROM offers WHERE offerid IN ($1:csv) ORDER BY offerid ASC"
@@ -22,20 +23,23 @@ export default class OffersRepo {
       selling?: string;
       buying?: string;
     },
-    limit?: number,
-    offset?: number,
-    order?: [string, "ASC" | "DESC"]
+    paging: PagingParams = { first: 10, order: SortOrder.DESC }
   ) {
+    const { limit, order } = parseCursorPagination(paging);
+
     const queryBuilder = squel
       .select()
       .field("*")
       .from("offers");
 
-    if (!order) {
-      order = ["offerid", "DESC"];
+    if (isForward(paging) && paging.after) {
+      queryBuilder.where("offerid < ?", paging.after);
+    } else if (!isForward(paging) && paging.before) {
+      queryBuilder.where("offerid > ?", paging.before);
     }
 
-    queryBuilder.order(order[0], order[1] === "ASC");
+    queryBuilder.limit(limit);
+    queryBuilder.order("offerid", order === SortOrder.ASC);
 
     if (criteria) {
       if (criteria.seller) {
@@ -46,17 +50,10 @@ export default class OffersRepo {
       this.appendAsset(queryBuilder, "buying", criteria.buying);
     }
 
-    if (limit) {
-      queryBuilder.limit(limit);
-    }
-
-    if (offset) {
-      queryBuilder.offset(offset);
-    }
-
     const res = await this.db.manyOrNone(queryBuilder.toString());
+    const offers = res.map(a => OfferFactory.fromDb(a));
 
-    return res.map(a => OfferFactory.fromDb(a));
+    return properlyOrdered(offers, paging);
   }
 
   public async getIdAssetsMap() {

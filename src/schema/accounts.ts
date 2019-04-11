@@ -58,6 +58,17 @@ export const typeDefs = gql`
     effects(first: Int, after: String, last: Int, before: String): EffectConnection
     trades(first: Int, after: String, last: Int, before: String): TradeConnection
     transactions(first: Int, last: Int, before: String, after: String): TransactionConnection
+    "A list of offers, created by this account"
+    offers(
+      selling: AssetID
+      buying: AssetID
+      first: Int
+      after: String
+      last: Int
+      before: String
+      "List will be ordered by offers id attribute. Default is descending order"
+      order: Order
+    ): OfferConnection
   }
 
   "Represents a current account state, which is broadcasted to subscribers on account's update"
