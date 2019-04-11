@@ -64,7 +64,7 @@ export default {
   },
   Query: {
     effects: async (root: any, args: any, ctx: any, info: any) => {
-      return makeConnection(await ctx.dataSources.horizon.getEffects(args), (r: IHorizonEffectData) =>
+      return makeConnection(await ctx.dataSources.effects.all(args), (r: IHorizonEffectData) =>
         EffectFactory.fromHorizon(r)
       );
     }

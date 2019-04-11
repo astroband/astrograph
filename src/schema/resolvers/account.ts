@@ -80,7 +80,7 @@ export default {
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
     effects: async (root: Account, args: any, ctx: any) => {
-      const records = await ctx.dataSources.horizon.getAccountEffects(root.id, args);
+      const records = await ctx.dataSources.effects.forAccount(root.id, args);
       return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
     },
     transactions: async (root: Account, args: any, ctx: any) => {

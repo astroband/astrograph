@@ -38,7 +38,7 @@ export default {
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
     effects: async (root: Transaction, args: any, ctx: any) => {
-      const records = await ctx.dataSources.horizon.getTransactionEffects(root.id, args);
+      const records = await ctx.dataSources.effects.forTransaction(root.id, args);
       return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
     }
   },

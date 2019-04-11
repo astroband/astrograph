@@ -7,6 +7,7 @@ import { GraphQLError } from "graphql";
 
 import {
   HorizonAssetsDataSource,
+  HorizonEffectsDataSource,
   HorizonOperationsDataSource,
   HorizonPaymentsDataSource,
   HorizonTransactionsDataSource
@@ -52,6 +53,7 @@ const server = new ApolloServer({
   dataSources: () => {
     return {
       assets: new HorizonAssetsDataSource(),
+      effects: new HorizonEffectsDataSource(),
       operations: new HorizonOperationsDataSource(),
       payments: new HorizonPaymentsDataSource(),
       transactions: new HorizonTransactionsDataSource()
