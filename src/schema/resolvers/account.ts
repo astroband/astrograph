@@ -22,6 +22,7 @@ import {
 } from "../../model/factories";
 
 import { db } from "../../database";
+import { IApolloContext } from "../../graphql_server";
 import { joinToMap } from "../../util/array";
 
 import { ACCOUNT, pubsub } from "../../pubsub";
@@ -58,7 +59,7 @@ const accountSubscription = (event: string) => {
       }
     ),
 
-    resolve(payload: any, args: any, ctx: any, info: any) {
+    resolve(payload: any) {
       return payload;
     }
   };
@@ -69,27 +70,27 @@ export default {
     data: dataEntriesResolver,
     balances: balancesResolver,
     ledger: resolvers.ledger,
-    operations: async (root: Account, args: any, ctx: any) => {
+    operations: async (root: Account, args: any, ctx: IApolloContext) => {
       return makeConnection<IHorizonOperationData, Operation>(
         await ctx.dataSources.operations.forAccount(root.id, args),
         r => OperationFactory.fromHorizon(r)
       );
     },
-    payments: async (root: Account, args: any, ctx: any) => {
+    payments: async (root: Account, args: any, ctx: IApolloContext) => {
       const records = await ctx.dataSources.payments.forAccount(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
-    effects: async (root: Account, args: any, ctx: any) => {
+    effects: async (root: Account, args: any, ctx: IApolloContext) => {
       const records = await ctx.dataSources.effects.forAccount(root.id, args);
       return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
     },
-    transactions: async (root: Account, args: any, ctx: any) => {
+    transactions: async (root: Account, args: any, ctx: IApolloContext) => {
       return makeConnection<IHorizonTransactionData, Transaction>(
         await ctx.dataSources.transactions.forAccount(root.id, args),
         r => TransactionWithXDRFactory.fromHorizon(r)
       );
     },
-    trades: async (root: Account, args: any, ctx: any, info: any) => {
+    trades: async (root: Account, args: any, ctx: IApolloContext, info: any) => {
       return makeConnection<IHorizonTradeData, Trade>(await ctx.dataSources.trades.forAccount(root.id, args), r =>
         TradeFactory.fromHorizon(r)
       );
@@ -98,11 +99,11 @@ export default {
     inflationDestination: resolvers.account
   },
   Query: {
-    account: async (root: any, args: any, ctx: any, info: any) => {
+    account: async (root: any, args: any) => {
       const acc = await db.accounts.findByID(args.id);
       return acc;
     },
-    accounts: async (root: any, args: any, ctx: any, info: any) => {
+    accounts: async (root: any, args: any) => {
       return db.accounts.findAllByIDs(args.id);
     }
   },

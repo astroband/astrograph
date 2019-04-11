@@ -1,6 +1,7 @@
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
 import { IHorizonOperationData } from "../../datasource/types";
+import { IApolloContext } from "../../graphql_server";
 import { Operation, OperationKinds, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
@@ -11,7 +12,7 @@ import * as resolvers from "./shared";
 export default {
   Operation: {
     sourceAccount: resolvers.account,
-    transaction: async (operation: Operation, args: any, ctx: any) => {
+    transaction: async (operation: Operation, args: any, ctx: IApolloContext) => {
       if (operation.tx instanceof Transaction) {
         return operation.tx;
       }
@@ -56,16 +57,16 @@ export default {
   PathPaymentOperation: { destinationAccount: resolvers.account },
   SetOptionsSigner: { account: resolvers.account },
   Query: {
-    operation: async (root: any, args: { id: string }, ctx: any) => {
+    operation: async (root: any, args: { id: string }, ctx: IApolloContext) => {
       const response = await ctx.dataSources.operations.byId(args.id);
       return OperationFactory.fromHorizon(response);
     },
-    operations: async (root: any, args: { id: string }, ctx: any) => {
+    operations: async (root: any, args: any, ctx: IApolloContext) => {
       return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.operations.all(args), r =>
         OperationFactory.fromHorizon(r)
       );
     },
-    payments: async (root: any, args: any, ctx: any) => {
+    payments: async (root: any, args: any, ctx: IApolloContext) => {
       return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.payments.all(args), r =>
         OperationFactory.fromHorizon(r)
       );
@@ -106,7 +107,7 @@ export default {
         }
       ),
 
-      resolve(payload: any, args: any, ctx: any, info: any) {
+      resolve(payload: any, args: any, ctx: IApolloContext, info: any) {
         return payload;
       }
     }

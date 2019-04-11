@@ -42,7 +42,7 @@ export class HorizonPaymentsDataSource extends BaseHorizonDataSource {
     destinationAccountID: AccountID,
     destinationAmount: string,
     destinationAssetInput: IAssetInput
-  ): Promise<IHorizonPaymentPathData> {
+  ): Promise<IHorizonPaymentPathData[]> {
     const destinationAsset = AssetFactory.fromInput(destinationAssetInput);
 
     return this.request("paths", {

@@ -9,7 +9,7 @@ export class HorizonTradesDataSource extends BaseHorizonDataSource {
     baseAssetInput?: IAssetInput,
     counterAssetInput?: IAssetInput,
     offerID?: number
-  ): Promise<IHorizonTradeData> {
+  ): Promise<IHorizonTradeData[]> {
     const params: any = {
       offer_id: offerID,
       ...this.parseCursorPagination(pagingParams),
@@ -60,7 +60,7 @@ export class HorizonTradesDataSource extends BaseHorizonDataSource {
     endTime: number,
     resolution: number,
     pagingParams: PagingParams
-  ): Promise<IHorizonTradeAggregationData> {
+  ): Promise<IHorizonTradeAggregationData[]> {
     const baseAsset = AssetFactory.fromInput(baseAssetInput);
     const counterAsset = AssetFactory.fromInput(counterAssetInput);
 

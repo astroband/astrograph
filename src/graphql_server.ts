@@ -45,6 +45,21 @@ const demoQuery = `{
 
 const endpoint = "/graphql";
 
+/* tslint:disable */
+type DataSources = {
+  assets: HorizonAssetsDataSource;
+  effects: HorizonEffectsDataSource;
+  operations: HorizonOperationsDataSource;
+  orderBook: HorizonOrderBookDataSource;
+  payments: HorizonPaymentsDataSource;
+  trades: HorizonTradesDataSource;
+  transactions: HorizonTransactionsDataSource;
+};
+
+export interface IApolloContext {
+  dataSources: DataSources;
+}
+
 const server = new ApolloServer({
   schema,
   tracing: true,
@@ -52,7 +67,7 @@ const server = new ApolloServer({
   playground: process.env.NODE_ENV === "production" ? { endpoint, tabs: [{ endpoint, query: demoQuery }] } : true,
   debug: true,
   cors: true,
-  dataSources: () => {
+  dataSources: (): DataSources => {
     return {
       assets: new HorizonAssetsDataSource(),
       effects: new HorizonEffectsDataSource(),

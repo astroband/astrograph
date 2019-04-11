@@ -1,4 +1,5 @@
 import { IHorizonAssetData } from "../../datasource/types";
+import { IApolloContext } from "../../graphql_server";
 import * as resolvers from "./shared";
 import { makeConnection } from "./util";
 
@@ -6,7 +7,7 @@ export default {
   Asset: { issuer: resolvers.account },
   AssetWithInfo: { issuer: resolvers.account },
   Query: {
-    assets: async (root: any, args: any, ctx: any, info: any) => {
+    assets: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { code, issuer } = args;
       const records: IHorizonAssetData[] = await ctx.dataSources.assets.all(
         code || issuer ? { code, issuer } : {},

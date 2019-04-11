@@ -2,6 +2,7 @@ import { withFilter } from "graphql-subscriptions";
 import * as resolvers from "./shared";
 import { eventMatches } from "./util";
 
+import { IApolloContext } from "../../graphql_server";
 import { DATA_ENTRY, pubsub } from "../../pubsub";
 
 const dataEntrySubscription = (event: string) => {
@@ -13,7 +14,7 @@ const dataEntrySubscription = (event: string) => {
       }
     ),
 
-    resolve(payload: any, args: any, ctx: any, info: any) {
+    resolve(payload: any, args: any, ctx: IApolloContext, info: any) {
       return payload;
     }
   };

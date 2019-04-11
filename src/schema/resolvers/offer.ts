@@ -8,6 +8,7 @@ import { AssetFactory, TradeFactory } from "../../model/factories";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
 import { IHorizonTradeData } from "../../datasource/types";
+import { IApolloContext } from "../../graphql_server";
 
 const offerMatches = (variables: any, payload: any): boolean => {
   const sellingAssetEq = variables.args.sellingAssetEq;
@@ -42,7 +43,7 @@ const offerSubscription = (event: string) => {
       (payload, variables) => offerMatches(variables, payload)
     ),
 
-    resolve(payload: any, args: any, ctx: any, info: any) {
+    resolve(payload: any, args: any, ctx: IApolloContext, info: any) {
       return payload;
     }
   };
@@ -54,7 +55,7 @@ export default {
     selling: resolvers.asset,
     buying: resolvers.asset,
     ledger: resolvers.ledger,
-    trades: async (root: Offer, args: any, ctx: any, info: any) => {
+    trades: async (root: Offer, args: any, ctx: IApolloContext, info: any) => {
       const records = await ctx.dataSources.trades.forOffer(root.id, args);
       return makeConnection<IHorizonTradeData, Trade>(records, r => TradeFactory.fromHorizon(r));
     }
@@ -65,7 +66,7 @@ export default {
     buying: resolvers.asset
   },
   Query: {
-    offers: async (root: any, args: any, ctx: any, info: any) => {
+    offers: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { first, offset, orderBy, ...criteria } = args;
       const columnsMap = { id: "offerid" };
       let orderColumn = "offerid";
@@ -78,7 +79,7 @@ export default {
 
       return db.offers.findAll(criteria, first, offset, [orderColumn, orderDir]);
     },
-    tick: async (root: any, args: any, ctx: any, info: any) => {
+    tick: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const selling = AssetFactory.fromId(args.selling);
       const buying = AssetFactory.fromId(args.buying);
       const bestAsk = await db.offers.getBestAsk(selling, buying);
@@ -100,7 +101,7 @@ export default {
         () => pubsub.asyncIterator(OFFERS_TICK),
         (payload, variables) => payload.selling === variables.selling && payload.buying === variables.buying
       ),
-      resolve(payload: any, args: any, ctx: any, info: any) {
+      resolve(payload: any, args: any, ctx: IApolloContext, info: any) {
         return payload;
       }
     }
