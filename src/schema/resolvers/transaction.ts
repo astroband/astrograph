@@ -1,6 +1,7 @@
 import { Memo } from "stellar-sdk";
 
 import { db } from "../../database";
+import { IApolloContext } from "../../graphql_server";
 
 import * as resolvers from "./shared";
 import { createBatchResolver, makeConnection } from "./util";
@@ -27,28 +28,28 @@ export default {
         value: memo.getPlainValue()
       };
     },
-    operations: async (root: Transaction, args: any, ctx: any) => {
+    operations: async (root: Transaction, args: any, ctx: IApolloContext) => {
       return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.horizon.getTransactionOperations(root.id, args),
+        await ctx.dataSources.operations.forTransaction(root.id, args),
         r => OperationFactory.fromHorizon(r)
       );
     },
-    payments: async (root: Transaction, args: any, ctx: any) => {
-      const records = await ctx.dataSources.horizon.getTransactionPayments(root.id, args);
+    payments: async (root: Transaction, args: any, ctx: IApolloContext) => {
+      const records = await ctx.dataSources.payments.forTransaction(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
-    effects: async (root: Transaction, args: any, ctx: any) => {
-      const records = await ctx.dataSources.horizon.getTransactionEffects(root.id, args);
+    effects: async (root: Transaction, args: any, ctx: IApolloContext) => {
+      const records = await ctx.dataSources.effects.forTransaction(root.id, args);
       return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
     }
   },
   Query: {
-    transaction: async (root: any, args: any, ctx: any, info: any) => {
-      const records = await ctx.dataSources.horizon.getTransactionsByIds([args.id]);
+    transaction: async (root: any, args: any, ctx: IApolloContext, info: any) => {
+      const records = await ctx.dataSources.transactions.byIds([args.id]);
       return TransactionWithXDRFactory.fromHorizon(records[0]);
     },
-    transactions: async (root: any, args: any, ctx: any, info: any) => {
-      const records = await ctx.dataSources.horizon.getTransactions(args);
+    transactions: async (root: any, args: any, ctx: IApolloContext, info: any) => {
+      const records = await ctx.dataSources.transactions.all(args);
       return makeConnection<IHorizonTransactionData, Transaction>(records, r =>
         TransactionWithXDRFactory.fromHorizon(r)
       );

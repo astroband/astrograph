@@ -1,6 +1,7 @@
 import { Asset } from "stellar-sdk";
+import { IApolloContext } from "../../../graphql_server";
 
-export function asset(obj: any, args: any, ctx: any, info: any) {
+export function asset(obj: any, args: any, ctx: IApolloContext, info: any) {
   const field = info.fieldName;
   const value = obj[field] as Asset;
 

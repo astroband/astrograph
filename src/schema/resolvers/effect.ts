@@ -1,4 +1,5 @@
 import { IHorizonEffectData } from "../../datasource/types";
+import { IApolloContext } from "../../graphql_server";
 import { Effect, EffectKinds } from "../../model";
 import { EffectFactory } from "../../model/factories";
 import * as resolvers from "./shared";
@@ -63,8 +64,8 @@ export default {
     account: resolvers.account
   },
   Query: {
-    effects: async (root: any, args: any, ctx: any, info: any) => {
-      return makeConnection(await ctx.dataSources.horizon.getEffects(args), (r: IHorizonEffectData) =>
+    effects: async (root: any, args: any, ctx: IApolloContext, info: any) => {
+      return makeConnection(await ctx.dataSources.effects.all(args), (r: IHorizonEffectData) =>
         EffectFactory.fromHorizon(r)
       );
     }

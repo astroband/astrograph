@@ -1,8 +1,9 @@
-import { IAssetInput } from "../../model/asset_input";
-import { IHorizonAssetData } from "../types";
+import { IAssetInput } from "../../../model/asset_input";
+import { PagingParams } from "../../horizon/base";
+import { IHorizonAssetData } from "../../types";
 
-export default class HorizonAPI {
-  public getAssets(criteria: IAssetInput, limit: number, order: "desc" | "asc", cursor?: string): IHorizonAssetData[] {
+export class HorizonAssetsDataSource {
+  public all(criteria: IAssetInput, pagingParams: PagingParams): IHorizonAssetData[] {
     return [
       {
         asset_type: "credit_alphanum4",

@@ -5,7 +5,15 @@ import * as Sentry from "@sentry/node";
 import { ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 
-import HorizonAPI from "./datasource/horizon";
+import {
+  HorizonAssetsDataSource,
+  HorizonEffectsDataSource,
+  HorizonOperationsDataSource,
+  HorizonOrderBookDataSource,
+  HorizonPaymentsDataSource,
+  HorizonTradesDataSource,
+  HorizonTransactionsDataSource
+} from "./datasource/horizon";
 import schema from "./schema";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
@@ -37,6 +45,21 @@ const demoQuery = `{
 
 const endpoint = "/graphql";
 
+/* tslint:disable */
+type DataSources = {
+  assets: HorizonAssetsDataSource;
+  effects: HorizonEffectsDataSource;
+  operations: HorizonOperationsDataSource;
+  orderBook: HorizonOrderBookDataSource;
+  payments: HorizonPaymentsDataSource;
+  trades: HorizonTradesDataSource;
+  transactions: HorizonTransactionsDataSource;
+};
+
+export interface IApolloContext {
+  dataSources: DataSources;
+}
+
 const server = new ApolloServer({
   schema,
   tracing: true,
@@ -44,7 +67,17 @@ const server = new ApolloServer({
   playground: process.env.NODE_ENV === "production" ? { endpoint, tabs: [{ endpoint, query: demoQuery }] } : true,
   debug: true,
   cors: true,
-  dataSources: () => ({ horizon: new HorizonAPI() }),
+  dataSources: (): DataSources => {
+    return {
+      assets: new HorizonAssetsDataSource(),
+      effects: new HorizonEffectsDataSource(),
+      operations: new HorizonOperationsDataSource(),
+      orderBook: new HorizonOrderBookDataSource(),
+      payments: new HorizonPaymentsDataSource(),
+      trades: new HorizonTradesDataSource(),
+      transactions: new HorizonTransactionsDataSource()
+    };
+  },
   formatError: (error: GraphQLError) => {
     logger.error(error);
 

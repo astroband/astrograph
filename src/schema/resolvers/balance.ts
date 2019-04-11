@@ -1,4 +1,5 @@
 import { withFilter } from "graphql-subscriptions";
+import { IApolloContext } from "../../graphql_server";
 import { BalanceSubscriptionPayload } from "../../model";
 import { BALANCE, pubsub } from "../../pubsub";
 import * as resolvers from "./shared";
@@ -13,7 +14,7 @@ const balanceSubscription = (event: string) => {
       }
     ),
 
-    resolve(payload: any, args: any, ctx: any, info: any) {
+    resolve(payload: any, args: any, ctx: IApolloContext, info: any) {
       return payload;
     }
   };

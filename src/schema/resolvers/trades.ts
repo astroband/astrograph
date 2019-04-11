@@ -1,5 +1,6 @@
 import { db } from "../../database";
 import { IHorizonTradeData } from "../../datasource/types";
+import { IApolloContext } from "../../graphql_server";
 import { Offer, Trade } from "../../model";
 import { TradeFactory } from "../../model/factories";
 import { createBatchResolver, idOnlyRequested, makeConnection } from "./util";
@@ -27,10 +28,10 @@ export default {
     counterOffer: offerResolver
   },
   Query: {
-    trades: async (root: any, args: any, ctx: any, info: any) => {
+    trades: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { baseAsset, counterAsset, offerID } = args;
 
-      const records = await ctx.dataSources.horizon.getTrades(args, baseAsset, counterAsset, offerID);
+      const records = await ctx.dataSources.trades.all(args, baseAsset, counterAsset, offerID);
       return makeConnection<IHorizonTradeData, Trade>(records, r => TradeFactory.fromHorizon(r));
     }
   }

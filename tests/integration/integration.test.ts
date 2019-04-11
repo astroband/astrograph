@@ -5,18 +5,18 @@ import fs from "fs";
 import path from "path";
 import { Client as dbClient } from "pg";
 import { Network } from "stellar-base";
-import HorizonAPI from "../../src/datasource/horizon";
+import { HorizonAssetsDataSource } from "../../src/datasource/horizon";
 import schema from "../../src/schema";
 import logger from "../../src/util/logger";
 import * as secrets from "../../src/util/secrets";
 
 Network.useTestNetwork();
 
-jest.mock("../../src/datasource/horizon");
+jest.mock("../../src/datasource/horizon/assets");
 
 const server = new ApolloServer({
   schema,
-  dataSources: () => ({ horizon: new HorizonAPI() })
+  dataSources: () => ({ assets: new HorizonAssetsDataSource() })
 });
 
 const queryServer = createTestClient(server).query;

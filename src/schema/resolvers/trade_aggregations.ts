@@ -1,11 +1,12 @@
 import { IHorizonTradeAggregationData } from "../../datasource/types";
+import { IApolloContext } from "../../graphql_server";
 
 export default {
   Query: {
-    tradeAggregations: async (root: any, args: any, ctx: any, info: any) => {
+    tradeAggregations: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { baseAsset, counterAsset, startTime, endTime, resolution } = args;
 
-      const records = await ctx.dataSources.horizon.getTradeAggregations(
+      const records = await ctx.dataSources.trades.aggregations(
         baseAsset,
         counterAsset,
         startTime,

@@ -1,4 +1,5 @@
 import { IHorizonPaymentPathData } from "../../datasource/types";
+import { IApolloContext } from "../../graphql_server";
 import { AssetFactory } from "../../model/factories";
 import * as resolvers from "./shared";
 
@@ -9,10 +10,10 @@ export default {
     path: resolvers.asset
   },
   Query: {
-    findPaymentPaths: async (root: any, args: any, ctx: any, info: any) => {
+    findPaymentPaths: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { sourceAccountID, destinationAccountID, destinationAsset, destinationAmount } = args;
 
-      const records = await ctx.dataSources.horizon.getPaymentPath(
+      const records = await ctx.dataSources.payments.findPaths(
         sourceAccountID,
         destinationAccountID,
         destinationAmount,
