@@ -10,6 +10,7 @@ import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 import { IHorizonTradeData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
 import { toFloatAmountString } from "../../util/stellar";
+import { SortOrder } from "../../util/paging";
 
 const offerMatches = (variables: any, payload: any): boolean => {
   const sellingAssetEq = variables.args.sellingAssetEq;
@@ -69,17 +70,10 @@ export default {
   },
   Query: {
     offers: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const { first, offset, orderBy, ...criteria } = args;
-      const columnsMap = { id: "offerid" };
-      let orderColumn = "offerid";
-      let orderDir: "ASC" | "DESC" = "DESC";
+      const { first, last, after, before, order = SortOrder.DESC, ...criteria } = args;
+      const offers = await db.offers.findAll(criteria, { first, last, after, before });
 
-      if (orderBy) {
-        [orderColumn, orderDir] = orderBy.split("_");
-        orderColumn = columnsMap[orderColumn];
-      }
-
-      return db.offers.findAll(criteria, first, offset, [orderColumn, orderDir]);
+      return makeConnection<Offer>(offers);
     },
     tick: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const selling = AssetFactory.fromId(args.selling);

@@ -14,7 +14,7 @@ import {
   IHorizonTransactionData
 } from "../../datasource/types";
 
-import { Balance, Effect, Operation, Trade, Transaction } from "../../model";
+import { Balance, Effect, Offer, Operation, Trade, Transaction } from "../../model";
 import {
   BalanceFactory,
   EffectFactory,
@@ -100,7 +100,15 @@ export default {
         TradeFactory.fromHorizon(r)
       );
     },
+    offers: async (root: Account, args: any, ctx: any) => {
+      const { first, last, after, before, ...criteria } = args;
 
+      criteria.seller = root.id;
+
+      const offers = await db.offers.findAll(criteria, { first, last, after, before });
+
+      return makeConnection<Offer>(offers);
+    },
     inflationDestination: resolvers.account
   },
   Query: {
