@@ -9,6 +9,7 @@ import {
   HorizonAssetsDataSource,
   HorizonEffectsDataSource,
   HorizonOperationsDataSource,
+  HorizonOrderBookDataSource,
   HorizonPaymentsDataSource,
   HorizonTradesDataSource,
   HorizonTransactionsDataSource
@@ -56,6 +57,7 @@ const server = new ApolloServer({
       assets: new HorizonAssetsDataSource(),
       effects: new HorizonEffectsDataSource(),
       operations: new HorizonOperationsDataSource(),
+      orderBook: new HorizonOrderBookDataSource(),
       payments: new HorizonPaymentsDataSource(),
       trades: new HorizonTradesDataSource(),
       transactions: new HorizonTransactionsDataSource()
