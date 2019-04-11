@@ -90,9 +90,8 @@ export default {
       );
     },
     trades: async (root: Account, args: any, ctx: any, info: any) => {
-      return makeConnection<IHorizonTradeData, Trade>(
-        await ctx.dataSources.horizon.getAccountTrades(root.id, args),
-        r => TradeFactory.fromHorizon(r)
+      return makeConnection<IHorizonTradeData, Trade>(await ctx.dataSources.trades.forAccount(root.id, args), r =>
+        TradeFactory.fromHorizon(r)
       );
     },
 

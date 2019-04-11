@@ -55,7 +55,7 @@ export default {
     buying: resolvers.asset,
     ledger: resolvers.ledger,
     trades: async (root: Offer, args: any, ctx: any, info: any) => {
-      const records = await ctx.dataSources.horizon.getOfferTrades(root.id, args);
+      const records = await ctx.dataSources.trades.forOffer(root.id, args);
       return makeConnection<IHorizonTradeData, Trade>(records, r => TradeFactory.fromHorizon(r));
     }
   },

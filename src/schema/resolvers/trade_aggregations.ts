@@ -5,7 +5,7 @@ export default {
     tradeAggregations: async (root: any, args: any, ctx: any, info: any) => {
       const { baseAsset, counterAsset, startTime, endTime, resolution } = args;
 
-      const records = await ctx.dataSources.horizon.getTradeAggregations(
+      const records = await ctx.dataSources.trades.aggregations(
         baseAsset,
         counterAsset,
         startTime,

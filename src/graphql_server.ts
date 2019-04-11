@@ -10,6 +10,7 @@ import {
   HorizonEffectsDataSource,
   HorizonOperationsDataSource,
   HorizonPaymentsDataSource,
+  HorizonTradesDataSource,
   HorizonTransactionsDataSource
 } from "./datasource/horizon";
 import schema from "./schema";
@@ -56,6 +57,7 @@ const server = new ApolloServer({
       effects: new HorizonEffectsDataSource(),
       operations: new HorizonOperationsDataSource(),
       payments: new HorizonPaymentsDataSource(),
+      trades: new HorizonTradesDataSource(),
       transactions: new HorizonTransactionsDataSource()
     };
   },

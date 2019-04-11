@@ -30,7 +30,7 @@ export default {
     trades: async (root: any, args: any, ctx: any, info: any) => {
       const { baseAsset, counterAsset, offerID } = args;
 
-      const records = await ctx.dataSources.horizon.getTrades(args, baseAsset, counterAsset, offerID);
+      const records = await ctx.dataSources.trades.all(args, baseAsset, counterAsset, offerID);
       return makeConnection<IHorizonTradeData, Trade>(records, r => TradeFactory.fromHorizon(r));
     }
   }
