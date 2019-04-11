@@ -8,7 +8,7 @@ export default {
   Query: {
     assets: async (root: any, args: any, ctx: any, info: any) => {
       const { code, issuer } = args;
-      const records: IHorizonAssetData[] = await ctx.dataSources.horizon.getAssets(
+      const records: IHorizonAssetData[] = await ctx.dataSources.assets.all(
         code || issuer ? { code, issuer } : {},
         args
       );
