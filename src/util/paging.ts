@@ -22,15 +22,11 @@ export function parseCursorPagination(args: PagingParams) {
 
   return {
     limit: first || last,
-    order: before ? invertSortOrder(order) : order,
+    order: last ? invertSortOrder(order) : order,
     cursor: last ? before : after
   };
 }
 
 export function properlyOrdered(records: any[], pagingParams: PagingParams): any[] {
-  if (pagingParams.last && pagingParams.before) {
-    return records.reverse();
-  }
-
-  return records;
+  return pagingParams.last ? records.reverse() : records;
 }

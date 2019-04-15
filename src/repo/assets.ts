@@ -2,6 +2,7 @@ import { IDatabase } from "pg-promise";
 import squel from "squel";
 import { Asset } from "stellar-sdk";
 import { PagingParams } from "../datasource/horizon/base";
+import { Balance } from "../model";
 import { BalanceFactory } from "../model/factories";
 import { parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
 
@@ -44,33 +45,31 @@ export default class AssetsRepo {
   }
 
   public async findHolders(asset: Asset, paging: PagingParams) {
+    const { limit, cursor, order } = parseCursorPagination(paging);
     const queryBuilder = squel
       .select()
       .from("trustlines")
       .where("assetcode = ?", asset.getCode())
-      .where("issuer = ?", asset.getIssuer());
-
-    const { limit, cursor, order } = parseCursorPagination(paging);
-
-    queryBuilder.limit(limit);
-
-    // Order of these stetements is important,
-    // we must order by balance first to support cursor pagination
-    queryBuilder.order("balance", order === SortOrder.ASC);
-    queryBuilder.order("accountid");
+      .where("issuer = ?", asset.getIssuer())
+      .order("balance", order === SortOrder.ASC) // we must order by balance first to support cursor pagination
+      .order("accountid", order !== SortOrder.ASC) // inversion of above
+      .limit(limit);
 
     if (cursor) {
-      const [accountId, , balance] = Buffer.from(cursor, "base64")
-        .toString()
-        .split("_");
+      const [accountId, , balance] = Balance.parsePagingToken(cursor);
 
       if (paging.after) {
-        // <= and >= allow to handle zero balances
-        queryBuilder.where("balance <= ?", balance);
-        queryBuilder.where("accountid > ?", accountId);
+        if (balance === "0") {
+          queryBuilder.where("accountid > ?", accountId);
+        } else {
+          queryBuilder.where("balance < ?", balance);
+        }
       } else if (paging.before) {
-        queryBuilder.where("balance >= ?", balance);
-        queryBuilder.where("accountid < ?", accountId);
+        if (balance === "0") {
+          queryBuilder.where("(balance = '0' AND accountid < ?) OR balance > '0'", accountId);
+        } else {
+          queryBuilder.where("balance > ?", balance);
+        }
       }
     }
 
