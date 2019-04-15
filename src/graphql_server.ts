@@ -5,10 +5,10 @@ import * as Sentry from "@sentry/node";
 import { ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 
+import { ElasticOperationsDataSource } from "./datasource/elastic/operations";
 import {
   HorizonAssetsDataSource,
   HorizonEffectsDataSource,
-  HorizonOperationsDataSource,
   HorizonOrderBookDataSource,
   HorizonPaymentsDataSource,
   HorizonTradesDataSource,
@@ -48,7 +48,7 @@ const endpoint = "/graphql";
 type DataSources = {
   assets: HorizonAssetsDataSource;
   effects: HorizonEffectsDataSource;
-  operations: HorizonOperationsDataSource;
+  operations: ElasticOperationsDataSource;
   orderBook: HorizonOrderBookDataSource;
   payments: HorizonPaymentsDataSource;
   trades: HorizonTradesDataSource;
@@ -73,7 +73,7 @@ init().then(() => {
       return {
         assets: new HorizonAssetsDataSource(),
         effects: new HorizonEffectsDataSource(),
-        operations: new HorizonOperationsDataSource(),
+        operations: new ElasticOperationsDataSource(),
         orderBook: new HorizonOrderBookDataSource(),
         payments: new HorizonPaymentsDataSource(),
         trades: new HorizonTradesDataSource(),

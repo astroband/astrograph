@@ -58,11 +58,12 @@ export default {
   SetOptionsSigner: { account: resolvers.account },
   Query: {
     operation: async (root: any, args: { id: string }, ctx: IApolloContext) => {
-      const response = await ctx.dataSources.operations.byId(args.id);
-      return OperationFactory.fromHorizon(response);
+      return null;
     },
     operations: async (root: any, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.operations.all(args), r =>
+      const docs = await ctx.dataSources.operations.all(args);
+      console.log(docs);
+      return makeConnection<IHorizonOperationData, Operation>(docs, r =>
         OperationFactory.fromHorizon(r)
       );
     },
