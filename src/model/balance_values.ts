@@ -1,5 +1,4 @@
 import { Asset } from "stellar-sdk";
-import { toFloatAmountString } from "../util/stellar";
 import { IBalanceBase } from "./balance";
 
 export class BalanceValues implements IBalanceBase {
@@ -11,8 +10,8 @@ export class BalanceValues implements IBalanceBase {
 
   constructor(data: IBalanceBase) {
     this.account = data.account;
-    this.limit = toFloatAmountString(data.limit);
-    this.balance = toFloatAmountString(data.balance);
+    this.limit = data.limit;
+    this.balance = data.balance;
     this.authorized = data.authorized;
     this.asset = data.asset;
   }

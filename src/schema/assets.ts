@@ -14,6 +14,8 @@ export const typeDefs = gql`
     issuer: Account
     "Asset's code"
     code: AssetCode!
+    "All accounts that trust this asset, ordered by balance"
+    holders(first: Int, last: Int, after: String, before: String): BalanceConnection
   }
 
   "Represents single [asset](https://www.stellar.org/developers/guides/concepts/assets.html) on Stellar network with additional statistics, provided by Horizon"
@@ -30,6 +32,8 @@ export const typeDefs = gql`
     numAccounts: Int
     "Asset's issuer account flags"
     flags: AccountFlags
+    "All accounts that trust this asset, ordered by balance"
+    holders(first: Int, last: Int, after: String, before: String): BalanceConnection
   }
 
   "A list of assets"
@@ -50,6 +54,8 @@ export const typeDefs = gql`
   }
 
   type Query {
+    "Get single asset"
+    asset(id: AssetID): Asset
     "Get list of assets"
     assets(
       code: AssetCode

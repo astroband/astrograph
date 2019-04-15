@@ -1,7 +1,8 @@
 import { withFilter } from "graphql-subscriptions";
 import { IApolloContext } from "../../graphql_server";
-import { BalanceSubscriptionPayload } from "../../model";
+import { Balance, BalanceSubscriptionPayload } from "../../model";
 import { BALANCE, pubsub } from "../../pubsub";
+import { toFloatAmountString } from "../../util/stellar";
 import * as resolvers from "./shared";
 import { eventMatches } from "./util";
 
@@ -24,7 +25,9 @@ export default {
   Balance: {
     account: resolvers.account,
     ledger: resolvers.ledger,
-    asset: resolvers.asset
+    asset: resolvers.asset,
+    limit: (root: Balance) => toFloatAmountString(root.limit),
+    balance: (root: Balance) => toFloatAmountString(root.balance)
   },
   BalanceSubscriptionPayload: {
     account: resolvers.account,
@@ -32,7 +35,9 @@ export default {
   },
   BalanceValues: {
     account: resolvers.account,
-    asset: resolvers.asset
+    asset: resolvers.asset,
+    limit: (root: Balance) => toFloatAmountString(root.limit),
+    balance: (root: Balance) => toFloatAmountString(root.balance)
   },
   Subscription: { balance: balanceSubscription(BALANCE) }
 };

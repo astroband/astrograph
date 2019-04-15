@@ -22,10 +22,10 @@ export function idOnlyRequested(info: any): boolean {
   return false;
 }
 
-export function makeConnection<T extends IWithPagingToken, R>(records: T[], nodeBuilder: (r: T) => R) {
+export function makeConnection<T extends IWithPagingToken, R>(records: T[], nodeBuilder?: (r: T) => R) {
   const edges = records.map(record => {
     return {
-      node: nodeBuilder(record),
+      node: nodeBuilder ? nodeBuilder(record) : record,
       cursor: record.paging_token
     };
   });
