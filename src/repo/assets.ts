@@ -60,14 +60,17 @@ export default class AssetsRepo {
     queryBuilder.order("accountid");
 
     if (cursor) {
-      const [, , balance] = Buffer.from(cursor, "base64")
+      const [accountId, , balance] = Buffer.from(cursor, "base64")
         .toString()
         .split("_");
 
+      queryBuilder.where("accountid != ?", accountId);
+
       if (paging.after) {
-        queryBuilder.where("balance < ?", balance);
+        // <= and >= allow to handle zero balances
+        queryBuilder.where("balance <= ?", balance);
       } else {
-        queryBuilder.where("balance > ?", balance);
+        queryBuilder.where("balance >= ?", balance);
       }
     }
 
