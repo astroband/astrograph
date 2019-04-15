@@ -14,8 +14,8 @@ const holdersResolver = async (root: Asset, args: any, ctx: IApolloContext, info
 };
 
 export default {
-  Asset: { issuer: resolvers.account, holders: holdersResolver },
-  AssetWithInfo: { issuer: resolvers.account, holders: holdersResolver },
+  Asset: { issuer: resolvers.account, balances: holdersResolver },
+  AssetWithInfo: { issuer: resolvers.account, balances: holdersResolver },
   Query: {
     asset: async (root: any, args: { id: AssetID }, ctx: IApolloContext, info: any) => {
       return AssetFactory.fromId(args.id);
