@@ -64,13 +64,13 @@ export default class AssetsRepo {
         .toString()
         .split("_");
 
-      queryBuilder.where("accountid != ?", accountId);
-
       if (paging.after) {
         // <= and >= allow to handle zero balances
         queryBuilder.where("balance <= ?", balance);
-      } else {
+        queryBuilder.where("accountid > ?", accountId);
+      } else if (paging.before) {
         queryBuilder.where("balance >= ?", balance);
+        queryBuilder.where("accountid < ?", accountId);
       }
     }
 
