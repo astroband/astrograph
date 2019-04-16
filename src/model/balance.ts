@@ -14,6 +14,12 @@ export interface IBalance extends IBalanceBase {
 }
 
 export class Balance implements IBalance {
+  public static parsePagingToken(token: string): [AccountID, AssetID, string] {
+    return Buffer.from(token, "base64")
+      .toString()
+      .split("_") as [AccountID, AssetID, string];
+  }
+
   public account: AccountID;
   public asset: Asset;
   public limit: string;
@@ -28,11 +34,6 @@ export class Balance implements IBalance {
     this.lastModified = data.lastModified;
     this.authorized = data.authorized;
     this.asset = data.asset;
-  }
-
-  public static parsePagingToken(token: string): [AccountID, AssetID, string] {
-    return Buffer.from(token, "base64")
-      .toString().split("_") as [AccountID, AssetID, string];
   }
 
   public get paging_token() {
