@@ -15,6 +15,12 @@ export const typeDefs = gql`
     pathPayment
   }
 
+  enum AccountFlagsOptions {
+    authRequired
+    authImmutable
+    authRevokable
+  }
+
   "Attributes all Stellar [operations](https://www.stellar.org/developers/guides/concepts/operations.html) share"
   interface Operation {
     "Operation id, assigned by Horizon"
@@ -59,9 +65,9 @@ export const typeDefs = gql`
     "Transaction that contains this operation"
     transaction: Transaction!
     "Indicates which flags to clear"
-    clearFlags: Int
+    clearFlags: [AccountFlagsOptions]
     "Indicates which flags to set"
-    setFlags: Int
+    setFlags: [AccountFlagsOptions]
     "Indicates, which home domain to set on account"
     homeDomain: String
     "Indicates value of master weight to set"

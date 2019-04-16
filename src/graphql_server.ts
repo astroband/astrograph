@@ -5,16 +5,17 @@ import * as Sentry from "@sentry/node";
 import { ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 
-import { ElasticOperationsDataSource } from "./datasource/elastic/operations";
 import {
   HorizonAssetsDataSource,
   HorizonEffectsDataSource,
+  HorizonOperationsDataSource,
   HorizonOrderBookDataSource,
   HorizonPaymentsDataSource,
   HorizonTradesDataSource,
   HorizonTransactionsDataSource
 } from "./datasource/horizon";
 import schema from "./schema";
+import { OperationsStorage } from "./storage/operations";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
 import { listenBaseReserveChange } from "./util/stellar";
@@ -48,7 +49,7 @@ const endpoint = "/graphql";
 type DataSources = {
   assets: HorizonAssetsDataSource;
   effects: HorizonEffectsDataSource;
-  operations: ElasticOperationsDataSource;
+  operations: HorizonOperationsDataSource;
   orderBook: HorizonOrderBookDataSource;
   payments: HorizonPaymentsDataSource;
   trades: HorizonTradesDataSource;
@@ -56,6 +57,7 @@ type DataSources = {
 };
 
 export interface IApolloContext {
+  storage: { operations: OperationsStorage };
   dataSources: DataSources;
 }
 
@@ -69,11 +71,18 @@ init().then(() => {
     playground: process.env.NODE_ENV === "production" ? { endpoint, tabs: [{ endpoint, query: demoQuery }] } : true,
     debug: true,
     cors: true,
+    context: () => {
+      return {
+        storage: {
+          operations: new OperationsStorage()
+        }
+      };
+    },
     dataSources: (): DataSources => {
       return {
         assets: new HorizonAssetsDataSource(),
         effects: new HorizonEffectsDataSource(),
-        operations: new ElasticOperationsDataSource(),
+        operations: new HorizonOperationsDataSource(),
         orderBook: new HorizonOrderBookDataSource(),
         payments: new HorizonPaymentsDataSource(),
         trades: new HorizonTradesDataSource(),

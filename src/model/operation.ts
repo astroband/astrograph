@@ -1,6 +1,7 @@
 import { Asset } from "stellar-sdk";
-import { HorizonAccountFlag } from "../datasource/types";
 import { AccountID } from "./";
+
+export type AccountFlagsOption = "authRequired" | "authImmutable" | "authRevocable";
 
 export enum OperationType {
   Payment = "payment",
@@ -34,8 +35,8 @@ export interface IPaymentOperation extends IBaseOperation {
 export interface ISetOptionsOperation extends IBaseOperation {
   masterWeight: number;
   homeDomain: string;
-  clearFlags: HorizonAccountFlag[];
-  setFlags: HorizonAccountFlag[];
+  clearFlags: AccountFlagsOption[];
+  setFlags: AccountFlagsOption[];
   thresholds: {
     high: number;
     medium: number;
@@ -96,7 +97,7 @@ export interface ICreatePassiveOfferOperation extends IBaseOperation {
 
 // This is more of a "effect" of particular path payment
 // Horizon returns data this way, so we use it too
-export interface IPathPaymentOperation extends IBaseOperation {
+export interface IHorizonPathPaymentOperation extends IBaseOperation {
   sendMax: string;
   amountSent: string;
   amountReceived: string;
@@ -106,7 +107,7 @@ export interface IPathPaymentOperation extends IBaseOperation {
 }
 
 // This is a "legacy" interface, we ingest path payments to DGraph in this format
-export interface IDgraphPathPaymentOperation extends IBaseOperation {
+export interface IPathPaymentOperation extends IBaseOperation {
   sendMax: string;
   destinationAmount: string;
   destinationAccount: AccountID;
@@ -126,5 +127,4 @@ export type Operation =
   | IManageDataOperation
   | IManageOfferOperation
   | IPathPaymentOperation
-  | ICreatePassiveOfferOperation
-  | IDgraphPathPaymentOperation;
+  | ICreatePassiveOfferOperation;

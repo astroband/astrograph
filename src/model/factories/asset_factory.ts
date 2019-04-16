@@ -2,6 +2,7 @@ import { xdr as XDR } from "stellar-base";
 import { Asset as StellarAsset } from "stellar-sdk";
 import { AccountID, Asset, AssetCode, AssetID, IAssetInput } from "../";
 import { HorizonAssetType } from "../../datasource/types";
+import { IAsset as IStorageAsset } from "../../storage/types";
 
 export interface IAssetTableRow {
   assetid: AssetID;
@@ -61,5 +62,9 @@ export class AssetFactory {
 
   public static fromXDR(xdr: any, encoding = "base64") {
     return StellarAsset.fromOperation(XDR.Asset.fromXDR(xdr, encoding));
+  }
+
+  public static fromStorage(asset: IStorageAsset) {
+    return asset.key === "native" ? StellarAsset.native() : new StellarAsset(asset.code, asset.issuer);
   }
 }
