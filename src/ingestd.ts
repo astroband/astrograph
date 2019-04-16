@@ -27,12 +27,8 @@ Cursor.build(DEBUG_LEDGER).then(cursor => {
       }
     } catch (e) {
       logger.error(e);
-      if (e.message.includes("Please retry again, server is not ready to accept requests")) {
-        setTimeout(tick, 200);
-        return;
-      }
-
       Sentry.captureException(e);
+      setTimeout(tick, 200);
     }
   };
 
