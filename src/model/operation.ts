@@ -126,5 +126,6 @@ export type Operation =
   | ICreateAccountOperation
   | IManageDataOperation
   | IManageOfferOperation
+  | IHorizonPathPaymentOperation
   | IPathPaymentOperation
   | ICreatePassiveOfferOperation;

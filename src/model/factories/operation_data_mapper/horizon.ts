@@ -1,5 +1,5 @@
 import { Asset } from "stellar-sdk";
-import { HorizonOpType, IHorizonOperationData } from "../../../datasource/types";
+import { HorizonOpType, IHorizonOperationData, HorizonAccountFlag } from "../../../datasource/types";
 import { parsePagingToken } from "../../../util/horizon";
 import {
   IAccountMergeOperation,
@@ -11,7 +11,7 @@ import {
   ICreatePassiveOfferOperation,
   IManageDataOperation,
   IManageOfferOperation,
-  IPathPaymentOperation,
+  IHorizonPathPaymentOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
@@ -118,8 +118,8 @@ export class DataMapper {
       ...{
         masterWeight: this.data.master_key_weight,
         homeDomain: this.data.home_domain,
-        clearFlags: this.data.clear_flags_s,
-        setFlags: this.data.set_flags_s,
+        clearFlags: this.mapAccountFlagOptions(this.data.clear_flags_s),
+        setFlags: this.mapAccountFlagOptions(this.data.set_flags_s),
         thresholds: {
           high: this.data.high_threshold,
           medium: this.data.med_threshold,
@@ -231,7 +231,7 @@ export class DataMapper {
     };
   }
 
-  private mapPathPayment(): IPathPaymentOperation {
+  private mapPathPayment(): IHorizonPathPaymentOperation {
     const destinationAsset =
       this.data.asset_type === "native" ? Asset.native() : new Asset(this.data.asset_code, this.data.asset_issuer);
     const sourceAsset =
@@ -251,5 +251,18 @@ export class DataMapper {
         sourceAsset
       }
     };
+  }
+
+  private mapAccountFlagOptions(data: HorizonAccountFlag[]) {
+    return data.map(f => {
+      switch(f) {
+        case "auth_required":
+          return "authRequired";
+        case "auth_revocable":
+          return "authRevocable";
+        case "auth_immutable":
+          return "authImmutable";
+      };
+    });
   }
 }
