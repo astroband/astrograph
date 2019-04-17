@@ -59,17 +59,9 @@ export default class AssetsRepo {
       const [accountId, , balance] = Balance.parsePagingToken(cursor);
 
       if (paging.after) {
-        if (balance === "0") {
-          queryBuilder.where("accountid > ?", accountId);
-        } else {
-          queryBuilder.where("balance < ?", balance);
-        }
+        queryBuilder.where("(balance = ? AND accountid > ?) OR balance < ?", balance, accountId, balance);
       } else if (paging.before) {
-        if (balance === "0") {
-          queryBuilder.where("(balance = '0' AND accountid < ?) OR balance > '0'", accountId);
-        } else {
-          queryBuilder.where("balance > ?", balance);
-        }
+        queryBuilder.where("(balance = ? AND accountid < ?) OR balance > ?", balance, accountId, balance);
       }
     }
 
