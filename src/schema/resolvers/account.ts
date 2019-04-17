@@ -13,6 +13,7 @@ import {
   IHorizonTradeData,
   IHorizonTransactionData
 } from "../../datasource/types";
+import { IOperationData as IStorageOperationData } from "../../storage/types";
 
 import { Balance, Effect, Operation, Trade, Transaction } from "../../model";
 import {
@@ -76,9 +77,9 @@ export default {
     balances: balancesResolver,
     ledger: resolvers.ledger,
     operations: async (root: Account, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.operations.forAccount(root.id, args),
-        r => OperationFactory.fromHorizon(r)
+      return makeConnection<IStorageOperationData, Operation>(
+        await ctx.storage.operations.forAccount(root.id, args),
+        r => OperationFactory.fromStorage(r)
       );
     },
     payments: async (root: Account, args: any, ctx: IApolloContext) => {
