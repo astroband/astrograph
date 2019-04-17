@@ -26,11 +26,7 @@ export default class OffersRepo {
     paging: PagingParams = { first: 10, order: SortOrder.DESC }
   ) {
     const { limit, order } = parseCursorPagination(paging);
-
-    const queryBuilder = squel
-      .select()
-      .field("*")
-      .from("offers");
+    const queryBuilder = squel.select().from("offers");
 
     if (isForward(paging) && paging.after) {
       queryBuilder.where("offerid < ?", paging.after);
@@ -38,8 +34,7 @@ export default class OffersRepo {
       queryBuilder.where("offerid > ?", paging.before);
     }
 
-    queryBuilder.limit(limit);
-    queryBuilder.order("offerid", order === SortOrder.ASC);
+    queryBuilder.limit(limit).order("offerid", order === SortOrder.ASC);
 
     if (criteria) {
       if (criteria.seller) {
