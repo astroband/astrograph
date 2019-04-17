@@ -1,5 +1,4 @@
-import { AssetCode } from "../model/asset_code";
-import { AccountID } from "../model/account_id";
+import { AccountID, AssetCode } from "../model";
 
 export type StorageOpType =
   | "OperationTypeCreateAccount"
@@ -93,7 +92,7 @@ export interface ISetOptionsOperationData extends IBaseOperationData {
   signer: {
     key: AccountID;
     weight: number;
-  }
+  };
 }
 
 export interface IChangeTrustOperationData extends IBaseOperationData {
