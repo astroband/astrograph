@@ -59,7 +59,8 @@ export default {
   SetOptionsSigner: { account: resolvers.account },
   Query: {
     operation: async (root: any, args: { id: string }, ctx: IApolloContext) => {
-      return null;
+      const doc = await ctx.storage.operations.byId(args.id);
+      return OperationFactory.fromStorage(doc);
     },
     operations: async (root: any, args: any, ctx: IApolloContext) => {
       const docs = await ctx.storage.operations.all(args);

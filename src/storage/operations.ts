@@ -35,7 +35,7 @@ export class OperationsStorage extends BaseStorage {
   }
 
   public async byId(id: string) {
-    return null;
+    return this.get(id);
   }
 
   protected get elasticIndexName() {

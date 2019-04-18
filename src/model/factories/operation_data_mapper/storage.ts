@@ -54,6 +54,7 @@ export class DataMapper {
 
   constructor(private data: IOperationData) {
     this.baseData = {
+      id: data.id,
       index: data.idx,
       kind: DataMapper.mapHorizonOpType(data.type),
       sourceAccount: data.source_account_id,

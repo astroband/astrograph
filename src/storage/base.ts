@@ -9,6 +9,7 @@ interface IElasticSearchHit {
   _source: any; // TODO: here should be union of all data types we return from Elastic
   _sort: Array<string | number>;
 }
+
 export abstract class BaseStorage {
   private client: ElasticClient;
 
@@ -19,14 +20,24 @@ export abstract class BaseStorage {
   protected abstract get elasticIndexName(): string;
 
   protected async search(body: any) {
-    const docs = await this.client.search({
+    const { body: docs } = await this.client.search({
       index: this.elasticIndexName,
       body
     });
 
-    return docs.body.hits.hits.map((h: IElasticSearchHit) => {
+    return docs.hits.hits.map((h: IElasticSearchHit) => {
       h._source.paging_token = h._source.order.toString();
-      return h._source;
+      return { ...h._source, id: h._id };
     });
+  }
+
+  protected async get(id: string) {
+    const { body: doc } = await this.client.get({
+      index: this.elasticIndexName,
+      type: "_doc",
+      id
+    });
+
+    return doc.found ? doc._source : null;
   }
 }

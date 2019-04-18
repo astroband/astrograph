@@ -20,6 +20,7 @@ export interface IAsset {
 }
 
 interface IBaseOperationData {
+  id: string;
   tx_id: string;
   tx_idx: number;
   idx: number;
