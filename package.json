@@ -13,7 +13,7 @@
     "url": "https://github.com/mobius-network/astrograph/issues"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^6.7.0-rc.1",
+    "@elastic/elasticsearch": "^7.0.0-rc.2",
     "@sentry/node": "4.5.3",
     "@udia/graphql-postgres-subscriptions": "^1.1.0",
     "apollo-datasource-rest": "^0.3.1",
