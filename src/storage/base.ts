@@ -23,10 +23,8 @@ export abstract class BaseStorage {
   }
 
   protected async get(id: string) {
-    return this.client
-      .get({ index: this.elasticIndexName, id })
-      .then(({ body }: { body: any }) => {
-        return { ...body._source, id: body._id }
-      });
+    return this.client.get({ index: this.elasticIndexName, id }).then(({ body }: { body: any }) => {
+      return { ...body._source, id: body._id };
+    });
   }
 }

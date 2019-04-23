@@ -1,5 +1,5 @@
 import { Asset } from "stellar-sdk";
-import { HorizonOpType, IHorizonOperationData, HorizonAccountFlag } from "../../../datasource/types";
+import { HorizonAccountFlag, HorizonOpType, IHorizonOperationData } from "../../../datasource/types";
 import { parsePagingToken } from "../../../util/horizon";
 import {
   IAccountMergeOperation,
@@ -9,9 +9,9 @@ import {
   IChangeTrustOperation,
   ICreateAccountOperation,
   ICreatePassiveOfferOperation,
+  IHorizonPathPaymentOperation,
   IManageDataOperation,
   IManageOfferOperation,
-  IHorizonPathPaymentOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
@@ -255,14 +255,14 @@ export class DataMapper {
 
   private mapAccountFlagOptions(data: HorizonAccountFlag[]) {
     return data.map(f => {
-      switch(f) {
+      switch (f) {
         case "auth_required":
           return "authRequired";
         case "auth_revocable":
           return "authRevocable";
         case "auth_immutable":
           return "authImmutable";
-      };
+      }
     });
   }
 }
