@@ -14,7 +14,7 @@ export function invertSortOrder(order: SortOrder) {
 }
 
 export function parseCursorPagination(args: PagingParams) {
-  const { first, after, last, before, order = SortOrder.DESC } = args;
+  const { first, after, last, before, order = SortOrder.ASC } = args;
 
   if (!first && !last) {
     throw new Error("Missing paging parameters");
