@@ -72,6 +72,17 @@ export const typeDefs = gql`
     ledger: Ledger!
   }
 
+  type BalanceConnection {
+    pageInfo: PageInfo!
+    nodes: [Balance]
+    edges: [BalanceEdge]
+  }
+
+  type BalanceEdge {
+    cursor: String!
+    node: Balance
+  }
+
   "Represents a current [trustline](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) state, which is broadcasting to subscribers"
   type BalanceValues implements IBalance {
     account: Account

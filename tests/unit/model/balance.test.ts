@@ -2,7 +2,6 @@ import { Asset } from "stellar-sdk";
 import { Balance } from "../../../src/model";
 import { BalanceFactory } from "../../../src/model/factories";
 import { MAX_INT64 } from "../../../src/util";
-import { toFloatAmountString } from "../../../src/util/stellar";
 import AccountFactory from "../../factories/account";
 
 const data = {
@@ -25,8 +24,8 @@ describe("constructor", () => {
 
   it("sets account id", () => expect(subject.account).toEqual(data.accountid));
   it("sets lastModified", () => expect(subject.lastModified).toEqual(data.lastmodified));
-  it("formats limit", () => expect(subject.limit).toEqual("922337203685.4775807"));
-  it("formats balance", () => expect(subject.balance).toEqual("960.0000000"));
+  it("sets limit", () => expect(subject.limit).toEqual("9223372036854775807"));
+  it("sets balance", () => expect(subject.balance).toEqual("9600000000"));
   it("sets authorized", () => expect(subject.authorized).toBe(true));
   it("sets asset", () => {
     expect(subject.asset).toBeInstanceOf(Asset);
@@ -42,8 +41,8 @@ describe("static buildFakeNative(account)", () => {
 
     expect(fake).toMatchObject({
       account: account.id,
-      balance: toFloatAmountString(account.balance),
-      limit: toFloatAmountString(MAX_INT64),
+      balance: account.balance,
+      limit: MAX_INT64,
       authorized: true,
       lastModified: account.lastModified
     });
