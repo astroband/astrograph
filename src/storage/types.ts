@@ -37,12 +37,12 @@ interface IBaseOperationData {
 }
 
 export interface ICreateAccountOperationData extends IBaseOperationData {
-  source_amount: number;
+  source_amount: string;
   destination_account_id: AccountID;
 }
 
 export interface IPaymentOperationData extends IBaseOperationData {
-  source_amount: number;
+  source_amount: string;
   destination_account_id: AccountID;
   source_asset: IAsset;
 }
@@ -51,13 +51,13 @@ export interface IPathPaymentOperationData extends IBaseOperationData {
   destination_account_id: AccountID;
   destination_amount: number;
   destination_asset: IAsset;
-  source_amount: number;
+  source_amount: string;
   source_asset: IAsset;
   path: IAsset[];
 }
 
 export interface IManageOfferOperationData extends IBaseOperationData {
-  source_amount: number;
+  source_amount: string;
   source_asset: IAsset;
   offer_id: number;
   offer_price: number;
@@ -66,7 +66,7 @@ export interface IManageOfferOperationData extends IBaseOperationData {
 }
 
 export interface ICreatePassiveOfferOperationData extends IBaseOperationData {
-  source_amount: number;
+  source_amount: string;
   source_asset: IAsset;
   offer_price: number;
   offer_price_n_d: { n: number; d: number };

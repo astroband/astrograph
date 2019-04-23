@@ -195,8 +195,8 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{
-        offerId: this.data.offer_id.toString(),
-        amount: this.data.source_amount.toString(),
+        offerId: (this.data.offer_id || 0).toString(),
+        amount: this.data.source_amount || "0",
         price: this.data.offer_price.toString(),
         priceComponents: {
           n: this.data.offer_price_n_d.n,
