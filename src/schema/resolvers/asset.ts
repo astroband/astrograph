@@ -1,9 +1,8 @@
-import { Asset } from "stellar-sdk";
 import { db } from "../../database";
 import { IHorizonAssetData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
-import { AssetID } from "../../model";
-import { AssetFactory } from "../../model/factories";
+import { Asset, AssetID } from "../../model";
+import { toFloatAmountString } from "../../util/stellar";
 import * as resolvers from "./shared";
 import { makeConnection } from "./util";
 
@@ -14,11 +13,17 @@ const holdersResolver = async (root: any, args: any, ctx: IApolloContext, info: 
 };
 
 export default {
-  Asset: { issuer: resolvers.account, balances: holdersResolver },
+  Asset: {
+    issuer: resolvers.account,
+    lastModifiedIn: resolvers.ledger,
+    totalSupply: (asset: Asset) => toFloatAmountString(asset.totalSupply),
+    circulatingSupply: (asset: Asset) => toFloatAmountString(asset.circulatingSupply),
+    balances: holdersResolver
+  },
   AssetWithInfo: { issuer: resolvers.account, balances: holdersResolver },
   Query: {
-    asset: async (root: any, args: { id: AssetID }, ctx: IApolloContext, info: any) => {
-      return AssetFactory.fromId(args.id);
+    asset: async (root: any, { id }: { id: AssetID }, ctx: IApolloContext, info: any) => {
+      return db.assets.findByID(id);
     },
     assets: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { code, issuer } = args;
