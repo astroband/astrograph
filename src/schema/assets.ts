@@ -14,6 +14,16 @@ export const typeDefs = gql`
     issuer: Account
     "Asset's code"
     code: AssetCode!
+    "Sum of all asset holders balances"
+    totalSupply: String!
+    "Sum of only authorized holders balances"
+    circulatingSupply: String!
+    "Total number of asset holders"
+    holdersCount: Int!
+    "Total number of unathorized holders"
+    unauthorizedHoldersCount: Int!
+    "Ledger this asset was last time modified in"
+    lastModifiedIn: Ledger!
     "All accounts that trust this asset, ordered by balance"
     balances(first: Int, last: Int, after: String, before: String): BalanceConnection
   }

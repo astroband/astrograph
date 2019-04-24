@@ -1,27 +1,46 @@
-import { Asset, xdr as XDR } from "stellar-base";
+import { Asset as StellarAsset, xdr as XDR } from "stellar-base";
+import { AccountID, Asset, AssetCode, AssetID, IAssetInput } from "../";
 import { HorizonAssetType } from "../../datasource/types";
-import { IAssetInput } from "../asset_input";
+
+export interface IAssetTableRow {
+  assetid: AssetID;
+  code: AssetCode;
+  issuer: AccountID;
+  total_supply: string;
+  circulating_supply: string;
+  holders_count: string;
+  unauthorized_holders_count: string;
+  last_activity: number;
+}
 
 export class AssetFactory {
-  public static fromDb(type: number, code: string, issuer: string) {
-    return type === XDR.AssetType.assetTypeNative().value ? Asset.native() : new Asset(code, issuer);
+  public static fromDb(row: IAssetTableRow) {
+    return new Asset({
+      code: row.code,
+      issuer: row.issuer,
+      totalSupply: row.total_supply,
+      circulatingSupply: row.circulating_supply,
+      holdersCount: row.holders_count,
+      unauthorizedHoldersCount: row.unauthorized_holders_count,
+      lastModifiedIn: row.last_activity
+    });
   }
 
   public static fromHorizon(type: HorizonAssetType, code?: string, issuer?: string) {
-    return type === "native" ? Asset.native() : new Asset(code, issuer);
+    return type === "native" ? StellarAsset.native() : new StellarAsset(code, issuer);
   }
 
   public static fromInput(arg: IAssetInput) {
     if (arg.issuer && arg.code) {
-      return new Asset(arg.code, arg.issuer);
+      return new StellarAsset(arg.code, arg.issuer);
     }
 
-    return Asset.native();
+    return StellarAsset.native();
   }
 
   public static fromId(id: string) {
     if (id === "native") {
-      return Asset.native();
+      return StellarAsset.native();
     }
 
     const [code, issuer] = id.split("-");
@@ -30,10 +49,10 @@ export class AssetFactory {
       throw new Error(`Invalid asset id "${id}"`);
     }
 
-    return new Asset(code, issuer);
+    return new StellarAsset(code, issuer);
   }
 
   public static fromXDR(xdr: any, encoding = "base64") {
-    return Asset.fromOperation(XDR.Asset.fromXDR(xdr, encoding));
+    return StellarAsset.fromOperation(XDR.Asset.fromXDR(xdr, encoding));
   }
 }
