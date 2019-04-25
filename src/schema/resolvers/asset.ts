@@ -15,10 +15,7 @@ export default {
   Asset: {
     issuer: resolvers.account,
     lastModifiedIn: resolvers.ledger,
-    totalSupply: (asset: Asset) => {
-      console.log(asset);
-      return toFloatAmountString(asset.totalSupply);
-    },
+    totalSupply: (asset: Asset) => toFloatAmountString(asset.totalSupply),
     circulatingSupply: (asset: Asset) => toFloatAmountString(asset.circulatingSupply),
     balances: holdersResolver
   },
@@ -28,10 +25,7 @@ export default {
     },
     assets: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { code, issuer } = args;
-      const records = await db.assets.findAll(
-        code || issuer ? { code, issuer } : {},
-        args
-      );
+      const records = await db.assets.findAll(code || issuer ? { code, issuer } : {}, args);
 
       return makeConnection(records);
     }
