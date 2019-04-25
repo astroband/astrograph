@@ -12,7 +12,7 @@ interface IAssetData {
 
 export class Asset {
   public readonly code: AssetCode;
-  public readonly issuer: AccountID;
+  public readonly issuer: AccountID | null;
   public readonly totalSupply: string;
   public readonly circulatingSupply: string;
   public readonly holdersCount: string;
@@ -27,5 +27,13 @@ export class Asset {
     this.holdersCount = data.holdersCount;
     this.unauthorizedHoldersCount = data.unauthorizedHoldersCount;
     this.lastModifiedIn = data.lastModifiedIn;
+  }
+
+  public get native(): boolean {
+    return this.code === "XLM" && this.issuer === null;
+  }
+
+  public get id() {
+    return this.native ? "native" : `${this.code}-${this.issuer}`;
   }
 }

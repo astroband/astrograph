@@ -1,8 +1,7 @@
 import { IDatabase } from "pg-promise";
 import squel from "squel";
-import { Asset } from "stellar-sdk";
-import { AssetID, Balance, IAssetInput } from "../model";
-import { AssetFactory, BalanceFactory } from "../model/factories";
+import { Asset, AssetID, Balance, IAssetInput } from "../model";
+import { AssetFactory, BalanceFactory, IAssetTableRow } from "../model/factories";
 import { PagingParams, parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
 
 export default class AssetsRepo {
@@ -21,6 +20,22 @@ export default class AssetsRepo {
     const res = await this.db.oneOrNone(queryBuilder.toString());
 
     return res ? AssetFactory.fromDb(res) : null;
+  }
+
+  public async findAllByIDs(assetIds: AssetID[]) {
+    if (assetIds.length === 0) {
+      return [];
+    }
+
+    const queryBuilder = squel
+      .select()
+      .from("assets")
+      .where("assetid IN ?", assetIds);
+
+    const res = await this.db.manyOrNone<IAssetTableRow>(queryBuilder.toString());
+    const assets = res.map<Asset>(r => AssetFactory.fromDb(r));
+
+    return assetIds.map(id => assets.find(a => a.id === id) || null);
   }
 
   public async findAll(criteria: IAssetInput, paging: PagingParams) {

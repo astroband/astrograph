@@ -14,7 +14,7 @@ export interface IAssetTableRow {
 }
 
 export class AssetFactory {
-  public static fromDb(row: IAssetTableRow) {
+  public static fromDb(row: IAssetTableRow): Asset {
     return new Asset({
       code: row.code,
       issuer: row.issuer,

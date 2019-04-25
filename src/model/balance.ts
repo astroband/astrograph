@@ -4,7 +4,7 @@ import { AccountID, AssetID } from "./";
 
 export interface IBalanceBase {
   account: AccountID;
-  asset: Asset;
+  asset: AssetID;
   limit: BigNumber;
   balance: BigNumber;
   authorized: boolean;
@@ -24,7 +24,7 @@ export class Balance implements IBalance {
   }
 
   public account: AccountID;
-  public asset: Asset;
+  public asset: AssetID;
   public readonly limit: BigNumber;
   public readonly balance: BigNumber;
   public authorized: boolean;
@@ -45,6 +45,6 @@ export class Balance implements IBalance {
   }
 
   public get paging_token() {
-    return Buffer.from(`${this.account}_${this.asset.toString()}_${this.balance}`).toString("base64");
+    return Buffer.from(`${this.account}_${this.asset}_${this.balance}`).toString("base64");
   }
 }
