@@ -23,7 +23,7 @@ export function idOnlyRequested(info: any): boolean {
 }
 
 export function onlyFieldsRequested(info: any, fields: string[]): boolean {
-  const requestedFields = [...new Set(fieldsList(info))] // dedupe;
+  const requestedFields = [...new Set(fieldsList(info))]; // dedupe
 
   return JSON.stringify(requestedFields.sort()) === JSON.stringify(fields.sort());
 }

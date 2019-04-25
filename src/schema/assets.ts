@@ -55,13 +55,6 @@ export const typeDefs = gql`
     "Get single asset"
     asset(id: AssetID): Asset
     "Get list of assets. Note: native XLM asset isn't included here"
-    assets(
-      code: AssetCode
-      issuer: AccountID
-      first: Int
-      after: String
-      last: Int
-      before: String
-    ): AssetConnection
+    assets(code: AssetCode, issuer: AccountID, first: Int, after: String, last: Int, before: String): AssetConnection
   }
 `;

@@ -19,7 +19,5 @@ export const asset = createBatchResolver<any, Asset[]>((source: any, args: any, 
 
   const ids: AssetID[] = source.map((s: any) => s[field]);
 
-  console.log(ids);
-
   return db.assets.findAllByIDs(ids);
 });
