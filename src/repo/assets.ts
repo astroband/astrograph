@@ -52,7 +52,7 @@ export default class AssetsRepo {
       .from(TABLE_NAME)
       .where("assetid != ?", Asset.NATIVE_ID)
       .order("assetid", order === SortOrder.ASC)
-      .limit(limit)
+      .limit(limit);
 
     if (criteria.code) {
       queryBuilder.where("code = ?", criteria.code);
