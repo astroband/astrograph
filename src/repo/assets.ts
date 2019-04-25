@@ -5,6 +5,8 @@ import { Asset, AssetID, Balance, IAssetInput } from "../model";
 import { AssetFactory, BalanceFactory, IAssetTableRow } from "../model/factories";
 import { parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
 
+const TABLE_NAME = "assets_materialized";
+
 export default class AssetsRepo {
   private db: IDatabase<any>;
 
@@ -15,7 +17,7 @@ export default class AssetsRepo {
   public async findByID(assetId: AssetID) {
     const queryBuilder = squel
       .select()
-      .from("assets")
+      .from(TABLE_NAME)
       .where("assetid = ?", assetId);
 
     const res = await this.db.oneOrNone(queryBuilder.toString());
@@ -30,7 +32,7 @@ export default class AssetsRepo {
 
     const queryBuilder = squel
       .select()
-      .from("assets")
+      .from(TABLE_NAME)
       .where("assetid IN ?", assetIds);
 
     const res = await this.db.manyOrNone<IAssetTableRow>(queryBuilder.toString());
@@ -41,12 +43,17 @@ export default class AssetsRepo {
 
   public async findAll(criteria: IAssetInput, paging: PagingParams) {
     const { limit, cursor, order } = parseCursorPagination(paging);
+    // We skip lumens here for the sake of consistent pagination
+    // they have `native` as an id and pagination token so it will
+    // break intended alphanumeric ordering
+    // Anyway, it seems a rare case, when someone would need lumens in
+    // the aggregate list
     const queryBuilder = squel
       .select()
-      .from("assets")
-      .order("code")
+      .from(TABLE_NAME)
+      .where("assetid != ?", Asset.NATIVE_ID)
+      .order("assetid", order === SortOrder.ASC)
       .limit(limit)
-      .order("assetid", order === SortOrder.ASC);
 
     if (criteria.code) {
       queryBuilder.where("code = ?", criteria.code);
@@ -58,9 +65,9 @@ export default class AssetsRepo {
 
     if (cursor) {
       if (paging.after) {
-        queryBuilder.where("id < ?", paging.after);
+        queryBuilder.where("assetid > ?", paging.after);
       } else if (paging.before) {
-        queryBuilder.where("id > ?", paging.before);
+        queryBuilder.where("assetid < ?", paging.before);
       }
     }
 

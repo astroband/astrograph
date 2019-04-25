@@ -24,6 +24,12 @@ export const typeDefs = gql`
     unauthorizedHoldersCount: Int!
     "Ledger this asset was last time modified in"
     lastModifiedIn: Ledger!
+    "Requires the issuing account to give other accounts permission before they can hold the issuing account’s credit"
+    authRequired: Boolean!
+    "Allows the issuing account to revoke its credit held by other accounts"
+    authRevokable: Boolean!
+    "If this is set then none of the authorization flags can be set and the account can never be deleted"
+    authImmutable: Boolean!
     "All accounts that trust this asset, ordered by balance"
     balances(first: Int, last: Int, after: String, before: String): BalanceConnection
   }
@@ -48,7 +54,7 @@ export const typeDefs = gql`
   type Query {
     "Get single asset"
     asset(id: AssetID): Asset
-    "Get list of assets"
+    "Get list of assets. Note: native XLM asset isn't included here"
     assets(
       code: AssetCode
       issuer: AccountID

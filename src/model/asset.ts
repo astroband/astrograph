@@ -1,4 +1,5 @@
-import { AccountID, AssetCode } from "./";
+import { AccountID, AssetCode, IAssetInput } from "./";
+import { AccountFlagsFactory } from "./factories";
 
 interface IAssetData {
   code: AssetCode;
@@ -8,9 +9,11 @@ interface IAssetData {
   holdersCount: string;
   unauthorizedHoldersCount: string;
   lastModifiedIn: number;
+  flags: number;
 }
 
 export class Asset {
+  public static readonly NATIVE_ID = "native";
   public readonly code: AssetCode;
   public readonly issuer: AccountID | null;
   public readonly totalSupply: string;
@@ -18,6 +21,9 @@ export class Asset {
   public readonly holdersCount: string;
   public readonly unauthorizedHoldersCount: string;
   public readonly lastModifiedIn: number;
+  public readonly authRequired: boolean;
+  public readonly authRevocable: boolean;
+  public readonly authImmutable: boolean;
 
   constructor(data: IAssetData) {
     this.code = data.code;
@@ -27,6 +33,11 @@ export class Asset {
     this.holdersCount = data.holdersCount;
     this.unauthorizedHoldersCount = data.unauthorizedHoldersCount;
     this.lastModifiedIn = data.lastModifiedIn;
+
+    const parsedFlags = AccountFlagsFactory.fromValue(data.flags);
+    this.authRequired = parsedFlags.authRequired;
+    this.authRevocable = parsedFlags.authRevokable;
+    this.authImmutable = parsedFlags.authImmutable;
   }
 
   public get native(): boolean {
@@ -35,5 +46,19 @@ export class Asset {
 
   public get id() {
     return this.native ? "native" : `${this.code}-${this.issuer}`;
+  }
+
+  public get paging_token() {
+    return this.id;
+  }
+
+  public toInput(): IAssetInput {
+    const res: IAssetInput = { code: this.code };
+
+    if (this.issuer) {
+      res.issuer = this.issuer;
+    }
+
+    return res;
   }
 }
