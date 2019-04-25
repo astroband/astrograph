@@ -67,6 +67,10 @@ const accountSubscription = (event: string) => {
 
 export default {
   Account: {
+    assets: async (root: Account, args: any) => {
+      const assets = await db.assets.findAll({ issuer: root.id }, args);
+      return makeConnection(assets);
+    },
     data: dataEntriesResolver,
     balances: balancesResolver,
     ledger: resolvers.ledger,
