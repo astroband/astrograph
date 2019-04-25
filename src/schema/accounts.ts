@@ -69,6 +69,8 @@ export const typeDefs = gql`
     ledger: Ledger!
     "[Data entries](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data), attached to the account"
     data: [DataEntry]
+    "All assets, issued by this account"
+    assets(first: Int, after: String, last: Int, before: String): AssetConnection
     "[Balances](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) of this account"
     balances: [Balance]
     "A list of [operations](https://www.stellar.org/developers/guides/concepts/operations.html) on the Stellar network that the account performed"

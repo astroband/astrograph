@@ -10,6 +10,7 @@ export interface IAssetTableRow {
   circulating_supply: string;
   holders_count: string;
   unauthorized_holders_count: string;
+  flags: number;
   last_activity: number;
 }
 
@@ -22,7 +23,8 @@ export class AssetFactory {
       circulatingSupply: row.circulating_supply,
       holdersCount: row.holders_count,
       unauthorizedHoldersCount: row.unauthorized_holders_count,
-      lastModifiedIn: row.last_activity
+      lastModifiedIn: row.last_activity,
+      flags: row.flags
     });
   }
 
