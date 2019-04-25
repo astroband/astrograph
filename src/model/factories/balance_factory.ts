@@ -1,5 +1,4 @@
-import { Asset, xdr as XDR } from "stellar-base";
-import { AssetFactory } from ".";
+import { xdr as XDR } from "stellar-base";
 import { MAX_INT64 } from "../../util";
 import { Account } from "../account";
 import { Balance, IBalance } from "../balance";
@@ -24,7 +23,7 @@ export class BalanceFactory {
       balance: row.balance,
       limit: row.tlimit,
       lastModified: row.lastmodified,
-      asset: AssetFactory.fromDb(row.assettype, row.assetcode, row.issuer),
+      asset: `${row.assetcode}-${row.issuer}`,
       authorized: (row.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0
     };
 
@@ -34,7 +33,7 @@ export class BalanceFactory {
   public static nativeForAccount(account: Account): IBalance {
     return new Balance({
       account: account.id,
-      asset: Asset.native(),
+      asset: "native",
       balance: account.balance,
       limit: MAX_INT64,
       authorized: true,

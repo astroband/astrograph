@@ -22,6 +22,12 @@ export function idOnlyRequested(info: any): boolean {
   return false;
 }
 
+export function onlyFieldsRequested(info: any, fields: string[]): boolean {
+  const requestedFields = [...new Set(fieldsList(info))] // dedupe;
+
+  return JSON.stringify(requestedFields.sort()) === JSON.stringify(fields.sort());
+}
+
 export function makeConnection<T extends IWithPagingToken, R>(records: T[], nodeBuilder?: (r: T) => R) {
   const edges = records.map(record => {
     return {

@@ -20,7 +20,6 @@ export default {
     circulatingSupply: (asset: Asset) => toFloatAmountString(asset.circulatingSupply),
     balances: holdersResolver
   },
-  AssetWithInfo: { issuer: resolvers.account, balances: holdersResolver },
   Query: {
     asset: async (root: any, { id }: { id: AssetID }, ctx: IApolloContext, info: any) => {
       return db.assets.findByID(id);
