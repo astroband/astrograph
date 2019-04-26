@@ -1,4 +1,5 @@
-import { Asset as StellarAsset, xdr as XDR } from "stellar-base";
+import { xdr as XDR } from "stellar-base";
+import { Asset as StellarAsset } from "stellar-sdk";
 import { AccountID, Asset, AssetCode, AssetID, IAssetInput } from "../";
 import { HorizonAssetType } from "../../datasource/types";
 
@@ -28,8 +29,12 @@ export class AssetFactory {
     });
   }
 
+  public static fromTrustline(type: number, code: string, issuer: string): StellarAsset {
+    return type === XDR.AssetType.assetTypeNative().value ? StellarAsset.native() : new StellarAsset(code, issuer);
+  }
+
   public static fromHorizon(type: HorizonAssetType, code?: string, issuer?: string) {
-    return type === "native" ? StellarAsset.native() : new StellarAsset(code, issuer);
+    return type === "native" ? StellarAsset.native() : new StellarAsset(code!, issuer!);
   }
 
   public static fromInput(arg: IAssetInput) {
