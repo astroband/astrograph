@@ -34,8 +34,6 @@ export class Asset {
     this.unauthorizedHoldersCount = data.unauthorizedHoldersCount;
     this.lastModifiedIn = data.lastModifiedIn;
 
-    console.log(data);
-    console.log("flags", data.flags);
     const parsedFlags = AccountFlagsFactory.fromValue(data.flags);
     this.authRequired = parsedFlags.authRequired;
     this.authRevocable = parsedFlags.authRevokable;
