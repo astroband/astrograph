@@ -1,8 +1,9 @@
+import { Asset } from "stellar-sdk";
 import { AccountID, AssetID } from "./";
 
 export interface IBalanceBase {
   account: AccountID;
-  asset: AssetID;
+  asset: Asset;
   limit: string;
   balance: string;
   authorized: boolean;
@@ -20,7 +21,7 @@ export class Balance implements IBalance {
   }
 
   public account: AccountID;
-  public asset: AssetID;
+  public asset: Asset;
   public limit: string;
   public balance: string;
   public authorized: boolean;
@@ -36,6 +37,6 @@ export class Balance implements IBalance {
   }
 
   public get paging_token() {
-    return Buffer.from(`${this.account}_${this.asset}_${this.balance}`).toString("base64");
+    return Buffer.from(`${this.account}_${this.asset.toString()}_${this.balance}`).toString("base64");
   }
 }
