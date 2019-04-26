@@ -1,6 +1,7 @@
 query {
   assets(
-    code: "KHL"
+    code: "KHL",
+    first: 10
   ) {
     nodes {
       code
