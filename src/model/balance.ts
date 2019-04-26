@@ -45,6 +45,6 @@ export class Balance implements IBalance {
   }
 
   public get paging_token() {
-    return Buffer.from(`${this.account}_${this.asset}_${this.balance}`).toString("base64");
+    return Buffer.from(`${this.account}_${this.asset.toString()}_${this.balance}`).toString("base64");
   }
 }
