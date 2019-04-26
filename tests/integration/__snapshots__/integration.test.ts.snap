@@ -5,23 +5,9 @@ Object {
   "assets": Object {
     "nodes": Array [
       Object {
-        "code": "ZZZ",
+        "code": "KHL",
         "issuer": Object {
-          "id": "GCLCYDPGX7YBYMV627KV2GAXFEYYKJYZBCZEFVKELIHJ62SLKFAREUWH",
-        },
-        "native": false,
-      },
-      Object {
-        "code": "ZZZ",
-        "issuer": Object {
-          "id": "GBYMZE2O2CCLYVZKDBSE4SBWYSMFGYSAX3QN5KY4EV32ADEKVY5WIXWC",
-        },
-        "native": false,
-      },
-      Object {
-        "code": "ZZZ",
-        "issuer": Object {
-          "id": "GBKSCKCMFEIZSELRVTYO5XWGSEYURZY7AEV35MYW65DBS6FT6OHKP5IZ",
+          "id": "GBTVGCI5OYBGDMCNKYFVSETXK6TTOQ4DRJBAC5K2PUUNSVB24PPSQ26Q",
         },
         "native": false,
       },
@@ -55,48 +41,4 @@ Object {
 }
 `;
 
-exports[`Integration tests Single account query 1`] = `
-Object {
-  "account": Object {
-    "balances": Array [
-      Object {
-        "account": Object {
-          "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
-        },
-        "asset": Object {
-          "code": "XLM",
-          "issuer": null,
-          "native": true,
-        },
-      },
-    ],
-    "data": Array [
-      Object {
-        "name": "test_data",
-        "value": "test_value",
-      },
-    ],
-    "flags": Object {
-      "authImmutable": false,
-      "authRequired": false,
-      "authRevokable": false,
-    },
-    "id": "GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT",
-    "inflationDestination": null,
-    "ledger": Object {
-      "header": Object {
-        "ledgerVersion": 10,
-      },
-      "seq": 4,
-    },
-    "sequenceNumber": "8589934593",
-    "signers": null,
-    "thresholds": Object {
-      "high": 0,
-      "low": 0,
-      "masterWeight": 1,
-      "medium": 0,
-    },
-  },
-}
-`;
+exports[`Integration tests Single account query 1`] = `undefined`;

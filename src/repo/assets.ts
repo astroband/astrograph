@@ -5,7 +5,7 @@ import { Asset, AssetID, Balance, IAssetInput } from "../model";
 import { AssetFactory, BalanceFactory, IAssetTableRow } from "../model/factories";
 import { parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
 
-const TABLE_NAME = "assets_materialized";
+const TABLE_NAME = "assets";
 
 export default class AssetsRepo {
   private db: IDatabase<any>;
