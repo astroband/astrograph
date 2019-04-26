@@ -4,16 +4,6 @@ export const typeDefs = gql`
   "Represents the [public key](https://www.stellar.org/developers/guides/concepts/accounts.html#account-id) of the particular account"
   scalar AccountID
 
-  "Represents three flags, used by issuers of assets"
-  type AccountFlags {
-    "Requires the issuing account to give other accounts permission before they can hold the issuing account’s credit"
-    authRequired: Boolean!
-    "Allows the issuing account to revoke its credit held by other accounts"
-    authRevokable: Boolean!
-    "If this is set then none of the authorization flags can be set and the account can never be deleted"
-    authImmutable: Boolean!
-  }
-
   "Represents [thresholds](https://www.stellar.org/developers/guides/concepts/accounts.html#thresholds) for different access levels"
   type AccountThresholds {
     "The weight of the master key"
@@ -39,8 +29,6 @@ export const typeDefs = gql`
     homeDomain: String
     "Thresholds for different access levels this account set"
     thresholds: AccountThresholds!
-    "Flags used, by issuers of assets"
-    flags: AccountFlags!
     "[Signers](https://www.stellar.org/developers/guides/concepts/multi-sig.html) of the account"
     signers: [Signer]
   }
@@ -59,8 +47,6 @@ export const typeDefs = gql`
     homeDomain: String
     "Thresholds for different access levels this account set"
     thresholds: AccountThresholds!
-    "Flags used, by issuers of assets"
-    flags: AccountFlags!
     "[Signers](https://www.stellar.org/developers/guides/concepts/multi-sig.html) of the account"
     signers: [Signer]
     "Ledger, in which account was modified last time"
@@ -103,8 +89,6 @@ export const typeDefs = gql`
     homeDomain: String
     "Thresholds for different access levels this account set"
     thresholds: AccountThresholds!
-    "Flags used, by issuers of assets"
-    flags: AccountFlags!
     "[Signers](https://www.stellar.org/developers/guides/concepts/multi-sig.html) of the account"
     signers: [Signer]
   }

@@ -1,4 +1,4 @@
-import { AccountFlags, AccountID, AccountThresholds, Signer } from "./";
+import { AccountID, AccountThresholds, Signer } from "./";
 
 export interface IAccountBase {
   id: string;
@@ -8,7 +8,6 @@ export interface IAccountBase {
   inflationDestination: AccountID;
   homeDomain: string;
   thresholds: AccountThresholds;
-  flags: AccountFlags;
   signers?: Signer[];
 }
 
@@ -24,7 +23,6 @@ export class Account implements IAccount {
   public inflationDestination: AccountID;
   public homeDomain: string;
   public thresholds: AccountThresholds;
-  public flags: AccountFlags;
   public lastModified: number;
   public signers?: Signer[];
 
@@ -37,7 +35,6 @@ export class Account implements IAccount {
     this.homeDomain = data.homeDomain;
     this.lastModified = data.lastModified;
     this.thresholds = data.thresholds;
-    this.flags = data.flags;
     this.signers = data.signers;
   }
 }
