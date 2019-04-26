@@ -1,5 +1,4 @@
 import { BigNumber } from "bignumber.js";
-import { Asset } from "stellar-sdk";
 import { AccountID, AssetID } from "./";
 
 export interface IBalanceBase {
