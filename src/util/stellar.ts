@@ -1,5 +1,6 @@
-import Big from "big.js";
+import BigNumber from "bignumber.js";
 import { Keypair, Network } from "stellar-base";
+import { db } from "../database";
 import { STELLAR_NETWORK } from "./secrets";
 
 setNetwork();
@@ -25,7 +26,12 @@ export function setNetwork() {
 
 // converts amounts according to Stellar precision like this:
 // "99999999800" -> "9999.9999800"
-export function toFloatAmountString(intAmountString: string): string {
-  const floatAmount = new Big(intAmountString);
-  return floatAmount.div(new Big("1e" + StellarAmountPrecision)).toFixed(StellarAmountPrecision);
+export function toFloatAmountString(amount: string | number | BigNumber): string {
+  const floatAmount = !(amount instanceof BigNumber) ? new BigNumber(amount) : amount;
+  return floatAmount.div(new BigNumber("1e" + StellarAmountPrecision)).toFixed(StellarAmountPrecision);
+}
+
+export async function getMinBalance(numSubentries: number): Promise<number> {
+  const lastLedgerHeader = await db.ledgerHeaders.getLastLedgerHeader();
+  return (2 + numSubentries) * lastLedgerHeader.baseReserve;
 }
