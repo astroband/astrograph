@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { Asset, xdr as XDR } from "stellar-base";
 import { Account, Balance, IBalance } from "../";
 import { MAX_INT64 } from "../../util";
-import { getMinBalance } from "../../util/stellar";
+import { getReservedBalance } from "../../util/stellar";
 import { AssetFactory } from "./";
 
 export interface ITrustLineTableRow {
@@ -40,7 +40,7 @@ export class BalanceFactory {
   public static async nativeForAccount(account: Account): Promise<IBalance> {
     const balance = new BigNumber(account.balance);
     const limit = new BigNumber(MAX_INT64);
-    const minBalance = await getMinBalance(account.numSubentries);
+    const minBalance = await getReservedBalance(account.numSubentries);
 
     return new Balance({
       account: account.id,

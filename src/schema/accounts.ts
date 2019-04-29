@@ -54,7 +54,7 @@ export const typeDefs = gql`
     "Number of other [entries](https://www.stellar.org/developers/guides/concepts/ledger.html#ledger-entries) the account owns"
     numSubentries: Int!
     "A minimum balance of luments account must maintain"
-    minBalance: String!
+    reservedBalance: String!
     "Account designated to receive [inflation](https://www.stellar.org/developers/guides/concepts/inflation.html)"
     inflationDestination: Account
     "A domain name that can be added to the account. [More info](https://www.stellar.org/developers/guides/concepts/accounts.html#home-domain)"

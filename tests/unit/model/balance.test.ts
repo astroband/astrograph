@@ -7,7 +7,7 @@ import AccountFactory from "../../factories/account";
 jest.mock("../../../src/util/stellar", () => {
   return {
     ...(jest.requireActual("../../../src/util/stellar")),
-    getMinBalance: (numSubentries: number) => (numSubentries + 2) * 5000000
+    getReservedBalance: (numSubentries: number) => (numSubentries + 2) * 5000000
   }
 })
 
