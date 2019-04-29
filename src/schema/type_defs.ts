@@ -68,6 +68,10 @@ export const typeDefs = gql`
     asset: Asset!
     limit: String!
     balance: String!
+    "how much of this asset can actually be sent considering selling liabilities (and base reserve for native lumens)"
+    spendableBalance: String!
+    "how much of this asset can be received considering the limit and buying liabilities"
+    receivableBalance: String!
     authorized: Boolean!
     ledger: Ledger!
   }

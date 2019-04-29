@@ -1,3 +1,4 @@
+import { BigNumber } from "bignumber.js";
 import stellar from "stellar-base";
 import { Asset } from "stellar-sdk";
 import { MAX_INT64 } from "../../util";
@@ -9,8 +10,8 @@ export class BalanceValuesFactory {
     return new BalanceValues({
       asset: Asset.fromOperation(xdr.asset()),
       account: publicKeyFromXDR(xdr),
-      balance: xdr.balance().toString(),
-      limit: xdr.limit().toString(),
+      balance: new BigNumber(xdr.balance().toString()),
+      limit: new BigNumber(xdr.limit().toString()),
       authorized: (xdr.flags() & stellar.xdr.TrustLineFlags.authorizedFlag().value) > 0
     });
   }
@@ -19,9 +20,9 @@ export class BalanceValuesFactory {
     return new BalanceValues({
       account: publicKeyFromXDR(xdr),
       asset: Asset.native(),
-      limit: MAX_INT64,
+      limit: new BigNumber(MAX_INT64),
       authorized: true,
-      balance: xdr.balance().toString()
+      balance: new BigNumber(xdr.balance().toString())
     });
   }
 }

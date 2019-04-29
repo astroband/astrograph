@@ -1,3 +1,4 @@
+import { BigNumber } from "bignumber.js";
 import { VarArray } from "js-xdr";
 import { xdr } from "stellar-base";
 import { Account, IAccount } from "../account";
@@ -15,6 +16,8 @@ export interface IAccountTableRow {
   thresholds: string;
   flags: number;
   lastmodified: number;
+  sellingliabilities: string;
+  buyingliabilities: string;
   signers: string | null;
 }
 
@@ -29,7 +32,9 @@ export class AccountFactory {
       homeDomain: row.homedomain,
       lastModified: row.lastmodified,
       thresholds: AccountThresholdsFactory.fromValue(row.thresholds),
-      flags: AccountFlagsFactory.fromValue(row.flags)
+      flags: AccountFlagsFactory.fromValue(row.flags),
+      sellingLiabilities: new BigNumber(row.sellingliabilities),
+      buyingLiabilities: new BigNumber(row.buyingliabilities)
     };
 
     if (row.signers) {
