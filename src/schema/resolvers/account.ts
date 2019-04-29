@@ -25,7 +25,7 @@ import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
 import { ACCOUNT, pubsub } from "../../pubsub";
 import { joinToMap } from "../../util/array";
-import { getMinBalance, toFloatAmountString } from "../../util/stellar";
+import { getReservedBalance, toFloatAmountString } from "../../util/stellar";
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
   db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
@@ -67,8 +67,8 @@ const accountSubscription = (event: string) => {
 
 export default {
   Account: {
-    minBalance: async (root: Account) => {
-      return toFloatAmountString(await getMinBalance(root.numSubentries));
+    reservedBalance: async (root: Account) => {
+      return toFloatAmountString(await getReservedBalance(root.numSubentries));
     },
     data: dataEntriesResolver,
     balances: balancesResolver,
