@@ -31,7 +31,7 @@ export function toFloatAmountString(amount: string | number | BigNumber): string
   return floatAmount.div(new BigNumber("1e" + StellarAmountPrecision)).toFixed(StellarAmountPrecision);
 }
 
-export async function getMinBalance(numSubentries: number): Promise<number> {
+export async function getReservedBalance(numSubentries: number): Promise<number> {
   const lastLedgerHeader = await db.ledgerHeaders.getLastLedgerHeader();
   return (2 + numSubentries) * lastLedgerHeader.baseReserve;
 }
