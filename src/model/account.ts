@@ -1,3 +1,4 @@
+import { BigNumber } from "bignumber.js";
 import { AccountFlags, AccountID, AccountThresholds, Signer } from "./";
 
 export interface IAccountBase {
@@ -14,6 +15,8 @@ export interface IAccountBase {
 
 export interface IAccount extends IAccountBase {
   lastModified: number;
+  sellingLiabilities: BigNumber;
+  buyingLiabilities: BigNumber;
 }
 
 export class Account implements IAccount {
@@ -27,6 +30,8 @@ export class Account implements IAccount {
   public flags: AccountFlags;
   public lastModified: number;
   public signers?: Signer[];
+  public readonly sellingLiabilities: BigNumber;
+  public readonly buyingLiabilities: BigNumber;
 
   constructor(data: IAccount) {
     this.id = data.id;
@@ -39,5 +44,7 @@ export class Account implements IAccount {
     this.thresholds = data.thresholds;
     this.flags = data.flags;
     this.signers = data.signers;
+    this.sellingLiabilities = data.sellingLiabilities;
+    this.buyingLiabilities = data.buyingLiabilities;
   }
 }

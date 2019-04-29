@@ -1,16 +1,19 @@
+import { BigNumber } from "bignumber.js";
 import { Asset } from "stellar-sdk";
 import { AccountID, AssetID } from "./";
 
 export interface IBalanceBase {
   account: AccountID;
   asset: Asset;
-  limit: string;
-  balance: string;
+  limit: BigNumber;
+  balance: BigNumber;
   authorized: boolean;
 }
 
 export interface IBalance extends IBalanceBase {
   lastModified: number;
+  spendableBalance: BigNumber;
+  receivableBalance: BigNumber;
 }
 
 export class Balance implements IBalance {
@@ -22,10 +25,13 @@ export class Balance implements IBalance {
 
   public account: AccountID;
   public asset: Asset;
-  public limit: string;
-  public balance: string;
+  public readonly limit: BigNumber;
+  public readonly balance: BigNumber;
   public authorized: boolean;
   public lastModified: number;
+
+  public readonly spendableBalance: BigNumber;
+  public readonly receivableBalance: BigNumber;
 
   constructor(data: IBalance) {
     this.account = data.account;
@@ -34,6 +40,8 @@ export class Balance implements IBalance {
     this.lastModified = data.lastModified;
     this.authorized = data.authorized;
     this.asset = data.asset;
+    this.spendableBalance = data.spendableBalance;
+    this.receivableBalance = data.receivableBalance;
   }
 
   public get paging_token() {

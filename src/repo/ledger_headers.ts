@@ -6,7 +6,7 @@ import { unique } from "../util/array";
 const sql = {
   selectLedger: "SELECT * FROM ledgerheaders WHERE ledgerseq = $1",
   selectLedgersIn: "SELECT * FROM ledgerheaders WHERE ledgerseq IN ($1:csv) ORDER BY ledgerseq",
-  selectMaxLedger: "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1",
+  selectMaxLedger: "SELECT * FROM ledgerheaders ORDER BY ledgerseq DESC LIMIT 1",
   selectMinLedger: "SELECT ledgerseq FROM ledgerheaders ORDER BY ledgerseq ASC LIMIT 1",
   selectFirstAfter: "SELECT * FROM ledgerheaders WHERE ledgerseq > $1 LIMIT 1",
   selectCountIn: "SELECT COUNT(*) FROM ledgerheaders WHERE ledgerseq >= $1 AND ledgerseq <= $2"
@@ -51,5 +51,9 @@ export default class LedgerHeadersRepo {
   // Returns min ledger number
   public findMinSeq(): Promise<number> {
     return this.db.oneOrNone(sql.selectMinLedger, null, res => res.ledgerseq);
+  }
+
+  public getLastLedgerHeader(): Promise<LedgerHeader> {
+    return this.db.one(sql.selectMaxLedger, null, res => LedgerHeaderFactory.fromDb(res));
   }
 }
