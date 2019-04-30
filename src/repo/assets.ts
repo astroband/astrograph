@@ -45,22 +45,24 @@ export default class AssetsRepo {
 
   public async findHolders(asset: Asset, paging: PagingParams) {
     const { limit, cursor, order } = parseCursorPagination(paging);
+    const ascending = order === SortOrder.ASC;
+
     const queryBuilder = squel
       .select()
       .from("trustlines")
       .where("assetcode = ?", asset.getCode())
       .where("issuer = ?", asset.getIssuer())
-      .order("balance", order === SortOrder.ASC) // we must order by balance first to support cursor pagination
-      .order("accountid", order !== SortOrder.ASC) // inversion of above
+      .order("balance", ascending)
+      .order("accountid", ascending)
       .limit(limit);
 
     if (cursor) {
       const [accountId, , balance] = Balance.parsePagingToken(cursor);
 
-      if (paging.after) {
-        queryBuilder.where("(balance = ? AND accountid > ?) OR balance < ?", balance, accountId, balance);
-      } else if (paging.before) {
-        queryBuilder.where("(balance = ? AND accountid < ?) OR balance > ?", balance, accountId, balance);
+      if (ascending) {
+        queryBuilder.where("(balance, accountid) > (?, ?)", balance, accountId);
+      } else {
+        queryBuilder.where("(balance, accountid) < (?, ?)", balance, accountId);
       }
     }
 
