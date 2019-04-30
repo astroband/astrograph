@@ -2,9 +2,9 @@ import _ from "lodash";
 import { IDatabase } from "pg-promise";
 import squel from "squel";
 import { Asset } from "stellar-sdk";
-import { Offer } from "../model";
+import { AccountID, AssetID, Offer } from "../model";
 import { AssetFactory, IOfferTableRow, OfferFactory } from "../model/factories";
-import { isForward, PagingParams, parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
+import { PagingParams, parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
 
 const sql = {
   selectOffersIn: "SELECT * FROM offers WHERE offerid IN ($1:csv) ORDER BY offerid ASC"
@@ -18,32 +18,32 @@ export default class OffersRepo {
   }
 
   public async findAll(
-    criteria?: {
-      seller?: string;
-      selling?: string;
-      buying?: string;
+    criteria: {
+      seller?: AccountID;
+      selling?: AssetID;
+      buying?: AssetID;
     },
-    paging: PagingParams = { first: 10, order: SortOrder.DESC }
+    paging: PagingParams
   ) {
     const { limit, order } = parseCursorPagination(paging);
-    const queryBuilder = squel.select().from("offers");
+    const queryBuilder = squel
+      .select()
+      .from("offers")
+      .limit(limit)
+      .order("offerid", order === SortOrder.ASC);
 
-    if (isForward(paging) && paging.after) {
+    if (paging.after) {
       queryBuilder.where("offerid < ?", paging.after);
-    } else if (!isForward(paging) && paging.before) {
+    } else if (paging.before) {
       queryBuilder.where("offerid > ?", paging.before);
     }
 
-    queryBuilder.limit(limit).order("offerid", order === SortOrder.ASC);
-
-    if (criteria) {
-      if (criteria.seller) {
-        queryBuilder.where("sellerid = ?", criteria.seller);
-      }
-
-      this.appendAsset(queryBuilder, "selling", criteria.selling);
-      this.appendAsset(queryBuilder, "buying", criteria.buying);
+    if (criteria.seller) {
+      queryBuilder.where("sellerid = ?", criteria.seller);
     }
+
+    this.appendAsset(queryBuilder, "selling", criteria.selling);
+    this.appendAsset(queryBuilder, "buying", criteria.buying);
 
     const res = await this.db.manyOrNone(queryBuilder.toString());
     const offers = res.map(a => OfferFactory.fromDb(a));
@@ -105,7 +105,7 @@ export default class OffersRepo {
     return ids.map<Offer | null>(id => offers.find(a => a.id === id) || null);
   }
 
-  private appendAsset(queryBuilder: any, prefix: string, assetId?: string) {
+  private appendAsset(queryBuilder: any, prefix: string, assetId?: AssetID) {
     if (!assetId) {
       return;
     }
