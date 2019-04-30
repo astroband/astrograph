@@ -1,5 +1,5 @@
 import { IAssetInput } from "../../../model/asset_input";
-import { PagingParams } from "../../horizon/base";
+import { PagingParams } from "../../../util/paging";
 import { IHorizonAssetData } from "../../types";
 
 export class HorizonAssetsDataSource {

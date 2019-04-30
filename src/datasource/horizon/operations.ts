@@ -1,7 +1,7 @@
 import { AccountID } from "../../model";
-import { parseCursorPagination, properlyOrdered } from "../../util/paging";
+import { PagingParams, parseCursorPagination, properlyOrdered } from "../../util/paging";
 import { IHorizonOperationData } from "../types";
-import { BaseHorizonDataSource, PagingParams } from "./base";
+import { BaseHorizonDataSource } from "./base";
 
 export class HorizonOperationsDataSource extends BaseHorizonDataSource {
   public async byId(operationId: string): Promise<IHorizonOperationData> {

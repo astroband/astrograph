@@ -1,7 +1,7 @@
 import { IAssetInput } from "../../model";
-import { parseCursorPagination, properlyOrdered } from "../../util/paging";
+import { PagingParams, parseCursorPagination, properlyOrdered } from "../../util/paging";
 import { IHorizonAssetData } from "../types";
-import { BaseHorizonDataSource, PagingParams } from "./base";
+import { BaseHorizonDataSource } from "./base";
 
 export class HorizonAssetsDataSource extends BaseHorizonDataSource {
   public async all(criteria: IAssetInput, pagingParams: PagingParams): Promise<IHorizonAssetData[]> {

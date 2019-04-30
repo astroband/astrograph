@@ -1,7 +1,8 @@
 import { AccountID, IAssetInput } from "../../model";
 import { AssetFactory } from "../../model/factories";
+import { PagingParams, parseCursorPagination, properlyOrdered } from "../../util/paging";
 import { IHorizonTradeAggregationData, IHorizonTradeData } from "../types";
-import { BaseHorizonDataSource, PagingParams } from "./base";
+import { BaseHorizonDataSource } from "./base";
 
 export class HorizonTradesDataSource extends BaseHorizonDataSource {
   public async all(
@@ -12,7 +13,7 @@ export class HorizonTradesDataSource extends BaseHorizonDataSource {
   ): Promise<IHorizonTradeData[]> {
     const params: any = {
       offer_id: offerID,
-      ...this.parseCursorPagination(pagingParams),
+      ...parseCursorPagination(pagingParams),
       cacheTtl: 60 * 15
     };
 
@@ -34,9 +35,9 @@ export class HorizonTradesDataSource extends BaseHorizonDataSource {
   }
 
   public async forAccount(accountID: AccountID, pagingParams: PagingParams): Promise<IHorizonTradeData[]> {
-    return this.properlyOrdered(
+    return properlyOrdered(
       await this.request(`/accounts/${accountID}/trades`, {
-        ...this.parseCursorPagination(pagingParams),
+        ...parseCursorPagination(pagingParams),
         cacheTtl: 60 * 15
       }),
       pagingParams
@@ -44,9 +45,9 @@ export class HorizonTradesDataSource extends BaseHorizonDataSource {
   }
 
   public async forOffer(offerID: string, pagingParams: PagingParams): Promise<IHorizonTradeData[]> {
-    return this.properlyOrdered(
+    return properlyOrdered(
       await this.request(`/offers/${offerID}/trades`, {
-        ...this.parseCursorPagination(pagingParams),
+        ...parseCursorPagination(pagingParams),
         cacheTtl: 60 * 15
       }),
       pagingParams
@@ -74,7 +75,7 @@ export class HorizonTradesDataSource extends BaseHorizonDataSource {
       start_time: startTime,
       end_time: endTime,
       resolution,
-      ...this.parseCursorPagination(pagingParams),
+      ...parseCursorPagination(pagingParams),
       cacheTtl: 60 * 5
     });
   }

@@ -1,19 +1,20 @@
 import { AccountID } from "../../model";
+import { PagingParams, parseCursorPagination, properlyOrdered } from "../../util/paging";
 import { IHorizonEffectData } from "../types";
-import { BaseHorizonDataSource, PagingParams } from "./base";
+import { BaseHorizonDataSource } from "./base";
 
 export class HorizonEffectsDataSource extends BaseHorizonDataSource {
   public async all(pagingParams: PagingParams): Promise<IHorizonEffectData[]> {
-    return this.properlyOrdered(
-      await this.request("effects", { ...this.parseCursorPagination(pagingParams), cacheTtl: 10 }),
+    return properlyOrdered(
+      await this.request("effects", { ...parseCursorPagination(pagingParams), cacheTtl: 10 }),
       pagingParams
     );
   }
 
   public async forTransaction(transactionId: string, pagingParams: PagingParams): Promise<IHorizonEffectData[]> {
-    return this.properlyOrdered(
+    return properlyOrdered(
       await this.request(`transactions/${transactionId}/effects`, {
-        ...this.parseCursorPagination(pagingParams),
+        ...parseCursorPagination(pagingParams),
         cacheTtl: 10
       }),
       pagingParams
@@ -21,9 +22,9 @@ export class HorizonEffectsDataSource extends BaseHorizonDataSource {
   }
 
   public async forAccount(accountId: AccountID, pagingParams: PagingParams): Promise<IHorizonEffectData[]> {
-    return this.properlyOrdered(
+    return properlyOrdered(
       await this.request(`accounts/${accountId}/effects`, {
-        ...this.parseCursorPagination(pagingParams),
+        ...parseCursorPagination(pagingParams),
         cacheTtl: 10
       }),
       pagingParams
@@ -31,9 +32,9 @@ export class HorizonEffectsDataSource extends BaseHorizonDataSource {
   }
 
   public async forLedger(ledgerSeq: number, pagingParams: PagingParams): Promise<IHorizonEffectData[]> {
-    return this.properlyOrdered(
+    return properlyOrdered(
       await this.request(`ledgers/${ledgerSeq}/effects`, {
-        ...this.parseCursorPagination(pagingParams),
+        ...parseCursorPagination(pagingParams),
         cacheTtl: 10
       }),
       pagingParams

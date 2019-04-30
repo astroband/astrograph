@@ -1,10 +1,9 @@
 import { IDatabase } from "pg-promise";
 import squel from "squel";
 import { Asset } from "stellar-sdk";
-import { PagingParams } from "../datasource/horizon/base";
 import { Balance } from "../model";
 import { BalanceFactory } from "../model/factories";
-import { parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
+import { PagingParams, parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
 
 export default class AssetsRepo {
   private db: IDatabase<any>;

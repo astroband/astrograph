@@ -1,4 +1,14 @@
-import { PagingParams } from "../datasource/horizon/base";
+interface IForwardPagingParams {
+  first: number;
+  after: string;
+}
+
+interface IBackwardPagingParams {
+  last: number;
+  before: string;
+}
+
+export type PagingParams = IForwardPagingParams & IBackwardPagingParams;
 
 export enum SortOrder {
   DESC = "desc",
@@ -14,7 +24,7 @@ export function invertSortOrder(order: SortOrder) {
 }
 
 export function parseCursorPagination(args: PagingParams) {
-  const { first, after, last, before, order = SortOrder.ASC } = args;
+  const { first, after, last, before } = args;
 
   if (!first && !last) {
     throw new Error("Missing paging parameters");
@@ -22,7 +32,7 @@ export function parseCursorPagination(args: PagingParams) {
 
   return {
     limit: first || last,
-    order: last ? invertSortOrder(order) : order,
+    order: last ? SortOrder.DESC : SortOrder.ASC,
     cursor: last ? before : after
   };
 }

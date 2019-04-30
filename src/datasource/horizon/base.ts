@@ -1,17 +1,5 @@
 import { RESTDataSource } from "apollo-datasource-rest";
-import { invertSortOrder, SortOrder } from "../../util/paging";
-
-interface IForwardPagingParams {
-  first: number;
-  after: string;
-}
-
-interface IBackwardPagingParams {
-  last: number;
-  before: string;
-}
-
-export type PagingParams = IForwardPagingParams & IBackwardPagingParams & { order: SortOrder };
+import { SortOrder } from "../../util/paging";
 
 export abstract class BaseHorizonDataSource extends RESTDataSource {
   constructor() {
@@ -55,27 +43,5 @@ export abstract class BaseHorizonDataSource extends RESTDataSource {
     delete response._links;
 
     return response;
-  }
-
-  protected parseCursorPagination(args: PagingParams) {
-    const { first, after, last, before, order = SortOrder.DESC } = args;
-
-    if (!first && !last) {
-      throw new Error("Missing paging parameters");
-    }
-
-    return {
-      limit: first || last,
-      order: before ? invertSortOrder(order) : order,
-      cursor: last ? before : after
-    };
-  }
-
-  protected properlyOrdered(records: any[], pagingParams: PagingParams): any[] {
-    if (pagingParams.last && pagingParams.before) {
-      return records.reverse();
-    }
-
-    return records;
   }
 }
