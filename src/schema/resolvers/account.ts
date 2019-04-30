@@ -67,6 +67,7 @@ const accountSubscription = (event: string) => {
 
 export default {
   Account: {
+    homeDomain: (root: Account) => Buffer.from(root.homeDomain, "base64").toString(),
     data: dataEntriesResolver,
     balances: balancesResolver,
     ledger: resolvers.ledger,
@@ -104,7 +105,10 @@ export default {
       return acc;
     },
     accounts: async (root: any, args: any) => {
-      return db.accounts.findAllByIDs(args.id);
+      const { ids, homeDomain, ...paging } = args;
+      const accounts = await db.accounts.findAll({ ids, homeDomain }, paging);
+
+      return makeConnection<Account>(accounts);
     }
   },
   Subscription: {
