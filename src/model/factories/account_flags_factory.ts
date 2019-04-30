@@ -7,7 +7,7 @@ export class AccountFlagsFactory {
 
     const data: IAccountFlags = {
       authRequired: (value & fl.authRequiredFlag().value) > 0,
-      authRevokable: (value & fl.authRevocableFlag().value) > 0,
+      authRevocable: (value & fl.authRevocableFlag().value) > 0,
       authImmutable: (value & fl.authImmutableFlag().value) > 0
     };
 

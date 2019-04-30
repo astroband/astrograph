@@ -12,7 +12,7 @@
     }
     flags {
       authRequired
-      authRevokable
+      authRevocable
       authImmutable
     }
     thresholds {

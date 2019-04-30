@@ -59,7 +59,7 @@ export interface IAccountHomeDomainUpdatedEffect extends IBaseEffect {
 
 export interface IAccountFlagsUpdatedEffect extends IBaseEffect {
   authRequiredFlag?: boolean;
-  authRevokableFlag?: boolean;
+  authRevocableFlag?: boolean;
 }
 
 export interface ISignerCreatedEffect extends IBaseEffect {

@@ -2,25 +2,25 @@ import { HorizonAccountFlag } from "../datasource/types";
 
 export interface IAccountFlags {
   authRequired: boolean;
-  authRevokable: boolean;
+  authRevocable: boolean;
   authImmutable: boolean;
 }
 
 export class AccountFlags implements IAccountFlags {
   public authRequired: boolean;
-  public authRevokable: boolean;
+  public authRevocable: boolean;
   public authImmutable: boolean;
 
   constructor(data: IAccountFlags) {
     this.authRequired = data.authRequired;
-    this.authRevokable = data.authRevokable;
+    this.authRevocable = data.authRevocable;
     this.authImmutable = data.authImmutable;
   }
 
   public equals(other: IAccountFlags): boolean {
     return (
       this.authRequired === other.authRequired &&
-      this.authRevokable === other.authRevokable &&
+      this.authRevocable === other.authRevocable &&
       this.authImmutable === other.authImmutable
     );
   }
@@ -32,7 +32,7 @@ export class AccountFlags implements IAccountFlags {
       result.push("auth_required");
     }
 
-    if (this.authRevokable) {
+    if (this.authRevocable) {
       result.push("auth_revocable");
     }
 

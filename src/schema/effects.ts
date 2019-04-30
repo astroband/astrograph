@@ -93,7 +93,7 @@ export const typeDefs = gql`
     kind: EffectKind!
     createdAt: DateTime!
     authRequiredFlag: Boolean
-    authRevokableFlag: Boolean
+    authRevocableFlag: Boolean
   }
 
   type AccountInflationDestinationUpdatedEffect implements Effect {

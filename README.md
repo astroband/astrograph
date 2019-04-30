@@ -115,7 +115,7 @@ query {
     }
     flags {
       authRequired
-      authRevokable
+      authRevocable
       authImmutable
     }
     thresholds {

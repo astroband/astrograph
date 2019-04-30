@@ -9,7 +9,7 @@ export const typeDefs = gql`
     "Requires the issuing account to give other accounts permission before they can hold the issuing account’s credit"
     authRequired: Boolean!
     "Allows the issuing account to revoke its credit held by other accounts"
-    authRevokable: Boolean!
+    authRevocable: Boolean!
     "If this is set then none of the authorization flags can be set and the account can never be deleted"
     authImmutable: Boolean!
   }

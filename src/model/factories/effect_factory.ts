@@ -27,7 +27,7 @@ export class EffectFactory {
       case EffectKinds.AccountHomeDomainUpdated:
         return { ...baseData, homeDomain: data.home_domain };
       case EffectKinds.AccountFlagsUpdated:
-        return { ...baseData, authRequiredFlag: data.auth_required_flag, authRevokableFlag: data.auth_revokable_flag };
+        return { ...baseData, authRequiredFlag: data.auth_required_flag, authRevocableFlag: data.auth_revokable_flag };
       case EffectKinds.SignerCreated:
       case EffectKinds.SignerUpdated:
       case EffectKinds.SignerRemoved:

@@ -10,7 +10,7 @@ Factory.define("account_values")
   .attr("inflationDestination", "")
   .attr("homeDomain", "")
   .attr("thresholds", new AccountThresholds({ masterWeight: 1, low: 1, medium: 1, high: 1 }))
-  .attr("flags", new AccountFlags({ authRequired: false, authImmutable: false, authRevokable: false }))
+  .attr("flags", new AccountFlags({ authRequired: false, authImmutable: false, authRevocable: false }))
   .attr("lastModified", 6)
   .attr("signers", []);
 

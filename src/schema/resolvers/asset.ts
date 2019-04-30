@@ -36,7 +36,7 @@ export default {
           numAccounts: r.num_accounts,
           flags: {
             authRequired: r.flags.auth_required,
-            authRevokable: r.flags.auth_revocable,
+            authRevocable: r.flags.auth_revocable,
             authImmutable: r.flags.auth_immutable
           }
         };
