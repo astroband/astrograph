@@ -10,7 +10,6 @@ import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 import { IHorizonTradeData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
 import { toFloatAmountString } from "../../util/stellar";
-import { SortOrder } from "../../util/paging";
 
 const offerMatches = (variables: any, payload: any): boolean => {
   const sellingAssetEq = variables.args.sellingAssetEq;
@@ -70,7 +69,7 @@ export default {
   },
   Query: {
     offers: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const { first, last, after, before, order = SortOrder.DESC, ...criteria } = args;
+      const { first, last, after, before, ...criteria } = args;
       const offers = await db.offers.findAll(criteria, { first, last, after, before });
 
       return makeConnection<Offer>(offers);

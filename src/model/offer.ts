@@ -42,7 +42,7 @@ export class Offer implements IOffer {
     this.lastModified = data.lastModified;
   }
 
-  get paging_token() {
+  public get paging_token() {
     return this.id;
   }
 }
