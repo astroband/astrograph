@@ -68,7 +68,7 @@ const accountSubscription = (event: string) => {
 export default {
   Account: {
     reservedBalance: async (root: Account) => {
-      return toFloatAmountString(await getReservedBalance(root.numSubentries));
+      return toFloatAmountString(getReservedBalance(root.numSubentries));
     },
     data: dataEntriesResolver,
     balances: balancesResolver,
