@@ -69,7 +69,7 @@ export default {
   Account: {
     homeDomain: (root: Account) => Buffer.from(root.homeDomain, "base64").toString(),
     reservedBalance: async (root: Account) => {
-      return toFloatAmountString(await getReservedBalance(root.numSubentries));
+      return toFloatAmountString(getReservedBalance(root.numSubentries));
     },
     data: dataEntriesResolver,
     balances: balancesResolver,

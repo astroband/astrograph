@@ -3,9 +3,9 @@ import "./util/asset";
 import logger from "./util/logger";
 import "./util/memo";
 import { SENTRY_DSN } from "./util/secrets";
-import { setNetwork as setStellarNetwork } from "./util/stellar";
+import { setNetwork as setStellarNetwork, updateBaseReserve } from "./util/stellar";
 
-export default function init(): void {
+export default async function init(): Promise<void> {
   if (SENTRY_DSN) {
     Sentry.init({
       dsn: SENTRY_DSN,
@@ -15,4 +15,6 @@ export default function init(): void {
 
   const network = setStellarNetwork();
   logger.info(`Using ${network}`);
+
+  await updateBaseReserve();
 }
