@@ -1,10 +1,9 @@
 import _ from "lodash";
 import { IDatabase } from "pg-promise";
 import squel from "squel";
-import { PagingParams } from "../datasource/horizon/base";
 import { Account, AccountID } from "../model";
 import { AccountFactory, IAccountTableRow } from "../model/factories";
-import { parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
+import { parseCursorPagination, PagingParams, properlyOrdered, SortOrder } from "../util/paging";
 
 const sql = {
   selectAccount: "SELECT * FROM accounts WHERE accountid = $1",
