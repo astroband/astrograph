@@ -9,6 +9,7 @@ import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
 import { IHorizonTradeData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
+import { toFloatAmountString } from "../../util/stellar";
 
 const offerMatches = (variables: any, payload: any): boolean => {
   const sellingAssetEq = variables.args.sellingAssetEq;
@@ -51,6 +52,7 @@ const offerSubscription = (event: string) => {
 
 export default {
   Offer: {
+    amount: (root: Offer) => toFloatAmountString(root.amount),
     seller: resolvers.account,
     selling: resolvers.asset,
     buying: resolvers.asset,

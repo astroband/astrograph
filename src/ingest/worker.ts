@@ -1,5 +1,5 @@
 import { Publisher } from "../pubsub";
-import { setBaseReserve } from "../util/stellar";
+import { setBaseReserve } from "../util/base_reserve";
 import { Cursor } from "./cursor";
 
 export class Worker {

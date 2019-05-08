@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { Asset, xdr as XDR } from "stellar-base";
 import { Account, Balance, IBalance } from "../";
 import { MAX_INT64 } from "../../util";
-import { getReservedBalance } from "../../util/stellar";
+import { getReservedBalance } from "../../util/base_reserve";
 import { AssetFactory } from "./";
 
 export interface ITrustLineTableRow {

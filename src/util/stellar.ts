@@ -1,19 +1,12 @@
 import BigNumber from "bignumber.js";
-import { Keypair, Network } from "stellar-base";
+import { Network } from "stellar-base";
 import { db } from "../database";
 import { Ledger } from "../model";
 import { LEDGER_CREATED, pubsub } from "../pubsub";
+import { setBaseReserve } from "./base_reserve";
 import { STELLAR_NETWORK } from "./secrets";
 
-setNetwork();
-
 const StellarAmountPrecision = 7;
-
-export const NATIVE_ASSET_CODE = "XLM";
-export const NETWORK_MASTER_KEY = Keypair.master().publicKey();
-// default value from current network state
-// it would be updated from real stellar-core database on the app init
-let baseReserve = 5000000;
 
 export type MemoType = "hash" | "return" | "text" | "id";
 
@@ -38,15 +31,7 @@ export function toFloatAmountString(amount: string | number | BigNumber): string
 
 export async function updateBaseReserve(): Promise<void> {
   const lastLedgerHeader = await db.ledgerHeaders.getLastLedgerHeader();
-  baseReserve = lastLedgerHeader.baseReserve;
-}
-
-export function setBaseReserve(newBaseReserve: number): void {
-  baseReserve = newBaseReserve;
-}
-
-export function getReservedBalance(numSubentries: number) {
-  return (2 + numSubentries) * baseReserve;
+  setBaseReserve(lastLedgerHeader.baseReserve);
 }
 
 export function listenBaseReserveChange(): void {

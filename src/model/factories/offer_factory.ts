@@ -2,7 +2,6 @@ import { Asset, xdr as XDR } from "stellar-base";
 import { IOffer, IOfferBase, Offer } from "../offer";
 
 import { calculateOfferPrice } from "../../util/offer";
-import { toFloatAmountString } from "../../util/stellar";
 import { AssetFactory } from "./";
 
 export interface IOfferTableRow {
@@ -25,7 +24,7 @@ export class OfferFactory {
       seller: row.sellerid,
       selling: AssetFactory.fromXDR(row.sellingasset),
       buying: AssetFactory.fromXDR(row.buyingasset),
-      amount: toFloatAmountString(row.amount),
+      amount: row.amount,
       priceN: row.pricen,
       priceD: row.priced,
       price: calculateOfferPrice(row.pricen, row.priced),
