@@ -2,7 +2,8 @@ import { BigNumber } from "bignumber.js";
 import { VarArray } from "js-xdr";
 import { xdr } from "stellar-base";
 import { Account, IAccount } from "../account";
-import { AccountThresholdsFactory, SignerFactory } from "./";
+import { AccountFlagsFactory, AccountThresholdsFactory, SignerFactory } from "./";
+import { Account as AccountEntity } from "../../orm/entities/account";
 
 export interface IAccountTableRow {
   accountid: string;
@@ -20,15 +21,15 @@ export interface IAccountTableRow {
 }
 
 export class AccountFactory {
-  public static fromDb(row: IAccountTableRow): Account {
+  public static fromDb(row: AccountEntity): Account {
     const data: IAccount = {
-      id: row.accountid,
+      id: row.id,
       balance: row.balance,
-      sequenceNumber: row.seqnum,
-      numSubentries: row.numsubentries,
-      inflationDestination: row.inflationdest,
-      homeDomain: row.homedomain,
-      lastModified: row.lastmodified,
+      sequenceNumber: row.sequenceNumber,
+      numSubentries: row.numSubentries,
+      inflationDestination: row.inflationDestination,
+      homeDomain: row.homeDomain,
+      lastModified: row.lastModified,
       thresholds: AccountThresholdsFactory.fromValue(row.thresholds),
       sellingLiabilities: new BigNumber(row.sellingliabilities),
       buyingLiabilities: new BigNumber(row.buyingliabilities)
@@ -36,7 +37,7 @@ export class AccountFactory {
 
     if (row.signers) {
       const signersArray = new VarArray(xdr.Signer).fromXDR(row.signers, "base64");
-      data.signers = signersArray.map((signerXDR: any) => SignerFactory.fromXDR(signerXDR, row.accountid));
+      data.signers = signersArray.map((signerXDR: any) => SignerFactory.fromXDR(signerXDR, row.id));
     }
 
     return new Account(data);
