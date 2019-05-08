@@ -21,13 +21,19 @@ const balanceSubscription = (event: string) => {
   };
 };
 
+const floatAmountFormatResolver = (field: string) => {
+  return (root: Balance) => toFloatAmountString(root[field]);
+};
+
 export default {
   Balance: {
     account: resolvers.account,
     ledger: resolvers.ledger,
     asset: resolvers.asset,
-    limit: (root: Balance) => toFloatAmountString(root.limit),
-    balance: (root: Balance) => toFloatAmountString(root.balance)
+    limit: floatAmountFormatResolver("limit"),
+    balance: floatAmountFormatResolver("balance"),
+    spendableBalance: floatAmountFormatResolver("spendableBalance"),
+    receivableBalance: floatAmountFormatResolver("receivableBalance")
   },
   BalanceSubscriptionPayload: {
     account: resolvers.account,

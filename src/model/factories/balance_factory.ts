@@ -1,8 +1,9 @@
+import BigNumber from "bignumber.js";
 import { Asset, xdr as XDR } from "stellar-base";
-import { AssetFactory } from ".";
+import { Account, Balance, IBalance } from "../";
 import { MAX_INT64 } from "../../util";
-import { Account } from "../account";
-import { Balance, IBalance } from "../balance";
+import { getReservedBalance } from "../../util/base_reserve";
+import { AssetFactory } from "./";
 
 export interface ITrustLineTableRow {
   accountid: string;
@@ -19,26 +20,37 @@ export interface ITrustLineTableRow {
 
 export class BalanceFactory {
   public static fromDb(row: ITrustLineTableRow): Balance {
+    const balance = new BigNumber(row.balance);
+    const limit = new BigNumber(row.tlimit);
+
     const data: IBalance = {
       account: row.accountid,
-      balance: row.balance,
-      limit: row.tlimit,
+      balance,
+      limit,
       lastModified: row.lastmodified,
       asset: AssetFactory.fromDb(row.assettype, row.assetcode, row.issuer),
-      authorized: (row.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0
+      authorized: (row.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0,
+      spendableBalance: balance.minus(row.sellingliabilities || 0),
+      receivableBalance: limit.minus(row.buyingliabilities || 0).minus(balance)
     };
 
     return new Balance(data);
   }
 
-  public static nativeForAccount(account: Account): IBalance {
+  public static async nativeForAccount(account: Account): Promise<IBalance> {
+    const balance = new BigNumber(account.balance);
+    const limit = new BigNumber(MAX_INT64);
+    const minBalance = await getReservedBalance(account.numSubentries);
+
     return new Balance({
       account: account.id,
       asset: Asset.native(),
-      balance: account.balance,
-      limit: MAX_INT64,
+      balance,
+      limit,
       authorized: true,
-      lastModified: account.lastModified
+      lastModified: account.lastModified,
+      spendableBalance: balance.minus(account.sellingLiabilities).minus(minBalance),
+      receivableBalance: limit.minus(account.buyingLiabilities).minus(balance)
     });
   }
 }

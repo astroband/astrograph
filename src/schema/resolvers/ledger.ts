@@ -3,14 +3,21 @@ import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } fr
 import { IApolloContext } from "../../graphql_server";
 import { Effect, Ledger, LedgerHeader, Operation, Transaction } from "../../model";
 import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
-import { pubsub } from "../../pubsub";
+import { LEDGER_CREATED, pubsub } from "../../pubsub";
 import { createBatchResolver, makeConnection } from "./util";
 
-const LEDGER_CREATED = "LEDGER_CREATED";
+const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>(async (ledgers: Ledger[]) => {
+  const seqNumsWithoutHeaders = ledgers.filter(l => l.header === undefined).map(l => l.seq);
+  const headersFromDb = await db.ledgerHeaders.findAllBySeq(seqNumsWithoutHeaders);
 
-const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>((source: any) =>
-  db.ledgerHeaders.findAllBySeq(source.map((r: Ledger) => r.seq))
-);
+  return ledgers.map(l => {
+    if (l.header) {
+      return l.header;
+    }
+
+    return headersFromDb.find(h => h !== null && h.ledgerSeq === l.seq) || null;
+  });
+});
 
 export default {
   Ledger: {
@@ -50,7 +57,7 @@ export default {
         return payload;
       },
       subscribe() {
-        return pubsub.asyncIterator([LEDGER_CREATED]);
+        return pubsub.asyncIterator(LEDGER_CREATED);
       }
     }
   }

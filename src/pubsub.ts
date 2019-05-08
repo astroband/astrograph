@@ -37,7 +37,7 @@ export class Publisher {
   public static async publish(header: LedgerHeader, transactions: TransactionWithXDR[]) {
     const collection = new SubscriptionPayloadCollection(transactions);
 
-    pubsub.publish(LEDGER_CREATED, new Ledger(header.ledgerSeq));
+    pubsub.publish(LEDGER_CREATED, new Ledger(header.ledgerSeq, header));
 
     const assetsBidTicks: Set<string> = new Set();
 
