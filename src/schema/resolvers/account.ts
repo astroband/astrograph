@@ -1,3 +1,4 @@
+import { getRepository } from "typeorm";
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
 
@@ -12,8 +13,10 @@ import {
   IHorizonTransactionData
 } from "../../datasource/types";
 
+import { Account as AccountEntity } from "../../orm/entities/account";
 import { Account, Balance, DataEntry, Effect, Operation, Trade, Transaction } from "../../model";
 import {
+  AccountFactory,
   BalanceFactory,
   EffectFactory,
   OperationFactory,
@@ -103,8 +106,8 @@ export default {
   },
   Query: {
     account: async (root: any, args: any) => {
-      const acc = await db.accounts.findByID(args.id);
-      return acc;
+      const row = await getRepository(AccountEntity).findOne(args.id);
+      return row ? AccountFactory.fromDb(row) : null;
     },
     accounts: async (root: any, args: any) => {
       const { ids, homeDomain, ...paging } = args;

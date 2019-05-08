@@ -1,14 +1,16 @@
+import { createConnection } from "typeorm";
 import * as Sentry from "@sentry/node";
+import { Account } from "./orm/entities/account";
 import "./util/asset";
 import logger from "./util/logger";
 import "./util/memo";
-import { SENTRY_DSN } from "./util/secrets";
+import * as secrets from "./util/secrets";
 import { setNetwork as setStellarNetwork, updateBaseReserve } from "./util/stellar";
 
 export default async function init(): Promise<void> {
-  if (SENTRY_DSN) {
+  if (secrets.SENTRY_DSN) {
     Sentry.init({
-      dsn: SENTRY_DSN,
+      dsn: secrets.SENTRY_DSN,
       integrations: [new Sentry.Integrations.RewriteFrames({ root: __dirname || process.cwd() })]
     });
   }
@@ -17,4 +19,15 @@ export default async function init(): Promise<void> {
   logger.info(`Using ${network}`);
 
   await updateBaseReserve();
+  await createConnection({
+    type: "postgres",
+    host: secrets.DBHOST,
+    port: secrets.DBPORT,
+    username: secrets.DBUSER,
+    password: secrets.DBPASSWORD,
+    database: secrets.DB,
+    entities: [Account],
+    synchronize: false,
+    logging: process.env.DEBUG_SQL !== undefined
+  });
 }
