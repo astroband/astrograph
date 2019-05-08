@@ -40,4 +40,8 @@ export class Account implements IAccount {
     this.flags = data.flags;
     this.signers = data.signers;
   }
+
+  public get paging_token() {
+    return this.id;
+  }
 }

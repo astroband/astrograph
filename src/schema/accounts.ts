@@ -107,6 +107,17 @@ export const typeDefs = gql`
     signers: [Signer]
   }
 
+  type AccountConnection {
+    pageInfo: PageInfo!
+    nodes: [Account]
+    edges: [AccountEdge]
+  }
+
+  type AccountEdge {
+    cursor: String!
+    node: Account
+  }
+
   "Represents an account update payload, which is broadcasting to subscribers"
   type AccountSubscriptionPayload {
     id: AccountID!
@@ -128,7 +139,14 @@ export const typeDefs = gql`
     "Get single account by the id"
     account(id: AccountID!): Account
     "Get a lists of accounts by the ids"
-    accounts(id: [AccountID!]!): [Account]
+    accounts(
+      ids: [AccountID!]
+      homeDomain: String
+      first: Int
+      last: Int
+      after: String
+      before: String
+    ): AccountConnection
   }
 
   extend type Subscription {

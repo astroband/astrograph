@@ -1,7 +1,9 @@
 import _ from "lodash";
 import { IDatabase } from "pg-promise";
-import { Account } from "../model";
+import squel from "squel";
+import { Account, AccountID } from "../model";
 import { AccountFactory, IAccountTableRow } from "../model/factories";
+import { parseCursorPagination, PagingParams, properlyOrdered, SortOrder } from "../util/paging";
 
 const sql = {
   selectAccount: "SELECT * FROM accounts WHERE accountid = $1",
@@ -9,6 +11,11 @@ const sql = {
   selectSignedAccountIds:
     "SELECT * FROM accounts WHERE accountid IN (SELECT accountid FROM signers WHERE publickey = $1 ORDER BY accountid LIMIT $2)"
 };
+
+interface IFindAllCriteria {
+  ids?: AccountID[];
+  homeDomain?: string;
+}
 
 export default class AccountsRepo {
   private db: IDatabase<any>;
@@ -33,6 +40,35 @@ export default class AccountsRepo {
     const accounts = res.map((v: IAccountTableRow) => AccountFactory.fromDb(v));
 
     return ids.map<Account | null>(id => accounts.find(a => a.id === id) || null);
+  }
+
+  public async findAll(criteria: IFindAllCriteria, paging: PagingParams) {
+    const { limit, order } = parseCursorPagination(paging);
+
+    const queryBuilder = squel
+      .select()
+      .from("accounts")
+      .order("accountid", order === SortOrder.ASC)
+      .limit(limit);
+
+    if (criteria.ids) {
+      queryBuilder.where("accountid IN ?", criteria.ids);
+    }
+
+    if (criteria.homeDomain) {
+      queryBuilder.where("homedomain = ?", Buffer.from(criteria.homeDomain).toString("base64"));
+    }
+
+    if (paging.after) {
+      queryBuilder.where("accountid > ?", paging.after);
+    } else if (paging.before) {
+      queryBuilder.where("accountid < ?", paging.before);
+    }
+
+    const res = await this.db.manyOrNone(queryBuilder.toString());
+    const accounts = res.map(r => AccountFactory.fromDb(r));
+
+    return properlyOrdered(accounts, paging);
   }
 
   public async findAllBySigner(id: string, limit: number): Promise<Account[]> {
