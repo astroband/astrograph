@@ -16,7 +16,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 DROP INDEX IF EXISTS public.upgradehistbyseq;
-DROP INDEX IF EXISTS public.signersaccount;
 DROP INDEX IF EXISTS public.sellingissuerindex;
 DROP INDEX IF EXISTS public.scpquorumsbyseq;
 DROP INDEX IF EXISTS public.scpenvsbyseq;
@@ -31,7 +30,6 @@ ALTER TABLE IF EXISTS ONLY public.txhistory DROP CONSTRAINT IF EXISTS txhistory_
 ALTER TABLE IF EXISTS ONLY public.txfeehistory DROP CONSTRAINT IF EXISTS txfeehistory_pkey;
 ALTER TABLE IF EXISTS ONLY public.trustlines DROP CONSTRAINT IF EXISTS trustlines_pkey;
 ALTER TABLE IF EXISTS ONLY public.storestate DROP CONSTRAINT IF EXISTS storestate_pkey;
-ALTER TABLE IF EXISTS ONLY public.signers DROP CONSTRAINT IF EXISTS signers_pkey;
 ALTER TABLE IF EXISTS ONLY public.scpquorums DROP CONSTRAINT IF EXISTS scpquorums_pkey;
 ALTER TABLE IF EXISTS ONLY public.pubsub DROP CONSTRAINT IF EXISTS pubsub_pkey;
 ALTER TABLE IF EXISTS ONLY public.publishqueue DROP CONSTRAINT IF EXISTS publishqueue_pkey;
@@ -47,7 +45,6 @@ DROP TABLE IF EXISTS public.txhistory;
 DROP TABLE IF EXISTS public.txfeehistory;
 DROP TABLE IF EXISTS public.trustlines;
 DROP TABLE IF EXISTS public.storestate;
-DROP TABLE IF EXISTS public.signers;
 DROP TABLE IF EXISTS public.scpquorums;
 DROP TABLE IF EXISTS public.scphistory;
 DROP TABLE IF EXISTS public.pubsub;
@@ -120,6 +117,7 @@ CREATE TABLE public.accounts (
     lastmodified integer NOT NULL,
     buyingliabilities bigint,
     sellingliabilities bigint,
+    signers text,
     CONSTRAINT accounts_balance_check CHECK ((balance >= 0)),
     CONSTRAINT accounts_buyingliabilities_check CHECK ((buyingliabilities >= 0)),
     CONSTRAINT accounts_numsubentries_check CHECK ((numsubentries >= 0)),
@@ -233,18 +231,6 @@ CREATE TABLE public.scpquorums (
     qset text NOT NULL,
     CONSTRAINT scpquorums_lastledgerseq_check CHECK ((lastledgerseq >= 0))
 );
-
-
---
--- Name: signers; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.signers (
-    accountid character varying(56) NOT NULL,
-    publickey character varying(56) NOT NULL,
-    weight integer NOT NULL
-);
-
 
 --
 -- Name: storestate; Type: TABLE; Schema: public; Owner: -
@@ -397,7 +383,7 @@ INSERT INTO public.scpquorums VALUES ('79ed76b1828c1f691649c74e849e21b3be03a2cec
 -- Data for Name: signers; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.signers VALUES ('GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC', 'GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT', 1);
+-- INSERT INTO public.signers VALUES ('GDQWLXN6B7IVBJ2Z2DB2VAEHYEJT4POZBB5DVPL2GWJ67YRSYPLTZ6WC', 'GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT', 1);
 
 
 --
@@ -633,14 +619,6 @@ ALTER TABLE ONLY public.scpquorums
 
 
 --
--- Name: signers signers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.signers
-    ADD CONSTRAINT signers_pkey PRIMARY KEY (accountid, publickey);
-
-
---
 -- Name: storestate storestate_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -741,13 +719,6 @@ CREATE INDEX scpquorumsbyseq ON public.scpquorums USING btree (lastledgerseq);
 --
 
 CREATE INDEX sellingissuerindex ON public.offers USING btree (sellingissuer);
-
-
---
--- Name: signersaccount; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX signersaccount ON public.signers USING btree (accountid);
 
 
 --
