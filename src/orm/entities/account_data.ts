@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { Account } from "./account";
 
 @Entity("accountdata")
@@ -17,5 +17,6 @@ export class AccountData {
   lastModified: number;
 
   @ManyToOne(type => Account, account => account.data)
+  @JoinColumn({ name: "accountid" })
   account: Account;
 }

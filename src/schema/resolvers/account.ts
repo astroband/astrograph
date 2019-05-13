@@ -13,7 +13,7 @@ import {
   IHorizonTransactionData
 } from "../../datasource/types";
 
-import { Account, Balance, DataEntry, Effect, Operation, Trade, Transaction } from "../../model";
+import { Account, Balance, Effect, Operation, Trade, Transaction } from "../../model";
 import {
   BalanceFactory,
   EffectFactory,
@@ -30,10 +30,6 @@ import { joinToMap } from "../../util/array";
 import { getReservedBalance } from "../../util/base_reserve";
 import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
-
-const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
-  db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
-);
 
 const balancesResolver = createBatchResolver<Account, Balance[]>(async (source: Account[]) => {
   const accountIDs = source.map(s => s.id);
@@ -71,13 +67,11 @@ const accountSubscription = (event: string) => {
 
 export default {
   Account: {
-    homeDomain: (root: Account) => Buffer.from(root.homeDomain, "base64").toString(),
     reservedBalance: (root: Account) => toFloatAmountString(getReservedBalance(root.numSubentries)),
     assets: async (root: Account, args: any) => {
       const assets = await db.assets.findAll({ issuer: root.id }, args);
       return makeConnection(assets);
     },
-    data: dataEntriesResolver,
     balances: balancesResolver,
     ledger: resolvers.ledger,
     operations: async (root: Account, args: any, ctx: IApolloContext) => {
@@ -113,7 +107,7 @@ export default {
       return getRepository(AccountEntity).findOne(args.id);
     },
     accounts: async (root: any, args: any) => {
-      const { ids, homeDomain, ...paging } = args;
+      const { ids, homeDomain, data, ...paging } = args;
       const qb = getRepository(AccountEntity).createQueryBuilder("accounts");
 
       if (ids && ids.length !== 0) {
@@ -121,10 +115,20 @@ export default {
       }
 
       if (homeDomain) {
-        qb.andWhere("decode(homedomain, 'base64') = :homeDomain", { homeDomain });
+        qb.andWhere("decode(accounts.homedomain, 'base64') = :homeDomain", { homeDomain });
       }
 
-      return makeConnection<Account>(await paginate(qb, paging, "accountid"));
+      if (data) {
+        qb.innerJoinAndSelect("accounts.data", "data");
+        if (data.name) {
+          qb.andWhere("decode(data.name, 'base64') = :name", { name: data.name });
+        }
+        if (data.value) {
+          qb.andWhere("decode(data.value, 'base64') = :value", { value: data.value });
+        }
+      }
+
+      return makeConnection<Account>(await paginate(qb, paging, "accounts.id"));
     }
   },
   Subscription: {
