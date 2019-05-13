@@ -7,7 +7,6 @@ import pgPromise = require("pg-promise");
 
 import * as secrets from "./util/secrets";
 
-import AccountsRepo from "./repo/accounts";
 import AssetsRepo from "./repo/assets";
 import DataEntriesRepo from "./repo/data_entries";
 import LedgerHeadersRepo from "./repo/ledger_headers";
@@ -18,7 +17,6 @@ import TrustLinesRepo from "./repo/trust_lines";
 
 // Database Interface Extensions:
 interface IExtensions {
-  accounts: AccountsRepo;
   assets: AssetsRepo;
   dataEntries: DataEntriesRepo;
   ledgerHeaders: LedgerHeadersRepo;
@@ -35,7 +33,6 @@ const initOptions: IOptions<IExtensions> = {
   extend(obj: IExtensions) {
     // Do not use 'require()' here, because this event occurs for every task
     // and transaction being executed, which should be as fast as possible.
-    obj.accounts = new AccountsRepo(obj);
     obj.assets = new AssetsRepo(obj);
     obj.dataEntries = new DataEntriesRepo(obj);
     obj.ledgerHeaders = new LedgerHeadersRepo(obj);

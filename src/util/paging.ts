@@ -11,8 +11,8 @@ interface IBackwardPagingParams {
 export type PagingParams = IForwardPagingParams & IBackwardPagingParams;
 
 export enum SortOrder {
-  DESC = "desc",
-  ASC = "asc"
+  DESC = "DESC",
+  ASC = "ASC"
 }
 
 export function invertSortOrder(order: SortOrder) {

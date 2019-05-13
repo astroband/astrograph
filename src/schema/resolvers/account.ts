@@ -1,6 +1,6 @@
-import { getRepository } from "typeorm";
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
+import { getRepository } from "typeorm";
 
 import * as resolvers from "./shared";
 
@@ -13,22 +13,22 @@ import {
   IHorizonTransactionData
 } from "../../datasource/types";
 
-import { Account as AccountEntity } from "../../orm/entities/account";
 import { Account, Balance, DataEntry, Effect, Operation, Trade, Transaction } from "../../model";
 import {
-  AccountFactory,
   BalanceFactory,
   EffectFactory,
   OperationFactory,
   TradeFactory,
   TransactionWithXDRFactory
 } from "../../model/factories";
+import { Account as AccountEntity } from "../../orm/entities/account";
 
 import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
 import { ACCOUNT, pubsub } from "../../pubsub";
 import { joinToMap } from "../../util/array";
 import { getReservedBalance } from "../../util/base_reserve";
+import { parseCursorPagination, properlyOrdered } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
@@ -106,12 +106,30 @@ export default {
   },
   Query: {
     account: async (root: any, args: any) => {
-      const row = await getRepository(AccountEntity).findOne(args.id);
-      return row ? AccountFactory.fromDb(row) : null;
+      return getRepository(AccountEntity).findOne(args.id);
     },
     accounts: async (root: any, args: any) => {
       const { ids, homeDomain, ...paging } = args;
-      const accounts = await db.accounts.findAll({ ids, homeDomain }, paging);
+      const qb = getRepository(AccountEntity).createQueryBuilder("accounts");
+      const { limit, order } = parseCursorPagination(paging);
+
+      qb.orderBy("accounts.accountid", order).take(limit);
+
+      if (ids && ids.length !== 0) {
+        qb.where("accounts.accountid IN (:...ids)", { ids });
+      }
+
+      if (homeDomain) {
+        qb.andWhere("decode(accounts.homedomain, 'base64') = :homeDomain", { homeDomain });
+      }
+
+      if (paging.after) {
+        qb.andWhere("accounts.accountid > :cursor", { cursor: paging.after });
+      } else if (paging.before) {
+        qb.andWhere("accounts.accountid < :cursor", { cursor: paging.before });
+      }
+
+      const accounts = properlyOrdered(await qb.getMany(), paging);
 
       return makeConnection<Account>(accounts);
     }
