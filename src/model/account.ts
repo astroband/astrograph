@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 import { BigNumber } from "bignumber.js";
-import { AccountFlags, AccountID, AccountThresholds, Signer } from "./";
-=======
 import { AccountID, AccountThresholds, Signer } from "./";
->>>>>>> Remove flags from Account
 
 export interface IAccountBase {
   id: string;

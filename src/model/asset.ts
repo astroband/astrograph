@@ -36,7 +36,7 @@ export class Asset {
 
     const parsedFlags = AccountFlagsFactory.fromValue(data.flags);
     this.authRequired = parsedFlags.authRequired;
-    this.authRevocable = parsedFlags.authRevokable;
+    this.authRevocable = parsedFlags.authRevocable;
     this.authImmutable = parsedFlags.authImmutable;
   }
 

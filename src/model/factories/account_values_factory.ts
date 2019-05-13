@@ -1,6 +1,4 @@
-import { AccountFlagsFactory } from "./account_flags_factory";
-import { AccountThresholdsFactory } from "./account_thresholds_factory";
-import { SignerFactory } from "./signer_factory";
+import { AccountThresholdsFactory, SignerFactory } from "./";
 
 import { AccountValues, IAccountValues } from "../";
 
@@ -22,7 +20,6 @@ export class AccountValuesFactory {
       inflationDestination: xdr.inflationDest() || null,
       homeDomain: xdr.homeDomain(),
       thresholds,
-      flags: AccountFlagsFactory.fromValue(xdr.flags()),
       signers
     };
 

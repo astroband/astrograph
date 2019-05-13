@@ -2,7 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { VarArray } from "js-xdr";
 import { xdr } from "stellar-base";
 import { Account, IAccount } from "../account";
-import { AccountFlagsFactory, AccountThresholdsFactory, SignerFactory } from "./";
+import { AccountThresholdsFactory, SignerFactory } from "./";
 
 export interface IAccountTableRow {
   accountid: string;
@@ -30,7 +30,6 @@ export class AccountFactory {
       homeDomain: row.homedomain,
       lastModified: row.lastmodified,
       thresholds: AccountThresholdsFactory.fromValue(row.thresholds),
-      flags: AccountFlagsFactory.fromValue(row.flags),
       sellingLiabilities: new BigNumber(row.sellingliabilities),
       buyingLiabilities: new BigNumber(row.buyingliabilities)
     };
