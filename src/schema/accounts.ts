@@ -135,6 +135,11 @@ export const typeDefs = gql`
     weight: Int!
   }
 
+  input DataInput {
+    name: String
+    value: String
+  }
+
   extend type Query {
     "Get single account by the id"
     account(id: AccountID!): Account
@@ -142,6 +147,7 @@ export const typeDefs = gql`
     accounts(
       ids: [AccountID!]
       homeDomain: String
+      data: DataInput
       first: Int
       last: Int
       after: String

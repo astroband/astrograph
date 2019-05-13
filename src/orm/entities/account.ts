@@ -24,7 +24,13 @@ export class Account {
   @Column({ name: "inflationdest" })
   inflationDestination: string;
 
-  @Column({ name: "homedomain" })
+  @Column({
+    name: "homedomain",
+    transformer: {
+      from: (value: string) => Buffer.from(value, "base64").toString(),
+      to: (value: string) => Buffer.from(value).toString("base64")
+    }
+  })
   homeDomain: string;
 
   @Column({
