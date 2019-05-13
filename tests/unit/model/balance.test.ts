@@ -1,4 +1,3 @@
-import { Asset } from "stellar-sdk";
 import { Balance } from "../../../src/model";
 import { BalanceFactory } from "../../../src/model/factories";
 import { MAX_INT64 } from "../../../src/util";
@@ -34,11 +33,7 @@ describe("constructor", () => {
   it("sets limit", () => expect(subject.limit.toString()).toEqual("9223372036854775807"));
   it("sets balance", () => expect(subject.balance.toString()).toEqual("9600000000"));
   it("sets authorized", () => expect(subject.authorized).toBe(true));
-  it("sets asset", () => {
-    expect(subject.asset).toBeInstanceOf(Asset);
-    expect(subject.asset.getCode()).toEqual(data.assetcode);
-    expect(subject.asset.getIssuer()).toEqual(data.issuer);
-  });
+  it("sets asset", () => expect(subject.asset).toEqual(`${data.assetcode}-${data.issuer}`));
   it("sets spendable balance", () => expect(subject.spendableBalance.toString()).toEqual("9599999700"));
   it("sets receivable balance", () => expect(subject.receivableBalance.toString()).toEqual("9223372027254775707"));
 });
@@ -59,6 +54,6 @@ describe("static buildFakeNative(account)", () => {
     expect(fake.spendableBalance.toString()).toEqual("19706072136");
     expect(fake.receivableBalance.toString()).toEqual("9223372017121827946");
 
-    expect(fake.asset.isNative()).toBe(true);
+    expect(fake.asset).toEqual("native");
   });
 });
