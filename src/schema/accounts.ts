@@ -98,8 +98,6 @@ export const typeDefs = gql`
 
   "Represents a [signers](https://www.stellar.org/developers/guides/concepts/multi-sig.html#additional-signing-keys) of the account"
   type Signer {
-    "Which account this signer belongs to"
-    account: Account!
     "Public key of this signer"
     signer: AccountID!
     "This signer's weight"

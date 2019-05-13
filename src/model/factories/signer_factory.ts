@@ -8,9 +8,8 @@ export interface ISignerTableRow {
 }
 
 export class SignerFactory {
-  public static fromXDR(xdr: any, accountID: string) {
+  public static fromXDR(xdr: any) {
     const data: ISigner = {
-      accountID,
       signer: SignerFactory.keyFromXDR(xdr.key()),
       weight: xdr.weight()
     };
@@ -18,18 +17,8 @@ export class SignerFactory {
     return new Signer(data);
   }
 
-  public static fromDb(row: ISignerTableRow): Signer {
-    const data: ISigner = {
-      accountID: row.accountid,
-      signer: row.publickey,
-      weight: row.weight
-    };
-
-    return new Signer(data);
-  }
-
   public static self(id: string, weight: number): Signer {
-    return new Signer({ accountID: id, signer: id, weight });
+    return new Signer({ signer: id, weight });
   }
 
   public static keyFromXDR(xdr: any): string {

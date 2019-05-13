@@ -1,6 +1,7 @@
-import { createConnection } from "typeorm";
 import * as Sentry from "@sentry/node";
+import { createConnection } from "typeorm";
 import { Account } from "./orm/entities/account";
+import { AccountData } from "./orm/entities/account_data";
 import "./util/asset";
 import logger from "./util/logger";
 import "./util/memo";
@@ -26,7 +27,7 @@ export default async function init(): Promise<void> {
     username: secrets.DBUSER,
     password: secrets.DBPASSWORD,
     database: secrets.DB,
-    entities: [Account],
+    entities: [Account, AccountData],
     synchronize: false,
     logging: process.env.DEBUG_SQL !== undefined
   });

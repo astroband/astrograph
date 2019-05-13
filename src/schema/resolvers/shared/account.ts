@@ -1,5 +1,6 @@
-import { db } from "../../../database";
+import { getRepository, In } from "typeorm";
 import { Account, AccountID } from "../../../model";
+import { Account as AccountEntity } from "../../../orm/entities/account";
 import { createBatchResolver, idOnlyRequested } from "../util";
 
 export const account = createBatchResolver<any, Account[]>((source: any, args: any, context: any, info: any) => {
@@ -9,5 +10,5 @@ export const account = createBatchResolver<any, Account[]>((source: any, args: a
     return ids.map(id => (id ? { id } : null));
   }
 
-  return db.accounts.findAllByIDs(ids);
+  return getRepository(AccountEntity).find({ id: In(ids) });
 });
