@@ -28,7 +28,7 @@ import { IApolloContext } from "../../graphql_server";
 import { ACCOUNT, pubsub } from "../../pubsub";
 import { joinToMap } from "../../util/array";
 import { getReservedBalance } from "../../util/base_reserve";
-import { parseCursorPagination, properlyOrdered } from "../../util/paging";
+import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
 
 const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
@@ -115,27 +115,16 @@ export default {
     accounts: async (root: any, args: any) => {
       const { ids, homeDomain, ...paging } = args;
       const qb = getRepository(AccountEntity).createQueryBuilder("accounts");
-      const { limit, order } = parseCursorPagination(paging);
-
-      qb.orderBy("accounts.accountid", order).take(limit);
 
       if (ids && ids.length !== 0) {
-        qb.where("accounts.accountid IN (:...ids)", { ids });
+        qb.whereInIds(ids);
       }
 
       if (homeDomain) {
-        qb.andWhere("decode(accounts.homedomain, 'base64') = :homeDomain", { homeDomain });
+        qb.andWhere("decode(homedomain, 'base64') = :homeDomain", { homeDomain });
       }
 
-      if (paging.after) {
-        qb.andWhere("accounts.accountid > :cursor", { cursor: paging.after });
-      } else if (paging.before) {
-        qb.andWhere("accounts.accountid < :cursor", { cursor: paging.before });
-      }
-
-      const accounts = properlyOrdered(await qb.getMany(), paging);
-
-      return makeConnection<Account>(accounts);
+      return makeConnection<Account>(await paginate(qb, paging, "accountid"));
     }
   },
   Subscription: {
