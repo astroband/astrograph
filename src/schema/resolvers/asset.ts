@@ -7,9 +7,9 @@ import { AssetFactory } from "../../model/factories";
 import * as resolvers from "./shared";
 import { makeConnection } from "./util";
 
-const holdersResolver = async (root: Asset, args: any, ctx: IApolloContext, info: any) => {
-  const balances = await db.assets.findHolders(root, args);
-
+const holdersResolver = async (root: any, args: any, ctx: IApolloContext, info: any) => {
+  const asset = root.native ? Asset.native() : new Asset(root.code, root.issuer);
+  const balances = await db.assets.findHolders(asset, args);
   return makeConnection(balances);
 };
 
