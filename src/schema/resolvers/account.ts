@@ -109,7 +109,7 @@ export default {
     inflationDestination: resolvers.account
   },
   Query: {
-    account: async (root: any, args: any) => {
+    account(root: any, args: any) {
       return getRepository(AccountEntity).findOne(args.id);
     },
     accounts: async (root: any, args: any) => {
