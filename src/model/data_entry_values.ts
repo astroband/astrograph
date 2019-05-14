@@ -1,8 +1,10 @@
-import { IDataEntryBase } from "./data_entry";
+export interface IDataEntryValues {
+  accountID: string;
+  name: string;
+  value: string;
+}
 
-export type IDataEntryValues = IDataEntryBase;
-
-export class DataEntryValues implements IDataEntryBase {
+export class DataEntryValues implements IDataEntryValues {
   public accountID: string;
   public name: string;
   public value: string;
