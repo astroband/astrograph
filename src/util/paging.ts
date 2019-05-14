@@ -13,8 +13,8 @@ interface IBackwardPagingParams {
 export type PagingParams = IForwardPagingParams & IBackwardPagingParams;
 
 export enum SortOrder {
-  DESC = "DESC",
-  ASC = "ASC"
+  DESC = "desc",
+  ASC = "asc"
 }
 
 export function invertSortOrder(order: SortOrder) {
@@ -46,7 +46,7 @@ export function properlyOrdered(records: any[], pagingParams: PagingParams): any
 export async function paginate(queryBuilder: SelectQueryBuilder<any>, pagingParams: PagingParams, cursorCol: string): Promise<any[]> {
   const { limit, order } = parseCursorPagination(pagingParams);
 
-  queryBuilder.orderBy(cursorCol, order).take(limit);
+  queryBuilder.orderBy(cursorCol, order.toUpperCase() as "ASC" | "DESC").take(limit);
 
   if (pagingParams.after) {
     queryBuilder.andWhere(`${cursorCol} > :cursor`, { cursor: pagingParams.after });
