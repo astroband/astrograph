@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js";
 import { xdr as XDR } from "stellar-base";
+import { Balance, IBalance } from "../";
 import { Account } from "../../orm/entities";
 import { MAX_INT64 } from "../../util";
 import { getReservedBalance } from "../../util/base_reserve";
-import { Balance, IBalance } from "../";
 
 export interface ITrustLineTableRow {
   accountid: string;

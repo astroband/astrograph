@@ -43,7 +43,11 @@ export function properlyOrdered(records: any[], pagingParams: PagingParams): any
   return pagingParams.last ? records.reverse() : records;
 }
 
-export async function paginate(queryBuilder: SelectQueryBuilder<any>, pagingParams: PagingParams, cursorCol: string): Promise<any[]> {
+export async function paginate(
+  queryBuilder: SelectQueryBuilder<any>,
+  pagingParams: PagingParams,
+  cursorCol: string
+): Promise<any[]> {
   const { limit, order } = parseCursorPagination(pagingParams);
 
   queryBuilder.orderBy(cursorCol, order.toUpperCase() as "ASC" | "DESC").take(limit);
