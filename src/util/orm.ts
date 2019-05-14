@@ -1,3 +1,4 @@
+import { BigNumber } from "bignumber.js";
 import { ValueTransformer } from "typeorm";
 
 export class Base64Transformer implements ValueTransformer {
@@ -13,5 +14,15 @@ export class Base64Transformer implements ValueTransformer {
       return null;
     }
     return Buffer.from(value).toString("base64");
+  }
+}
+
+export class BigNumberTransformer implements ValueTransformer {
+  public from(value: string) {
+    return new BigNumber(value);
+  }
+
+  public to(value: BigNumber) {
+    return value.toString();
   }
 }
