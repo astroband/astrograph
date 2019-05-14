@@ -34,11 +34,14 @@ export function refineOperationXDR(xdr: any) {
     case t.bumpSequence():
       obj = refineBumpSequenceOpXDR(body.bumpSequenceOp());
       break;
-    case t.manageOffer():
-      obj = refineManageOfferOpXDR(body.manageOfferOp());
+    case t.manageSellOffer():
+      obj = refineManageSellOfferOpXDR(body.manageSellOfferOp());
       break;
-    case t.createPassiveOffer():
-      obj = refineCreatePassiveOfferOpXDR(body.createPassiveOfferOp());
+    case t.manageBuyOffer():
+      obj = refineManageBuyOfferOpXDR(body.manageBuyOfferOp());
+      break;
+    case t.createPassiveSellOffer():
+      obj = refineCreatePassiveSellOfferOpXDR(body.createPassiveSellOfferOp());
       break;
     case t.payment():
       obj = refinePaymentOpXDR(body.paymentOp());
@@ -54,7 +57,7 @@ export function refineOperationXDR(xdr: any) {
   };
 }
 
-function refineManageOfferOpXDR(body: any) {
+function refineManageSellOfferOpXDR(body: any) {
   return {
     amount: body.amount().toString(),
     offerId: body.offerId().toString(),
@@ -65,7 +68,18 @@ function refineManageOfferOpXDR(body: any) {
   };
 }
 
-function refineCreatePassiveOfferOpXDR(body: any) {
+function refineManageBuyOfferOpXDR(body: any) {
+  return {
+    amount: body.buyAmount().toString(),
+    offerId: body.offerId().toString(),
+    price: new BigNumber(body.price().n()).div(body.price().d()).toString(),
+    priceComponents: { n: body.price().n(), d: body.price().d() },
+    assetBuying: Asset.fromOperation(body.buying()),
+    assetSelling: Asset.fromOperation(body.selling())
+  };
+}
+
+function refineCreatePassiveSellOfferOpXDR(body: any) {
   return {
     amount: body.amount().toString(),
     price: new BigNumber(body.price().n()).div(body.price().d()).toString(),

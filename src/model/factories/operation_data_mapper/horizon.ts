@@ -8,15 +8,18 @@ import {
   IBumpSequenceOperation,
   IChangeTrustOperation,
   ICreateAccountOperation,
-  ICreatePassiveOfferOperation,
+  ICreatePassiveSellOfferOperation,
   IManageDataOperation,
-  IManageOfferOperation,
+  IManageSellOfferOperation,
   IPathPaymentOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
   OperationType
 } from "../../operation";
+
+// Horizon doesn't use buy and sell offers introduced in stellar core v11 yet
+type HorizonOperationKinds = Exclude<OperationKinds, OperationKinds.ManageBuyOffer>;
 
 export class DataMapper {
   public static call(data: IHorizonOperationData) {
@@ -32,9 +35,9 @@ export class DataMapper {
       case "path_payment":
         return OperationType.PathPayment;
       case "manage_offer":
-        return OperationType.ManageOffer;
+        return OperationType.ManageSellOffer;
       case "create_passive_offer":
-        return OperationType.CreatePassiveOffer;
+        return OperationType.CreatePassiveSellOffer;
       case "set_options":
         return OperationType.SetOption;
       case "change_trust":
@@ -81,9 +84,9 @@ export class DataMapper {
         return this.mapCreateAccount();
       case OperationType.ManageData:
         return this.mapManageData();
-      case OperationType.ManageOffer:
+      case OperationType.ManageSellOffer:
         return this.mapManageOffer();
-      case OperationType.CreatePassiveOffer:
+      case OperationType.CreatePassiveSellOffer:
         return this.mapCreatePassiveOffer();
       case OperationType.PathPayment:
         return this.mapPathPayment();
@@ -178,7 +181,7 @@ export class DataMapper {
     };
   }
 
-  private mapCreatePassiveOffer(): ICreatePassiveOfferOperation {
+  private mapCreatePassiveOffer(): ICreatePassiveSellOfferOperation {
     const assetBuying =
       this.data.buying_asset_type === "native"
         ? Asset.native()
@@ -204,7 +207,7 @@ export class DataMapper {
     };
   }
 
-  private mapManageOffer(): IManageOfferOperation {
+  private mapManageOffer(): IManageSellOfferOperation {
     const assetBuying =
       this.data.buying_asset_type === "native"
         ? Asset.native()
