@@ -38,10 +38,12 @@ export default {
           return "CreateAccountOperation";
         case OperationKinds.ManageData:
           return "ManageDatumOperation";
-        case OperationKinds.ManageOffer:
-          return "ManageOfferOperation";
-        case OperationKinds.CreatePassiveOffer:
-          return "CreatePassiveOfferOperation";
+        case OperationKinds.ManageSellOffer:
+          return "ManageSellOfferOperation";
+        case OperationKinds.ManageBuyOffer:
+          return "ManageBuyOfferOperation";
+        case OperationKinds.CreatePassiveSellOffer:
+          return "CreatePassiveSellOfferOperation";
         case OperationKinds.PathPayment:
           return "PathPaymentOperation";
       }

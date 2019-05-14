@@ -11,8 +11,9 @@ export enum OperationKinds {
   ChangeTrust = "changeTrust",
   CreateAccount = "createAccount",
   ManageData = "manageDatum",
-  ManageOffer = "manageOffer",
-  CreatePassiveOffer = "createPassiveOffer",
+  ManageSellOffer = "manageSellOffer",
+  ManageBuyOffer = "manageBuyOffer",
+  CreatePassiveSellOffer = "createPassiveSellOffer",
   PathPayment = "pathPayment"
 }
 
@@ -77,7 +78,7 @@ export interface IManageDataOperation extends IBaseOperation {
   value: string;
 }
 
-export interface IManageOfferOperation extends IBaseOperation {
+export interface IManageSellOfferOperation extends IBaseOperation {
   amount: string;
   offerId: string;
   price: string;
@@ -86,7 +87,16 @@ export interface IManageOfferOperation extends IBaseOperation {
   assetSelling: Asset;
 }
 
-export interface ICreatePassiveOfferOperation extends IBaseOperation {
+export interface IManageBuyOfferOperation extends IBaseOperation {
+  amount: string;
+  offerId: string;
+  price: string;
+  priceComponents: { n: number; d: number };
+  assetBuying: Asset;
+  assetSelling: Asset;
+}
+
+export interface ICreatePassiveSellOfferOperation extends IBaseOperation {
   amount: string;
   price: string;
   priceComponents: { n: number; d: number };
@@ -124,7 +134,8 @@ export type Operation =
   | IChangeTrustOperation
   | ICreateAccountOperation
   | IManageDataOperation
-  | IManageOfferOperation
+  | IManageSellOfferOperation
+  | IManageBuyOfferOperation
   | IPathPaymentOperation
-  | ICreatePassiveOfferOperation
+  | ICreatePassiveSellOfferOperation
   | IDgraphPathPaymentOperation;

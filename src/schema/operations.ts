@@ -10,8 +10,9 @@ export const typeDefs = gql`
     changeTrust
     createAccount
     manageDatum
-    manageOffer
-    createPassiveOffer
+    manageSellOffer
+    manageBuyOffer
+    createPassiveSellOffer
     pathPayment
   }
 
@@ -173,7 +174,7 @@ export const typeDefs = gql`
   }
 
   "Represents [manage offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-offer)"
-  type ManageOfferOperation implements Operation {
+  type ManageSellOfferOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
@@ -197,7 +198,7 @@ export const typeDefs = gql`
   }
 
   "Represents [create passive offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#create-passive-offer)"
-  type CreatePassiveOfferOperation implements Operation {
+  type CreatePassiveSellOfferOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
     kind: OperationKind!
