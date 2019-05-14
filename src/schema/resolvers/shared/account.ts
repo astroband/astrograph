@@ -1,7 +1,7 @@
 import { fieldsList } from "graphql-fields-list";
 import { getRepository, In } from "typeorm";
-import { Account, AccountID } from "../../../model";
-import { Account as AccountEntity } from "../../../orm/entities/account";
+import { AccountID } from "../../../model";
+import { Account } from "../../../orm/entities";
 import { createBatchResolver, idOnlyRequested } from "../util";
 
 export const account = createBatchResolver<any, Account[]>((source: any, args: any, context: any, info: any) => {
@@ -11,7 +11,6 @@ export const account = createBatchResolver<any, Account[]>((source: any, args: a
     return ids.map(id => (id ? { id } : null));
   }
 
-  const repo = getRepository(AccountEntity);
   const requestedFields = fieldsList(info);
   const findParams = { id: In(ids), relations: [] as string[] };
 
@@ -19,5 +18,5 @@ export const account = createBatchResolver<any, Account[]>((source: any, args: a
     findParams.relations.push("data");
   }
 
-  return repo.find(findParams);
+  return getRepository(Account).find(findParams);
 });

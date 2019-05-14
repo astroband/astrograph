@@ -1,9 +1,15 @@
-import { IAccountBase } from "./account";
-import { AccountFlags } from "./account_flags";
-import { AccountThresholds } from "./account_thresholds";
+import { AccountID, AccountFlags, AccountThresholds } from "./";
 import { Signer } from "./signer";
 
-export interface IAccountValues extends IAccountBase {
+export interface IAccountValues {
+  id: AccountID;
+  balance: string;
+  sequenceNumber: string;
+  numSubentries: number;
+  inflationDestination: AccountID;
+  homeDomain: string;
+  thresholds: AccountThresholds;
+  flags: AccountFlags;
   signers: Signer[];
 }
 
