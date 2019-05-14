@@ -4,7 +4,7 @@ import { xdr } from "stellar-base";
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { AccountFlags, AccountThresholds, Signer } from "../../model";
 import { AccountFlagsFactory, AccountThresholdsFactory, SignerFactory } from "../../model/factories";
-import { Base64Transformer } from "../../util/orm";
+import { Base64Transformer, BigNumberTransformer } from "../../util/orm";
 import { AccountData } from "./account_data";
 
 @Entity("accounts")
@@ -32,6 +32,8 @@ export class Account {
     type: "text",
     transformer: {
       from: (value: string) => AccountThresholdsFactory.fromValue(value),
+      // we don't actually need `to` transform,
+      // because we never write to the db, so it's just a stab
       to: (value: AccountThresholds) => "AQAAAA=="
     }
   })
@@ -41,6 +43,8 @@ export class Account {
     type: "integer",
     transformer: {
       from: (value: number) => AccountFlagsFactory.fromValue(value),
+      // we don't actually need `to` transform,
+      // because we never write to the db, so it's just a stab
       to: (value: AccountFlags) => 0
     }
   })
@@ -52,20 +56,14 @@ export class Account {
   @Column({
     name: "buyingliabilities",
     type: "bigint",
-    transformer: {
-      from: (value: string) => new BigNumber(value),
-      to: (value: BigNumber) => value.toString()
-    }
+    transformer: new BigNumberTransformer()
   })
   buyingLiabilities: BigNumber;
 
   @Column({
     name: "sellingliabilities",
     type: "bigint",
-    transformer: {
-      from: (value: string) => new BigNumber(value),
-      to: (value: BigNumber) => value.toString()
-    }
+    transformer: new BigNumberTransformer()
   })
   sellingLiabilities: BigNumber;
 
@@ -79,6 +77,8 @@ export class Account {
         const signersArray = new VarArray(xdr.Signer).fromXDR(value, "base64");
         return signersArray.map((signerXDR: any) => SignerFactory.fromXDR(signerXDR));
       },
+      // we don't actually need `to` transform,
+      // because we never write to the db, so it's just a stab
       to: (value: Signer[]) => null
     }
   })
