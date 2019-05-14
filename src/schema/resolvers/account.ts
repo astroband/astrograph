@@ -14,7 +14,7 @@ import {
   IHorizonTransactionData
 } from "../../datasource/types";
 
-import { Account, Balance, Effect, Operation, Trade, Transaction } from "../../model";
+import { Balance, Effect, Operation, Trade, Transaction } from "../../model";
 import {
   BalanceFactory,
   EffectFactory,
@@ -22,7 +22,7 @@ import {
   TradeFactory,
   TransactionWithXDRFactory
 } from "../../model/factories";
-import { Account as AccountEntity } from "../../orm/entities/account";
+import { Account } from "../../orm/entities";
 
 import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
@@ -107,11 +107,11 @@ export default {
     account(root: any, args: any, ctx: IApolloContext, info: any) {
       const relations = fieldsList(info).indexOf("data") !== -1 ? ["data"] : [];
 
-      return getRepository(AccountEntity).findOne(args.id, { relations });
+      return getRepository(Account).findOne(args.id, { relations });
     },
     accounts: async (root: any, args: any) => {
       const { ids, homeDomain, data, ...paging } = args;
-      const qb = getRepository(AccountEntity).createQueryBuilder("accounts");
+      const qb = getRepository(Account).createQueryBuilder("accounts");
 
       if (ids && ids.length !== 0) {
         qb.whereInIds(ids);

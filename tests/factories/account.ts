@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { Factory } from "rosie";
 import stellar from "stellar-base";
-import { Account } from "../../src/model";
+import { Account } from "../../src/orm/entities";
 
 Factory.define("account")
   .attr("id", () => stellar.Keypair.random().publicKey())
@@ -19,6 +19,7 @@ Factory.define("account")
 export default {
   build(overrides?: object): Account {
     const data = Factory.attributes("account", overrides);
-    return new Account(data);
+    const account = new Account();
+    return Object.assign(account, data);
   }
 };
