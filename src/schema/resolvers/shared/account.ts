@@ -1,5 +1,5 @@
 import { fieldsList } from "graphql-fields-list";
-import { getRepository, In } from "typeorm";
+import { getRepository } from "typeorm";
 import { AccountID } from "../../../model";
 import { Account } from "../../../orm/entities";
 import { createBatchResolver, idOnlyRequested } from "../util";
@@ -11,12 +11,13 @@ export const account = createBatchResolver<any, Account[]>((source: any, args: a
     return ids.map(id => (id ? { id } : null));
   }
 
-  const requestedFields = fieldsList(info);
-  const findParams = { id: In(ids), relations: [] as string[] };
+  const qb = getRepository(Account)
+    .createQueryBuilder("accounts")
+    .where("accounts.id IN (:...ids)", { ids });
 
-  if (requestedFields.indexOf("data") !== -1) {
-    findParams.relations.push("data");
+  if (fieldsList(info).indexOf("data") !== -1) {
+    qb.leftJoinAndSelect("accounts.data", "data");
   }
 
-  return getRepository(Account).find(findParams);
+  return qb.getMany();
 });

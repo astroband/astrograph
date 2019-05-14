@@ -1,11 +1,17 @@
 import { ValueTransformer } from "typeorm";
 
 export class Base64Transformer implements ValueTransformer {
-  from (value: string): string {
+  public from(value: string | null) {
+    if (!value) {
+      return null;
+    }
     return Buffer.from(value, "base64").toString();
   }
 
-  to (value: string): string {
+  public to(value: string | null) {
+    if (!value) {
+      return null;
+    }
     return Buffer.from(value).toString("base64");
   }
 }
