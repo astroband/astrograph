@@ -106,9 +106,8 @@ export default {
     inflationDestination: resolvers.account
   },
   Query: {
-    account: async (root: any, args: any) => {
-      const acc = await db.accounts.findByID(args.id);
-      return acc;
+    account(root: any, args: any) {
+      return db.accounts.findByID(args.id);
     },
     accounts: async (root: any, args: any) => {
       const { ids, homeDomain, ...paging } = args;
