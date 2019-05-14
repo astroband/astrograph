@@ -25,7 +25,7 @@ export class Account {
   @Column({ name: "inflationdest" })
   inflationDestination: string;
 
-  @Column({ name: "homedomain", transformer: new Base64Transformer() })
+  @Column({ name: "homedomain", transformer: Base64Transformer })
   homeDomain: string;
 
   @Column({
@@ -56,14 +56,14 @@ export class Account {
   @Column({
     name: "buyingliabilities",
     type: "bigint",
-    transformer: new BigNumberTransformer()
+    transformer: BigNumberTransformer
   })
   buyingLiabilities: BigNumber;
 
   @Column({
     name: "sellingliabilities",
     type: "bigint",
-    transformer: new BigNumberTransformer()
+    transformer: BigNumberTransformer
   })
   sellingLiabilities: BigNumber;
 

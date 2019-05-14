@@ -1,4 +1,4 @@
-import { AccountID, AccountFlags, AccountThresholds } from "./";
+import { AccountFlags, AccountID, AccountThresholds } from "./";
 import { Signer } from "./signer";
 
 export interface IAccountValues {

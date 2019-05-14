@@ -8,7 +8,7 @@ export class AccountData {
   @PrimaryColumn({ name: "accountid" })
   id: string;
 
-  @PrimaryColumn({ name: "dataname", transformer: new Base64Transformer() })
+  @PrimaryColumn({ name: "dataname", transformer: Base64Transformer })
   name: string;
 
   @Column({ name: "datavalue" })
