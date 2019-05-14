@@ -9,7 +9,7 @@ export class DataEntryValuesFactory {
     const data: IDataEntryValues = {
       accountID,
       name: xdr.dataName().toString(),
-      value: xdr.dataValue()
+      value: xdr.dataValue().toString()
     };
 
     return new DataEntryValues(data);
