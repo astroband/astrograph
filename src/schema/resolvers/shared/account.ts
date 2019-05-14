@@ -13,7 +13,7 @@ export const account = createBatchResolver<any, Account[]>((source: any, args: a
 
   const repo = getRepository(AccountEntity);
   const requestedFields = fieldsList(info);
-  const findParams = { id: In(ids), relations: ([] as string[]) };
+  const findParams = { id: In(ids), relations: [] as string[] };
 
   if (requestedFields.indexOf("data") !== -1) {
     findParams.relations.push("data");

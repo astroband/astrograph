@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Base64Transformer } from "../../util/orm";
 import { Account } from "./account";
 
 @Entity("accountdata")
@@ -7,7 +8,7 @@ export class AccountData {
   @PrimaryColumn({ name: "accountid" })
   id: string;
 
-  @PrimaryColumn({ name: "dataname" })
+  @PrimaryColumn({ name: "dataname", transformer: new Base64Transformer() })
   name: string;
 
   @Column({ name: "datavalue" })

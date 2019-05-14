@@ -1,3 +1,4 @@
+import { fieldsList } from "graphql-fields-list";
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
 import { getRepository } from "typeorm";
@@ -99,8 +100,10 @@ export default {
     inflationDestination: resolvers.account
   },
   Query: {
-    account(root: any, args: any) {
-      return getRepository(AccountEntity).findOne(args.id);
+    account(root: any, args: any, ctx: IApolloContext, info: any) {
+      const relations = fieldsList(info).indexOf("data") !== -1 ? ["data"] : [];
+
+      return getRepository(AccountEntity).findOne(args.id, { relations });
     },
     accounts: async (root: any, args: any) => {
       const { ids, homeDomain, data, ...paging } = args;

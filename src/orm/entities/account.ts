@@ -4,6 +4,7 @@ import { xdr } from "stellar-base";
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { AccountFlags, AccountThresholds, Signer } from "../../model";
 import { AccountFlagsFactory, AccountThresholdsFactory, SignerFactory } from "../../model/factories";
+import { Base64Transformer } from "../../util/orm";
 import { AccountData } from "./account_data";
 
 @Entity("accounts")
@@ -24,13 +25,7 @@ export class Account {
   @Column({ name: "inflationdest" })
   inflationDestination: string;
 
-  @Column({
-    name: "homedomain",
-    transformer: {
-      from: (value: string) => Buffer.from(value, "base64").toString(),
-      to: (value: string) => Buffer.from(value).toString("base64")
-    }
-  })
+  @Column({ name: "homedomain", transformer: new Base64Transformer() })
   homeDomain: string;
 
   @Column({
