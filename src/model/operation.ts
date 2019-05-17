@@ -2,7 +2,7 @@ import { Asset } from "stellar-sdk";
 import { HorizonAccountFlag } from "../datasource/types";
 import { AccountID } from "./";
 
-export enum OperationKinds {
+export enum OperationType {
   Payment = "payment",
   SetOption = "setOption",
   AccountMerge = "accountMerge",
@@ -18,7 +18,7 @@ export enum OperationKinds {
 
 export interface IBaseOperation {
   id?: string;
-  kind: OperationKinds;
+  type: OperationType;
   sourceAccount: AccountID;
   tx: { id: string; sourceAccount?: AccountID };
   index: number;

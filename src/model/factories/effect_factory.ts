@@ -1,5 +1,5 @@
 import { IHorizonEffectData } from "../../datasource/types";
-import { Effect, EffectKinds } from "../effect";
+import { Effect, EffectType } from "../effect";
 import { AssetFactory } from "./asset_factory";
 
 export class EffectFactory {
@@ -7,52 +7,52 @@ export class EffectFactory {
     const baseData = {
       id: data.id,
       account: data.account,
-      kind: data.type.replace(/_([a-z])/g, g => g[1].toUpperCase()) as EffectKinds,
+      type: data.type.replace(/_([a-z])/g, g => g[1].toUpperCase()) as EffectType,
       createdAt: new Date(data.created_at)
     };
 
-    switch (baseData.kind) {
-      case EffectKinds.AccountCreated:
+    switch (baseData.type) {
+      case EffectType.AccountCreated:
         return { ...baseData, startingBalance: data.starting_balance };
-      case EffectKinds.AccountCredited:
-      case EffectKinds.AccountDebited:
+      case EffectType.AccountCredited:
+      case EffectType.AccountDebited:
         return { ...baseData, amount: data.amount };
-      case EffectKinds.AccountThresholdsUpdated:
+      case EffectType.AccountThresholdsUpdated:
         return {
           ...baseData,
           lowThreshold: data.low_threshold,
           medThreshold: data.med_threshold,
           highThreshold: data.high_threshold
         };
-      case EffectKinds.AccountHomeDomainUpdated:
+      case EffectType.AccountHomeDomainUpdated:
         return { ...baseData, homeDomain: data.home_domain };
-      case EffectKinds.AccountFlagsUpdated:
+      case EffectType.AccountFlagsUpdated:
         return { ...baseData, authRequiredFlag: data.auth_required_flag, authRevocableFlag: data.auth_revokable_flag };
-      case EffectKinds.SignerCreated:
-      case EffectKinds.SignerUpdated:
-      case EffectKinds.SignerRemoved:
+      case EffectType.SignerCreated:
+      case EffectType.SignerUpdated:
+      case EffectType.SignerRemoved:
         return {
           ...baseData,
           weight: data.weight,
           publicKey: data.public_key,
           key: data.key
         };
-      case EffectKinds.TrustlineCreated:
-      case EffectKinds.TrustlineUpdated:
-      case EffectKinds.TrustlineRemoved:
+      case EffectType.TrustlineCreated:
+      case EffectType.TrustlineUpdated:
+      case EffectType.TrustlineRemoved:
         return {
           ...baseData,
           asset: AssetFactory.fromHorizon(data.asset_type, data.asset_code, data.asset_issuer),
           limit: data.limit
         };
-      case EffectKinds.TrustlineAuthorized:
-      case EffectKinds.TrustlineDeauthorized:
+      case EffectType.TrustlineAuthorized:
+      case EffectType.TrustlineDeauthorized:
         return {
           ...baseData,
           asset: AssetFactory.fromHorizon(data.asset_type, data.asset_code, data.asset_issuer),
           trustor: data.trustor
         };
-      case EffectKinds.Trade:
+      case EffectType.Trade:
         return {
           ...baseData,
           seller: data.seller,
@@ -66,7 +66,7 @@ export class EffectFactory {
             data.bought_asset_issuer
           )
         };
-      case EffectKinds.SequenceBumped:
+      case EffectType.SequenceBumped:
         return { ...baseData, newSeq: data.new_seq };
       default:
         return baseData;

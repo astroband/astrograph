@@ -1,7 +1,7 @@
 import { Asset } from "stellar-sdk";
 import { AccountID } from "./";
 
-export enum EffectKinds {
+export enum EffectType {
   AccountCreated = "accountCreated",
   AccountRemoved = "accountRemoved",
   AccountCredited = "accountCredited",
@@ -31,7 +31,7 @@ export enum EffectKinds {
 export interface IBaseEffect {
   id: string;
   account: AccountID;
-  kind: EffectKinds;
+  type: EffectType;
   createdAt: Date;
 }
 
