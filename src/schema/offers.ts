@@ -3,23 +3,7 @@ import { gql } from "apollo-server";
 export const typeDefs = gql`
   scalar OfferID
 
-  interface IOffer {
-    id: OfferID!
-    "Account created this offer"
-    seller: Account!
-    "Asset seller is selling"
-    selling: Asset!
-    "Asset seller wants to buy"
-    buying: Asset!
-    "Amount of \`selling\` being sold"
-    amount: Float!
-    "Price of 1 unit of \`selling\` in terms of \`buying\`"
-    price: String!
-    "Is this offer [passive](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#create-passive-offer)"
-    passive: Boolean!
-  }
-
-  type Offer implements IOffer {
+  type Offer {
     id: OfferID!
     seller: Account!
     selling: Asset!
@@ -33,7 +17,7 @@ export const typeDefs = gql`
   }
 
   "Represents a current offer state, which is broadcasted to subscribers"
-  type OfferValues implements IOffer {
+  type OfferValues {
     id: OfferID!
     seller: Account!
     selling: Asset!

@@ -25,14 +25,8 @@ export const typeDefs = gql`
     REMOVE
   }
 
-  interface IDataEntry {
-    name: String!
-    value: String!
-    ledger: Ledger!
-  }
-
   "Represents a [Data Entry](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data) (name/value pair) that is attached to a particular account"
-  type DataEntry implements IDataEntry {
+  type DataEntry {
     name: String!
     value: String!
     "Ledger sequence this data entry was created at"
@@ -40,7 +34,7 @@ export const typeDefs = gql`
   }
 
   "Represents a current [Data Entry](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-data) (name/value pair) state, which is broadcasted to subscribers"
-  type DataEntryValues implements IDataEntry {
+  type DataEntryValues {
     account: Account!
     name: String!
     value: String!
@@ -55,15 +49,8 @@ export const typeDefs = gql`
     values: DataEntryValues
   }
 
-  interface IBalance {
-    asset: Asset!
-    limit: String!
-    balance: String!
-    authorized: Boolean!
-  }
-
   "Represents a single [trustline](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) of a particular account"
-  type Balance implements IBalance {
+  type Balance {
     account: Account
     asset: Asset!
     limit: String!
@@ -88,7 +75,7 @@ export const typeDefs = gql`
   }
 
   "Represents a current [trustline](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) state, which is broadcasting to subscribers"
-  type BalanceValues implements IBalance {
+  type BalanceValues {
     account: Account
     asset: Asset!
     limit: String!
