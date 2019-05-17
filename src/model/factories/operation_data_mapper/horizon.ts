@@ -15,7 +15,7 @@ import {
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
-  OperationKinds
+  OperationType
 } from "../../operation";
 
 export class DataMapper {
@@ -23,30 +23,30 @@ export class DataMapper {
     return new DataMapper(data).call();
   }
 
-  public static mapHorizonOpType(type: HorizonOpType): OperationKinds {
+  public static mapHorizonOpType(type: HorizonOpType): OperationType {
     switch (type) {
       case "create_account":
-        return OperationKinds.CreateAccount;
+        return OperationType.CreateAccount;
       case "payment":
-        return OperationKinds.Payment;
+        return OperationType.Payment;
       case "path_payment":
-        return OperationKinds.PathPayment;
+        return OperationType.PathPayment;
       case "manage_offer":
-        return OperationKinds.ManageOffer;
+        return OperationType.ManageOffer;
       case "create_passive_offer":
-        return OperationKinds.CreatePassiveOffer;
+        return OperationType.CreatePassiveOffer;
       case "set_options":
-        return OperationKinds.SetOption;
+        return OperationType.SetOption;
       case "change_trust":
-        return OperationKinds.ChangeTrust;
+        return OperationType.ChangeTrust;
       case "allow_trust":
-        return OperationKinds.AllowTrust;
+        return OperationType.AllowTrust;
       case "account_merge":
-        return OperationKinds.AccountMerge;
+        return OperationType.AccountMerge;
       case "manage_data":
-        return OperationKinds.ManageData;
+        return OperationType.ManageData;
       case "bump_sequence":
-        return OperationKinds.BumpSequence;
+        return OperationType.BumpSequence;
     }
   }
 
@@ -56,7 +56,7 @@ export class DataMapper {
     this.baseData = {
       id: data.id,
       index: parsePagingToken(data.paging_token).opIndex,
-      kind: DataMapper.mapHorizonOpType(data.type),
+      type: DataMapper.mapHorizonOpType(data.type),
       sourceAccount: data.source_account,
       dateTime: new Date(data.created_at),
       tx: { id: data.transaction_hash }
@@ -64,28 +64,28 @@ export class DataMapper {
   }
 
   public call(): Operation {
-    switch (this.baseData.kind) {
-      case OperationKinds.Payment:
+    switch (this.baseData.type) {
+      case OperationType.Payment:
         return this.mapPayment();
-      case OperationKinds.SetOption:
+      case OperationType.SetOption:
         return this.mapSetOption();
-      case OperationKinds.AccountMerge:
+      case OperationType.AccountMerge:
         return this.mapAccountMerge();
-      case OperationKinds.AllowTrust:
+      case OperationType.AllowTrust:
         return this.mapAllowTrust();
-      case OperationKinds.BumpSequence:
+      case OperationType.BumpSequence:
         return this.mapBumpSequence();
-      case OperationKinds.ChangeTrust:
+      case OperationType.ChangeTrust:
         return this.mapChangeTrust();
-      case OperationKinds.CreateAccount:
+      case OperationType.CreateAccount:
         return this.mapCreateAccount();
-      case OperationKinds.ManageData:
+      case OperationType.ManageData:
         return this.mapManageData();
-      case OperationKinds.ManageOffer:
+      case OperationType.ManageOffer:
         return this.mapManageOffer();
-      case OperationKinds.CreatePassiveOffer:
+      case OperationType.CreatePassiveOffer:
         return this.mapCreatePassiveOffer();
-      case OperationKinds.PathPayment:
+      case OperationType.PathPayment:
         return this.mapPathPayment();
     }
   }

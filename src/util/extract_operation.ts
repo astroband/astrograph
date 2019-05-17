@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import { Asset } from "stellar-base";
 import { ChangesExtractor, ChangeType, EntryType } from "../changes_extractor";
-import { AccountID, Operation, OperationKinds, Transaction, TransactionWithXDR } from "../model";
+import { AccountID, Operation, OperationType, Transaction, TransactionWithXDR } from "../model";
 import { publicKeyFromXDR } from "./xdr/account";
 import { refineOperationXDR } from "./xdr_refiner";
 
@@ -15,11 +15,11 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
   const opObject = refineOperationXDR(opXDR);
   const opSource = opObject.source || tx.sourceAccount;
 
-  if (opObject.kind === OperationKinds.AllowTrust) {
+  if (opObject.kind === OperationType.AllowTrust) {
     opObject.asset = new Asset(opObject.asset, opSource);
   }
 
-  if (opObject.kind === OperationKinds.PathPayment && tx.success) {
+  if (opObject.kind === OperationType.PathPayment && tx.success) {
     opObject.amountSent = getSentAmount(tx, index, opSource);
   }
 

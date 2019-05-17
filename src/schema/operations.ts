@@ -1,7 +1,7 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
-  enum OperationKind {
+  enum OperationType {
     payment
     setOption
     accountMerge
@@ -19,7 +19,7 @@ export const typeDefs = gql`
   interface Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -32,7 +32,7 @@ export const typeDefs = gql`
   type PaymentOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -51,7 +51,7 @@ export const typeDefs = gql`
   type SetOptionsOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -78,7 +78,7 @@ export const typeDefs = gql`
   type AccountMergeOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -93,7 +93,7 @@ export const typeDefs = gql`
   type AllowTrustOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -112,7 +112,7 @@ export const typeDefs = gql`
   type BumpSequenceOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -127,7 +127,7 @@ export const typeDefs = gql`
   type ChangeTrustOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -144,7 +144,7 @@ export const typeDefs = gql`
   type CreateAccountOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -161,7 +161,7 @@ export const typeDefs = gql`
   type ManageDatumOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -176,7 +176,7 @@ export const typeDefs = gql`
   type ManageOfferOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -200,7 +200,7 @@ export const typeDefs = gql`
   type CreatePassiveOfferOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -218,7 +218,7 @@ export const typeDefs = gql`
   type PathPaymentOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
-    kind: OperationKind!
+    type: OperationType!
     "Account on which behalf operation was executed"
     sourceAccount: Account!
     "When operations was executed"
@@ -284,7 +284,7 @@ export const typeDefs = gql`
     operations(
       txSource: [AccountID]
       opSource: [AccountID]
-      kind: [OperationKind]
+      type: [OperationType]
       destination: [AccountID]
       asset: [AssetID]
     ): Operation!

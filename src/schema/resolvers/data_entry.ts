@@ -21,10 +21,7 @@ const dataEntrySubscription = (event: string) => {
 };
 
 export default {
-  DataEntry: {
-    account: resolvers.account,
-    ledger: resolvers.ledger
-  },
+  DataEntry: { ledger: resolvers.ledger },
   DataEntryValues: {
     account: resolvers.account,
     ledger: resolvers.ledger

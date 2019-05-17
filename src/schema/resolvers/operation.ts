@@ -2,7 +2,7 @@ import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
 import { IHorizonOperationData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
-import { Operation, OperationKinds, Transaction } from "../../model";
+import { Operation, OperationType, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
 import { makeConnection } from "./util";
@@ -21,28 +21,28 @@ export default {
       return TransactionWithXDRFactory.fromHorizon(records[0]);
     },
     __resolveType(operation: Operation) {
-      switch (operation.kind) {
-        case OperationKinds.Payment:
+      switch (operation.type) {
+        case OperationType.Payment:
           return "PaymentOperation";
-        case OperationKinds.SetOption:
+        case OperationType.SetOption:
           return "SetOptionsOperation";
-        case OperationKinds.AccountMerge:
+        case OperationType.AccountMerge:
           return "AccountMergeOperation";
-        case OperationKinds.AllowTrust:
+        case OperationType.AllowTrust:
           return "AllowTrustOperation";
-        case OperationKinds.BumpSequence:
+        case OperationType.BumpSequence:
           return "BumpSequenceOperation";
-        case OperationKinds.ChangeTrust:
+        case OperationType.ChangeTrust:
           return "ChangeTrustOperation";
-        case OperationKinds.CreateAccount:
+        case OperationType.CreateAccount:
           return "CreateAccountOperation";
-        case OperationKinds.ManageData:
+        case OperationType.ManageData:
           return "ManageDatumOperation";
-        case OperationKinds.ManageOffer:
+        case OperationType.ManageOffer:
           return "ManageOfferOperation";
-        case OperationKinds.CreatePassiveOffer:
+        case OperationType.CreatePassiveOffer:
           return "CreatePassiveOfferOperation";
-        case OperationKinds.PathPayment:
+        case OperationType.PathPayment:
           return "PathPaymentOperation";
       }
 
@@ -85,7 +85,7 @@ export default {
             return false;
           }
 
-          if (vars.kind && !vars.kind.includes(payload.kind)) {
+          if (vars.type && !vars.type.includes(payload.type)) {
             return false;
           }
 

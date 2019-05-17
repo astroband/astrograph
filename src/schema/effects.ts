@@ -1,7 +1,7 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
-  enum EffectKind {
+  enum EffectType {
     accountCreated
     accountRemoved
     accountCredited
@@ -33,14 +33,14 @@ export const typeDefs = gql`
     id: String!
     "Account that this effect changed"
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
   }
 
   type AccountCreatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     "The XLM balance new account was created with"
     startingBalance: String!
@@ -49,14 +49,14 @@ export const typeDefs = gql`
   type AccountRemovedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
   }
 
   type AccountCreditedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     amount: String!
   }
@@ -64,7 +64,7 @@ export const typeDefs = gql`
   type AccountDebitedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     amount: String!
   }
@@ -72,7 +72,7 @@ export const typeDefs = gql`
   type AccountThresholdsUpdatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     lowThreshold: Int!
     medThreshold: Int!
@@ -82,7 +82,7 @@ export const typeDefs = gql`
   type AccountHomeDomainUpdatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     homeDomain: String!
   }
@@ -90,7 +90,7 @@ export const typeDefs = gql`
   type AccountFlagsUpdatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     authRequiredFlag: Boolean
     authRevocableFlag: Boolean
@@ -99,14 +99,14 @@ export const typeDefs = gql`
   type AccountInflationDestinationUpdatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
   }
 
   type SequenceBumpedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     newSeq: Int!
   }
@@ -114,7 +114,7 @@ export const typeDefs = gql`
   type SignerCreatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     weight: Int!
     publicKey: AccountID!
@@ -124,7 +124,7 @@ export const typeDefs = gql`
   type SignerRemovedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     weight: Int!
     publicKey: AccountID!
@@ -134,7 +134,7 @@ export const typeDefs = gql`
   type SignerUpdatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     weight: Int!
     publicKey: AccountID!
@@ -144,7 +144,7 @@ export const typeDefs = gql`
   type TrustlineCreatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     asset: Asset!
     limit: String!
@@ -153,7 +153,7 @@ export const typeDefs = gql`
   type TrustlineRemovedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     asset: Asset!
     limit: String!
@@ -162,7 +162,7 @@ export const typeDefs = gql`
   type TrustlineUpdatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     asset: Asset!
     limit: String!
@@ -171,7 +171,7 @@ export const typeDefs = gql`
   type TrustlineAuthorizedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     trustor: AccountID!
     asset: Asset!
@@ -180,7 +180,7 @@ export const typeDefs = gql`
   type TrustlineDeauthorizedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     trustor: AccountID!
     asset: Asset!
@@ -189,28 +189,28 @@ export const typeDefs = gql`
   type OfferCreatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
   }
 
   type OfferRemovedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
   }
 
   type OfferUpdatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
   }
 
   type TradeEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
     seller: AccountID!
     offerId: OfferID!
@@ -223,21 +223,21 @@ export const typeDefs = gql`
   type DataCreatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
   }
 
   type DataUpdatedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
   }
 
   type DataRemovedEffect implements Effect {
     id: String!
     account: Account!
-    kind: EffectKind!
+    type: EffectType!
     createdAt: DateTime!
   }
 

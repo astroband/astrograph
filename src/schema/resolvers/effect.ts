@@ -1,6 +1,6 @@
 import { IHorizonEffectData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
-import { Effect, EffectKinds } from "../../model";
+import { Effect, EffectType } from "../../model";
 import { EffectFactory } from "../../model/factories";
 import * as resolvers from "./shared";
 import { makeConnection } from "./util";
@@ -8,54 +8,54 @@ import { makeConnection } from "./util";
 export default {
   Effect: {
     __resolveType(effect: Effect) {
-      switch (effect.kind) {
-        case EffectKinds.AccountCreated:
+      switch (effect.type) {
+        case EffectType.AccountCreated:
           return "AccountCreatedEffect";
-        case EffectKinds.AccountRemoved:
+        case EffectType.AccountRemoved:
           return "AccountRemovedEffect";
-        case EffectKinds.AccountCredited:
+        case EffectType.AccountCredited:
           return "AccountCreditedEffect";
-        case EffectKinds.AccountDebited:
+        case EffectType.AccountDebited:
           return "AccountDebitedEffect";
-        case EffectKinds.AccountThresholdsUpdated:
+        case EffectType.AccountThresholdsUpdated:
           return "AccountThresholdsUpdatedEffect";
-        case EffectKinds.AccountHomeDomainUpdated:
+        case EffectType.AccountHomeDomainUpdated:
           return "AccountHomeDomainUpdatedEffect";
-        case EffectKinds.AccountFlagsUpdated:
+        case EffectType.AccountFlagsUpdated:
           return "AccountFlagsUpdatedEffect";
-        case EffectKinds.AccountInflationDestinationUpdated:
+        case EffectType.AccountInflationDestinationUpdated:
           return "AccountInflationDestinationUpdatedEffect";
-        case EffectKinds.SignerCreated:
+        case EffectType.SignerCreated:
           return "SignerCreatedEffect";
-        case EffectKinds.SignerRemoved:
+        case EffectType.SignerRemoved:
           return "SignerRemovedEffect";
-        case EffectKinds.SignerUpdated:
+        case EffectType.SignerUpdated:
           return "SignerUpdatedEffect";
-        case EffectKinds.TrustlineCreated:
+        case EffectType.TrustlineCreated:
           return "TrustlineCreatedEffect";
-        case EffectKinds.TrustlineRemoved:
+        case EffectType.TrustlineRemoved:
           return "TrustlineRemovedEffect";
-        case EffectKinds.TrustlineUpdated:
+        case EffectType.TrustlineUpdated:
           return "TrustlineUpdatedEffect";
-        case EffectKinds.TrustlineAuthorized:
+        case EffectType.TrustlineAuthorized:
           return "TrustlineAuthorizedEffect";
-        case EffectKinds.TrustlineDeauthorized:
+        case EffectType.TrustlineDeauthorized:
           return "TrustlineDeauthorizedEffect";
-        case EffectKinds.OfferCreated:
+        case EffectType.OfferCreated:
           return "OfferCreatedEffect";
-        case EffectKinds.OfferRemoved:
+        case EffectType.OfferRemoved:
           return "OfferRemovedEffect";
-        case EffectKinds.OfferUpdated:
+        case EffectType.OfferUpdated:
           return "OfferUpdatedEffect";
-        case EffectKinds.Trade:
+        case EffectType.Trade:
           return "TradeEffect";
-        case EffectKinds.DataCreated:
+        case EffectType.DataCreated:
           return "DataCreatedEffect";
-        case EffectKinds.DataRemoved:
+        case EffectType.DataRemoved:
           return "DataRemovedEffect";
-        case EffectKinds.DataUpdated:
+        case EffectType.DataUpdated:
           return "DataUpdatedEffect";
-        case EffectKinds.SequenceBumped:
+        case EffectType.SequenceBumped:
           return "SequenceBumpedEffect";
         default:
           return null;
