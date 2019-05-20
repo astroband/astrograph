@@ -1,4 +1,4 @@
-import { AccountFlags, AccountID, AccountThresholds } from "./";
+import { AccountID, AccountThresholds } from "./";
 import { Signer } from "./signer";
 
 export interface IAccountValues {
@@ -9,7 +9,6 @@ export interface IAccountValues {
   inflationDestination: AccountID;
   homeDomain: string;
   thresholds: AccountThresholds;
-  flags: AccountFlags;
   signers: Signer[];
 }
 
