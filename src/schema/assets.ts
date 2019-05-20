@@ -3,11 +3,12 @@ import { gql } from "apollo-server";
 export const typeDefs = gql`
   "Stellar asset alphanumeric code"
   scalar AssetCode
-  "String in \`{id}-{issuer}'\` format, which uniquely identifies single asset"
+  "String in \`{id}-{issuer}'\` format, which uniquely identifies single asset. Native lumens has id \`'native'\`"
   scalar AssetID
 
   "Represents single [asset](https://www.stellar.org/developers/guides/concepts/assets.html) on Stellar network"
   type Asset {
+    id: AssetID!
     "Whether this asset is [lumens](https://www.stellar.org/developers/guides/concepts/assets.html)"
     native: Boolean!
     "Asset issuer's account. It's \`null\` for native lumens"
