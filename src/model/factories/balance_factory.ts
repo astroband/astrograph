@@ -1,9 +1,8 @@
 import BigNumber from "bignumber.js";
-import { Asset, xdr as XDR } from "stellar-base";
+import { xdr as XDR } from "stellar-base";
 import { Account, Balance, IBalance } from "../";
 import { MAX_INT64 } from "../../util";
 import { getReservedBalance } from "../../util/base_reserve";
-import { AssetFactory } from "./";
 
 export interface ITrustLineTableRow {
   accountid: string;
@@ -28,7 +27,7 @@ export class BalanceFactory {
       balance,
       limit,
       lastModified: row.lastmodified,
-      asset: AssetFactory.fromDb(row.assettype, row.assetcode, row.issuer),
+      asset: `${row.assetcode}-${row.issuer}`,
       authorized: (row.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0,
       spendableBalance: balance.minus(row.sellingliabilities || 0),
       receivableBalance: limit.minus(row.buyingliabilities || 0).minus(balance)
@@ -44,7 +43,7 @@ export class BalanceFactory {
 
     return new Balance({
       account: account.id,
-      asset: Asset.native(),
+      asset: "native",
       balance,
       limit,
       authorized: true,

@@ -70,6 +70,10 @@ export default {
   Account: {
     homeDomain: (root: Account) => Buffer.from(root.homeDomain, "base64").toString(),
     reservedBalance: (root: Account) => toFloatAmountString(getReservedBalance(root.numSubentries)),
+    assets: async (root: Account, args: any) => {
+      const assets = await db.assets.findAll({ issuer: root.id }, args);
+      return makeConnection(assets);
+    },
     data: dataEntriesResolver,
     balances: balancesResolver,
     ledger: resolvers.ledger,
@@ -102,9 +106,8 @@ export default {
     inflationDestination: resolvers.account
   },
   Query: {
-    account: async (root: any, args: any) => {
-      const acc = await db.accounts.findByID(args.id);
-      return acc;
+    account(root: any, args: any) {
+      return db.accounts.findByID(args.id);
     },
     accounts: async (root: any, args: any) => {
       const { ids, homeDomain, ...paging } = args;

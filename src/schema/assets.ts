@@ -10,42 +10,40 @@ export const typeDefs = gql`
   type Asset {
     "Whether this asset is [lumens](https://www.stellar.org/developers/guides/concepts/assets.html)"
     native: Boolean!
-    "Asset issuer's account"
+    "Asset issuer's account. It's \`null\` for native lumens"
     issuer: Account
     "Asset's code"
     code: AssetCode!
-    "All accounts that trust this asset, ordered by balance"
-    balances(first: Int, last: Int, after: String, before: String): BalanceConnection
-  }
-
-  "Represents single [asset](https://www.stellar.org/developers/guides/concepts/assets.html) on Stellar network with additional statistics, provided by Horizon"
-  type AssetWithInfo {
-    "Whether this asset is [lumens](https://www.stellar.org/developers/guides/concepts/assets.html)"
-    native: Boolean!
-    "Asset issuer's account"
-    issuer: Account
-    "Asset's code"
-    code: AssetCode!
-    "The number of units of credit issued"
-    amount: Float
-    "The number of accounts that: 1) trust this asset and 2) where if the asset has the auth_required flag then the account is authorized to hold the asset"
-    numAccounts: Int
-    "Asset's issuer account flags"
-    flags: AccountFlags
+    "Sum of all asset holders balances"
+    totalSupply: String!
+    "Sum of only authorized holders balances"
+    circulatingSupply: String!
+    "Total number of asset holders"
+    holdersCount: Int!
+    "Total number of unathorized holders"
+    unauthorizedHoldersCount: Int!
+    "Ledger this asset was last time modified in"
+    lastModifiedIn: Ledger!
+    "Requires the issuing account to give other accounts permission before they can hold the issuing account’s credit"
+    authRequired: Boolean!
+    "Allows the issuing account to revoke its credit held by other accounts"
+    authRevocable: Boolean!
+    "If this is set then none of the authorization flags can be set and the account can never be deleted"
+    authImmutable: Boolean!
     "All accounts that trust this asset, ordered by balance"
     balances(first: Int, last: Int, after: String, before: String): BalanceConnection
   }
 
   "A list of assets"
-  type AssetWithInfoConnection {
+  type AssetConnection {
     pageInfo: PageInfo!
-    nodes: [AssetWithInfo]
-    edges: [AssetWithInfoEdge]
+    nodes: [Asset]
+    edges: [AssetEdge]
   }
 
-  type AssetWithInfoEdge {
+  type AssetEdge {
     cursor: String!
-    node: AssetWithInfo
+    node: Asset
   }
 
   input AssetInput {
@@ -56,14 +54,7 @@ export const typeDefs = gql`
   type Query {
     "Get single asset"
     asset(id: AssetID): Asset
-    "Get list of assets"
-    assets(
-      code: AssetCode
-      issuer: AccountID
-      first: Int
-      after: String
-      last: Int
-      before: String
-    ): AssetWithInfoConnection
+    "Get list of assets. Note: native XLM asset isn't included here"
+    assets(code: AssetCode, issuer: AccountID, first: Int, after: String, last: Int, before: String): AssetConnection
   }
 `;

@@ -1,10 +1,9 @@
 import { BigNumber } from "bignumber.js";
-import { Asset } from "stellar-sdk";
 import { AccountID, AssetID } from "./";
 
 export interface IBalanceBase {
   account: AccountID;
-  asset: Asset;
+  asset: AssetID;
   limit: BigNumber;
   balance: BigNumber;
   authorized: boolean;
@@ -24,7 +23,7 @@ export class Balance implements IBalance {
   }
 
   public account: AccountID;
-  public asset: Asset;
+  public asset: AssetID;
   public readonly limit: BigNumber;
   public readonly balance: BigNumber;
   public authorized: boolean;

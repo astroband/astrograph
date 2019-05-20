@@ -42,6 +42,7 @@ ALTER TABLE IF EXISTS ONLY public.ledgerheaders DROP CONSTRAINT IF EXISTS ledger
 ALTER TABLE IF EXISTS ONLY public.ban DROP CONSTRAINT IF EXISTS ban_pkey;
 ALTER TABLE IF EXISTS ONLY public.accounts DROP CONSTRAINT IF EXISTS accounts_pkey;
 ALTER TABLE IF EXISTS ONLY public.accountdata DROP CONSTRAINT IF EXISTS accountdata_pkey;
+DROP VIEW IF EXISTS public.assets;
 DROP TABLE IF EXISTS public.upgradehistory;
 DROP TABLE IF EXISTS public.txhistory;
 DROP TABLE IF EXISTS public.txfeehistory;
@@ -551,6 +552,28 @@ INSERT INTO public.txhistory VALUES ('b5f4d71a8ef136431f9495c3747c70a97a9dc4f333
 INSERT INTO public.upgradehistory VALUES (2, 1, 'AAAAAQAAAAo=', 'AAAAAA==');
 INSERT INTO public.upgradehistory VALUES (2, 2, 'AAAAAwAAJxA=', 'AAAAAA==');
 
+CREATE VIEW public.assets AS
+( SELECT (((t.assetcode)::text || '-'::text) || (t.issuer)::text) AS assetid,
+  t.assetcode AS code,
+  t.issuer,
+  sum(t.balance) AS total_supply,
+  sum(t.balance) FILTER (WHERE (t.flags = 1)) AS circulating_supply,
+  count(t.accountid) AS holders_count,
+  count(t.accountid) FILTER (WHERE (t.flags = 0)) AS unauthorized_holders_count,
+  max(t.lastmodified) AS last_activity
+  FROM public.trustlines t
+  GROUP BY t.issuer, t.assetcode
+  ORDER BY (count(t.accountid)) DESC)
+UNION
+SELECT 'native'::text AS assetid,
+'XLM'::character varying AS code,
+NULL::character varying AS issuer,
+sum(accounts.balance) AS total_supply,
+sum(accounts.balance) AS circulating_supply,
+count(*) AS holders_count,
+0 AS unauthorized_holders_count,
+max(accounts.lastmodified) AS last_activity
+FROM public.accounts;
 
 --
 -- Name: accountdata accountdata_pkey; Type: CONSTRAINT; Schema: public; Owner: -

@@ -1,6 +1,6 @@
 import stellar from "stellar-base";
 import { AccountValues } from "../../../src/model";
-import { AccountFlagsFactory, AccountThresholdsFactory } from "../../../src/model/factories";
+import { AccountThresholdsFactory } from "../../../src/model/factories";
 import AccountValuesFactory from "../../factories/account_values";
 import SignerFactory from "../../factories/signer";
 
@@ -40,7 +40,6 @@ describe("diffAttrs(other)", () => {
       inflationDestination: "",
       homeDomain: "",
       thresholds: AccountThresholdsFactory.fromValue("AQAAAA=="),
-      flags: AccountFlagsFactory.fromValue(0),
       lastModified: 6,
       signers: []
     };
@@ -52,7 +51,6 @@ describe("diffAttrs(other)", () => {
       inflationDestination: "some_inflation_dest",
       homeDomain: "example.com",
       thresholds: AccountThresholdsFactory.fromValue("AQEBAQ=="),
-      flags: AccountFlagsFactory.fromValue(2),
       lastModified: 5,
       signers: [SignerFactory.build()]
     };
@@ -65,7 +63,6 @@ describe("diffAttrs(other)", () => {
       "numSubentries",
       "inflationDestination",
       "homeDomain",
-      "flags",
       "thresholds",
       "signers"
     ]);

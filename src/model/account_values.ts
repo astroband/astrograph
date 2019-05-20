@@ -1,5 +1,4 @@
 import { IAccountBase } from "./account";
-import { AccountFlags } from "./account_flags";
 import { AccountThresholds } from "./account_thresholds";
 import { Signer } from "./signer";
 
@@ -15,7 +14,6 @@ export class AccountValues implements IAccountValues {
   public inflationDestination: string;
   public homeDomain: string;
   public thresholds: AccountThresholds;
-  public flags: AccountFlags;
   public signers: Signer[];
 
   constructor(data: IAccountValues) {
@@ -26,7 +24,6 @@ export class AccountValues implements IAccountValues {
     this.inflationDestination = data.inflationDestination;
     this.homeDomain = data.homeDomain;
     this.thresholds = data.thresholds;
-    this.flags = data.flags;
 
     this.signers = Signer.sortArray(data.signers);
   }
@@ -44,10 +41,6 @@ export class AccountValues implements IAccountValues {
       if (this[attr] !== other[attr]) {
         changedAttrs.push(attr);
       }
-    }
-
-    if (!this.flags.equals(other.flags)) {
-      changedAttrs.push("flags");
     }
 
     if (!this.thresholds.equals(other.thresholds)) {

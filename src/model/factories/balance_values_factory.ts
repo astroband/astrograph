@@ -8,7 +8,7 @@ import { BalanceValues } from "../balance_values";
 export class BalanceValuesFactory {
   public static fromXDR(xdr: any): BalanceValues {
     return new BalanceValues({
-      asset: Asset.fromOperation(xdr.asset()),
+      asset: Asset.fromOperation(xdr.asset()).toString(),
       account: publicKeyFromXDR(xdr),
       balance: new BigNumber(xdr.balance().toString()),
       limit: new BigNumber(xdr.limit().toString()),
@@ -19,7 +19,7 @@ export class BalanceValuesFactory {
   public static fakeNativeFromXDR(xdr: any): BalanceValues {
     return new BalanceValues({
       account: publicKeyFromXDR(xdr),
-      asset: Asset.native(),
+      asset: "native",
       limit: new BigNumber(MAX_INT64),
       authorized: true,
       balance: new BigNumber(xdr.balance().toString())
