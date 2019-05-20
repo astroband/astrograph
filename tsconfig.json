@@ -12,13 +12,8 @@
     "suppressImplicitAnyIndexErrors": true,
 
     /* Strict Type-Checking Options */
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "strictBindCallApply": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictPropertyInitialization": false,
+    "strict": true,
+    "strictPropertyInitialization": false, /* TypeORM entities use properties w/o initialization, so we need to turn this off */
 
     /* Additional Checks */
     "noUnusedLocals": true,                /* Report errors on unused locals. */
