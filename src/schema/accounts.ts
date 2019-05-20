@@ -98,12 +98,15 @@ export const typeDefs = gql`
 
   "Represents a [signers](https://www.stellar.org/developers/guides/concepts/multi-sig.html#additional-signing-keys) of the account"
   type Signer {
-    "Which account this signer belongs to"
-    account: Account!
     "Public key of this signer"
     signer: AccountID!
     "This signer's weight"
     weight: Int!
+  }
+
+  input DataInput {
+    name: String
+    value: String
   }
 
   extend type Query {
@@ -113,6 +116,7 @@ export const typeDefs = gql`
     accounts(
       ids: [AccountID!]
       homeDomain: String
+      data: DataInput
       first: Int
       last: Int
       after: String

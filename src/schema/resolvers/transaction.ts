@@ -1,20 +1,17 @@
 import { Memo } from "stellar-sdk";
 
-import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
 
 import * as resolvers from "./shared";
-import { createBatchResolver, makeConnection } from "./util";
+import { makeConnection } from "./util";
 
 import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
-import { Account, Effect, Operation, Transaction } from "../../model";
+import { Effect, Operation, Transaction } from "../../model";
 import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 
 export default {
   Transaction: {
-    sourceAccount: createBatchResolver<Transaction, Account>((source: any) => {
-      return db.accounts.findAllByIDs(source.map((obj: Transaction) => obj.sourceAccount));
-    }),
+    sourceAccount: resolvers.account,
     ledger: resolvers.ledger,
     memo: (obj: any) => {
       if (!obj.memo) {

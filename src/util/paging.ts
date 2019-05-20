@@ -1,3 +1,5 @@
+import { SelectQueryBuilder } from "typeorm";
+
 interface IForwardPagingParams {
   first: number;
   after: string;
@@ -39,4 +41,22 @@ export function parseCursorPagination(args: PagingParams) {
 
 export function properlyOrdered(records: any[], pagingParams: PagingParams): any[] {
   return pagingParams.last ? records.reverse() : records;
+}
+
+export async function paginate(
+  queryBuilder: SelectQueryBuilder<any>,
+  pagingParams: PagingParams,
+  cursorCol: string
+): Promise<any[]> {
+  const { limit, order } = parseCursorPagination(pagingParams);
+
+  queryBuilder.orderBy(cursorCol, order.toUpperCase() as "ASC" | "DESC").take(limit);
+
+  if (pagingParams.after) {
+    queryBuilder.andWhere(`${cursorCol} > :cursor`, { cursor: pagingParams.after });
+  } else if (pagingParams.before) {
+    queryBuilder.andWhere(`${cursorCol} < :cursor`, { cursor: pagingParams.before });
+  }
+
+  return properlyOrdered(await queryBuilder.getMany(), pagingParams);
 }

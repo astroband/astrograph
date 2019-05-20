@@ -1,5 +1,7 @@
+import { fieldsList } from "graphql-fields-list";
 import { withFilter } from "graphql-subscriptions";
 import _ from "lodash";
+import { getRepository } from "typeorm";
 
 import * as resolvers from "./shared";
 
@@ -12,7 +14,7 @@ import {
   IHorizonTransactionData
 } from "../../datasource/types";
 
-import { Account, Balance, DataEntry, Effect, Operation, Trade, Transaction } from "../../model";
+import { Balance, Effect, Operation, Trade, Transaction } from "../../model";
 import {
   BalanceFactory,
   EffectFactory,
@@ -20,17 +22,15 @@ import {
   TradeFactory,
   TransactionWithXDRFactory
 } from "../../model/factories";
+import { Account } from "../../orm/entities";
 
 import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
 import { ACCOUNT, pubsub } from "../../pubsub";
 import { joinToMap } from "../../util/array";
 import { getReservedBalance } from "../../util/base_reserve";
+import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
-
-const dataEntriesResolver = createBatchResolver<Account, DataEntry[]>((source: any) =>
-  db.dataEntries.findAllByAccountIDs(_.map(source, "id"))
-);
 
 const balancesResolver = createBatchResolver<Account, Balance[]>(async (source: Account[]) => {
   const accountIDs = source.map(s => s.id);
@@ -68,13 +68,11 @@ const accountSubscription = (event: string) => {
 
 export default {
   Account: {
-    homeDomain: (root: Account) => Buffer.from(root.homeDomain, "base64").toString(),
     reservedBalance: (root: Account) => toFloatAmountString(getReservedBalance(root.numSubentries)),
     assets: async (root: Account, args: any) => {
       const assets = await db.assets.findAll({ issuer: root.id }, args);
       return makeConnection(assets);
     },
-    data: dataEntriesResolver,
     balances: balancesResolver,
     ledger: resolvers.ledger,
     operations: async (root: Account, args: any, ctx: IApolloContext) => {
@@ -106,14 +104,34 @@ export default {
     inflationDestination: resolvers.account
   },
   Query: {
-    account(root: any, args: any) {
-      return db.accounts.findByID(args.id);
+    account(root: any, args: any, ctx: IApolloContext, info: any) {
+      const relations = fieldsList(info).indexOf("data") !== -1 ? ["data"] : [];
+
+      return getRepository(Account).findOne(args.id, { relations });
     },
     accounts: async (root: any, args: any) => {
-      const { ids, homeDomain, ...paging } = args;
-      const accounts = await db.accounts.findAll({ ids, homeDomain }, paging);
+      const { ids, homeDomain, data, ...paging } = args;
+      const qb = getRepository(Account).createQueryBuilder("accounts");
 
-      return makeConnection<Account>(accounts);
+      if (ids && ids.length !== 0) {
+        qb.whereInIds(ids);
+      }
+
+      if (homeDomain) {
+        qb.andWhere("decode(accounts.homedomain, 'base64') = :homeDomain", { homeDomain });
+      }
+
+      if (data) {
+        qb.innerJoinAndSelect("accounts.data", "data");
+        if (data.name) {
+          qb.andWhere("decode(data.name, 'base64') = :name", { name: data.name });
+        }
+        if (data.value) {
+          qb.andWhere("decode(data.value, 'base64') = :value", { value: data.value });
+        }
+      }
+
+      return makeConnection<Account>(await paginate(qb, paging, "accounts.id"));
     }
   },
   Subscription: {

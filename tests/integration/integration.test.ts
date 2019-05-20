@@ -5,7 +5,10 @@ import fs from "fs";
 import path from "path";
 import { Client as dbClient } from "pg";
 import { Network } from "stellar-base";
+import { createConnection } from "typeorm";
 import { HorizonAssetsDataSource } from "../../src/datasource/horizon";
+import { Account } from "../../src/orm/entities/account";
+import { AccountData } from "../../src/orm/entities/account_data";
 import schema from "../../src/schema";
 import logger from "../../src/util/logger";
 import * as secrets from "../../src/util/secrets";
@@ -46,6 +49,17 @@ describe("Integration tests", () => {
   beforeAll(async () => {
     try {
       await importDbDump();
+      await createConnection({
+        type: "postgres",
+        host: secrets.DBHOST,
+        port: secrets.DBPORT,
+        username: secrets.DBUSER,
+        password: secrets.DBPASSWORD,
+        database: secrets.DB,
+        entities: [Account, AccountData],
+        synchronize: false,
+        logging: process.env.DEBUG_SQL !== undefined
+      });
     } catch (e) {
       if (e.message !== `database "${secrets.DB}" does not exist`) {
         throw e;
