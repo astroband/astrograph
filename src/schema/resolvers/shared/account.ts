@@ -4,7 +4,7 @@ import { AccountID } from "../../../model";
 import { Account } from "../../../orm/entities";
 import { createBatchResolver, idOnlyRequested } from "../util";
 
-export const account = createBatchResolver<any, Account[]>((source: any, args: any, context: any, info: any) => {
+export const account = createBatchResolver<any, Account[]>(async (source: any, args: any, context: any, info: any) => {
   const ids: AccountID[] = source.map((s: any) => s[info.fieldName]);
 
   if (idOnlyRequested(info)) {
@@ -19,5 +19,7 @@ export const account = createBatchResolver<any, Account[]>((source: any, args: a
     qb.leftJoinAndSelect("accounts.data", "data");
   }
 
-  return qb.getMany();
+  const accounts = await qb.getMany();
+
+  return ids.map(id => accounts.find(acc => acc.id === id) || null);
 });
