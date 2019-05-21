@@ -1,6 +1,5 @@
-import { PagingParams } from "../datasource/horizon/base";
 import { AccountID } from "../model/account_id";
-import { parseCursorPagination, properlyOrdered } from "../util/paging";
+import { PagingParams, parseCursorPagination, properlyOrdered } from "../util/paging";
 import { BaseStorage } from "./base";
 
 export class OperationsStorage extends BaseStorage {
