@@ -1,9 +1,11 @@
 import PostgresPubSub from "@udia/graphql-postgres-subscriptions";
 import { Client } from "pg";
+import { getCustomRepository } from "typeorm";
 import { db } from "./database";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger, LedgerHeader, OfferSubscriptionPayload, TransactionWithXDR } from "./model";
 import { AssetFactory } from "./model/factories/asset_factory";
+import { OfferRepository } from "./orm/repository/offer";
 import extractOperation from "./util/extract_operation";
 import logger from "./util/logger";
 
@@ -56,17 +58,14 @@ export class Publisher {
     }
 
     assetsBidTicks.forEach(async tick => {
-      const [selling, buying] = tick.split("/").map(id => AssetFactory.fromId(id));
-      const bestAsk = await db.offers.getBestAsk(selling, buying);
-      const bestAskInv = await db.offers.getBestAsk(buying, selling);
+      const [selling, buying] = tick.split("/");
+      const repo = getCustomRepository(OfferRepository);
+
+      const bestAsk = await repo.findBestAsk(selling, buying);
+      const bestAskInv = await repo.findBestAsk(buying, selling);
       const bestBid = bestAskInv ? 1 / bestAskInv : null;
 
-      pubsub.publish(OFFERS_TICK, {
-        selling: selling.toString(),
-        buying: buying.toString(),
-        bestAsk,
-        bestBid
-      });
+      pubsub.publish(OFFERS_TICK, { selling, buying, bestAsk, bestBid });
     });
 
     for (const tx of transactions) {

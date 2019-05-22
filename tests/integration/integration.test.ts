@@ -7,8 +7,7 @@ import { Client as dbClient } from "pg";
 import { Network } from "stellar-base";
 import { createConnection } from "typeorm";
 import { HorizonAssetsDataSource } from "../../src/datasource/horizon";
-import { Account } from "../../src/orm/entities/account";
-import { AccountData } from "../../src/orm/entities/account_data";
+import { Account, AccountData, Offer } from "../../src/orm/entities";
 import schema from "../../src/schema";
 import logger from "../../src/util/logger";
 import * as secrets from "../../src/util/secrets";
@@ -56,7 +55,7 @@ describe("Integration tests", () => {
         username: secrets.DBUSER,
         password: secrets.DBPASSWORD,
         database: secrets.DB,
-        entities: [Account, AccountData],
+        entities: [Account, AccountData, Offer],
         synchronize: false,
         logging: process.env.DEBUG_SQL !== undefined
       });
@@ -76,6 +75,7 @@ describe("Integration tests", () => {
     const query = fs.readFileSync(`${__dirname}/integration_queries/${queryFile}.gql`, "utf8");
 
     const response = await queryServer({ query });
+    console.log(response);
 
     expect(response.data).toMatchSnapshot();
   });

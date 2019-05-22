@@ -1,14 +1,19 @@
 import { withFilter } from "graphql-subscriptions";
+import { getCustomRepository, getRepository } from "typeorm";
+
 import * as resolvers from "./shared";
 import { eventMatches, makeConnection } from "./util";
 
-import { db } from "../../database";
-import { MutationType, Offer, Trade } from "../../model";
+import { MutationType, Trade } from "../../model";
 import { AssetFactory, TradeFactory } from "../../model/factories";
+import { Offer } from "../../orm/entities";
+import { OfferRepository } from "../../orm/repository/offer";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
 import { IHorizonTradeData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
+import { AssetTransformer } from "../../util/orm";
+import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
 
 const offerMatches = (variables: any, payload: any): boolean => {
@@ -69,24 +74,33 @@ export default {
   },
   Query: {
     offers: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const { first, last, after, before, ...criteria } = args;
-      const offers = await db.offers.findAll(criteria, { first, last, after, before });
+      const { seller, selling, buying, ...paging } = args;
 
-      return makeConnection<Offer>(offers);
+      const qb = getRepository(Offer).createQueryBuilder("offers");
+
+      if (seller) {
+        qb.andWhere("offers.seller = :seller", { seller });
+      }
+
+      if (selling) {
+        qb.andWhere("offers.selling = :selling", { selling: AssetTransformer.to(selling) });
+      }
+
+      if (buying) {
+        qb.andWhere("offers.buying = :buying", { buying: AssetTransformer.to(buying) });
+      }
+
+      return makeConnection<Offer>(await paginate(qb, paging, "offers.id"));
     },
     tick: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const selling = AssetFactory.fromId(args.selling);
-      const buying = AssetFactory.fromId(args.buying);
-      const bestAsk = await db.offers.getBestAsk(selling, buying);
-      const bestAskInv = await db.offers.getBestAsk(buying, selling);
+      const repo = getCustomRepository(OfferRepository);
+      const { selling, buying } = args;
+
+      const bestAsk = await repo.findBestAsk(selling, buying);
+      const bestAskInv = await repo.findBestAsk(buying, selling);
       const bestBid = bestAskInv ? 1 / bestAskInv : null;
 
-      return {
-        selling: args.selling,
-        buying: args.buying,
-        bestAsk,
-        bestBid
-      };
+      return { selling, buying, bestAsk, bestBid };
     }
   },
   Subscription: {

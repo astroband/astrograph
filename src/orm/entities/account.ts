@@ -5,7 +5,7 @@ import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { AccountFlags, AccountThresholds, Signer } from "../../model";
 import { AccountFlagsFactory, AccountThresholdsFactory, SignerFactory } from "../../model/factories";
 import { Base64Transformer, BigNumberTransformer } from "../../util/orm";
-import { AccountData } from "./account_data";
+import { AccountData } from "./";
 
 @Entity("accounts")
 /* tslint:disable */

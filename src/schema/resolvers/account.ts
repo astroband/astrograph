@@ -14,7 +14,7 @@ import {
   IHorizonTransactionData
 } from "../../datasource/types";
 
-import { Balance, Effect, Offer, Operation, Trade, Transaction } from "../../model";
+import { Balance, Effect, Operation, Trade, Transaction } from "../../model";
 import {
   BalanceFactory,
   EffectFactory,
@@ -22,13 +22,14 @@ import {
   TradeFactory,
   TransactionWithXDRFactory
 } from "../../model/factories";
-import { Account } from "../../orm/entities";
+import { Account, Offer } from "../../orm/entities";
 
 import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
 import { ACCOUNT, pubsub } from "../../pubsub";
 import { joinToMap } from "../../util/array";
 import { getReservedBalance } from "../../util/base_reserve";
+import { AssetTransformer } from "../../util/orm";
 import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
 
@@ -101,13 +102,21 @@ export default {
       );
     },
     offers: async (root: Account, args: any, ctx: any) => {
-      const { first, last, after, before, ...criteria } = args;
+      const { selling, buying, ...paging } = args;
 
-      criteria.seller = root.id;
+      const qb = getRepository(Offer).createQueryBuilder("offers");
 
-      const offers = await db.offers.findAll(criteria, { first, last, after, before });
+      qb.where("offers.seller = :seller", { seller: root.id });
 
-      return makeConnection<Offer>(offers);
+      if (selling) {
+        qb.andWhere("offers.selling = :selling", { selling: AssetTransformer.to(selling) });
+      }
+
+      if (buying) {
+        qb.andWhere("offers.buying = :buying", { buying: AssetTransformer.to(buying) });
+      }
+
+      return makeConnection<Offer>(await paginate(qb, paging, "offers.id"));
     },
     inflationDestination: resolvers.account
   },
