@@ -66,9 +66,8 @@ export const typeDefs = gql`
   extend type Query {
     "Get list of offers"
     offers(
-      seller: AccountID
-      selling: AssetCode
-      buying: AssetCode
+      selling: AssetCode!
+      buying: AssetCode!
       first: Int
       after: String
       last: Int

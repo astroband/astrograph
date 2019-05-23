@@ -77,21 +77,14 @@ export default {
   },
   Query: {
     offers: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const { seller, selling, buying, ...paging } = args;
+      const { selling, buying, ...paging } = args;
 
       const qb = getRepository(Offer).createQueryBuilder("offers");
 
-      if (seller) {
-        qb.andWhere("offers.seller = :seller", { seller });
-      }
-
-      if (selling) {
-        qb.andWhere("offers.selling = :selling", { selling: AssetTransformer.to(selling) });
-      }
-
-      if (buying) {
-        qb.andWhere("offers.buying = :buying", { buying: AssetTransformer.to(buying) });
-      }
+      qb.where("offers.selling = :selling")
+        .andWhere("offers.buying = :buying")
+        .setParameter("selling", AssetTransformer.to(selling))
+        .setParameter("buying", AssetTransformer.to(buying));
 
       return makeConnection<Offer>(await paginate(qb, paging, "offers.id"));
     },
