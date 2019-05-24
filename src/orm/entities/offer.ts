@@ -35,7 +35,12 @@ export class Offer {
   @Column({ name: "lastmodified" })
   lastModified: number;
 
+  public static parsePagingToken(token: string) {
+    const [id, price] = token.split("-");
+    return { id, price };
+  }
+
   public get paging_token() {
-    return this.id;
+    return `${this.id}-${this.price}`;
   }
 }
