@@ -86,7 +86,9 @@ export default {
         .setParameter("selling", AssetTransformer.to(selling))
         .setParameter("buying", AssetTransformer.to(buying));
 
-      return makeConnection<Offer>(await paginate(qb, paging, "offers.id"));
+      const offers = await paginate(qb, paging, ["offers.price", "offers.id"], Offer.parsePagingToken);
+
+      return makeConnection<Offer>(offers);
     },
     tick: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const repo = getCustomRepository(OfferRepository);

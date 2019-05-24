@@ -116,7 +116,9 @@ export default {
         qb.andWhere("offers.buying = :buying", { buying: AssetTransformer.to(buying) });
       }
 
-      return makeConnection<Offer>(await paginate(qb, paging, "offers.id"));
+      const offers = await paginate(qb, paging, "offers.id", Offer.parsePagingToken);
+
+      return makeConnection<Offer>(offers);
     },
     inflationDestination: resolvers.account
   },

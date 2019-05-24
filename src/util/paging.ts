@@ -46,17 +46,76 @@ export function properlyOrdered(records: any[], pagingParams: PagingParams): any
 export async function paginate(
   queryBuilder: SelectQueryBuilder<any>,
   pagingParams: PagingParams,
-  cursorCol: string
-): Promise<any[]> {
-  const { limit, order } = parseCursorPagination(pagingParams);
+  cursorCols: string | string[],
+  cursorParser?: (token: string) => { [name: string]: string }
+) {
+  return new Pager(queryBuilder, pagingParams, cursorCols, cursorParser).paginate();
+}
 
-  queryBuilder.orderBy(cursorCol, order.toUpperCase() as "ASC" | "DESC").take(limit);
+class Pager {
+  private cursorCols: string[];
+  private cursorParameters: string[];
 
-  if (pagingParams.after) {
-    queryBuilder.andWhere(`${cursorCol} > :cursor`, { cursor: pagingParams.after });
-  } else if (pagingParams.before) {
-    queryBuilder.andWhere(`${cursorCol} < :cursor`, { cursor: pagingParams.before });
+  constructor(
+    private queryBuilder: SelectQueryBuilder<any>,
+    private pagingParams: PagingParams,
+    cursorCols: string | string[],
+    private cursorParser?: (token: string) => { [name: string]: string }
+  ) {
+    this.cursorCols = typeof cursorCols === "string" ? [cursorCols] : cursorCols.sort();
+
+    // Strip tablename prefix
+    this.cursorParameters = this.cursorCols.map(col => col.replace(/^\w+\./, ""));
   }
 
-  return properlyOrdered(await queryBuilder.getMany(), pagingParams);
+  public async paginate(): Promise<any[]> {
+    const { limit, cursor, order } = parseCursorPagination(this.pagingParams);
+
+    this.cursorCols.forEach(col => {
+      this.queryBuilder.addOrderBy(col, order.toUpperCase() as "ASC" | "DESC");
+    });
+
+    this.queryBuilder.take(limit);
+
+    if (cursor) {
+      this.applyCursor(cursor);
+    }
+
+    return properlyOrdered(await this.queryBuilder.getMany(), this.pagingParams);
+  }
+
+  private applyCursor(cursor: string) {
+    if (this.pagingParams.after) {
+      this.queryBuilder.andWhere(this.buildWhereExpression(">"));
+    } else if (this.pagingParams.before) {
+      this.queryBuilder.andWhere(this.buildWhereExpression("<"));
+    }
+
+    if (!this.cursorParser) {
+      this.queryBuilder.setParameter(this.cursorParameters[0], cursor);
+    } else {
+      const cursorVals = this.cursorParser(cursor);
+
+      this.checkCursorParser(cursorVals);
+
+      for (const name of this.cursorParameters) {
+        this.queryBuilder.setParameter(name, cursorVals[name]);
+      }
+    }
+  }
+
+  private checkCursorParser(cursorVals: { [name: string]: string }): void {
+    const keys = Object.keys(cursorVals).sort();
+
+    if (JSON.stringify(keys) !== JSON.stringify(this.cursorParameters)) {
+      throw new Error(`cursorParser returned unsuitable values, got [${keys}], need [${this.cursorParameters}]`);
+    }
+  }
+
+  private buildWhereExpression(op: ">" | "<") {
+    const columnNames = this.cursorCols.join(", ");
+    const placeholders = this.cursorParameters.map(cp => `:${cp}`).join(", ");
+    // (col1, col2) > (:col1, :col2)
+    return `(${columnNames}) ${op} (${placeholders})`;
+  }
 }
