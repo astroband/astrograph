@@ -22,10 +22,11 @@ export function idOnlyRequested(info: any): boolean {
   return false;
 }
 
-export function onlyFieldsRequested(info: any, fields: string[]): boolean {
-  const requestedFields = [...new Set(fieldsList(info))]; // dedupe
+// Returns true, iff user didn't request any fields, except those listed in `fields` parameter
+export function onlyFieldsRequested(info: any, ...fields: string[]): boolean {
+  const difference = fieldsList(info).filter(f => !fields.includes(f));
 
-  return JSON.stringify(requestedFields.sort()) === JSON.stringify(fields.sort());
+  return difference.length === 0;
 }
 
 export function makeConnection<T extends IWithPagingToken, R = T>(records: T[], nodeBuilder?: (r: T) => R) {

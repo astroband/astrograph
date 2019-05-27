@@ -16,7 +16,6 @@ import {
   Operation,
   OperationType
 } from "../../operation";
-import { AssetFactory } from "../asset_factory";
 
 export class DataMapper {
   public static call(data: IOperationData) {
@@ -96,7 +95,7 @@ export class DataMapper {
       ...{
         destination: this.data.destination_account_id,
         amount: this.data.source_amount.toString(),
-        asset: AssetFactory.fromStorage(this.data.source_asset)
+        asset: this.data.source_asset.key
       }
     };
   }
@@ -136,7 +135,7 @@ export class DataMapper {
       ...{
         trustor: this.data.destination_account_id,
         authorize: this.data.authorize,
-        asset: AssetFactory.fromStorage(this.data.destination_asset)
+        asset: this.data.destination_asset.key
       }
     };
   }
@@ -153,7 +152,7 @@ export class DataMapper {
       ...this.baseData,
       ...{
         limit: this.data.destination_amount.toString(),
-        asset: AssetFactory.fromStorage(this.data.destination_asset)
+        asset: this.data.destination_asset.key
       }
     };
   }
@@ -185,8 +184,8 @@ export class DataMapper {
           n: this.data.offer_price_n_d.n,
           d: this.data.offer_price_n_d.d
         },
-        assetBuying: AssetFactory.fromStorage(this.data.source_asset),
-        assetSelling: AssetFactory.fromStorage(this.data.destination_asset)
+        assetBuying: this.data.source_asset.key,
+        assetSelling: this.data.destination_asset.key
       }
     };
   }
@@ -202,8 +201,8 @@ export class DataMapper {
           n: this.data.offer_price_n_d.n,
           d: this.data.offer_price_n_d.d
         },
-        assetBuying: AssetFactory.fromStorage(this.data.source_asset),
-        assetSelling: AssetFactory.fromStorage(this.data.destination_asset)
+        assetBuying: this.data.source_asset.key,
+        assetSelling: this.data.destination_asset.key
       }
     };
   }
@@ -215,10 +214,10 @@ export class DataMapper {
         sendMax: this.data.source_amount.toString(),
         destinationAmount: this.data.destination_amount.toString(),
         destinationAccount: this.data.destination_account_id,
-        destinationAsset: AssetFactory.fromStorage(this.data.destination_asset),
-        sourceAsset: AssetFactory.fromStorage(this.data.source_asset),
+        destinationAsset: this.data.destination_asset.key,
+        sourceAsset: this.data.source_asset.key,
         path: this.data.path.map((node: IAsset) => {
-          return AssetFactory.fromStorage(node);
+          return node.key;
         })
       }
     };

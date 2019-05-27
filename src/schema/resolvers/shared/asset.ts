@@ -6,7 +6,7 @@ import { createBatchResolver, onlyFieldsRequested } from "../util";
 export const asset = createBatchResolver<any, Asset[]>((source: any, args: any, ctx: IApolloContext, info: any) => {
   const field = info.fieldName;
 
-  if (onlyFieldsRequested(info, ["code", "issuer", "native"])) {
+  if (onlyFieldsRequested(info, "id", "code", "issuer", "native")) {
     return source.map((obj: any) => {
       // this trick will return asset id either `obj[field]`
       // is instance of SDK Asset class, either it's already a
@@ -18,7 +18,7 @@ export const asset = createBatchResolver<any, Asset[]>((source: any, args: any, 
       }
 
       const [code, issuer] = assetId.split("-");
-      return { code, issuer, native: false };
+      return { id: assetId, code, issuer, native: false };
     });
   }
 

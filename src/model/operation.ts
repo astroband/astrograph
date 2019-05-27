@@ -1,5 +1,4 @@
-import { Asset } from "stellar-sdk";
-import { AccountID } from "./";
+import { AccountID, AssetID } from "./";
 
 export type AccountFlagsOption = "authRequired" | "authImmutable" | "authRevocable";
 
@@ -28,7 +27,7 @@ export interface IBaseOperation {
 
 export interface IPaymentOperation extends IBaseOperation {
   destination: AccountID;
-  asset: Asset;
+  asset: AssetID;
   amount: string;
 }
 
@@ -54,7 +53,7 @@ export interface IAccountMergeOperation extends IBaseOperation {
 }
 
 export interface IAllowTrustOperation extends IBaseOperation {
-  asset: Asset;
+  asset: AssetID;
   trustor: AccountID;
   authorize: boolean;
 }
@@ -65,7 +64,7 @@ export interface IBumpSequenceOperation extends IBaseOperation {
 
 export interface IChangeTrustOperation extends IBaseOperation {
   limit: string;
-  asset: Asset;
+  asset: AssetID;
 }
 
 export interface ICreateAccountOperation extends IBaseOperation {
@@ -83,16 +82,16 @@ export interface IManageOfferOperation extends IBaseOperation {
   offerId: string;
   price: string;
   priceComponents: { n: number; d: number };
-  assetBuying: Asset;
-  assetSelling: Asset;
+  assetBuying: AssetID;
+  assetSelling: AssetID;
 }
 
 export interface ICreatePassiveOfferOperation extends IBaseOperation {
   amount: string;
   price: string;
   priceComponents: { n: number; d: number };
-  assetBuying: Asset;
-  assetSelling: Asset;
+  assetBuying: AssetID;
+  assetSelling: AssetID;
 }
 
 // This is more of a "effect" of particular path payment
@@ -102,8 +101,8 @@ export interface IHorizonPathPaymentOperation extends IBaseOperation {
   amountSent: string;
   amountReceived: string;
   destinationAccount: AccountID;
-  destinationAsset: Asset;
-  sourceAsset: Asset;
+  destinationAsset: AssetID;
+  sourceAsset: AssetID;
 }
 
 // This is a "legacy" interface, we ingest path payments to DGraph in this format
@@ -111,9 +110,9 @@ export interface IPathPaymentOperation extends IBaseOperation {
   sendMax: string;
   destinationAmount: string;
   destinationAccount: AccountID;
-  destinationAsset: Asset;
-  sourceAsset: Asset;
-  path: Asset[];
+  destinationAsset: AssetID;
+  sourceAsset: AssetID;
+  path: AssetID[];
 }
 
 export type Operation =

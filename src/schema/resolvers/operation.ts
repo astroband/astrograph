@@ -50,12 +50,27 @@ export default {
       return null;
     }
   },
-  PaymentOperation: { destination: resolvers.account },
+  PaymentOperation: {
+    destination: resolvers.account,
+    asset: resolvers.asset
+  },
   SetOptionsOperation: { inflationDestination: resolvers.account },
   AccountMergeOperation: { destination: resolvers.account },
   AllowTrustOperation: { trustor: resolvers.account },
   CreateAccountOperation: { destination: resolvers.account },
-  PathPaymentOperation: { destinationAccount: resolvers.account },
+  PathPaymentOperation: {
+    destinationAccount: resolvers.account,
+    destinationAsset: resolvers.asset,
+    sourceAsset: resolvers.asset
+  },
+  CreatePassiveOfferOperation: {
+    assetBuying: resolvers.asset,
+    assetSelling: resolvers.asset
+  },
+  ManageOfferOperation: {
+    assetBuying: resolvers.asset,
+    assetSelling: resolvers.asset
+  },
   SetOptionsSigner: { account: resolvers.account },
   Query: {
     operation: async (root: any, args: { id: string }, ctx: IApolloContext) => {
