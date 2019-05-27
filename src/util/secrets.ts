@@ -27,4 +27,4 @@ export const INGEST_INTERVAL = Number.parseInt(process.env.INGEST_INTERVAL || ""
 export const STELLAR_NETWORK = process.env.STELLAR_NETWORK || "pubnet";
 export const SENTRY_DSN = process.env.SENTRY_DSN;
 
-export const ELASTIC_URL = process.env.ELASTIC_URL;
+export const ELASTIC_URL = process.env.ELASTIC_URL || "http://localhost:9200";
