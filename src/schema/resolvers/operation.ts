@@ -61,7 +61,8 @@ export default {
   PathPaymentOperation: {
     destinationAccount: resolvers.account,
     destinationAsset: resolvers.asset,
-    sourceAsset: resolvers.asset
+    sourceAsset: resolvers.asset,
+    path: resolvers.asset
   },
   CreatePassiveOfferOperation: {
     assetBuying: resolvers.asset,

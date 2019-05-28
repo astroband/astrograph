@@ -243,6 +243,8 @@ export const typeDefs = gql`
     sourceAsset: Asset!
     "Payment receiver account"
     destinationAccount: Account!
+    "The assets (other than send asset and destination asset) involved in the offers the path takes"
+    path: [Asset]
   }
 
   """

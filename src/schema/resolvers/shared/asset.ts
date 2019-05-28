@@ -8,17 +8,14 @@ export const asset = createBatchResolver<any, Asset[]>((source: any, args: any, 
 
   if (onlyFieldsRequested(info, "id", "code", "issuer", "native")) {
     return source.map((obj: any) => {
+      if (Array.isArray(obj[field])) {
+        return obj[field].map(expandAsset);
+      }
+
       // this trick will return asset id either `obj[field]`
       // is instance of SDK Asset class, either it's already a
       // string asset id
-      const assetId = obj[field].toString();
-
-      if (assetId === "native") {
-        return { code: "XLM", issuer: null, native: true };
-      }
-
-      const [code, issuer] = assetId.split("-");
-      return { id: assetId, code, issuer, native: false };
+      return expandAsset(obj[field].toString());
     });
   }
 
@@ -26,3 +23,12 @@ export const asset = createBatchResolver<any, Asset[]>((source: any, args: any, 
 
   return db.assets.findAllByIDs(ids);
 });
+
+function expandAsset(assetId: AssetID) {
+  if (assetId === "native") {
+    return { code: "XLM", issuer: null, native: true };
+  }
+
+  const [code, issuer] = assetId.split("-");
+  return { id: assetId, code, issuer, native: false };
+}
