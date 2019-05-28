@@ -8,9 +8,8 @@ import { GraphQLError } from "graphql";
 import {
   HorizonAssetsDataSource,
   HorizonEffectsDataSource,
-  HorizonOperationsDataSource,
   HorizonOrderBookDataSource,
-  HorizonPaymentsDataSource,
+  HorizonPathFindingDataSource,
   HorizonTradesDataSource,
   HorizonTransactionsDataSource
 } from "./datasource/horizon";
@@ -49,9 +48,8 @@ const endpoint = "/graphql";
 type DataSources = {
   assets: HorizonAssetsDataSource;
   effects: HorizonEffectsDataSource;
-  operations: HorizonOperationsDataSource;
   orderBook: HorizonOrderBookDataSource;
-  payments: HorizonPaymentsDataSource;
+  pathfinding: HorizonPathFindingDataSource;
   trades: HorizonTradesDataSource;
   transactions: HorizonTransactionsDataSource;
 };
@@ -82,9 +80,8 @@ init().then(() => {
       return {
         assets: new HorizonAssetsDataSource(),
         effects: new HorizonEffectsDataSource(),
-        operations: new HorizonOperationsDataSource(),
         orderBook: new HorizonOrderBookDataSource(),
-        payments: new HorizonPaymentsDataSource(),
+        pathfinding: new HorizonPathFindingDataSource(),
         trades: new HorizonTradesDataSource(),
         transactions: new HorizonTransactionsDataSource()
       };

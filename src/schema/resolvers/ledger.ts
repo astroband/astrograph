@@ -1,9 +1,10 @@
 import { db } from "../../database";
-import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
+import { IHorizonEffectData, IHorizonTransactionData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
 import { Effect, Ledger, LedgerHeader, Operation, Transaction } from "../../model";
 import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { LEDGER_CREATED, pubsub } from "../../pubsub";
+import { IOperationData as IStorageOperationData } from "../../storage/types";
 import { createBatchResolver, makeConnection } from "./util";
 
 const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>(async (ledgers: Ledger[]) => {
@@ -29,14 +30,10 @@ export default {
       );
     },
     operations: async (root: Ledger, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.operations.forLedger(root.seq, args),
-        r => OperationFactory.fromHorizon(r)
+      return makeConnection<IStorageOperationData, Operation>(
+        await ctx.storage.operations.forLedger(root.seq, args),
+        r => OperationFactory.fromStorage(r)
       );
-    },
-    payments: async (root: Ledger, args: any, ctx: IApolloContext) => {
-      const records = await ctx.dataSources.payments.forLedger(root.seq, args);
-      return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
     effects: async (root: Ledger, args: any, ctx: IApolloContext) => {
       const records = await ctx.dataSources.effects.forLedger(root.id, args);

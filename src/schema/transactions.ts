@@ -46,8 +46,6 @@ export const typeDefs = gql`
     resultCode: Int!
     "Operations, which this transaction contains"
     operations(first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
-    "Payment-relate operations, which this transaction contains"
-    payments(first: Int, after: String, last: Int, before: String): OperationConnection
     "Effects on account, which this transaction produced"
     effects(first: Int, after: String, last: Int, before: String): EffectConnection
   }

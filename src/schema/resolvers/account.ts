@@ -7,12 +7,7 @@ import * as resolvers from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import {
-  IHorizonEffectData,
-  IHorizonOperationData,
-  IHorizonTradeData,
-  IHorizonTransactionData
-} from "../../datasource/types";
+import { IHorizonEffectData, IHorizonTradeData, IHorizonTransactionData } from "../../datasource/types";
 import { IOperationData as IStorageOperationData } from "../../storage/types";
 
 import { Balance, Effect, Operation, Trade, Transaction } from "../../model";
@@ -81,10 +76,6 @@ export default {
         await ctx.storage.operations.forAccount(root.id, args),
         r => OperationFactory.fromStorage(r)
       );
-    },
-    payments: async (root: Account, args: any, ctx: IApolloContext) => {
-      const records = await ctx.dataSources.payments.forAccount(root.id, args);
-      return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
     effects: async (root: Account, args: any, ctx: IApolloContext) => {
       const records = await ctx.dataSources.effects.forAccount(root.id, args);

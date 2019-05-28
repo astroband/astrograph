@@ -283,8 +283,6 @@ export const typeDefs = gql`
     operations(first: Int, after: String, last: Int, before: String): OperationConnection
     "Get single operation by its id"
     operation(id: String): Operation
-    "Get payment-related operations"
-    payments(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
   extend type Subscription {

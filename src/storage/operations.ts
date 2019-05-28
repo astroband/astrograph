@@ -19,6 +19,24 @@ export class OperationsStorage extends BaseStorage {
     return properlyOrdered(docs, pagingParams);
   }
 
+  public async forLedger(seq: number, pagingParams: PagingParams) {
+    const searchParams = this.buildSearchParams(pagingParams);
+    searchParams.query.bool.must.push({ term: { seq } });
+
+    const docs = await this.search(searchParams);
+
+    return properlyOrdered(docs, pagingParams);
+  }
+
+  public async forTransaction(txId: string, pagingParams: PagingParams) {
+    const searchParams = this.buildSearchParams(pagingParams);
+    searchParams.query.bool.must.push({ term: { tx_id: txId } });
+
+    const docs = await this.search(searchParams);
+
+    return properlyOrdered(docs, pagingParams);
+  }
+
   public async byId(id: string) {
     return this.get(id);
   }

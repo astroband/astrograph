@@ -13,7 +13,7 @@ export default {
     findPaymentPaths: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { sourceAccountID, destinationAccountID, destinationAsset, destinationAmount } = args;
 
-      const records = await ctx.dataSources.payments.findPaths(
+      const records = await ctx.dataSources.pathfinding.findPaths(
         sourceAccountID,
         destinationAccountID,
         destinationAmount,

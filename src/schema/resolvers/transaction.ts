@@ -5,9 +5,10 @@ import { IApolloContext } from "../../graphql_server";
 import * as resolvers from "./shared";
 import { makeConnection } from "./util";
 
-import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
+import { IHorizonEffectData, IHorizonTransactionData } from "../../datasource/types";
 import { Effect, Operation, Transaction } from "../../model";
 import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { IOperationData as IStorageOperationData } from "../../storage/types";
 
 export default {
   Transaction: {
@@ -26,14 +27,10 @@ export default {
       };
     },
     operations: async (root: Transaction, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.operations.forTransaction(root.id, args),
-        r => OperationFactory.fromHorizon(r)
+      return makeConnection<IStorageOperationData, Operation>(
+        await ctx.storage.operations.forTransaction(root.id, args),
+        r => OperationFactory.fromStorage(r)
       );
-    },
-    payments: async (root: Transaction, args: any, ctx: IApolloContext) => {
-      const records = await ctx.dataSources.payments.forTransaction(root.id, args);
-      return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
     },
     effects: async (root: Transaction, args: any, ctx: IApolloContext) => {
       const records = await ctx.dataSources.effects.forTransaction(root.id, args);

@@ -1,6 +1,5 @@
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
-import { IHorizonOperationData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
 import { Operation, OperationType, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
@@ -81,11 +80,6 @@ export default {
     operations: async (root: any, args: any, ctx: IApolloContext) => {
       const docs = await ctx.storage.operations.all(args);
       return makeConnection<IStorageOperationData, Operation>(docs, r => OperationFactory.fromStorage(r));
-    },
-    payments: async (root: any, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.payments.all(args), r =>
-        OperationFactory.fromHorizon(r)
-      );
     }
   },
   Subscription: {
