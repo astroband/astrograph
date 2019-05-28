@@ -211,14 +211,13 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{
-        sendMax: this.data.source_amount.toString(),
-        destinationAmount: this.data.destination_amount.toString(),
+        sendMax: this.data.source_amount,
+        amountReceived: this.data.amount_received,
+        amountSent: this.data.amount_sent,
         destinationAccount: this.data.destination_account_id,
         destinationAsset: this.data.destination_asset.key,
         sourceAsset: this.data.source_asset.key,
-        path: this.data.path.map((node: IAsset) => {
-          return node.key;
-        })
+        path: this.data.path.map((node: IAsset) => node.key)
       }
     };
   }

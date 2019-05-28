@@ -53,6 +53,8 @@ export interface IPathPaymentOperationData extends IBaseOperationData {
   destination_asset: IAsset;
   source_amount: string;
   source_asset: IAsset;
+  amount_received: string;
+  amount_sent: string;
   path: IAsset[];
 }
 

@@ -105,10 +105,10 @@ export interface IHorizonPathPaymentOperation extends IBaseOperation {
   sourceAsset: AssetID;
 }
 
-// This is a "legacy" interface, we ingest path payments to DGraph in this format
 export interface IPathPaymentOperation extends IBaseOperation {
   sendMax: string;
-  destinationAmount: string;
+  amountSent: string;
+  amountReceived: string;
   destinationAccount: AccountID;
   destinationAsset: AssetID;
   sourceAsset: AssetID;
