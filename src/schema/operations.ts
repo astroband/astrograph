@@ -280,7 +280,7 @@ export const typeDefs = gql`
 
   extend type Query {
     "Get list of operations"
-    operations(first: Int, after: String, last: Int, before: String): OperationConnection
+    operations(type: [OperationType], first: Int, after: String, last: Int, before: String): OperationConnection
     "Get single operation by its id"
     operation(id: String): Operation
   }

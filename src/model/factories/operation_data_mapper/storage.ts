@@ -22,7 +22,7 @@ export class DataMapper {
     return new DataMapper(data).call();
   }
 
-  public static mapHorizonOpType(type: StorageOpType): OperationType {
+  public static mapStorageOpType(type: StorageOpType): OperationType {
     switch (type) {
       case "OperationTypeCreateAccount":
         return OperationType.CreateAccount;
@@ -49,13 +49,40 @@ export class DataMapper {
     }
   }
 
+  public static mapOperationType(type: OperationType): StorageOpType {
+    switch (type) {
+      case OperationType.CreateAccount:
+        return "OperationTypeCreateAccount";
+      case OperationType.Payment:
+        return "OperationTypePayment";
+      case OperationType.PathPayment:
+        return "OperationTypePathPayment";
+      case OperationType.ManageOffer:
+        return "OperationTypeManageOffer";
+      case OperationType.CreatePassiveOffer:
+        return "OperationTypeCreatePassiveOffer";
+      case OperationType.SetOption:
+        return "OperationTypeSetOptions";
+      case OperationType.ChangeTrust:
+        return "OperationTypeChangeTrust";
+      case OperationType.AllowTrust:
+        return "OperationTypeAllowTrust";
+      case OperationType.AccountMerge:
+        return "OperationTypeAccountMerge";
+      case OperationType.ManageData:
+        return "OperationTypeManageData";
+      case OperationType.BumpSequence:
+        return "OperationTypeBumpSequence";
+    }
+  }
+
   private baseData: IBaseOperation;
 
   constructor(private data: IOperationData) {
     this.baseData = {
       id: data.id,
       index: data.idx,
-      type: DataMapper.mapHorizonOpType(data.type),
+      type: DataMapper.mapStorageOpType(data.type),
       sourceAccount: data.source_account_id,
       dateTime: new Date(data.close_time),
       tx: { id: data.tx_id }

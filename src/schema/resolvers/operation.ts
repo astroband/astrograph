@@ -78,7 +78,11 @@ export default {
       return OperationFactory.fromStorage(doc);
     },
     operations: async (root: any, args: any, ctx: IApolloContext) => {
-      const docs = await ctx.storage.operations.all(args);
+      const { type, ...paging } = args;
+      const docs = type
+        ? await ctx.storage.operations.find(type, paging)
+        : await ctx.storage.operations.all(paging)
+
       return makeConnection<IStorageOperationData, Operation>(docs, r => OperationFactory.fromStorage(r));
     }
   },

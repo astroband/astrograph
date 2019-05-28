@@ -1,10 +1,20 @@
-import { AccountID } from "../model/account_id";
+import { AccountID, OperationType } from "../model";
+import { DataMapper } from "../model/factories/operation_data_mapper/storage";
 import { PagingParams, properlyOrdered } from "../util/paging";
 import { BaseStorage } from "./base";
 
 export class OperationsStorage extends BaseStorage {
   public async all(pagingParams: PagingParams) {
     const searchParams = this.buildSearchParams(pagingParams);
+    const docs = await this.search(searchParams);
+
+    return properlyOrdered(docs, pagingParams);
+  }
+
+  public async find(types: OperationType[], pagingParams: PagingParams) {
+    const storageTypes = types.map(type => DataMapper.mapOperationType(type));
+    const searchParams = this.buildSearchParams(pagingParams);
+    searchParams.query.bool.must.push({ terms: { type: storageTypes } });
     const docs = await this.search(searchParams);
 
     return properlyOrdered(docs, pagingParams);
