@@ -17,8 +17,8 @@ export default {
         return operation.tx;
       }
 
-      const records = await ctx.dataSources.transactions.byIds([operation.tx.id]);
-      return TransactionWithXDRFactory.fromHorizon(records[0]);
+      const tx = await ctx.storage.transactions.get(operation.tx.id);
+      return TransactionWithXDRFactory.fromStorage(tx);
     },
     __resolveType(operation: Operation) {
       switch (operation.type) {

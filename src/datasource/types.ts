@@ -1,4 +1,3 @@
-import { MemoHash, MemoID, MemoNone, MemoReturn, MemoText } from "stellar-sdk";
 import { AccountID } from "../model/account_id";
 import { AssetCode } from "../model/asset_code";
 
@@ -31,20 +30,6 @@ type HorizonEffectType =
   | "data_removed"
   | "data_updated"
   | "sequence_bumped";
-
-export interface IHorizonTransactionData {
-  id: string;
-  paging_token: string;
-  successful: boolean;
-  ledger: number;
-  created_at: string;
-  source_account: AccountID;
-  envelope_xdr: string;
-  result_xdr: string;
-  result_meta_xdr: string;
-  fee_meta_xdr: string;
-  memo_type: typeof MemoNone | typeof MemoID | typeof MemoHash | typeof MemoReturn | typeof MemoText;
-}
 
 export interface IHorizonAssetData {
   asset_type: HorizonAssetType;

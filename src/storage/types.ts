@@ -135,3 +135,19 @@ export type IOperationData = IPaymentOperationData &
   IManageOfferOperationData &
   ICreatePassiveOfferOperationData &
   IPathPaymentOperationData;
+
+export interface ITransactionData {
+  id: string;
+  idx: number;
+  seq: number;
+  order: number;
+  fee: number;
+  fee_charged: number;
+  operation_count: number;
+  close_time: string; // ISO datetime
+  successful: boolean;
+  result_code: number;
+  source_account_id: AccountID;
+  memo: { type: 0 | 1 | 2 | 3 | 4; value: string };
+  paging_token: string;
+}

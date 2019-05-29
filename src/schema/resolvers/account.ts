@@ -7,8 +7,11 @@ import * as resolvers from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import { IHorizonEffectData, IHorizonTradeData, IHorizonTransactionData } from "../../datasource/types";
-import { IOperationData as IStorageOperationData } from "../../storage/types";
+import { IHorizonEffectData, IHorizonTradeData } from "../../datasource/types";
+import {
+  IOperationData as IStorageOperationData,
+  ITransactionData as IStorageTransactionData
+} from "../../storage/types";
 
 import { Balance, Effect, Operation, Trade, Transaction } from "../../model";
 import {
@@ -82,9 +85,9 @@ export default {
       return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
     },
     transactions: async (root: Account, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonTransactionData, Transaction>(
-        await ctx.dataSources.transactions.forAccount(root.id, args),
-        r => TransactionWithXDRFactory.fromHorizon(r)
+      return makeConnection<IStorageTransactionData, Transaction>(
+        await ctx.storage.transactions.forAccount(root.id).all(args),
+        r => TransactionWithXDRFactory.fromStorage(r)
       );
     },
     trades: async (root: Account, args: any, ctx: IApolloContext, info: any) => {

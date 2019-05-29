@@ -9,11 +9,10 @@ import {
   HorizonEffectsDataSource,
   HorizonOrderBookDataSource,
   HorizonPathFindingDataSource,
-  HorizonTradesDataSource,
-  HorizonTransactionsDataSource
+  HorizonTradesDataSource
 } from "./datasource/horizon";
 import schema from "./schema";
-import { OperationsStorage } from "./storage/operations";
+import { OperationsStorage, TransactionsStorage } from "./storage";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
 import { listenBaseReserveChange } from "./util/stellar";
@@ -49,11 +48,13 @@ type DataSources = {
   orderBook: HorizonOrderBookDataSource;
   pathfinding: HorizonPathFindingDataSource;
   trades: HorizonTradesDataSource;
-  transactions: HorizonTransactionsDataSource;
 };
 
 export interface IApolloContext {
-  storage: { operations: OperationsStorage };
+  storage: {
+    operations: OperationsStorage;
+    transactions: TransactionsStorage;
+  };
   dataSources: DataSources;
 }
 
@@ -70,7 +71,8 @@ init().then(() => {
     context: () => {
       return {
         storage: {
-          operations: new OperationsStorage()
+          operations: new OperationsStorage(),
+          transactions: new TransactionsStorage(),
         }
       };
     },
@@ -79,8 +81,7 @@ init().then(() => {
         effects: new HorizonEffectsDataSource(),
         orderBook: new HorizonOrderBookDataSource(),
         pathfinding: new HorizonPathFindingDataSource(),
-        trades: new HorizonTradesDataSource(),
-        transactions: new HorizonTransactionsDataSource()
+        trades: new HorizonTradesDataSource()
       };
     },
     formatError: (error: GraphQLError) => {

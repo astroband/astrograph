@@ -5,10 +5,13 @@ import { IApolloContext } from "../../graphql_server";
 import * as resolvers from "./shared";
 import { makeConnection } from "./util";
 
-import { IHorizonEffectData, IHorizonTransactionData } from "../../datasource/types";
+import { IHorizonEffectData } from "../../datasource/types";
 import { Effect, Operation, Transaction } from "../../model";
 import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
-import { IOperationData as IStorageOperationData } from "../../storage/types";
+import {
+  IOperationData as IStorageOperationData,
+  ITransactionData as IStorageTransactionData
+} from "../../storage/types";
 
 export default {
   Transaction: {
@@ -39,13 +42,13 @@ export default {
   },
   Query: {
     transaction: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const records = await ctx.dataSources.transactions.byIds([args.id]);
-      return TransactionWithXDRFactory.fromHorizon(records[0]);
+      const tx = await ctx.storage.transactions.get(args.id);
+      return TransactionWithXDRFactory.fromStorage(tx);
     },
     transactions: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const records = await ctx.dataSources.transactions.all(args);
-      return makeConnection<IHorizonTransactionData, Transaction>(records, r =>
-        TransactionWithXDRFactory.fromHorizon(r)
+      const records = await ctx.storage.transactions.all(args);
+      return makeConnection<IStorageTransactionData, Transaction>(records, r =>
+        TransactionWithXDRFactory.fromStorage(r)
       );
     }
   }

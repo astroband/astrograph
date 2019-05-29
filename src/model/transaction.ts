@@ -1,4 +1,5 @@
 import { Memo } from "stellar-sdk";
+import { AccountID } from "./";
 
 export interface ITimeBounds {
   readonly minTime: Date;
@@ -10,10 +11,10 @@ export interface ITransaction {
   index: number;
   ledgerSeq: number;
   memo?: Memo;
-  feeAmount: string;
-  sourceAccount: string;
+  feeAmount: number;
+  sourceAccount: AccountID;
   timeBounds?: ITimeBounds;
-  feeCharged: string;
+  feeCharged: number;
   success: boolean;
   resultCode: number;
 }
@@ -23,10 +24,10 @@ export class Transaction implements ITransaction {
   public index: number;
   public ledgerSeq: number;
   public memo?: Memo;
-  public feeAmount: string;
+  public feeAmount: number;
   public sourceAccount: string;
   public timeBounds?: ITimeBounds;
-  public feeCharged: string;
+  public feeCharged: number;
   public success: boolean;
   public resultCode: number;
 
@@ -41,5 +42,9 @@ export class Transaction implements ITransaction {
     this.feeCharged = data.feeCharged;
     this.success = data.success;
     this.resultCode = data.resultCode;
+  }
+
+  public get paging_token() {
+    return this.ledgerSeq * 100 + this.index;
   }
 }
