@@ -1,4 +1,3 @@
-export * from "./assets";
 export * from "./effects";
 export * from "./order_book";
 export * from "./pathfinding";

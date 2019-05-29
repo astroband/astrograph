@@ -6,7 +6,6 @@ import path from "path";
 import { Client as dbClient } from "pg";
 import { Network } from "stellar-base";
 import { createConnection } from "typeorm";
-import { HorizonAssetsDataSource } from "../../src/datasource/horizon";
 import { Account } from "../../src/orm/entities/account";
 import { AccountData } from "../../src/orm/entities/account_data";
 import schema from "../../src/schema";
@@ -15,12 +14,7 @@ import * as secrets from "../../src/util/secrets";
 
 Network.useTestNetwork();
 
-jest.mock("../../src/datasource/horizon/assets");
-
-const server = new ApolloServer({
-  schema,
-  dataSources: () => ({ assets: new HorizonAssetsDataSource() })
-});
+const server = new ApolloServer({ schema });
 
 const queryServer = createTestClient(server).query;
 
