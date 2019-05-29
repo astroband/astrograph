@@ -28,7 +28,7 @@ export default {
     },
     operations: async (root: Transaction, args: any, ctx: IApolloContext) => {
       return makeConnection<IStorageOperationData, Operation>(
-        await ctx.storage.operations.forTransaction(root.id, args),
+        await ctx.storage.operations.forTransaction(root.id).all(args),
         r => OperationFactory.fromStorage(r)
       );
     },

@@ -74,14 +74,18 @@ export default {
   SetOptionsSigner: { account: resolvers.account },
   Query: {
     operation: async (root: any, args: { id: string }, ctx: IApolloContext) => {
-      const doc = await ctx.storage.operations.byId(args.id);
+      const doc = await ctx.storage.operations.get(args.id);
       return OperationFactory.fromStorage(doc);
     },
     operations: async (root: any, args: any, ctx: IApolloContext) => {
       const { type, ...paging } = args;
-      const docs = type
-        ? await ctx.storage.operations.find(type, paging)
-        : await ctx.storage.operations.all(paging)
+      const storage = ctx.storage.operations;
+
+      if (type) {
+        storage.filterTypes(type);
+      }
+
+      const docs = await ctx.storage.operations.all(paging);
 
       return makeConnection<IStorageOperationData, Operation>(docs, r => OperationFactory.fromStorage(r));
     }

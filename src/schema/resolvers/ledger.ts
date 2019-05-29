@@ -31,7 +31,7 @@ export default {
     },
     operations: async (root: Ledger, args: any, ctx: IApolloContext) => {
       return makeConnection<IStorageOperationData, Operation>(
-        await ctx.storage.operations.forLedger(root.seq, args),
+        await ctx.storage.operations.forLedger(root.seq).all(args),
         r => OperationFactory.fromStorage(r)
       );
     },
