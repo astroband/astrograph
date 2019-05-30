@@ -3,7 +3,7 @@ import * as resolvers from "./shared";
 import { eventMatches, makeConnection } from "./util";
 
 import { db } from "../../database";
-import { MutationType, Offer, Trade } from "../../model";
+import { MutationType, Offer, OfferValues, Trade } from "../../model";
 import { AssetFactory, TradeFactory } from "../../model/factories";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
@@ -65,7 +65,9 @@ export default {
   OfferValues: {
     seller: resolvers.account,
     selling: resolvers.asset,
-    buying: resolvers.asset
+    buying: resolvers.asset,
+    amount: (root: OfferValues) => toFloatAmountString(root.amount),
+
   },
   Query: {
     offers: async (root: any, args: any, ctx: IApolloContext, info: any) => {

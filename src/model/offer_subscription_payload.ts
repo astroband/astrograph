@@ -11,7 +11,7 @@ export class OfferSubscriptionPayload implements IMutationType {
   public mutationType: MutationType;
   public values: OfferValues | null = null;
   public accountID: string;
-  public offerId: string;
+  public offerID: string;
   public selling: Asset;
   public buying: Asset;
 
@@ -19,7 +19,7 @@ export class OfferSubscriptionPayload implements IMutationType {
     const xdr = change.data.offer();
 
     this.mutationType = mutationType;
-    this.offerId = xdr.offerId().toString();
+    this.offerID = xdr.offerId().toInt();
     this.accountID = publicKeyFromBuffer(xdr.sellerId().value());
 
     if (mutationType !== MutationType.Remove) {
