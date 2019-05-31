@@ -45,7 +45,7 @@ export class OfferFactory {
       seller: xdr.sellerId().value(),
       selling: Asset.fromOperation(xdr.selling()),
       buying: Asset.fromOperation(xdr.buying()),
-      amount: xdr.amount().toInt(),
+      amount: xdr.amount().toString(),
       priceN,
       priceD,
       price: calculateOfferPrice(priceN, priceD),

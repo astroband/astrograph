@@ -47,6 +47,10 @@ export function makeConnection<T extends IWithPagingToken, R = T>(records: T[], 
 }
 
 export function eventMatches(args: any, id: string, mutationType: MutationType): boolean {
+  if (!args) {
+    args = {};
+  }
+
   const idEq: boolean | null = args.idEq ? id === args.idEq : null;
   const idIn: boolean | null = args.idIn ? args.idIn.includes(id) : null;
   const mutationTypeIn: boolean | null = args.mutationTypeIn ? args.mutationTypeIn.includes(mutationType) : null;

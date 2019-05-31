@@ -12,10 +12,11 @@ import { IApolloContext } from "../../graphql_server";
 import { toFloatAmountString } from "../../util/stellar";
 
 const offerMatches = (variables: any, payload: any): boolean => {
-  const sellingAssetEq = variables.args.sellingAssetEq;
-  const buyingAssetEq = variables.args.buyingAssetEq;
+  const args = variables.args;
+  const sellingAssetEq = args ? args.sellingAssetEq : undefined;
+  const buyingAssetEq = args ? args.buyingAssetEq : undefined;
 
-  if (!eventMatches(variables.args, payload.id, payload.mutationType)) {
+  if (!eventMatches(args, payload.id, payload.mutationType)) {
     return false;
   }
 

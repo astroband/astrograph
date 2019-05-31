@@ -2,7 +2,7 @@ import { Asset } from "stellar-sdk";
 import { AccountID } from "./account_id";
 
 export interface IOfferBase {
-  id: string;
+  id: number;
   seller: AccountID;
   selling: Asset;
   buying: Asset;
@@ -18,7 +18,7 @@ export interface IOffer extends IOfferBase {
 }
 
 export class Offer implements IOffer {
-  public id: string;
+  public id: number;
   public seller: AccountID;
   public selling: Asset;
   public buying: Asset;

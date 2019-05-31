@@ -8,7 +8,7 @@ export const typeDefs = gql`
     seller: Account!
     selling: Asset!
     buying: Asset!
-    amount: Float!
+    amount: String!
     price: String!
     passive: Boolean!
     "The ledger this offer was created in"
@@ -22,7 +22,7 @@ export const typeDefs = gql`
     seller: Account!
     selling: Asset!
     buying: Asset!
-    amount: Float!
+    amount: String!
     price: String!
     passive: Boolean!
   }

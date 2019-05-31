@@ -5,7 +5,7 @@ import { IOfferBase } from "./offer";
 export type IOfferValues = IOfferBase;
 
 export class OfferValues implements IOfferBase {
-  public id: string;
+  public id: number;
   public seller: AccountID;
   public selling: Asset;
   public buying: Asset;
