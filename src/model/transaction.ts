@@ -2,8 +2,8 @@ import { Memo } from "stellar-sdk";
 import { AccountID } from "./";
 
 export interface ITimeBounds {
-  readonly minTime: Date;
-  readonly maxTime?: Date;
+  minTime: Date;
+  maxTime?: Date;
 }
 
 export interface ITransaction {

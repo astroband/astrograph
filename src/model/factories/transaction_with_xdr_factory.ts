@@ -63,12 +63,22 @@ export class TransactionWithXDRFactory {
   }
 
   public static fromStorage(data: IStorageTransactionData): Transaction {
+    let timeBounds: ITimeBounds | undefined;
+
+    if (data.time_bounds) {
+      timeBounds = { minTime: new Date(data.time_bounds.min_time * 1000) };
+
+      if (data.time_bounds.max_time) {
+        timeBounds.maxTime = new Date(data.time_bounds.max_time * 1000);
+      }
+    }
+
     return new Transaction({
       id: data.id,
       index: data.idx,
       ledgerSeq: data.seq,
       memo: data.memo ? TransactionWithXDRFactory.parseMemo(data.memo.type, data.memo.value) : undefined,
-      // timeBounds,
+      timeBounds,
       feeAmount: data.fee,
       feeCharged: data.fee_charged,
       resultCode: data.result_code,
