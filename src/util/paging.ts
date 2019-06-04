@@ -53,16 +53,17 @@ export async function paginate(
 }
 
 class Pager {
-  private cursorCols: string[];
-  private cursorParameters: string[];
+  private readonly cursorCols: string[];
+  private readonly cursorParameters: string[];
 
   constructor(
-    private queryBuilder: SelectQueryBuilder<any>,
-    private pagingParams: PagingParams,
+    private readonly queryBuilder: SelectQueryBuilder<any>,
+    private readonly pagingParams: PagingParams,
     cursorCols: string | string[],
-    private cursorParser?: (token: string) => { [name: string]: string }
+    private readonly cursorParser?: (token: string) => { [name: string]: string }
   ) {
-    this.cursorCols = typeof cursorCols === "string" ? [cursorCols] : cursorCols.sort();
+    this.cursorCols = typeof cursorCols === "string" ? [cursorCols] : cursorCols;
+    this.cursorCols.sort();
 
     // Strip tablename prefix
     this.cursorParameters = this.cursorCols.map(col => col.replace(/^\w+\./, ""));

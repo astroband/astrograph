@@ -72,8 +72,7 @@ export default {
     seller: resolvers.account,
     selling: resolvers.asset,
     buying: resolvers.asset,
-    amount: (root: OfferValues) => toFloatAmountString(root.amount),
-
+    amount: (root: OfferValues) => toFloatAmountString(root.amount)
   },
   Query: {
     offers: async (root: any, args: any, ctx: IApolloContext, info: any) => {

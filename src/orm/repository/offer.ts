@@ -5,15 +5,15 @@ import { Offer } from "../entities/offer";
 
 @EntityRepository(Offer)
 export class OfferRepository extends Repository<Offer> {
-  public async findBestAsk(selling: AssetID, buying: AssetID) {
+  public async findBestAsk(sellingAsset: AssetID, buyingAsset: AssetID) {
     const qb = this.createQueryBuilder("offers");
-    selling = AssetTransformer.to(selling);
-    buying = AssetTransformer.to(buying);
+    sellingAsset = AssetTransformer.to(sellingAsset);
+    buyingAsset = AssetTransformer.to(buyingAsset);
 
     const row = await qb
       .select("MIN(price)", "minPrice")
-      .where("offers.selling = :selling", { selling })
-      .andWhere("offers.buying = :buying", { buying })
+      .where("offers.selling = :sellingAsset", { sellingAsset })
+      .andWhere("offers.buying = :buyingAsset", { buyingAsset })
       .getRawOne();
 
     return row.minPrice;
