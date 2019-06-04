@@ -7,14 +7,14 @@ export const typeDefs = gql`
     "When the ledger with this trade was closed"
     ledgerCloseTime: DateTime!
     "The sell offer"
-    offer: Offer
-    baseOffer: Offer
+    offer: OfferID
+    baseOffer: OfferID
     "Base party of this trade"
     baseAccount: Account
     "Amount of \`baseAsset\` that was moved from \`baseAccount\` to \`counterAccount\`"
     baseAmount: Float!
     baseAsset: Asset!
-    counterOffer: Offer
+    counterOffer: OfferID
     "Counter party of this trade"
     counterAccount: Account
     "Amount of \`counterAsset\` that was moved from \`counterAccount\` to \`baseAccount\`"

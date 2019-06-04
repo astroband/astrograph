@@ -1,14 +1,19 @@
 import { withFilter } from "graphql-subscriptions";
+import { getCustomRepository, getRepository } from "typeorm";
+
 import * as resolvers from "./shared";
 import { eventMatches, makeConnection } from "./util";
 
-import { db } from "../../database";
-import { MutationType, Offer, OfferValues, Trade } from "../../model";
+import { MutationType, OfferValues, Trade } from "../../model";
 import { AssetFactory, TradeFactory } from "../../model/factories";
+import { Offer } from "../../orm/entities";
+import { OfferRepository } from "../../orm/repository/offer";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
 import { IHorizonTradeData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
+import { AssetTransformer } from "../../util/orm";
+import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
 
 const offerMatches = (variables: any, payload: any): boolean => {
@@ -67,36 +72,32 @@ export default {
     seller: resolvers.account,
     selling: resolvers.asset,
     buying: resolvers.asset,
-    amount: (root: OfferValues) => toFloatAmountString(root.amount),
-
+    amount: (root: OfferValues) => toFloatAmountString(root.amount)
   },
   Query: {
     offers: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const { first, offset, orderBy, ...criteria } = args;
-      const columnsMap = { id: "offerid" };
-      let orderColumn = "offerid";
-      let orderDir: "ASC" | "DESC" = "DESC";
+      const { selling, buying, ...paging } = args;
 
-      if (orderBy) {
-        [orderColumn, orderDir] = orderBy.split("_");
-        orderColumn = columnsMap[orderColumn];
-      }
+      const qb = getRepository(Offer).createQueryBuilder("offers");
 
-      return db.offers.findAll(criteria, first, offset, [orderColumn, orderDir]);
+      qb.where("offers.selling = :selling")
+        .andWhere("offers.buying = :buying")
+        .setParameter("selling", AssetTransformer.to(selling))
+        .setParameter("buying", AssetTransformer.to(buying));
+
+      const offers = await paginate(qb, paging, ["offers.price", "offers.id"], Offer.parsePagingToken);
+
+      return makeConnection<Offer>(offers);
     },
     tick: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const selling = AssetFactory.fromId(args.selling);
-      const buying = AssetFactory.fromId(args.buying);
-      const bestAsk = await db.offers.getBestAsk(selling, buying);
-      const bestAskInv = await db.offers.getBestAsk(buying, selling);
+      const repo = getCustomRepository(OfferRepository);
+      const { selling, buying } = args;
+
+      const bestAsk = await repo.findBestAsk(selling, buying);
+      const bestAskInv = await repo.findBestAsk(buying, selling);
       const bestBid = bestAskInv ? 1 / bestAskInv : null;
 
-      return {
-        selling: args.selling,
-        buying: args.buying,
-        bestAsk,
-        bestBid
-      };
+      return { selling, buying, bestAsk, bestBid };
     }
   },
   Subscription: {

@@ -22,13 +22,14 @@ import {
   TradeFactory,
   TransactionWithXDRFactory
 } from "../../model/factories";
-import { Account } from "../../orm/entities";
+import { Account, Offer } from "../../orm/entities";
 
 import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
 import { ACCOUNT, pubsub } from "../../pubsub";
 import { joinToMap } from "../../util/array";
 import { getReservedBalance } from "../../util/base_reserve";
+import { AssetTransformer } from "../../util/orm";
 import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
 
@@ -100,7 +101,25 @@ export default {
         TradeFactory.fromHorizon(r)
       );
     },
+    offers: async (root: Account, args: any, ctx: any) => {
+      const { selling, buying, ...paging } = args;
 
+      const qb = getRepository(Offer).createQueryBuilder("offers");
+
+      qb.where("offers.seller = :seller", { seller: root.id });
+
+      if (selling) {
+        qb.andWhere("offers.selling = :selling", { selling: AssetTransformer.to(selling) });
+      }
+
+      if (buying) {
+        qb.andWhere("offers.buying = :buying", { buying: AssetTransformer.to(buying) });
+      }
+
+      const offers = await paginate(qb, paging, "offers.id", Offer.parsePagingToken);
+
+      return makeConnection<Offer>(offers);
+    },
     inflationDestination: resolvers.account
   },
   Query: {

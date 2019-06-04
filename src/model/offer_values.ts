@@ -1,11 +1,20 @@
 import { Asset } from "stellar-sdk";
-import { AccountID } from "../model/account_id";
-import { IOfferBase } from "./offer";
+import { AccountID } from "./";
 
-export type IOfferValues = IOfferBase;
+export interface IOfferValues {
+  id: string;
+  seller: AccountID;
+  selling: Asset;
+  buying: Asset;
+  amount: string;
+  price: string;
+  priceN: number;
+  priceD: number;
+  passive: boolean;
+}
 
-export class OfferValues implements IOfferBase {
-  public id: number;
+export class OfferValues {
+  public id: string;
   public seller: AccountID;
   public selling: Asset;
   public buying: Asset;

@@ -9,7 +9,6 @@ import * as secrets from "./util/secrets";
 
 import AssetsRepo from "./repo/assets";
 import LedgerHeadersRepo from "./repo/ledger_headers";
-import OffersRepo from "./repo/offers";
 import StoreStateRepo from "./repo/store_state";
 import TransactionsRepo from "./repo/transactions";
 import TrustLinesRepo from "./repo/trust_lines";
@@ -18,7 +17,6 @@ import TrustLinesRepo from "./repo/trust_lines";
 interface IExtensions {
   assets: AssetsRepo;
   ledgerHeaders: LedgerHeadersRepo;
-  offers: OffersRepo;
   transactions: TransactionsRepo;
   trustLines: TrustLinesRepo;
   storeState: StoreStateRepo;
@@ -33,7 +31,6 @@ const initOptions: IOptions<IExtensions> = {
     // and transaction being executed, which should be as fast as possible.
     obj.assets = new AssetsRepo(obj);
     obj.ledgerHeaders = new LedgerHeadersRepo(obj);
-    obj.offers = new OffersRepo(obj);
     obj.transactions = new TransactionsRepo(obj);
     obj.trustLines = new TrustLinesRepo(obj);
     obj.storeState = new StoreStateRepo(obj);

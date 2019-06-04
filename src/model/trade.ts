@@ -37,7 +37,7 @@ export class Trade implements ITrade {
     this.baseAccount = data.baseAccount;
     this.baseAmount = data.baseAmount;
     this.baseAsset = data.baseAsset;
-    this.counterOffer = data.baseOffer;
+    this.counterOffer = data.counterOffer;
     this.counterAccount = data.counterAccount;
     this.counterAsset = data.counterAsset;
     this.baseIsSeller = data.baseIsSeller;

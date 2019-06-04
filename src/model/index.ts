@@ -14,7 +14,6 @@ export * from "./ledger";
 export * from "./ledger_header";
 export * from "./mutation_type";
 export * from "./native_balance_subscription_payload";
-export * from "./offer";
 export * from "./offer_values";
 export * from "./offer_subscription_payload";
 export * from "./transaction";
