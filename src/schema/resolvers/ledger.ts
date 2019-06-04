@@ -1,8 +1,8 @@
 import { db } from "../../database";
-import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
+import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
-import { Effect, Ledger, LedgerHeader, Operation, Transaction } from "../../model";
-import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { Ledger, LedgerHeader, Operation, Transaction } from "../../model";
+import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { LEDGER_CREATED, pubsub } from "../../pubsub";
 import { createBatchResolver, makeConnection } from "./util";
 
@@ -37,10 +37,6 @@ export default {
     payments: async (root: Ledger, args: any, ctx: IApolloContext) => {
       const records = await ctx.dataSources.payments.forLedger(root.seq, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
-    },
-    effects: async (root: Ledger, args: any, ctx: IApolloContext) => {
-      const records = await ctx.dataSources.effects.forLedger(root.id, args);
-      return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
     }
   },
   Query: {

@@ -4,7 +4,6 @@ import resolvers from "./resolvers";
 
 import { typeDefs as accountsTypeDefs } from "./accounts";
 import { typeDefs as assetsTypeDefs } from "./assets";
-import { typeDefs as effectsTypeDefs } from "./effects";
 import { typeDefs as ledgerTypeDefs } from "./ledgers";
 import { typeDefs as offersTypeDefs } from "./offers";
 import { typeDefs as operationsTypeDefs } from "./operations";
@@ -19,7 +18,6 @@ const schema = makeExecutableSchema({
   typeDefs: [
     typeDefs,
     accountsTypeDefs,
-    effectsTypeDefs,
     assetsTypeDefs,
     ledgerTypeDefs,
     offersTypeDefs,

@@ -54,8 +54,6 @@ export const typeDefs = gql`
       - account merge
     """
     payments(first: Int, after: String, last: Int, before: String): OperationConnection
-    "A list of all effects that changed this account"
-    effects(first: Int, after: String, last: Int, before: String): EffectConnection
     trades(first: Int, after: String, last: Int, before: String): TradeConnection
     transactions(first: Int, last: Int, before: String, after: String): TransactionConnection
     "A list of offers, created by this account"

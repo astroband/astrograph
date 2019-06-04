@@ -30,8 +30,6 @@ export const typeDefs = gql`
     operations(first: Int, last: Int, before: String, after: String, order: Order): OperationConnection
     "Payment-like operations that were performed in this ledger"
     payments(first: Int, last: Int, before: String, after: String): OperationConnection
-    "A list of all effects that have been produced in this ledger"
-    effects(first: Int, last: Int, before: String, after: String): EffectConnection
   }
 
   extend type Query {

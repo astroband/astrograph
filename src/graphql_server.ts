@@ -7,7 +7,6 @@ import { GraphQLError } from "graphql";
 
 import {
   HorizonAssetsDataSource,
-  HorizonEffectsDataSource,
   HorizonOperationsDataSource,
   HorizonOrderBookDataSource,
   HorizonPaymentsDataSource,
@@ -47,7 +46,6 @@ const endpoint = "/graphql";
 /* tslint:disable */
 type DataSources = {
   assets: HorizonAssetsDataSource;
-  effects: HorizonEffectsDataSource;
   operations: HorizonOperationsDataSource;
   orderBook: HorizonOrderBookDataSource;
   payments: HorizonPaymentsDataSource;
@@ -72,7 +70,6 @@ init().then(() => {
     dataSources: (): DataSources => {
       return {
         assets: new HorizonAssetsDataSource(),
-        effects: new HorizonEffectsDataSource(),
         operations: new HorizonOperationsDataSource(),
         orderBook: new HorizonOrderBookDataSource(),
         payments: new HorizonPaymentsDataSource(),

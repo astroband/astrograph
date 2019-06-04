@@ -2,7 +2,6 @@ import accountResolvers from "./account";
 import assetResolvers from "./asset";
 import balanceResolvers from "./balance";
 import dataEntryResolvers from "./data_entry";
-import effectResolvers from "./effect";
 import ledgerResolvers from "./ledger";
 import offerResolvers from "./offer";
 import operationResolvers from "./operation";
@@ -14,7 +13,6 @@ import transactionResolvers from "./transaction";
 
 export default [
   accountResolvers,
-  effectResolvers,
   assetResolvers,
   dataEntryResolvers,
   ledgerResolvers,

@@ -7,21 +7,10 @@ import * as resolvers from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import {
-  IHorizonEffectData,
-  IHorizonOperationData,
-  IHorizonTradeData,
-  IHorizonTransactionData
-} from "../../datasource/types";
+import { IHorizonOperationData, IHorizonTradeData, IHorizonTransactionData } from "../../datasource/types";
 
-import { Balance, Effect, Operation, Trade, Transaction } from "../../model";
-import {
-  BalanceFactory,
-  EffectFactory,
-  OperationFactory,
-  TradeFactory,
-  TransactionWithXDRFactory
-} from "../../model/factories";
+import { Balance, Operation, Trade, Transaction } from "../../model";
+import { BalanceFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { Account, Offer } from "../../orm/entities";
 
 import { db } from "../../database";
@@ -85,10 +74,6 @@ export default {
     payments: async (root: Account, args: any, ctx: IApolloContext) => {
       const records = await ctx.dataSources.payments.forAccount(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
-    },
-    effects: async (root: Account, args: any, ctx: IApolloContext) => {
-      const records = await ctx.dataSources.effects.forAccount(root.id, args);
-      return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
     },
     transactions: async (root: Account, args: any, ctx: IApolloContext) => {
       return makeConnection<IHorizonTransactionData, Transaction>(

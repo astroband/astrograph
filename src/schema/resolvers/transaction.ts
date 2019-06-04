@@ -5,9 +5,9 @@ import { IApolloContext } from "../../graphql_server";
 import * as resolvers from "./shared";
 import { makeConnection } from "./util";
 
-import { IHorizonEffectData, IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
-import { Effect, Operation, Transaction } from "../../model";
-import { EffectFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
+import { Operation, Transaction } from "../../model";
+import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 
 export default {
   Transaction: {
@@ -34,10 +34,6 @@ export default {
     payments: async (root: Transaction, args: any, ctx: IApolloContext) => {
       const records = await ctx.dataSources.payments.forTransaction(root.id, args);
       return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
-    },
-    effects: async (root: Transaction, args: any, ctx: IApolloContext) => {
-      const records = await ctx.dataSources.effects.forTransaction(root.id, args);
-      return makeConnection<IHorizonEffectData, Effect>(records, r => EffectFactory.fromHorizon(r));
     }
   },
   Query: {
