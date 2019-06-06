@@ -29,9 +29,10 @@ export function toFloatAmountString(amount: string | number | BigNumber): string
   return floatAmount.div(new BigNumber("1e" + StellarAmountPrecision)).toFixed(StellarAmountPrecision);
 }
 
-export async function updateBaseReserve(): Promise<void> {
+export async function updateBaseReserve(): Promise<number> {
   const lastLedgerHeader = await db.ledgerHeaders.getLastLedgerHeader();
   setBaseReserve(lastLedgerHeader.baseReserve);
+  return lastLedgerHeader.baseReserve;
 }
 
 export function listenBaseReserveChange(): void {
