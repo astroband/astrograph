@@ -7,15 +7,10 @@ const enum Constants {
   maxLengthMinusOne = 7 - 1
 }
 
-export function findPaths(
-  graph: Graph,
-  targetAssets: AssetID[],
-  destAsset: AssetID,
-  destAmount: BigNumber
-) {
+export function findPaths(graph: Graph, targetAssets: AssetID[], destAsset: AssetID, destAmount: BigNumber) {
   // take a short-cut if we're trying to find a path from ["native"] to "native":
-  if ((destAsset === "native") && (targetAssets.length === 1)) {
-    return { "native": [[destAmount, []]] };
+  if (destAsset === "native" && targetAssets.length === 1) {
+    return { native: [[destAmount, []]] };
   }
 
   // the lowest cost so far for a path going from an asset to `destAsset`
@@ -37,8 +32,8 @@ export function findPaths(
   // the current path being checked
   const path: string[] = [];
 
-  const find = (destAsset: AssetID, amountIn: BigNumber) => {
-    if (path.includes(destAsset)) {
+  const find = (nextAsset: AssetID, amountIn: BigNumber) => {
+    if (path.includes(nextAsset)) {
       return;
     }
 
@@ -46,17 +41,17 @@ export function findPaths(
     // and that path has a lower cost than this one, then there's no point
     // in traversing any further
 
-    const cost = lowestCost.get(destAsset);
+    const cost = lowestCost.get(nextAsset);
     if (!cost || amountIn.lt(cost)) {
-      lowestCost.set(destAsset, amountIn);
+      lowestCost.set(nextAsset, amountIn);
     } else {
       return;
     }
 
     // if the current asset is one of our target assets,
     // store away the path we've taken to get here
-    if (destAsset in paths) {
-      paths[destAsset].push([amountIn, path.slice(1).reverse()]);
+    if (nextAsset in paths) {
+      paths[nextAsset].push([amountIn, path.slice(1).reverse()]);
     }
 
     // if we're at the maximum path length (`path` + `destAsset`),
@@ -66,10 +61,10 @@ export function findPaths(
     }
 
     // fan out
-    const arcs = graph.get(destAsset);
+    const arcs = graph.get(nextAsset);
 
     if (arcs) {
-      path.push(destAsset);
+      path.push(nextAsset);
       for (const [sourceAsset, capacity, orderBook] of arcs) {
         if (capacity.gte(amountIn)) {
           const amountOut = buy(orderBook, amountIn);
