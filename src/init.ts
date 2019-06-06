@@ -1,5 +1,5 @@
-import * as Sentry from "@sentry/node";
 import * as Integrations from "@sentry/integrations";
+import * as Sentry from "@sentry/node";
 import { createConnection, getRepository } from "typeorm";
 import { Account, AccountData, Offer, TrustLine } from "./orm/entities";
 import "./util/asset";
