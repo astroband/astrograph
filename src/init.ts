@@ -1,8 +1,9 @@
 import * as Sentry from "@sentry/node";
 import * as Integrations from "@sentry/integrations";
-import { createConnection } from "typeorm";
-import { Account, AccountData, Offer } from "./orm/entities";
+import { createConnection, getRepository } from "typeorm";
+import { Account, AccountData, Offer, TrustLine } from "./orm/entities";
 import "./util/asset";
+import { buildOffersGraph } from "./util/graph/graph";
 import logger from "./util/logger";
 import "./util/memo";
 import * as secrets from "./util/secrets";
@@ -19,7 +20,11 @@ export default async function init(): Promise<void> {
   const network = setStellarNetwork();
   logger.info(`Using ${network}`);
 
-  await updateBaseReserve();
+  logger.info("Updating base reserve value...");
+  const baseReserve = await updateBaseReserve();
+  logger.info(`Current base reserve value is ${baseReserve}`);
+
+  logger.info("Connecting to database...");
   await createConnection({
     type: "postgres",
     host: secrets.DBHOST,
@@ -27,8 +32,14 @@ export default async function init(): Promise<void> {
     username: secrets.DBUSER,
     password: secrets.DBPASSWORD,
     database: secrets.DB,
-    entities: [Account, AccountData, Offer],
+    entities: [Account, AccountData, Offer, TrustLine],
     synchronize: false,
     logging: process.env.DEBUG_SQL !== undefined
   });
+
+  logger.info("Building offers graph for path finding...");
+  const offers = await getRepository(Offer).find();
+  await buildOffersGraph(offers);
+
+  logger.info("Astrograph is ready!");
 }
