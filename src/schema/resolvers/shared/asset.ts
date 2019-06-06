@@ -5,21 +5,30 @@ import { createBatchResolver, onlyFieldsRequested } from "../util";
 
 export const asset = createBatchResolver<any, Asset[]>((source: any, args: any, ctx: IApolloContext, info: any) => {
   const field = info.fieldName;
-  // this trick will return asset id either `obj[field]`
-  // is instance of SDK Asset class, either it's already a
-  // string asset id
-  const ids: AssetID[] = source.map((s: any) => s[field].toString());
 
-  if (onlyFieldsRequested(info, ["code", "issuer", "native"])) {
-    return ids.map(id => {
-      if (id === "native") {
-        return { code: "XLM", issuer: null, native: true };
+  if (onlyFieldsRequested(info, "id", "code", "issuer", "native")) {
+    return source.map((obj: any) => {
+      if (Array.isArray(obj[field])) {
+        return obj[field].map(expandAsset);
       }
 
-      const [code, issuer] = id.split("-");
-      return { code, issuer, native: false };
+      // this trick will return asset id either `obj[field]`
+      // is instance of SDK Asset class, either it's already a
+      // string asset id
+      return expandAsset(obj[field].toString());
     });
   }
 
+  const ids: AssetID[] = source.map((s: any) => s[field].toString());
+
   return db.assets.findAllByIDs(ids);
 });
+
+function expandAsset(assetId: AssetID) {
+  if (assetId === "native") {
+    return { id: "native", code: "XLM", issuer: null, native: true };
+  }
+
+  const [code, issuer] = assetId.split("-");
+  return { id: assetId, code, issuer, native: false };
+}

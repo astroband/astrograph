@@ -1,6 +1,10 @@
-import { IHorizonPaymentPathData } from "../../datasource/types";
+import { BigNumber } from "bignumber.js";
+import { getRepository } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
-import { AssetFactory } from "../../model/factories";
+// import { AssetFactory } from "../../model/factories";
+import { AssetID } from "../../model";
+import { TrustLine } from "../../orm/entities/trustline";
+import { findPaths } from "../../util/graph/graph";
 import * as resolvers from "./shared";
 
 export default {
@@ -11,38 +15,27 @@ export default {
   },
   Query: {
     findPaymentPaths: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const { sourceAccountID, destinationAccountID, destinationAsset, destinationAmount } = args;
+      const { sourceAccountID, destinationAsset, destinationAmount } = args;
 
-      const records = await ctx.dataSources.payments.findPaths(
-        sourceAccountID,
-        destinationAccountID,
-        destinationAmount,
-        destinationAsset
+      const trustlines = await getRepository(TrustLine).find({ where: { account: sourceAccountID } });
+
+      const nodes = findPaths(
+        trustlines.map(t => t.asset),
+        destinationAsset,
+        new BigNumber(destinationAmount)
       );
 
-      const r = records.map((record: IHorizonPaymentPathData) => {
-        const path = record.path.map((asset: any) =>
-          AssetFactory.fromHorizon(asset.asset_type, asset.asset_code, asset.asset_issuer)
-        );
-
-        return {
-          sourceAsset: AssetFactory.fromHorizon(
-            record.source_asset_type,
-            record.source_asset_code,
-            record.source_asset_issuer
-          ),
-          destinationAsset: AssetFactory.fromHorizon(
-            record.destination_asset_type,
-            record.destination_asset_code,
-            record.destination_asset_issuer
-          ),
-          sourceAmount: record.source_amount,
-          destinationAmount: record.destination_amount,
-          path
-        };
-      });
-
-      return r;
+      return Object.entries(nodes).map(([sourceAsset, data]: [AssetID, any]) => {
+        return data.map((o: [BigNumber, AssetID[]]) => {
+          return {
+            sourceAsset,
+            sourceAmount: o[0],
+            destinationAsset,
+            destinationAmount,
+            path: o[1]
+          }
+        });
+      }).reduce((acc, e) => acc.concat(e), []);
     }
   }
 };
