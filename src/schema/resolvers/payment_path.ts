@@ -3,8 +3,8 @@ import { getRepository } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
 // import { AssetFactory } from "../../model/factories";
 import { AssetID } from "../../model";
+import { findPaths } from "../../offers_graph/singleton";
 import { TrustLine } from "../../orm/entities/trustline";
-import { findPaths } from "../../util/graph/graph";
 import * as resolvers from "./shared";
 
 export default {

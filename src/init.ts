@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/node";
 import { createConnection, getRepository } from "typeorm";
 import { Account, AccountData, Offer, TrustLine } from "./orm/entities";
 import "./util/asset";
-import { buildOffersGraph } from "./util/graph/graph";
+import { buildOffersGraph } from "./offers_graph/singleton";
 import logger from "./util/logger";
 import "./util/memo";
 import * as secrets from "./util/secrets";
