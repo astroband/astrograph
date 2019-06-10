@@ -50,6 +50,6 @@ describe("findPaths()", () => {
     const paths = subject.findPaths(["LED"], "KZN", new BigNumber(3));
 
     expect(paths["LED"]).toBeDefined();
-    expect(paths["LED"][0][1]).toEqual(["MOW"]);
+    expect(paths["LED"][0].path).toEqual(["MOW"]);
   });
 });
