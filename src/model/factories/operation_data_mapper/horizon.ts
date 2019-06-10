@@ -19,14 +19,14 @@ import {
 } from "../../operation";
 
 // Horizon doesn't use buy and sell offers introduced in stellar core v11 yet
-type HorizonOperationKinds = Exclude<OperationKinds, OperationKinds.ManageBuyOffer>;
+type HorizonOperationType = Exclude<OperationType, OperationType.ManageBuyOffer>;
 
 export class DataMapper {
   public static call(data: IHorizonOperationData) {
     return new DataMapper(data).call();
   }
 
-  public static mapHorizonOpType(type: HorizonOpType): OperationType {
+  public static mapHorizonOpType(type: HorizonOpType): HorizonOperationType {
     switch (type) {
       case "create_account":
         return OperationType.CreateAccount;
@@ -67,7 +67,7 @@ export class DataMapper {
   }
 
   public call(): Operation {
-    switch (this.baseData.type) {
+    switch (this.baseData.type as HorizonOperationType) {
       case OperationType.Payment:
         return this.mapPayment();
       case OperationType.SetOption:
