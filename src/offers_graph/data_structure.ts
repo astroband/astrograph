@@ -8,6 +8,10 @@ interface IEdgeData {
   orderBook: OrderBook;
 }
 
+interface IPaths {
+  [sourceAsset: string]: Array<{ amountNeeded: BigNumber; path: AssetID[] }>;
+}
+
 const maxPathLength = 7 - 1;
 
 export class OffersGraph {
@@ -69,30 +73,31 @@ export class OffersGraph {
     this.sortOrderBooks();
   }
 
-  public findPaths(targetAssets: AssetID[], destAsset: AssetID, destAmount: BigNumber) {
-    // take a short-cut if we're trying to find a path from ["native"] to "native":
-    if (destAsset === "native" && targetAssets.length === 1) {
-      return { native: [[destAmount, []]] };
+  public findPaths(sourceAssets: AssetID[], destAsset: AssetID, destAmount: BigNumber): IPaths {
+    // take a short-cut if we're trying to find a path from "native" to "native":
+    if (destAsset === "native" && sourceAssets.length === 1 && sourceAssets[0] === "native") {
+      return { native: [{ amountNeeded: destAmount, path: [] }] };
     }
 
     // the lowest cost so far for a path going from an asset to `destAsset`
     const lowestCost = new Map<AssetID, BigNumber>();
 
-    // the paths found for each individual target asset
-    const paths = {};
-    for (const asset of targetAssets) {
+    // the paths found for each individual source asset
+    const paths: IPaths = {};
+
+    for (const asset of sourceAssets) {
       paths[asset] = [];
     }
 
     // take a short-cut if `destAssset` is one of the target assets,
     // and add a direct path already from the start
-    if (targetAssets.includes(destAsset)) {
-      paths[destAsset].push([destAmount, []]);
+    if (sourceAssets.includes(destAsset)) {
+      paths[destAsset].push({ amountNeeded: destAmount, path: [] });
       lowestCost.set(destAsset, destAmount);
     }
 
     // the current path being checked
-    const path: string[] = [];
+    const path: AssetID[] = [];
 
     const find = (nextAsset: AssetID, amountIn: BigNumber) => {
       if (path.includes(nextAsset)) {
@@ -102,7 +107,6 @@ export class OffersGraph {
       // if we get to an a point where we've come to in a previous path
       // and that path has a lower cost than this one, then there's no point
       // in traversing any further
-
       const cost = lowestCost.get(nextAsset);
       if (!cost || amountIn.lt(cost)) {
         lowestCost.set(nextAsset, amountIn);
@@ -110,10 +114,10 @@ export class OffersGraph {
         return;
       }
 
-      // if the current asset is one of our target assets,
+      // if the current asset is one of our source assets,
       // store away the path we've taken to get here
       if (nextAsset in paths) {
-        paths[nextAsset].push([amountIn, path.slice(1).reverse()]);
+        paths[nextAsset].push({ amountNeeded: amountIn, path: path.slice(1).reverse() });
       }
 
       // if we're at the maximum path length (`path` + `destAsset`),

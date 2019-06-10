@@ -1,8 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import { getRepository } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
-// import { AssetFactory } from "../../model/factories";
-import { AssetID } from "../../model";
 import { findPaths } from "../../offers_graph/singleton";
 import { TrustLine } from "../../orm/entities/trustline";
 import * as resolvers from "./shared";
@@ -22,18 +20,18 @@ export default {
       const nodes = findPaths(trustlines.map(t => t.asset), destinationAsset, new BigNumber(destinationAmount));
 
       return Object.entries(nodes)
-        .map(([sourceAsset, data]: [AssetID, any]) => {
-          return data.map((o: [BigNumber, AssetID[]]) => {
+        .map(([sourceAsset, data]) => {
+          return data.map(o => {
             return {
               sourceAsset,
-              sourceAmount: o[0],
+              sourceAmount: o.amountNeeded,
               destinationAsset,
               destinationAmount,
-              path: o[1]
+              path: o.path
             };
           });
         })
-        .reduce((acc, e) => acc.concat(e), []);
+        .reduce((acc, e) => acc.concat(e), []); // flatten
     }
   }
 };
