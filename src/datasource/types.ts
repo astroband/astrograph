@@ -1,4 +1,4 @@
-import { MemoHash, MemoID, MemoNone, MemoReturn, MemoText } from "stellar-sdk";
+import { MemoHash, MemoID, MemoNone, MemoReturn, MemoText } from "stellar-base";
 import { AccountID } from "../model/account_id";
 import { AssetCode } from "../model/asset_code";
 

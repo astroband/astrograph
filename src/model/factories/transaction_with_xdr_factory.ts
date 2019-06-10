@@ -1,5 +1,4 @@
 import stellar from "stellar-base";
-import { Memo } from "stellar-sdk";
 import { IHorizonTransactionData } from "../../datasource/types";
 import { parsePagingToken } from "../../util/horizon";
 import { publicKeyFromBuffer } from "../../util/xdr";
@@ -27,7 +26,7 @@ export class TransactionWithXDRFactory {
     const body = bodyXDR.tx();
     const result = resultXDR.result();
 
-    const memo = Memo.fromXDRObject(body.memo());
+    const memo = stellar.Memo.fromXDRObject(body.memo());
 
     const timeBounds = this.parseTimeBounds(body.timeBounds());
 
@@ -71,7 +70,7 @@ export class TransactionWithXDRFactory {
 
     const body = bodyXDR.tx();
 
-    const memo = Memo.fromXDRObject(body.memo());
+    const memo = stellar.Memo.fromXDRObject(body.memo());
 
     const timeBounds = this.parseTimeBounds(body.timeBounds());
 

@@ -1,4 +1,4 @@
-import { Asset } from "stellar-sdk";
+import { Asset } from "stellar-base";
 import { HorizonOpType, IHorizonOperationData } from "../../../datasource/types";
 import { parsePagingToken } from "../../../util/horizon";
 import {

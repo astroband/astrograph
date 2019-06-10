@@ -1,4 +1,4 @@
-import { Asset } from "stellar-sdk";
+import stellar from "stellar-base";
 
 export interface ITrade {
   id: string;
@@ -7,10 +7,10 @@ export interface ITrade {
   baseOffer: string;
   baseAccount: string;
   baseAmount: string;
-  baseAsset: Asset;
+  baseAsset: stellar.Asset;
   counterOffer: string;
   counterAccount: string;
-  counterAsset: Asset;
+  counterAsset: stellar.Asset;
   baseIsSeller: boolean;
   price: string;
 }
@@ -22,10 +22,10 @@ export class Trade implements ITrade {
   public baseOffer: string;
   public baseAccount: string;
   public baseAmount: string;
-  public baseAsset: Asset;
+  public baseAsset: stellar.Asset;
   public counterOffer: string;
   public counterAccount: string;
-  public counterAsset: Asset;
+  public counterAsset: stellar.Asset;
   public baseIsSeller: boolean;
   public price: string;
 

@@ -5,6 +5,9 @@ import { Asset } from "stellar-base";
 /* tslint:disable */
 declare module "stellar-base" {
   interface Asset {
+    isNative(): boolean;
+    getIssuer(): string;
+    getCode(): string;
     toString(): string;
   }
 }

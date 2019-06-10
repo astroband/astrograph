@@ -1,4 +1,4 @@
-import { Memo } from "stellar-sdk";
+import stellar from "stellar-base";
 
 export interface ITimeBounds {
   readonly minTime: Date;
@@ -9,7 +9,7 @@ export interface ITransaction {
   id: string;
   index: number;
   ledgerSeq: number;
-  memo?: Memo;
+  memo?: stellar.Memo;
   feeAmount: string;
   sourceAccount: string;
   timeBounds?: ITimeBounds;
@@ -22,7 +22,7 @@ export class Transaction implements ITransaction {
   public id: string;
   public index: number;
   public ledgerSeq: number;
-  public memo?: Memo;
+  public memo?: stellar.Memo;
   public feeAmount: string;
   public sourceAccount: string;
   public timeBounds?: ITimeBounds;
