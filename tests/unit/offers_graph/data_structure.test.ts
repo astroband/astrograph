@@ -38,9 +38,9 @@ describe("buildFromOffers()", () => {
 
     expect(ledTseData).toBeDefined();
     expect(ledTseData!.capacity).toEqual(new BigNumber(17));
-    expect(ledTseData!.orderBook).toEqual([
-      [new BigNumber(7), new BigNumber(0.46)],
-      [new BigNumber(10), new BigNumber(0.5)]
+    expect(ledTseData!.orderBook.getOrders()).toEqual([
+      { amount: new BigNumber(7), price: new BigNumber(0.46) },
+      { amount: new BigNumber(10), price: new BigNumber(0.5) }
     ]);
   });
 });

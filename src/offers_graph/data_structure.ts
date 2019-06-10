@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { AssetID } from "../model";
 import { Offer } from "../orm/entities";
-import { buy, Order, OrderBook } from "./orderbook";
+import { IOrder, OrderBook } from "./orderbook";
 
 interface IEdgeData {
   capacity: BigNumber;
@@ -31,17 +31,19 @@ export class OffersGraph {
       const [assetToBuy, assetToSell] = [offer.buying, offer.selling];
 
       const edge = this.getEdgeData(assetToSell, assetToBuy);
-      const order: Order = [offer.amount, offer.price];
+      const order: IOrder = { amount: offer.amount, price: offer.price };
 
       if (!edge) {
         this.addEdge(assetToSell, assetToBuy, {
           capacity: offer.amount,
-          orderBook: [order]
+          orderBook: new OrderBook([order])
         });
       } else {
+        edge.orderBook.addOrder(order);
+
         this.updateEdge(assetToSell, assetToBuy, {
           capacity: edge.capacity.plus(offer.amount),
-          orderBook: edge.orderBook.concat([order])
+          orderBook: edge.orderBook
         });
       }
     }
@@ -56,11 +58,11 @@ export class OffersGraph {
     }
 
     let capacity = new BigNumber(0);
-    const orderBook: OrderBook = [];
+    const orderBook = new OrderBook();
 
-    for (const offer of offers) {
-      orderBook.push([offer.amount, offer.price]);
-      capacity = capacity.plus(offer.amount);
+    for (const { amount, price } of offers) {
+      orderBook.addOrder({ amount, price });
+      capacity = capacity.plus(amount);
     }
 
     this.updateEdge(selling, buying, { capacity, orderBook });
@@ -126,10 +128,13 @@ export class OffersGraph {
       if (edges.length !== 0) {
         path.push(nextAsset);
 
-        for (const edge of edges) {
-          if (edge.data.capacity.gte(amountIn)) {
-            const amountOut = buy(edge.data.orderBook, amountIn);
-            find(edge.vertex, amountOut);
+        for (const {
+          vertex,
+          data: { capacity, orderBook }
+        } of edges) {
+          if (capacity.gte(amountIn)) {
+            const amountOut = orderBook.buy(amountIn);
+            find(vertex, amountOut);
           }
         }
 
@@ -200,7 +205,7 @@ export class OffersGraph {
 
   private sortOrderBooks() {
     this.edges.forEach((data, edge, map) => {
-      data.orderBook.sort((a, b) => a[1].comparedTo(b[1]));
+      data.orderBook.sort();
       map.set(edge, data);
     });
   }

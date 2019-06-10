@@ -1,34 +1,39 @@
 import { BigNumber } from "bignumber.js";
-export type Order = [BigNumber, BigNumber]; // amount, price
-export type OrderBook = Order[];
 
-export function buy(orderBook: OrderBook, amountToBuy: BigNumber): BigNumber {
-  let amountToSell = new BigNumber(0);
-
-  for (const [amount, price] of orderBook) {
-    if (amountToBuy.gt(amount)) {
-      amountToSell = amountToSell.plus(amount.times(price));
-      amountToBuy = amountToBuy.minus(amount);
-    } else {
-      amountToSell = amountToSell.plus(amountToBuy.times(price));
-      break;
-    }
-  }
-
-  return amountToSell;
+export interface IOrder {
+  amount: BigNumber;
+  price: BigNumber;
 }
 
-export function sell(orderBook: OrderBook, amountToSell: BigNumber): BigNumber {
-  let amountToBuy = new BigNumber(0);
-  for (const [amount, price] of orderBook) {
-    if (amountToSell.gt(amount.times(price))) {
-      amountToBuy = amountToBuy.plus(amount);
-      amountToSell = amountToSell.minus(amount.times(price));
-    } else {
-      amountToBuy = amountToBuy.plus(amountToSell.div(price));
-      break;
-    }
+export class OrderBook {
+  constructor(private readonly orders: IOrder[] = []) {}
+
+  public getOrders() {
+    // return copy of the orders
+    return this.orders.map(o => o);
   }
 
-  return amountToBuy;
+  public addOrder(order: IOrder): void {
+    this.orders.push(order);
+  }
+
+  public sort() {
+    this.orders.sort((a, b) => a.price.comparedTo(b.price));
+  }
+
+  public buy(amountToBuy: BigNumber): BigNumber {
+    let amountToSell = new BigNumber(0);
+
+    for (const { amount, price } of this.orders) {
+      if (amountToBuy.gt(amount)) {
+        amountToSell = amountToSell.plus(amount.times(price));
+        amountToBuy = amountToBuy.minus(amount);
+      } else {
+        amountToSell = amountToSell.plus(amountToBuy.times(price));
+        break;
+      }
+    }
+
+    return amountToSell;
+  }
 }
