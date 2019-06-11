@@ -38,8 +38,7 @@
     "progress": "^2.0.3",
     "retry": "^0.12.0",
     "squel": "^5.12.2",
-    "stellar-base": "^0.11.0",
-    "stellar-sdk": "^0.13.0",
+    "stellar-base": "^1.0.0",
     "typeorm": "^0.2.17",
     "typescript-memoize": "^1.0.0-alpha.3",
     "winston": "^3.0.0"
@@ -60,7 +59,6 @@
     "@types/protobufjs": "^6.0.0",
     "@types/retry": "^0.12.0",
     "@types/rosie": "^0.0.35",
-    "@types/stellar-sdk": "^0.10.4",
     "@types/winston": "^2.3.9",
     "apollo-cache-inmemory": "^1.2.9",
     "apollo-client": "^2.4.1",

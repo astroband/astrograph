@@ -1,4 +1,4 @@
-import { Asset } from "stellar-sdk";
+import stellar from "stellar-base";
 import { HorizonAccountFlag } from "../datasource/types";
 import { AccountID } from "./";
 
@@ -11,8 +11,9 @@ export enum OperationType {
   ChangeTrust = "changeTrust",
   CreateAccount = "createAccount",
   ManageData = "manageDatum",
-  ManageOffer = "manageOffer",
-  CreatePassiveOffer = "createPassiveOffer",
+  ManageSellOffer = "manageSellOffer",
+  ManageBuyOffer = "manageBuyOffer",
+  CreatePassiveSellOffer = "createPassiveSellOffer",
   PathPayment = "pathPayment"
 }
 
@@ -27,7 +28,7 @@ export interface IBaseOperation {
 
 export interface IPaymentOperation extends IBaseOperation {
   destination: AccountID;
-  asset: Asset;
+  asset: stellar.Asset;
   amount: string;
 }
 
@@ -53,7 +54,7 @@ export interface IAccountMergeOperation extends IBaseOperation {
 }
 
 export interface IAllowTrustOperation extends IBaseOperation {
-  asset: Asset;
+  asset: stellar.Asset;
   trustor: AccountID;
   authorize: boolean;
 }
@@ -64,7 +65,7 @@ export interface IBumpSequenceOperation extends IBaseOperation {
 
 export interface IChangeTrustOperation extends IBaseOperation {
   limit: string;
-  asset: Asset;
+  asset: stellar.Asset;
 }
 
 export interface ICreateAccountOperation extends IBaseOperation {
@@ -77,21 +78,30 @@ export interface IManageDataOperation extends IBaseOperation {
   value: string;
 }
 
-export interface IManageOfferOperation extends IBaseOperation {
+export interface IManageSellOfferOperation extends IBaseOperation {
   amount: string;
   offerId: string;
   price: string;
   priceComponents: { n: number; d: number };
-  assetBuying: Asset;
-  assetSelling: Asset;
+  assetBuying: stellar.Asset;
+  assetSelling: stellar.Asset;
 }
 
-export interface ICreatePassiveOfferOperation extends IBaseOperation {
+export interface IManageBuyOfferOperation extends IBaseOperation {
+  amount: string;
+  offerId: string;
+  price: string;
+  priceComponents: { n: number; d: number };
+  assetBuying: stellar.Asset;
+  assetSelling: stellar.Asset;
+}
+
+export interface ICreatePassiveSellOfferOperation extends IBaseOperation {
   amount: string;
   price: string;
   priceComponents: { n: number; d: number };
-  assetBuying: Asset;
-  assetSelling: Asset;
+  assetBuying: stellar.Asset;
+  assetSelling: stellar.Asset;
 }
 
 // This is more of a "effect" of particular path payment
@@ -101,8 +111,8 @@ export interface IPathPaymentOperation extends IBaseOperation {
   amountSent: string;
   amountReceived: string;
   destinationAccount: AccountID;
-  destinationAsset: Asset;
-  sourceAsset: Asset;
+  destinationAsset: stellar.Asset;
+  sourceAsset: stellar.Asset;
 }
 
 // This is a "legacy" interface, we ingest path payments to DGraph in this format
@@ -110,9 +120,9 @@ export interface IDgraphPathPaymentOperation extends IBaseOperation {
   sendMax: string;
   destinationAmount: string;
   destinationAccount: AccountID;
-  destinationAsset: Asset;
-  sourceAsset: Asset;
-  path: Asset[];
+  destinationAsset: stellar.Asset;
+  sourceAsset: stellar.Asset;
+  path: stellar.Asset[];
 }
 
 export type Operation =
@@ -124,7 +134,8 @@ export type Operation =
   | IChangeTrustOperation
   | ICreateAccountOperation
   | IManageDataOperation
-  | IManageOfferOperation
+  | IManageSellOfferOperation
+  | IManageBuyOfferOperation
   | IPathPaymentOperation
-  | ICreatePassiveOfferOperation
+  | ICreatePassiveSellOfferOperation
   | IDgraphPathPaymentOperation;

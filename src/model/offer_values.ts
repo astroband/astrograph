@@ -1,11 +1,11 @@
-import { Asset } from "stellar-sdk";
+import stellar from "stellar-base";
 import { AccountID } from "./";
 
 export interface IOfferValues {
   id: string;
   seller: AccountID;
-  selling: Asset;
-  buying: Asset;
+  selling: stellar.Asset;
+  buying: stellar.Asset;
   amount: string;
   price: string;
   priceN: number;
@@ -16,8 +16,8 @@ export interface IOfferValues {
 export class OfferValues {
   public id: string;
   public seller: AccountID;
-  public selling: Asset;
-  public buying: Asset;
+  public selling: stellar.Asset;
+  public buying: stellar.Asset;
   public amount: string;
   public price: string;
   public priceN: number;

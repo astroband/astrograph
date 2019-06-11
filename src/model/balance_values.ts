@@ -1,8 +1,8 @@
 import { BigNumber } from "bignumber.js";
-import { AssetID, IBalanceBase } from "./";
+import { AccountID, AssetID, IBalanceBase } from "./";
 
 export class BalanceValues implements IBalanceBase {
-  public account: string;
+  public account: AccountID;
   public asset: AssetID;
   public limit: BigNumber;
   public balance: BigNumber;

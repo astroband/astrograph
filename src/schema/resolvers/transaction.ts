@@ -1,4 +1,4 @@
-import { Memo } from "stellar-sdk";
+import stellar from "stellar-base";
 
 import { IApolloContext } from "../../graphql_server";
 
@@ -18,7 +18,7 @@ export default {
         return null;
       }
 
-      const memo = obj.memo as Memo;
+      const memo = obj.memo as stellar.Memo;
 
       return {
         type: memo.type,

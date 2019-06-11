@@ -1,4 +1,4 @@
-import { Memo } from "stellar-sdk";
+import { Memo } from "stellar-base";
 import "../../src/util/memo";
 
 describe("getPlainValue()", () => {

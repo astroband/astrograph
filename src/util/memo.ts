@@ -1,12 +1,14 @@
-import { Memo, MemoHash, MemoReturn, MemoText } from "stellar-sdk";
+import { Memo, MemoHash, MemoReturn, MemoText } from "stellar-base";
 import logger from "./logger";
 
 /* TODO: fix all stellar-base / stellar-sdk + TS hackery */
 
 /* tslint:disable */
-declare module "stellar-sdk" {
+declare module "stellar-base" {
   interface Memo {
     getPlainValue(): string | null;
+    type: any;
+    value: any;
   }
 }
 
