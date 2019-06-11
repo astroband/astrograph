@@ -1,9 +1,10 @@
 import { getManager } from "typeorm";
-import { AssetTransformer } from "../util/orm";
+import { AssetID } from "./model";
+import { AssetTransformer } from "./util/orm";
 
 const dbQuery = `SELECT
 	*,
-	(pricen :: double precision / priced :: double precision) as pricef
+	(pricen :: double precision / priced :: double precision) as price
 
 FROM
 ((
@@ -55,14 +56,38 @@ FROM
 	LIMIT $3
 )) summary
 
-ORDER BY type, pricef;
+ORDER BY type, price;
 `;
 
-export function load(selling: AssetID, buying: AssetID, limit: number) {
+interface IOrderBookBid {
+  type: "bid";
+  price: string;
+  amount: string;
+}
+
+interface IOrderBookAsk {
+  type: "ask";
+  price: string;
+  amount: string;
+}
+
+type OrderBookItem = IOrderBookBid | IOrderBookAsk;
+
+interface IOrderBook {
+  bids: IOrderBookBid[];
+  asks: IOrderBookAsk[];
+}
+
+export async function load(selling: AssetID, buying: AssetID, limit: number): Promise<IOrderBook> {
   const em = getManager();
 
   selling = AssetTransformer.to(selling);
   buying = AssetTransformer.to(buying);
 
-  em.query(dbQuery, [selling, buying, limit]);
+  const results: OrderBookItem[] = await em.query(dbQuery, [selling, buying, limit]);
+
+  return {
+    bids: results.filter((r): r is IOrderBookBid => r.type === "bid"),
+    asks: results.filter((r): r is IOrderBookAsk => r.type === "ask")
+  };
 }
