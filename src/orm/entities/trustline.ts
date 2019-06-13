@@ -1,14 +1,17 @@
 import BigNumber from "bignumber.js";
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { AccountID, AssetID } from "../../model";
 import { AssetFactory } from "../../model/factories";
 import { BigNumberTransformer } from "../../util/orm";
+import { Account } from "./";
 
 @Entity("trustlines")
 /* tslint:disable */
 export class TrustLine {
   @PrimaryColumn({ name: "accountid" })
-  account: AccountID;
+  @ManyToOne(type => Account, account => account.trustLines)
+  @JoinColumn({ name: "accountid" })
+  account: Account;
 
   @PrimaryColumn()
   issuer: AccountID;

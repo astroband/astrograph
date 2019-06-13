@@ -1,6 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { getRepository } from "typeorm";
 import { AssetID, OfferSubscriptionPayload } from "../model";
+import { AssetsWithBalances } from "../orm/entities/account";
 import { Offer } from "../orm/entities/offer";
 import { OFFER, pubsub } from "../pubsub";
 import { OffersGraph } from "./data_structure";
@@ -9,6 +10,7 @@ const offersGraph = new OffersGraph();
 
 export function buildOffersGraph(offers: Offer[]): void {
   offersGraph.build(offers);
+  console.log(offersGraph.edgesCount);
 }
 
 export function updateOffersGraph(selling: AssetID, buying: AssetID, offers: Offer[]): void {
@@ -25,6 +27,6 @@ export function listenOffers() {
   });
 }
 
-export function findPaths(sourceAssets: AssetID[], destAsset: AssetID, destAmount: BigNumber) {
-  return offersGraph.findPaths(sourceAssets, destAsset, destAmount);
+export function findPaths(sourceAssetsWithBalances: AssetsWithBalances, destAsset: AssetID, destAmount: BigNumber) {
+  return offersGraph.findPaths(sourceAssetsWithBalances, destAsset, destAmount);
 }
