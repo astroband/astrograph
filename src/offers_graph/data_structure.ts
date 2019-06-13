@@ -1,6 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { AssetID } from "../model";
 import { Offer } from "../orm/entities";
+import { AssetsWithBalances } from "../orm/entities/account";
 import { IOrder, OrderBook } from "./orderbook";
 
 interface IEdgeData {
@@ -73,7 +74,9 @@ export class OffersGraph {
     this.sortOrderBooks();
   }
 
-  public findPaths(sourceAssets: AssetID[], destAsset: AssetID, destAmount: BigNumber): IPaths {
+  public findPaths(sourceAssetsWithBalances: AssetsWithBalances, destAsset: AssetID, destAmount: BigNumber): IPaths {
+    const sourceAssets = Object.keys(sourceAssetsWithBalances);
+
     // take a short-cut if we're trying to find a path from "native" to "native":
     if (destAsset === "native" && sourceAssets.length === 1 && sourceAssets[0] === "native") {
       return { native: [{ amountNeeded: destAmount, path: [] }] };
@@ -108,6 +111,7 @@ export class OffersGraph {
       // and that path has a lower cost than this one, then there's no point
       // in traversing any further
       const cost = lowestCost.get(nextAsset);
+
       if (!cost || amountIn.lt(cost)) {
         lowestCost.set(nextAsset, amountIn);
       } else {
@@ -116,7 +120,7 @@ export class OffersGraph {
 
       // if the current asset is one of our source assets,
       // store away the path we've taken to get here
-      if (nextAsset in paths) {
+      if (nextAsset in paths && amountIn.lte(sourceAssetsWithBalances[nextAsset])) {
         paths[nextAsset].push({ amountNeeded: amountIn, path: path.slice(1).reverse() });
       }
 
@@ -205,6 +209,11 @@ export class OffersGraph {
 
     adjacent.splice(indexToDrop, 1);
     this.adjacencyList.set(from, adjacent);
+  }
+
+  // for debug purposes
+  public get edgesCount() {
+    return this.edges.size;
   }
 
   private sortOrderBooks() {
