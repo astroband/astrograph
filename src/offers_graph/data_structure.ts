@@ -10,10 +10,10 @@ interface IEdgeData {
 }
 
 interface IPaths {
-  [sourceAsset: string]: Array<{ amountNeeded: BigNumber; path: AssetID[] }>;
+  [sourceAsset: string]: { amountNeeded: BigNumber; path: AssetID[] };
 }
 
-const maxPathLength = 7 - 1;
+const maxPathLength = 5;
 
 export class OffersGraph {
   public static build(offers: Offer[]) {
@@ -79,23 +79,19 @@ export class OffersGraph {
 
     // take a short-cut if we're trying to find a path from "native" to "native":
     if (destAsset === "native" && sourceAssets.length === 1 && sourceAssets[0] === "native") {
-      return { native: [{ amountNeeded: destAmount, path: [] }] };
+      return { native: { amountNeeded: destAmount, path: [] } };
     }
 
     // the lowest cost so far for a path going from an asset to `destAsset`
     const lowestCost = new Map<AssetID, BigNumber>();
 
     // the paths found for each individual source asset
-    const paths: IPaths = {};
-
-    for (const asset of sourceAssets) {
-      paths[asset] = [];
-    }
+    const result: IPaths = {};
 
     // take a short-cut if `destAssset` is one of the target assets,
     // and add a direct path already from the start
     if (sourceAssets.includes(destAsset)) {
-      paths[destAsset].push({ amountNeeded: destAmount, path: [] });
+      result[destAsset] = { amountNeeded: destAmount, path: [] };
       lowestCost.set(destAsset, destAmount);
     }
 
@@ -103,7 +99,7 @@ export class OffersGraph {
     const path: AssetID[] = [];
 
     const find = (nextAsset: AssetID, amountIn: BigNumber) => {
-      if (path.includes(nextAsset)) {
+      if (path.includes(nextAsset) || path.length - 1 > maxPathLength) {
         return;
       }
 
@@ -120,14 +116,8 @@ export class OffersGraph {
 
       // if the current asset is one of our source assets,
       // store away the path we've taken to get here
-      if (nextAsset in paths && amountIn.lte(sourceAssetsWithBalances[nextAsset])) {
-        paths[nextAsset].push({ amountNeeded: amountIn, path: path.slice(1).reverse() });
-      }
-
-      // if we're at the maximum path length (`path` + `destAsset`),
-      // stop searching
-      if (path.length === maxPathLength) {
-        return;
+      if (sourceAssets.includes(nextAsset)) {
+        result[nextAsset] = { amountNeeded: amountIn, path: path.slice(1).reverse() };
       }
 
       // fan out
@@ -152,7 +142,7 @@ export class OffersGraph {
 
     find(destAsset, destAmount);
 
-    return paths;
+    return result;
   }
 
   public addEdge(from: AssetID, to: AssetID, data: IEdgeData): void {

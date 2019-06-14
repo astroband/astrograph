@@ -29,17 +29,14 @@ export default {
 
       return Object.entries(nodes)
         .map(([sourceAsset, data]) => {
-          return data.map(o => {
-            return {
-              sourceAsset,
-              sourceAmount: o.amountNeeded,
-              destinationAsset,
-              destinationAmount,
-              path: o.path
-            };
-          });
-        })
-        .reduce((acc, e) => acc.concat(e), []); // flatten
+          return {
+            sourceAsset,
+            sourceAmount: data.amountNeeded,
+            destinationAsset,
+            destinationAmount,
+            path: data.path
+          };
+        });
     }
   }
 };
