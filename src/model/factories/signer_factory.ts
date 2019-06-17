@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { ISigner, Signer } from "../signer";
+import { Signer, SignerType } from "../signer";
 
 export interface ISignerTableRow {
   accountid: string;
@@ -9,31 +9,30 @@ export interface ISignerTableRow {
 
 export class SignerFactory {
   public static fromXDR(xdr: any) {
-    const data: ISigner = {
-      signer: SignerFactory.keyFromXDR(xdr.key()),
-      weight: xdr.weight()
-    };
+    let key: string;
+    let type: SignerType;
 
-    return new Signer(data);
+    switch (xdr.key().switch()) {
+      case stellar.xdr.SignerKeyType.signerKeyTypeEd25519():
+        key = stellar.StrKey.encodeEd25519PublicKey(xdr.key().ed25519());
+        type = "ed25519";
+        break;
+      case stellar.xdr.SignerKeyType.signerKeyTypePreAuthTx():
+        key = stellar.StrKey.encodePreAuthTx(xdr.key().preAuthTx());
+        type = "preAuthTx";
+        break;
+      case stellar.xdr.SignerKeyType.signerKeyTypeHashX():
+        key = stellar.StrKey.encodeSha256Hash(xdr.key().hashX());
+        type = "hashX";
+        break;
+      default:
+        throw new Error("We've encountered unknown XDR signer type");
+    }
+
+    return new Signer({ signer: key, weight: xdr.weight(), type });
   }
 
   public static self(id: string, weight: number): Signer {
-    return new Signer({ signer: id, weight });
-  }
-
-  public static keyFromXDR(xdr: any): string {
-    switch (xdr.switch()) {
-      case stellar.xdr.SignerKeyType.signerKeyTypeEd25519():
-        return stellar.StrKey.encodeEd25519PublicKey(xdr.ed25519());
-
-      case stellar.xdr.SignerKeyType.signerKeyTypePreAuthTx():
-        return stellar.StrKey.encodePreAuthTx(xdr.preAuthTx());
-    }
-
-    if (xdr.switch() !== stellar.xdr.SignerKeyType.signerKeyTypeHashX()) {
-      throw new Error("We've encountered unknown XDR signer type");
-    }
-
-    return stellar.StrKey.encodeSha256Hash(xdr.hashX());
+    return new Signer({ signer: id, weight, type: "ed25519" });
   }
 }

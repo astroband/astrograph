@@ -1,6 +1,9 @@
+export type SignerType = "ed25519" | "preAuthTx" | "hashX";
+
 export interface ISigner {
   signer: string;
   weight: number;
+  type: SignerType;
 }
 
 export class Signer implements ISigner {
@@ -16,11 +19,13 @@ export class Signer implements ISigner {
     });
   }
 
-  public signer: string;
-  public weight: number;
+  public readonly signer: string;
+  public readonly weight: number;
+  public readonly type: SignerType;
 
   constructor(data: ISigner) {
     this.signer = data.signer;
     this.weight = data.weight;
+    this.type = data.type;
   }
 }

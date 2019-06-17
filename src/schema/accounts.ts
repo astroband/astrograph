@@ -96,12 +96,19 @@ export const typeDefs = gql`
     values: AccountValues
   }
 
+  enum SignerType {
+    ed25519
+    preAuthX
+    hashX
+  }
+
   "Represents a [signers](https://www.stellar.org/developers/guides/concepts/multi-sig.html#additional-signing-keys) of the account"
   type Signer {
     "Public key of this signer"
     signer: AccountID!
     "This signer's weight"
     weight: Int!
+    type: SignerType
   }
 
   input DataInput {
