@@ -164,16 +164,6 @@ export interface IHorizonAssetData {
   flags: { [flag in HorizonAccountFlag]: boolean };
 }
 
-export interface IHorizonOrderBookEntry {
-  price: string;
-  amount: string;
-}
-
-export interface IHorizonOrderBookData {
-  bids: IHorizonOrderBookEntry[];
-  asks: IHorizonOrderBookEntry[];
-}
-
 export interface IHorizonPaymentPathData {
   source_asset_type: HorizonAssetType;
   source_asset_code: AssetCode;

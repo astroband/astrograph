@@ -8,11 +8,11 @@ import { GraphQLError } from "graphql";
 import {
   HorizonAssetsDataSource,
   HorizonOperationsDataSource,
-  HorizonOrderBookDataSource,
   HorizonPaymentsDataSource,
   HorizonTradesDataSource,
   HorizonTransactionsDataSource
 } from "./datasource/horizon";
+import * as orderBook from "./order_book";
 import schema from "./schema";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
@@ -47,13 +47,13 @@ const endpoint = "/graphql";
 type DataSources = {
   assets: HorizonAssetsDataSource;
   operations: HorizonOperationsDataSource;
-  orderBook: HorizonOrderBookDataSource;
   payments: HorizonPaymentsDataSource;
   trades: HorizonTradesDataSource;
   transactions: HorizonTransactionsDataSource;
 };
 
 export interface IApolloContext {
+  orderBook: { load: typeof orderBook.load };
   dataSources: DataSources;
 }
 
@@ -66,12 +66,14 @@ init().then(() => {
     introspection: true,
     playground: process.env.NODE_ENV === "production" ? { endpoint, tabs: [{ endpoint, query: demoQuery }] } : true,
     debug: true,
+    context: () => {
+      return { orderBook };
+    },
     cors: true,
     dataSources: (): DataSources => {
       return {
         assets: new HorizonAssetsDataSource(),
         operations: new HorizonOperationsDataSource(),
-        orderBook: new HorizonOrderBookDataSource(),
         payments: new HorizonPaymentsDataSource(),
         trades: new HorizonTradesDataSource(),
         transactions: new HorizonTransactionsDataSource()
