@@ -1,9 +1,9 @@
 import { BigNumber } from "bignumber.js";
 import { AssetID } from "../../../src/model";
-import { Offer } from "../../../src/orm/entities";
 import { OffersGraph } from "../../../src/offers_graph/data_structure";
+import { Offer } from "../../../src/orm/entities";
 
-function buildOffer(data: { selling: AssetID, buying: AssetID, price: number, amount: number }) {
+function buildOffer(data: { selling: AssetID; buying: AssetID; price: number; amount: number }) {
   const offer = new Offer();
   offer.selling = data.selling;
   offer.buying = data.buying;
@@ -33,7 +33,7 @@ beforeEach(() => {
 });
 
 describe("buildFromOffers()", () => {
-  it ("builds graph correctly", () => {
+  it("builds graph correctly", () => {
     const ledTseData = subject.getEdgeData("LED", "TSE");
 
     expect(ledTseData).toBeDefined();
@@ -46,10 +46,10 @@ describe("buildFromOffers()", () => {
 });
 
 describe("findPaths()", () => {
-  it ("works", () => {
+  it("works", () => {
     const paths = subject.findPaths(["LED"], "KZN", new BigNumber(3));
 
-    expect(paths["LED"]).toBeDefined();
-    expect(paths["LED"][0].path).toEqual(["MOW"]);
+    expect(paths.LED).toBeDefined();
+    expect(paths.LED[0].path).toEqual(["MOW"]);
   });
 });

@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { AssetID } from "../model";
 import { Offer } from "../orm/entities";
-import { AssetsWithBalances } from "../orm/entities/account";
+import logger from "../util/logger";
 import { IOrder, OrderBook } from "./orderbook";
 
 interface IEdgeData {
@@ -74,9 +74,7 @@ export class OffersGraph {
     this.sortOrderBooks();
   }
 
-  public findPaths(sourceAssetsWithBalances: AssetsWithBalances, destAsset: AssetID, destAmount: BigNumber): IPaths {
-    const sourceAssets = Object.keys(sourceAssetsWithBalances);
-
+  public findPaths(sourceAssets: AssetID[], destAsset: AssetID, destAmount: BigNumber): IPaths {
     // take a short-cut if we're trying to find a path from "native" to "native":
     if (destAsset === "native" && sourceAssets.length === 1 && sourceAssets[0] === "native") {
       return { native: { amountNeeded: destAmount, path: [] } };
@@ -193,7 +191,7 @@ export class OffersGraph {
     const indexToDrop = adjacent.findIndex(el => el === to);
 
     if (indexToDrop === -1) {
-      console.warn("Graph seems to be inconsistent");
+      logger.warn("Graph seems to be inconsistent");
       return;
     }
 

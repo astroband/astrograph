@@ -13,8 +13,8 @@ import {
   HorizonTradesDataSource,
   HorizonTransactionsDataSource
 } from "./datasource/horizon";
-import schema from "./schema";
 import { listenOffers } from "./offers_graph/singleton";
+import schema from "./schema";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
 import { listenBaseReserveChange } from "./util/stellar";
