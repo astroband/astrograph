@@ -1,10 +1,10 @@
 import { BigNumber } from "bignumber.js";
 import { getRepository } from "typeorm";
 import { AssetID, OfferSubscriptionPayload } from "../model";
-import { AssetsWithBalances } from "../orm/entities/account";
 import { Offer } from "../orm/entities/offer";
 import { OFFER, pubsub } from "../pubsub";
 import { OffersGraph } from "./data_structure";
+import { PathFinder } from "./path_finder";
 
 const offersGraph = new OffersGraph();
 
@@ -26,6 +26,7 @@ export function listenOffers() {
   });
 }
 
-export function findPaths(sourceAssetsWithBalances: AssetsWithBalances, destAsset: AssetID, destAmount: BigNumber) {
-  return offersGraph.findPaths(sourceAssetsWithBalances, destAsset, destAmount);
+export function findPaths(sourceAssets: AssetID[], destAsset: AssetID, destAmount: BigNumber) {
+  const pathFinder = new PathFinder(offersGraph);
+  return pathFinder.findPaths(sourceAssets, destAsset, destAmount);
 }
