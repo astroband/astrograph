@@ -1,25 +1,22 @@
+import { BigNumber } from "bignumber.js";
+import { AssetID } from "../model";
+import { OffersGraph } from "./data_structure";
+
 interface IPaths {
-  [sourceAsset: string]: Array<{ amountNeeded: BigNumber; path: AssetID[] }>;
+  [sourceAsset: string]: { amountNeeded: BigNumber; path: AssetID[] };
 }
 
+const maxPathLength = 5;
+
 export class PathFinder {
-  private readonly paths: IPaths = {};
+  private readonly result: IPaths = {};
 
-  constructor(
-    private readonly graph: OffersGraph,
-    private readonly sourceAssets: AssetID[],
-    private readonly destAsset: AssetID,
-    private readonly destAmount: BigNumber
-  ) {
-    for (const asset of sourceAssets) {
-      this.paths[asset] = [];
-    }
-  }
+  constructor(private readonly graph: OffersGraph) {}
 
-  public findPaths(): IPaths {
+  public findPaths(sourceAssets: AssetID[], destAsset: AssetID, destAmount: BigNumber): IPaths {
     // take a short-cut if we're trying to find a path from "native" to "native":
     if (destAsset === "native" && sourceAssets.length === 1 && sourceAssets[0] === "native") {
-      return { native: [{ amountNeeded: destAmount, path: [] }] };
+      return { native: { amountNeeded: destAmount, path: [] } };
     }
 
     // the lowest cost so far for a path going from an asset to `destAsset`
@@ -28,15 +25,12 @@ export class PathFinder {
     // take a short-cut if `destAssset` is one of the target assets,
     // and add a direct path already from the start
     if (sourceAssets.includes(destAsset)) {
-      paths[destAsset].push({ amountNeeded: destAmount, path: [] });
+      this.result[destAsset] = { amountNeeded: destAmount, path: [] };
       lowestCost.set(destAsset, destAmount);
     }
 
-    // the current path being checked
-    const path: AssetID[] = [];
-
-    const find = (nextAsset: AssetID, amountIn: BigNumber) => {
-      if (path.includes(nextAsset)) {
+    const find = (nextAsset: AssetID, amountIn: BigNumber, currentPath: AssetID[] = []) => {
+      if (currentPath.includes(nextAsset) || currentPath.length - 1 > maxPathLength) {
         return;
       }
 
@@ -44,6 +38,7 @@ export class PathFinder {
       // and that path has a lower cost than this one, then there's no point
       // in traversing any further
       const cost = lowestCost.get(nextAsset);
+
       if (!cost || amountIn.lt(cost)) {
         lowestCost.set(nextAsset, amountIn);
       } else {
@@ -52,38 +47,28 @@ export class PathFinder {
 
       // if the current asset is one of our source assets,
       // store away the path we've taken to get here
-      if (nextAsset in paths) {
-        paths[nextAsset].push({ amountNeeded: amountIn, path: path.slice(1).reverse() });
-      }
-
-      // if we're at the maximum path length (`path` + `destAsset`),
-      // stop searching
-      if (path.length === maxPathLength) {
-        return;
+      if (sourceAssets.includes(nextAsset)) {
+        this.result[nextAsset] = { amountNeeded: amountIn, path: currentPath.slice(1).reverse() };
       }
 
       // fan out
-      const edges = this.getEdges(nextAsset);
+      const edges = this.graph.getEdges(nextAsset);
 
       if (edges.length !== 0) {
-        path.push(nextAsset);
-
         for (const {
           vertex,
           data: { capacity, orderBook }
         } of edges) {
           if (capacity.gte(amountIn)) {
             const amountOut = orderBook.buy(amountIn);
-            find(vertex, amountOut);
+            find(vertex, amountOut, currentPath.concat(nextAsset));
           }
         }
-
-        path.pop();
       }
     };
 
     find(destAsset, destAmount);
 
-    return paths;
+    return this.result;
   }
 }
