@@ -5,12 +5,7 @@ import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { AccountFlags, AccountThresholds, Signer } from "../../model";
 import { AccountFlagsFactory, AccountThresholdsFactory, SignerFactory } from "../../model/factories";
 import { Base64Transformer, BigNumberTransformer } from "../../util/orm";
-import { toFloat } from "../../util/stellar";
 import { AccountData, TrustLine } from "./";
-
-// keys are actually of type AssetID, but TS currently doesn't
-// support that
-export type AssetsWithBalances = { [asset: string]: BigNumber };
 
 @Entity("accounts")
 /* tslint:disable */
@@ -100,16 +95,5 @@ export class Account {
 
   public get paging_token() {
     return this.id;
-  }
-
-  public get balances() {
-    const result: AssetsWithBalances =
-      Object.fromEntries(this.trustLines.map(t => {
-        return [t.asset, toFloat(t.balance)]
-      }));
-
-    result["native"] = this.balance;
-
-    return result;
   }
 }

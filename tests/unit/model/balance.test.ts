@@ -5,10 +5,10 @@ import AccountFactory from "../../factories/account";
 
 jest.mock("../../../src/util/stellar", () => {
   return {
-    ...(jest.requireActual("../../../src/util/stellar")),
+    ...jest.requireActual("../../../src/util/stellar"),
     getReservedBalance: (numSubentries: number) => (numSubentries + 2) * 5000000
-  }
-})
+  };
+});
 
 const data = {
   accountid: "GDT3N2FHODKJ5ZJRRVEYUYQEWQ5V7T6EPG4UQXDWJXTUDTD252QXCL5K",
