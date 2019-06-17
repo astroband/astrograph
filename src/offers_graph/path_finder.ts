@@ -54,15 +54,17 @@ export class PathFinder {
       // fan out
       const edges = this.graph.getEdges(nextAsset);
 
-      if (edges.length !== 0) {
-        for (const {
-          vertex,
-          data: { capacity, orderBook }
-        } of edges) {
-          if (capacity.gte(amountIn)) {
-            const amountOut = orderBook.buy(amountIn);
-            find(vertex, amountOut, currentPath.concat(nextAsset));
-          }
+      if (!edges) {
+        return;
+      }
+
+      for (const {
+        vertex,
+        data: { capacity, orderBook }
+      } of edges) {
+        if (capacity.gte(amountIn)) {
+          const amountOut = orderBook.buy(amountIn);
+          find(vertex, amountOut, currentPath.concat(nextAsset));
         }
       }
     };
