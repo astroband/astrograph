@@ -29,7 +29,9 @@ export class AssetFactory {
   }
 
   public static fromTrustline(type: number, code: string, issuer: string): stellar.Asset {
-    return type === stellar.xdr.AssetType.assetTypeNative().value ? stellar.Asset.native() : new stellar.Asset(code, issuer);
+    return type === stellar.xdr.AssetType.assetTypeNative().value
+      ? stellar.Asset.native()
+      : new stellar.Asset(code, issuer);
   }
 
   public static fromHorizon(type: HorizonAssetType, code?: string, issuer?: string) {
