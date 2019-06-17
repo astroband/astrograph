@@ -20,6 +20,6 @@ export default {
   build(overrides?: object): Account {
     const data = Factory.attributes("account", overrides);
     const account = new Account();
-    return {...account, ...data};
+    return { ...account, ...data };
   }
 };

@@ -10,7 +10,6 @@ const offersGraph = new OffersGraph();
 
 export function buildOffersGraph(offers: Offer[]): void {
   offersGraph.build(offers);
-  console.log(offersGraph.edgesCount);
 }
 
 export function updateOffersGraph(selling: AssetID, buying: AssetID, offers: Offer[]): void {
