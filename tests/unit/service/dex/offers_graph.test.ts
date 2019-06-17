@@ -1,7 +1,8 @@
 import { BigNumber } from "bignumber.js";
-import { AssetID } from "../../../src/model";
-import { OffersGraph } from "../../../src/offers_graph/data_structure";
-import { Offer } from "../../../src/orm/entities";
+import { AssetID } from "../../../../src/model";
+import { buildOffersGraph, findPaymentPaths } from "../../../../src/service/dex";
+import { OffersGraph } from "../../../../src/service/dex/offers_graph";
+import { Offer } from "../../../../src/orm/entities";
 
 function buildOffer(data: { selling: AssetID; buying: AssetID; price: number; amount: number }) {
   const offer = new Offer();
@@ -30,6 +31,7 @@ beforeEach(() => {
   ];
 
   subject.build(offers);
+  buildOffersGraph(offers);
 });
 
 describe("buildFromOffers()", () => {
@@ -45,9 +47,9 @@ describe("buildFromOffers()", () => {
   });
 });
 
-describe("findPaths()", () => {
+describe("findPaymentPaths()", () => {
   it("works", () => {
-    const paths = subject.findPaths(["LED"], "KZN", new BigNumber(3));
+    const paths = findPaymentPaths(["LED"], "KZN", new BigNumber(3));
 
     expect(paths.LED).toBeDefined();
     expect(paths.LED.path).toEqual(["MOW"]);
