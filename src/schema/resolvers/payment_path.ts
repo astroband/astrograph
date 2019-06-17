@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { getRepository } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
-import { findPaths } from "../../offers_graph/singleton";
+import { findPaymentPaths } from "../../service/dex";
 import { TrustLine } from "../../orm/entities";
 import * as resolvers from "./shared";
 
@@ -17,7 +17,7 @@ export default {
 
       const accountTrustlines = await getRepository(TrustLine).find({ where: { account: sourceAccountID } });
 
-      const nodes = findPaths(
+      const nodes = findPaymentPaths(
         accountTrustlines.map(t => t.asset).concat("native"),
         destinationAsset,
         new BigNumber(destinationAmount)

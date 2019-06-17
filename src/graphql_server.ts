@@ -12,8 +12,7 @@ import {
   HorizonTradesDataSource,
   HorizonTransactionsDataSource
 } from "./datasource/horizon";
-import { listenOffers } from "./offers_graph/singleton";
-import * as orderBook from "./order_book";
+import { listenOffers, orderBook } from "./service/dex";
 import schema from "./schema";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
