@@ -1,6 +1,6 @@
 import { getManager } from "typeorm";
-import { AssetID } from "./model";
-import { AssetTransformer } from "./util/orm";
+import { AssetID } from "../../model";
+import { AssetTransformer } from "../../util/orm";
 
 const dbQuery = `SELECT
 	*,
