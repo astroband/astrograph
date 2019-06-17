@@ -1,8 +1,8 @@
 import { BigNumber } from "bignumber.js";
 import { getRepository } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
-import { findPaymentPaths } from "../../service/dex";
 import { TrustLine } from "../../orm/entities";
+import { findPaymentPaths } from "../../service/dex";
 import * as resolvers from "./shared";
 
 export default {

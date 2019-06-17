@@ -1,8 +1,8 @@
 import { BigNumber } from "bignumber.js";
 import { AssetID } from "../../../../src/model";
+import { Offer } from "../../../../src/orm/entities";
 import { buildOffersGraph, findPaymentPaths } from "../../../../src/service/dex";
 import { OffersGraph } from "../../../../src/service/dex/offers_graph";
-import { Offer } from "../../../../src/orm/entities";
 
 function buildOffer(data: { selling: AssetID; buying: AssetID; price: number; amount: number }) {
   const offer = new Offer();

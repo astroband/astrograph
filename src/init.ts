@@ -1,8 +1,8 @@
 import * as Integrations from "@sentry/integrations";
 import * as Sentry from "@sentry/node";
 import { createConnection, getRepository } from "typeorm";
-import { buildOffersGraph } from "./service/dex";
 import { Account, AccountData, Offer, TrustLine } from "./orm/entities";
+import { buildOffersGraph } from "./service/dex";
 import "./util/asset";
 import logger from "./util/logger";
 import "./util/memo";

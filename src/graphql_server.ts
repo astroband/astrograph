@@ -12,8 +12,8 @@ import {
   HorizonTradesDataSource,
   HorizonTransactionsDataSource
 } from "./datasource/horizon";
-import { listenOffers, orderBook } from "./service/dex";
 import schema from "./schema";
+import { listenOffers, orderBook } from "./service/dex";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
 import { listenBaseReserveChange } from "./util/stellar";
