@@ -7,7 +7,7 @@ import { Client as dbClient } from "pg";
 import { Network } from "stellar-base";
 import { createConnection } from "typeorm";
 import { HorizonAssetsDataSource } from "../../src/datasource/horizon";
-import { Account, AccountData, Offer } from "../../src/orm/entities";
+import { Account, AccountData, Offer, TrustLine } from "../../src/orm/entities";
 import schema from "../../src/schema";
 import logger from "../../src/util/logger";
 import * as secrets from "../../src/util/secrets";
@@ -55,7 +55,7 @@ describe("Integration tests", () => {
         username: secrets.DBUSER,
         password: secrets.DBPASSWORD,
         database: secrets.DB,
-        entities: [Account, AccountData, Offer],
+        entities: [Account, AccountData, Offer, TrustLine],
         synchronize: false,
         logging: process.env.DEBUG_SQL !== undefined
       });
