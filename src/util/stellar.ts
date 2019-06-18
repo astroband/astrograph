@@ -6,7 +6,7 @@ import { LEDGER_CREATED, pubsub } from "../pubsub";
 import { setBaseReserve } from "./base_reserve";
 import { STELLAR_NETWORK } from "./secrets";
 
-const StellarAmountPrecision = 7;
+export const STELLAR_AMOUNT_PRECISION = 7;
 
 export type MemoType = "hash" | "return" | "text" | "id";
 
@@ -25,11 +25,11 @@ export function setNetwork() {
 // converts amounts according to Stellar precision like this:
 // "99999999800" -> "9999.9999800"
 export function toFloatAmountString(amount: string | number | BigNumber): string {
-  return toFloat(amount).toFixed(StellarAmountPrecision);
+  return toFloat(amount).toFixed(STELLAR_AMOUNT_PRECISION);
 }
 
 export function toFloat(amount: string | number | BigNumber): BigNumber {
-  return new BigNumber(amount).div(new BigNumber("1e" + StellarAmountPrecision));
+  return new BigNumber(amount).div(new BigNumber("1e" + STELLAR_AMOUNT_PRECISION));
 }
 
 export async function updateBaseReserve(): Promise<number> {
