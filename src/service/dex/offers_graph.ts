@@ -110,17 +110,6 @@ export class OffersGraph {
 
   public getEdges(from: AssetID) {
     return this.edges.get(from);
-
-    // return JSON.parse(JSON.stringify(edges), (key, value) => {
-    //   if (key === "capacity") {
-    //     return new BigNumber(value);
-    //   }
-
-    //   if (key === "orderBook") {
-    //   }
-
-    //   return value;
-    // }); // cloning
   }
 
   public addEdge(from: AssetID, to: AssetID, data: IEdgeData): void {

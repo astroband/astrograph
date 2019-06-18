@@ -25,9 +25,9 @@ export function listenOffers() {
 
     modifiedAssetPairs.clear();
 
-    assetPairs.forEach(async pair => {
+    for (const pair of assetPairs) {
       const offers = await getRepository(Offer).find({ where: pair });
       updateOffersGraph(pair.selling, pair.buying, offers);
-    });
+    }
   });
 }
