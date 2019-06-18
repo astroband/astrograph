@@ -84,8 +84,9 @@ init().then(() => {
       logger.error(error);
 
       const errorsNotToReport = ["UserInputError", "ValidationError"];
+      const errorName = error.originalError ? error.originalError.constructor.name : error.constructor.name;
 
-      if (!error.originalError || !errorsNotToReport.includes(error.originalError.constructor.name)) {
+      if (!error.originalError || !errorsNotToReport.includes(errorName)) {
         Sentry.captureException(error);
       }
 
