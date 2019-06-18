@@ -83,7 +83,9 @@ init().then(() => {
     formatError: (error: GraphQLError) => {
       logger.error(error);
 
-      if (!error.originalError || error.originalError.constructor.name !== "UserInputError") {
+      const errorsNotToReport = ["UserInputError", "ValidationError"];
+
+      if (!error.originalError || !errorsNotToReport.includes(error.originalError.constructor.name)) {
         Sentry.captureException(error);
       }
 
