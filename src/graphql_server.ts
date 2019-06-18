@@ -12,8 +12,8 @@ import {
   HorizonTradesDataSource,
   HorizonTransactionsDataSource
 } from "./datasource/horizon";
-import * as orderBook from "./order_book";
 import schema from "./schema";
+import { listenOffers, orderBook } from "./service/dex";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
 import { listenBaseReserveChange } from "./util/stellar";
@@ -59,6 +59,7 @@ export interface IApolloContext {
 
 init().then(() => {
   listenBaseReserveChange();
+  listenOffers();
 
   const server = new ApolloServer({
     schema,

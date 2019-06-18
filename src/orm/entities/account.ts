@@ -5,7 +5,7 @@ import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { AccountFlags, AccountThresholds, Signer } from "../../model";
 import { AccountFlagsFactory, AccountThresholdsFactory, SignerFactory } from "../../model/factories";
 import { Base64Transformer, BigNumberTransformer } from "../../util/orm";
-import { AccountData } from "./";
+import { AccountData, TrustLine } from "./";
 
 @Entity("accounts")
 /* tslint:disable */
@@ -13,8 +13,11 @@ export class Account {
   @PrimaryColumn({ name: "accountid" })
   id: string;
 
-  @Column("bigint")
-  balance: string;
+  @Column({
+    type: "bigint",
+    transformer: BigNumberTransformer
+  })
+  balance: BigNumber;
 
   @Column({ name: "seqnum", type: "bigint" })
   sequenceNumber: string;
@@ -86,6 +89,9 @@ export class Account {
 
   @OneToMany(type => AccountData, accountData => accountData.account)
   data: AccountData[];
+
+  @OneToMany(type => TrustLine, trustLine => trustLine.account)
+  trustLines: TrustLine[];
 
   public get paging_token() {
     return this.id;

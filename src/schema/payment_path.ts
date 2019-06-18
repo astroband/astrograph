@@ -6,11 +6,11 @@ export const typeDefs = gql`
     "The source asset specified in the search that found this path"
     sourceAsset: Asset!
     "An estimated cost for making a payment of \`destinationAmount\` on this path. Suitable for use in a path payments \`sendMax\` field"
-    sourceAmount: Float!
+    sourceAmount: String!
     "The destination asset specified in the search that found this path"
     destinationAsset: Asset!
     "The destination amount specified in the search that found this path"
-    destinationAmount: Float!
+    destinationAmount: String!
     "An array of assets that represents the intermediary assets this path hops through"
     path: [Asset!]
   }
@@ -20,10 +20,8 @@ export const typeDefs = gql`
     findPaymentPaths(
       "The sender’s account id. Any returned path must use a source that the sender can hold"
       sourceAccountID: AccountID!
-      "The destination account that any returned path should use"
-      destinationAccountID: AccountID!
-      destinationAsset: AssetInput!
-      destinationAmount: Float!
+      destinationAsset: AssetCode!
+      destinationAmount: String!
     ): [PaymentPath!]
   }
 `;

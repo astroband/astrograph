@@ -25,13 +25,17 @@ export function setNetwork() {
 // converts amounts according to Stellar precision like this:
 // "99999999800" -> "9999.9999800"
 export function toFloatAmountString(amount: string | number | BigNumber): string {
-  const floatAmount = !(amount instanceof BigNumber) ? new BigNumber(amount) : amount;
-  return floatAmount.div(new BigNumber("1e" + StellarAmountPrecision)).toFixed(StellarAmountPrecision);
+  return toFloat(amount).toFixed(StellarAmountPrecision);
 }
 
-export async function updateBaseReserve(): Promise<void> {
+export function toFloat(amount: string | number | BigNumber): BigNumber {
+  return new BigNumber(amount).div(new BigNumber("1e" + StellarAmountPrecision));
+}
+
+export async function updateBaseReserve(): Promise<number> {
   const lastLedgerHeader = await db.ledgerHeaders.getLastLedgerHeader();
   setBaseReserve(lastLedgerHeader.baseReserve);
+  return lastLedgerHeader.baseReserve;
 }
 
 export function listenBaseReserveChange(): void {
