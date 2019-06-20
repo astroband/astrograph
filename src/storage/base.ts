@@ -40,7 +40,7 @@ export abstract class BaseStorage {
     });
 
     return response.hits.hits.map((h: any) => {
-      h._source.paging_token = h._source.order.toString();
+      h._source.paging_token = h._source.paging_token.toString();
       return { ...h._source, id: h._id };
     });
   }
@@ -51,12 +51,12 @@ export abstract class BaseStorage {
 
   protected paginate(pagingParams: PagingParams) {
     const { limit, order, cursor } = parseCursorPagination(pagingParams);
-    this.searchParams.sort = [{ order }];
+    this.searchParams.sort = [{ paging_token: order }];
     this.searchParams.size = limit;
 
     if (cursor) {
       this.searchParams.query.bool.must.push({
-        range: { order: pagingParams.after ? { gt: cursor } : { lt: cursor } }
+        range: { paging_token: pagingParams.after ? { gt: cursor } : { lt: cursor } }
       });
     }
   }
