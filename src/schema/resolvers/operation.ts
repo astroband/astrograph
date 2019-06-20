@@ -1,13 +1,15 @@
+import _ from "lodash";
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
 import { IHorizonOperationData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
 import { Operation, OperationType, Transaction } from "../../model";
-import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { AssetFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
 import { makeConnection } from "./util";
 
 import * as resolvers from "./shared";
+import { BroadcasterResult } from "typeorm/subscriber/BroadcasterResult";
 
 export default {
   Operation: {
@@ -72,6 +74,36 @@ export default {
       return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.payments.all(args), r =>
         OperationFactory.fromHorizon(r)
       );
+    },
+    payment_totals: async(root: any, args: any, ctx: IApolloContext) => {
+      const assetKey = AssetFactory.fromInput(args.asset).toString();
+      const asset = { term: { "asset.key": assetKey } };
+      const account = args.account ? { term: { account_id: args.account } } : undefined;
+
+      let query = {
+        size: 0,
+        query: {
+          bool: {
+            must: _.compact([asset, account])
+          }
+        },
+        aggs: {
+          in: {
+            filter: { range: { diff: { gt: 0 } } },
+            aggs: { in_total: { sum: { field: "diff" } } }
+          },
+          out: {
+            filter: { range: { diff: { lt: 0 } } },
+            aggs: { out_total: { sum: { field: "diff" } } }
+          }
+        }
+      };
+
+
+      return {
+        in: result.aggregations.in.in_total.value,
+        out: result.aggregations.out.out_total.value
+      };
     }
   },
   Subscription: {

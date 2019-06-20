@@ -271,6 +271,11 @@ export const typeDefs = gql`
     node: Operation
   }
 
+  type PaymentTotals {
+    in: Float!
+    out: Float!
+  }
+
   extend type Query {
     "Get list of operations"
     operations(first: Int, after: String, last: Int, before: String): OperationConnection
@@ -278,6 +283,8 @@ export const typeDefs = gql`
     operation(id: String): Operation
     "Get payment-related operations"
     payments(first: Int, after: String, last: Int, before: String): OperationConnection
+    "Get payment totals"
+    payment_totals(asset: AssetInput!, account: AccountID, startTime: Int, endTime: Int): PaymentTotals
   }
 
   extend type Subscription {
