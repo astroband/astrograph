@@ -5,15 +5,10 @@ import * as Sentry from "@sentry/node";
 import { ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 
-import {
-  HorizonAssetsDataSource,
-  HorizonOperationsDataSource,
-  HorizonPaymentsDataSource,
-  HorizonTradesDataSource,
-  HorizonTransactionsDataSource
-} from "./datasource/horizon";
+import { HorizonTradesDataSource } from "./datasource/horizon";
 import schema from "./schema";
 import { listenOffers, orderBook } from "./service/dex";
+import { OperationsStorage, TransactionsStorage } from "./storage";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
 import { listenBaseReserveChange } from "./util/stellar";
@@ -45,15 +40,15 @@ const endpoint = "/graphql";
 
 /* tslint:disable */
 type DataSources = {
-  assets: HorizonAssetsDataSource;
-  operations: HorizonOperationsDataSource;
-  payments: HorizonPaymentsDataSource;
   trades: HorizonTradesDataSource;
-  transactions: HorizonTransactionsDataSource;
 };
 
 export interface IApolloContext {
   orderBook: { load: typeof orderBook.load };
+  storage: {
+    operations: OperationsStorage;
+    transactions: TransactionsStorage;
+  };
   dataSources: DataSources;
 }
 
@@ -67,17 +62,18 @@ init().then(() => {
     introspection: true,
     playground: process.env.NODE_ENV === "production" ? { endpoint, tabs: [{ endpoint, query: demoQuery }] } : true,
     debug: true,
-    context: () => {
-      return { orderBook };
-    },
     cors: true,
+    context: () => {
+      return {
+        storage: {
+          operations: new OperationsStorage(),
+          transactions: new TransactionsStorage(),
+        }
+      };
+    },
     dataSources: (): DataSources => {
       return {
-        assets: new HorizonAssetsDataSource(),
-        operations: new HorizonOperationsDataSource(),
-        payments: new HorizonPaymentsDataSource(),
         trades: new HorizonTradesDataSource(),
-        transactions: new HorizonTransactionsDataSource()
       };
     },
     formatError: (error: GraphQLError) => {

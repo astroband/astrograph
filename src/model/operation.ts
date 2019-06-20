@@ -1,6 +1,7 @@
 import stellar from "stellar-base";
-import { HorizonAccountFlag } from "../datasource/types";
 import { AccountID } from "./";
+
+export type AccountFlagsOption = "authRequired" | "authImmutable" | "authRevocable";
 
 export enum OperationType {
   Payment = "payment",
@@ -16,6 +17,13 @@ export enum OperationType {
   CreatePassiveSellOffer = "createPassiveSellOffer",
   PathPayment = "pathPayment"
 }
+
+export const PaymentOperations = [
+  OperationType.CreateAccount,
+  OperationType.Payment,
+  OperationType.PathPayment,
+  OperationType.AccountMerge
+];
 
 export interface IBaseOperation {
   id?: string;
@@ -35,8 +43,8 @@ export interface IPaymentOperation extends IBaseOperation {
 export interface ISetOptionsOperation extends IBaseOperation {
   masterWeight: number;
   homeDomain: string;
-  clearFlags: HorizonAccountFlag[];
-  setFlags: HorizonAccountFlag[];
+  clearFlags: AccountFlagsOption[];
+  setFlags: AccountFlagsOption[];
   thresholds: {
     high: number;
     medium: number;
@@ -106,7 +114,7 @@ export interface ICreatePassiveSellOfferOperation extends IBaseOperation {
 
 // This is more of a "effect" of particular path payment
 // Horizon returns data this way, so we use it too
-export interface IPathPaymentOperation extends IBaseOperation {
+export interface IHorizonPathPaymentOperation extends IBaseOperation {
   sendMax: string;
   amountSent: string;
   amountReceived: string;
@@ -115,10 +123,10 @@ export interface IPathPaymentOperation extends IBaseOperation {
   sourceAsset: stellar.Asset;
 }
 
-// This is a "legacy" interface, we ingest path payments to DGraph in this format
-export interface IDgraphPathPaymentOperation extends IBaseOperation {
+export interface IPathPaymentOperation extends IBaseOperation {
   sendMax: string;
-  destinationAmount: string;
+  amountSent: string;
+  amountReceived: string;
   destinationAccount: AccountID;
   destinationAsset: stellar.Asset;
   sourceAsset: stellar.Asset;
@@ -137,5 +145,4 @@ export type Operation =
   | IManageSellOfferOperation
   | IManageBuyOfferOperation
   | IPathPaymentOperation
-  | ICreatePassiveSellOfferOperation
-  | IDgraphPathPaymentOperation;
+  | ICreatePassiveSellOfferOperation;

@@ -7,11 +7,16 @@ import * as resolvers from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import { IHorizonOperationData, IHorizonTradeData, IHorizonTransactionData } from "../../datasource/types";
+import { IHorizonTradeData } from "../../datasource/types";
 
-import { Balance, Operation, Trade, Transaction } from "../../model";
+import { Balance, Operation, Trade, PaymentOperations, Transaction } from "../../model";
 import { BalanceFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { Account, Offer } from "../../orm/entities";
+import {
+  IOperationData as IStorageOperationData,
+  ITransactionData as IStorageTransactionData
+} from "../../storage/types";
+
 
 import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
@@ -66,19 +71,24 @@ export default {
     balances: balancesResolver,
     ledger: resolvers.ledger,
     operations: async (root: Account, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.operations.forAccount(root.id, args),
-        r => OperationFactory.fromHorizon(r)
+      return makeConnection<IStorageOperationData, Operation>(
+        await ctx.storage.operations.forAccount(root.id).all(args),
+        r => OperationFactory.fromStorage(r)
       );
     },
     payments: async (root: Account, args: any, ctx: IApolloContext) => {
-      const records = await ctx.dataSources.payments.forAccount(root.id, args);
-      return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
+      return makeConnection<IStorageOperationData, Operation>(
+        await ctx.storage.operations
+          .forAccount(root.id)
+          .filterTypes(PaymentOperations)
+          .all(args),
+        r => OperationFactory.fromStorage(r)
+      );
     },
     transactions: async (root: Account, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonTransactionData, Transaction>(
-        await ctx.dataSources.transactions.forAccount(root.id, args),
-        r => TransactionWithXDRFactory.fromHorizon(r)
+      return makeConnection<IStorageTransactionData, Transaction>(
+        await ctx.storage.transactions.forAccount(root.id).all(args),
+        r => TransactionWithXDRFactory.fromStorage(r)
       );
     },
     trades: async (root: Account, args: any, ctx: IApolloContext, info: any) => {

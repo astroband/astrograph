@@ -1,8 +1,7 @@
 import stellar from "stellar-base";
-import { IHorizonTransactionData } from "../../datasource/types";
-import { parsePagingToken } from "../../util/horizon";
+import { ITransactionData as IStorageTransactionData } from "../../storage/types";
 import { publicKeyFromBuffer } from "../../util/xdr";
-import { ITimeBounds } from "../transaction";
+import { ITimeBounds, Transaction } from "../transaction";
 import { ITransactionWithXDR, TransactionWithXDR } from "../transaction_with_xdr";
 
 export interface ITransactionTableRow {
@@ -62,45 +61,28 @@ export class TransactionWithXDRFactory {
     return new TransactionWithXDR(data);
   }
 
-  public static fromHorizon(data: IHorizonTransactionData): TransactionWithXDR {
-    const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(data.envelope_xdr, "base64");
-    const result = stellar.xdr.TransactionResult.fromXDR(data.result_xdr, "base64");
-    const metaXDR = stellar.xdr.TransactionMeta.fromXDR(data.result_meta_xdr, "base64");
-    const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(data.fee_meta_xdr, "base64");
+  public static fromStorage(data: IStorageTransactionData): Transaction {
+    let timeBounds: ITimeBounds | undefined;
 
-    const body = bodyXDR.tx();
+    if (data.time_bounds) {
+      timeBounds = { minTime: new Date(data.time_bounds.min_time * 1000) };
 
-    const memo = stellar.Memo.fromXDRObject(body.memo());
+      if (data.time_bounds.max_time) {
+        timeBounds.maxTime = new Date(data.time_bounds.max_time * 1000);
+      }
+    }
 
-    const timeBounds = this.parseTimeBounds(body.timeBounds());
-
-    const resultCode = result.result().switch().value;
-    const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
-    const feeAmount = body.fee().toString();
-    const feeCharged = result.feeCharged().toString();
-    const sourceAccount = publicKeyFromBuffer(body.sourceAccount().value());
-
-    return new TransactionWithXDR({
+    return new Transaction({
       id: data.id,
-      index: parsePagingToken(data.paging_token).txIndex,
-      ledgerSeq: data.ledger,
-      body: data.envelope_xdr,
-      bodyXDR,
-      result: data.result_xdr,
-      resultXDR: result,
-      meta: data.result_meta_xdr,
-      metaXDR,
-      feeMeta: data.fee_meta_xdr,
-      feeMetaXDR,
-      memo: memo.value ? memo : undefined,
+      index: data.idx,
+      ledgerSeq: data.seq,
+      memo: data.memo ? TransactionWithXDRFactory.parseMemo(data.memo.type, data.memo.value) : undefined,
       timeBounds,
-      feeAmount,
-      feeCharged,
-      resultCode,
-      success,
-      sourceAccount,
-      operationsXDR: body.operations(),
-      operationResultsXDR: result.result().results()
+      feeAmount: data.fee.toString(),
+      feeCharged: data.fee_charged,
+      resultCode: data.result_code,
+      success: data.successful,
+      sourceAccount: data.source_account_id
     });
   }
 
@@ -114,5 +96,20 @@ export class TransactionWithXDRFactory {
     const maxTime = timeBoundsXDR.maxTime().toInt() !== 0 ? new Date(timeBoundsXDR.maxTime() * 1000) : undefined;
 
     return { minTime, maxTime };
+  }
+
+  public static parseMemo(type: 0 | 1 | 2 | 3 | 4, value: string) {
+    switch (type) {
+      case 0:
+        return stellar.Memo.none();
+      case 1:
+        return stellar.Memo.text(value);
+      case 2:
+        return stellar.Memo.id(value);
+      case 3:
+        return stellar.Memo.hash(Buffer.from(value, "base64").toString("hex"));
+      case 4:
+        return stellar.Memo.return(Buffer.from(value, "base64").toString("hex"));
+    }
   }
 }

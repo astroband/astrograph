@@ -1,4 +1,3 @@
-import * as Integrations from "@sentry/integrations";
 import * as Sentry from "@sentry/node";
 import { createConnection, getRepository } from "typeorm";
 import { Account, AccountData, Offer, TrustLine } from "./orm/entities";
@@ -13,7 +12,7 @@ export default async function init(): Promise<void> {
   if (secrets.SENTRY_DSN) {
     Sentry.init({
       dsn: secrets.SENTRY_DSN,
-      integrations: [new Integrations.RewriteFrames({ root: __dirname || process.cwd() })]
+      integrations: [new Sentry.Integrations.RewriteFrames({ root: __dirname || process.cwd() })]
     });
   }
 

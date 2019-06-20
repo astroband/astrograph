@@ -1,9 +1,12 @@
 import { db } from "../../database";
-import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
-import { Ledger, LedgerHeader, Operation, Transaction } from "../../model";
+import { Ledger, LedgerHeader, Operation, PaymentOperations, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { LEDGER_CREATED, pubsub } from "../../pubsub";
+import {
+  IOperationData as IStorageOperationData,
+  ITransactionData as IStorageTransactionData
+} from "../../storage/types";
 import { createBatchResolver, makeConnection } from "./util";
 
 const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>(async (ledgers: Ledger[]) => {
@@ -23,20 +26,25 @@ export default {
   Ledger: {
     header: ledgerHeaderResolver,
     transactions: async (root: Ledger, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonTransactionData, Transaction>(
-        await ctx.dataSources.transactions.forLedger(root.seq, args),
-        r => TransactionWithXDRFactory.fromHorizon(r)
+      return makeConnection<IStorageTransactionData, Transaction>(
+        await ctx.storage.transactions.forLedger(root.seq).all(args),
+        r => TransactionWithXDRFactory.fromStorage(r)
       );
     },
     operations: async (root: Ledger, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.operations.forLedger(root.seq, args),
-        r => OperationFactory.fromHorizon(r)
+      return makeConnection<IStorageOperationData, Operation>(
+        await ctx.storage.operations.forLedger(root.seq).all(args),
+        r => OperationFactory.fromStorage(r)
       );
     },
     payments: async (root: Ledger, args: any, ctx: IApolloContext) => {
-      const records = await ctx.dataSources.payments.forLedger(root.seq, args);
-      return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
+      return makeConnection<IStorageOperationData, Operation>(
+        await ctx.storage.operations
+          .forLedger(root.seq)
+          .filterTypes(PaymentOperations)
+          .all(args),
+        r => OperationFactory.fromStorage(r)
+      );
     }
   },
   Query: {

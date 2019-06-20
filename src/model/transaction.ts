@@ -1,8 +1,8 @@
 import stellar from "stellar-base";
 
 export interface ITimeBounds {
-  readonly minTime: Date;
-  readonly maxTime?: Date;
+  minTime: Date;
+  maxTime?: Date;
 }
 
 export interface ITransaction {
@@ -13,7 +13,7 @@ export interface ITransaction {
   feeAmount: string;
   sourceAccount: string;
   timeBounds?: ITimeBounds;
-  feeCharged: string;
+  feeCharged: number;
   success: boolean;
   resultCode: number;
 }
@@ -26,7 +26,7 @@ export class Transaction implements ITransaction {
   public feeAmount: string;
   public sourceAccount: string;
   public timeBounds?: ITimeBounds;
-  public feeCharged: string;
+  public feeCharged: number;
   public success: boolean;
   public resultCode: number;
 
@@ -41,5 +41,9 @@ export class Transaction implements ITransaction {
     this.feeCharged = data.feeCharged;
     this.success = data.success;
     this.resultCode = data.resultCode;
+  }
+
+  public get paging_token() {
+    return this.ledgerSeq * 100 + this.index;
   }
 }
