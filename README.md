@@ -237,3 +237,7 @@ We haven't done full stress tests yet. Despite that, it looks like the server on
 ## License
 
 The project is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT)
+
+Parts of the path finding engine include the original code from [stellar-pathfinder-server](https://github.com/future-tense/stellar-pathfinder-server)
+project created by [Johan Stén](https://github.com/johansten]) and [Future Tense, LLC](https://github.com/future-tense),
+adapted and modified by Astrograph project team.
