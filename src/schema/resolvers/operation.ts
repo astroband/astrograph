@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { Client as ElasticClient } from "@elastic/elasticsearch";
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
 import { IHorizonOperationData } from "../../datasource/types";
@@ -9,7 +10,7 @@ import { NEW_OPERATION, pubsub } from "../../pubsub";
 import { makeConnection } from "./util";
 
 import * as resolvers from "./shared";
-import { BroadcasterResult } from "typeorm/subscriber/BroadcasterResult";
+import * as secrets from "../../util/secrets";
 
 export default {
   Operation: {
@@ -100,9 +101,12 @@ export default {
       };
 
 
+      const client = new ElasticClient({ node: secrets.ELASTIC_URL });
+      const { body: response } = await client.search({ index: "balance", body: query });
+
       return {
-        in: result.aggregations.in.in_total.value,
-        out: result.aggregations.out.out_total.value
+        in: response.aggregations.in.in_total.value,
+        out: response.aggregations.out.out_total.value
       };
     }
   },
