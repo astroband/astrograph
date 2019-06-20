@@ -40,7 +40,6 @@ export abstract class BaseStorage {
     });
 
     return response.hits.hits.map((h: any) => {
-      h._source.paging_token = h._source.paging_token.toString();
       return { ...h._source, id: h._id };
     });
   }

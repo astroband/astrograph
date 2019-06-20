@@ -10,9 +10,9 @@ import {
   IChangeTrustOperation,
   ICreateAccountOperation,
   ICreatePassiveSellOfferOperation,
+  IManageBuyOfferOperation,
   IManageDataOperation,
   IManageSellOfferOperation,
-  IManageBuyOfferOperation,
   IPathPaymentOperation,
   IPaymentOperation,
   ISetOptionsOperation,
@@ -65,7 +65,7 @@ export class DataMapper {
       case OperationType.ManageSellOffer:
         return "ManageSellOffer";
       case OperationType.ManageBuyOffer:
-        return "ManageSellOffer";
+        return "ManageBuyOffer";
       case OperationType.CreatePassiveSellOffer:
         return "CreatePassiveSellOffer";
       case OperationType.SetOption:
