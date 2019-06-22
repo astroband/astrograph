@@ -5,6 +5,10 @@
 
 # Astrograph
 
+<img align="right" width="150" height="150"
+     alt="Graph of stars reflected in telescope lens, logo of Astrograph"
+     src="https://astrograph.io/logo.svg">
+
 **Important** This project is still under heavy active development. Until it reaches 1.0 breaking changes may land without prior notice.
 
 Astrograph is a GraphQL server for the [Stellar](https://www.stellar.org/) network. You can think about it as a GraphQL version of [Horizon](https://github.com/stellar/go/tree/master/services/horizon), the client-facing API server for the Stellar ecosystem. 
