@@ -80,12 +80,14 @@ export default {
       const assetKey = AssetFactory.fromInput(args.asset).toString();
       const asset = { term: { "asset.key": assetKey } };
       const account = args.account ? { term: { account_id: args.account } } : undefined;
+      const timebounds =
+        args.startTime && args.endTime ? { range: { created_at: { gte: args.startTime, lte: args.endTime } } } : undefined;
 
-      let query = {
+      const query = {
         size: 0,
         query: {
           bool: {
-            must: _.compact([asset, account])
+            must: _.compact([asset, account, timebounds])
           }
         },
         aggs: {

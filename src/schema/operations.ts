@@ -284,7 +284,7 @@ export const typeDefs = gql`
     "Get payment-related operations"
     payments(first: Int, after: String, last: Int, before: String): OperationConnection
     "Get payment totals"
-    payment_totals(asset: AssetInput!, account: AccountID, startTime: Int, endTime: Int): PaymentTotals
+    payment_totals(asset: AssetInput!, account: AccountID, startTime: String, endTime: String): PaymentTotals
   }
 
   extend type Subscription {
