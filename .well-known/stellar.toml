@@ -1,0 +1,45 @@
+NODE_NAMES=[
+  "GDMAU3NHV4H7NZF5PY6O6SULIUKIIHPRYOKM7HMREK4BW65VHMDKNM6M astrocore_do"
+]
+ACCOUNTS=["$astrocore_do"]
+OUR_VALIDATORS=["$astrocore_do"]
+DESIRED_BASE_FEE=100
+DESIRED_MAX_TX_PER_LEDGER=1000
+
+[DOCUMENTATION]
+ORG_DBA = "Astrograph"
+ORG_GITHUB = "astroband"
+ORG_KEYBASE = "astrograph"
+ORG_NAME = "Astrograph Open Source Project"
+ORG_OFFICIAL_EMAIL = "team@astrograph.io"
+ORG_URL = "https://astrograph.io"
+
+[[VALIDATORS]]
+ALIAS = "astrocore-do"
+DISPLAY_NAME = "Astrograph (Netherlands)"
+PUBLIC_KEY = "GDMAU3NHV4H7NZF5PY6O6SULIUKIIHPRYOKM7HMREK4BW65VHMDKNM6M"
+HOST = "do01.astrograph.io"
+
+[[PRINCIPALS]]
+email = "nebolsin@gmail.com"
+name = "Sergey Nebolsin"
+github = "nebolsin"
+keybase = "nebolsin"
+telegram = "nebolsin"
+twitter = "nebolsin"
+
+[[PRINCIPALS]]
+email = "gzigzigzeo@gmail.com"
+name = "Viktor Sokolov"
+github = "gzigzigzeo"
+keybase = "gzigzigzeo"
+telegram = "gzigzigzeo"
+twitter = "gzigzigzeo"
+
+[[PRINCIPALS]]
+email = "charlie.vmk@gmail.com"
+name = "Timur Ramazanov"
+github = "charlie-wasp"
+keybase = "charlie_wasp"
+telegram = "charlie_wasp"
+twitter = "charlie_wasp"

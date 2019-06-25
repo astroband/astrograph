@@ -1,0 +1,7 @@
+<svg height="325" viewBox="0 0 691 325" width="691" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <radialGradient id="a" cx="33.934896%" cy="30.252785%" gradientTransform="matrix(.10212332 .94607206 -.52523476 .57052811 .463592 -.191121)" r="61.484641%">
+    <stop offset="0" stop-color="#c86dd7"/>
+    <stop offset="1" stop-color="#3023ae" stop-opacity="0"/>
+  </radialGradient>
+  <path d="m-11 0h1050v331h-1050z" fill="url(#a)" opacity=".2"/>
+</svg>

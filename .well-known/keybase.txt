@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/nebolsin
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://astrograph.io
+  * I am nebolsin (https://keybase.io/nebolsin) on keybase.
+  * I have a public key ASBSbCz-7MIr-VOFm56_B4-rbOVK0qlwG_Jrkt1FFJjUhwo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120526c2cfeecc22bf953859b9ebf078fab6ce54ad2a9701bf26b92dd451498d4870a",
+      "host": "keybase.io",
+      "kid": "0120526c2cfeecc22bf953859b9ebf078fab6ce54ad2a9701bf26b92dd451498d4870a",
+      "uid": "724d7b679eb3b83d8faa0ca99c432f19",
+      "username": "nebolsin"
+    },
+    "merkle_root": {
+      "ctime": 1559087103,
+      "hash": "cae6c2644f9a29c6231aeac78482212994ef66787f1888e466d3b4f4e77decdd457617603f2ade8eb7099bcc1494cdaf7fc5e48f561d5171eb568e731d661eeb",
+      "hash_meta": "402c6a8d45c759d72faee9a3e03e00f42f171916b23c3e2cc134d5db19714dee",
+      "seqno": 5464987
+    },
+    "service": {
+      "entropy": "It5PH0V8z71mRc2J08B6A3gM",
+      "hostname": "astrograph.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "4.0.0"
+  },
+  "ctime": 1559087119,
+  "expire_in": 504576000,
+  "prev": "a2aec0050aad58222957a09530102d36e73649ccbf5cb7969d63c8e15a7e04db",
+  "seqno": 82,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgUmws/uzCK/lThZuevwePq2zlStKpcBvya5LdRRSY1IcKp3BheWxvYWTESpcCUsQgoq7ABQqtWCIpV6CVMBAtNuc2Scy/XLeWnWPI4Vp+BNvEIBkrMf+cmBCEHbXVlJtuvl0DQ0MRItk/Yzvc/cs0A/XvAgHCo3NpZ8RAQEiDhW1ldAQLZZ3o4nOti5rxEoxu5JlgCMecDcNkW2srBE21I29oJdEJhxB9VCCSReavcu3wiq7KNvONDESeDqhzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIItJ2fdeftMPIBwb6xGCIn6l+Yd2OMNU0YtWP+0MvByVo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/nebolsin
+
+==================================================================

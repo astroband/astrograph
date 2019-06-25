@@ -1,0 +1,12 @@
+/* TEAM */
+  Name: Sergey Nebolsin
+  Location: Tver, Russia
+  GitHub: https://github.com/nebolsin
+
+  Name: Timur Ramazanov
+  Location: Saint Petersburg, Russia
+  GitHub: https://github.com/charlie-wasp
+
+  Name: Victor Sokolov
+  Location: Tbilisi, Georgia
+  GitHub: https://github.com/gzigzigzeo
