@@ -114,7 +114,7 @@ export default {
       return getRepository(Account).findOne(args.id, { relations });
     },
     accounts: async (root: any, args: any) => {
-      const { ids, homeDomain, data, ...paging } = args;
+      const { ids, inflationDestination, homeDomain, data, ...paging } = args;
       const qb = getRepository(Account).createQueryBuilder("accounts");
 
       if (ids && ids.length !== 0) {
@@ -123,6 +123,10 @@ export default {
 
       if (homeDomain) {
         qb.andWhere("decode(accounts.homedomain, 'base64') = :homeDomain", { homeDomain });
+      }
+
+      if (inflationDestination) {
+        qb.andWhere("accounts.inflationdest = :inflationDestination", { inflationDestination });
       }
 
       if (data) {
