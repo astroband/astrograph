@@ -6,7 +6,6 @@ import { ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 
 import {
-  HorizonAssetsDataSource,
   HorizonOperationsDataSource,
   HorizonPaymentsDataSource,
   HorizonTradesDataSource,
@@ -45,7 +44,6 @@ const endpoint = "/graphql";
 
 /* tslint:disable */
 type DataSources = {
-  assets: HorizonAssetsDataSource;
   operations: HorizonOperationsDataSource;
   payments: HorizonPaymentsDataSource;
   trades: HorizonTradesDataSource;
@@ -73,7 +71,6 @@ init().then(() => {
     cors: true,
     dataSources: (): DataSources => {
       return {
-        assets: new HorizonAssetsDataSource(),
         operations: new HorizonOperationsDataSource(),
         payments: new HorizonPaymentsDataSource(),
         trades: new HorizonTradesDataSource(),
