@@ -7,13 +7,12 @@ import * as resolvers from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import { IHorizonTradeData } from "../../datasource/types";
-
-import { Balance, Operation, Trade, PaymentOperations, Transaction } from "../../model";
+import { Balance, Operation, ITrade, PaymentOperations, Transaction } from "../../model";
 import { BalanceFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { Account, Offer } from "../../orm/entities";
 import {
   IOperationData as IStorageOperationData,
+  ITradeData as IStorageTradeData,
   ITransactionData as IStorageTransactionData
 } from "../../storage/types";
 
@@ -92,9 +91,8 @@ export default {
       );
     },
     trades: async (root: Account, args: any, ctx: IApolloContext, info: any) => {
-      return makeConnection<IHorizonTradeData, Trade>(await ctx.dataSources.trades.forAccount(root.id, args), r =>
-        TradeFactory.fromHorizon(r)
-      );
+      const trades = await ctx.storage.trades.forAccount(root.id).all(args);
+      return makeConnection<IStorageTradeData, ITrade>(trades, r => TradeFactory.fromStorage(r));
     },
     offers: async (root: Account, args: any, ctx: any) => {
       const { selling, buying, ...paging } = args;

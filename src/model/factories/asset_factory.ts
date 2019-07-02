@@ -1,6 +1,5 @@
 import stellar from "stellar-base";
 import { AccountID, Asset, AssetCode, AssetID, IAssetInput } from "../";
-import { HorizonAssetType } from "../../datasource/types";
 
 export interface IAssetTableRow {
   assetid: AssetID;
@@ -32,10 +31,6 @@ export class AssetFactory {
     return type === stellar.xdr.AssetType.assetTypeNative().value
       ? stellar.Asset.native()
       : new stellar.Asset(code, issuer);
-  }
-
-  public static fromHorizon(type: HorizonAssetType, code?: string, issuer?: string) {
-    return type === "native" ? stellar.Asset.native() : new stellar.Asset(code!, issuer!);
   }
 
   public static fromInput(arg: IAssetInput) {

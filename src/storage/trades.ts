@@ -1,7 +1,15 @@
-import { AssetID } from "../model";
+import { AccountID, AssetID } from "../model";
 import { BaseStorage } from "./base";
 
 export class TradesStorage extends BaseStorage {
+  public forAccount(account: AccountID) {
+    this.searchParams.query.bool.must.push({
+      bool: { should: [{ seller: account }, { buyer: account }] }
+    });
+
+    return this;
+  }
+
   public forOffer(offerID: string) {
     this.addTerm({ sold_offer_id: offerID });
     return this;

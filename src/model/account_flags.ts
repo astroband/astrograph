@@ -1,5 +1,3 @@
-import { HorizonAccountFlag } from "../datasource/types";
-
 export interface IAccountFlags {
   authRequired: boolean;
   authRevocable: boolean;
@@ -23,23 +21,5 @@ export class AccountFlags implements IAccountFlags {
       this.authRevocable === other.authRevocable &&
       this.authImmutable === other.authImmutable
     );
-  }
-
-  public toHorizonFormat() {
-    const result: HorizonAccountFlag[] = [];
-
-    if (this.authRequired) {
-      result.push("auth_required");
-    }
-
-    if (this.authRevocable) {
-      result.push("auth_revocable");
-    }
-
-    if (this.authImmutable) {
-      result.push("auth_immutable");
-    }
-
-    return result;
   }
 }

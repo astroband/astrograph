@@ -5,7 +5,6 @@ import * as Sentry from "@sentry/node";
 import { ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 
-import { HorizonTradesDataSource } from "./datasource/horizon";
 import schema from "./schema";
 import { listenOffers, orderBook } from "./service/dex";
 import { OperationsStorage, TradesStorage, TransactionsStorage } from "./storage";
@@ -38,11 +37,6 @@ const demoQuery = `{
 
 const endpoint = "/graphql";
 
-/* tslint:disable */
-type DataSources = {
-  trades: HorizonTradesDataSource;
-};
-
 export interface IApolloContext {
   orderBook: { load: typeof orderBook.load };
   storage: {
@@ -50,7 +44,6 @@ export interface IApolloContext {
     trades: TradesStorage;
     transactions: TransactionsStorage;
   };
-  dataSources: DataSources;
 }
 
 init().then(() => {
@@ -71,11 +64,6 @@ init().then(() => {
           trades: new TradesStorage(),
           transactions: new TransactionsStorage()
         }
-      };
-    },
-    dataSources: (): DataSources => {
-      return {
-        trades: new HorizonTradesDataSource(),
       };
     },
     formatError: (error: GraphQLError) => {

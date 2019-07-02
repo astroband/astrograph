@@ -1,4 +1,4 @@
-import { AccountID, AssetCode } from "../model";
+import { AccountID, AssetCode, AssetID } from "../model";
 
 export type StorageOpType =
   | "CreateAccount"

@@ -9,7 +9,6 @@ import { typeDefs as offersTypeDefs } from "./offers";
 import { typeDefs as operationsTypeDefs } from "./operations";
 import { typeDefs as orderBookTypeDefs } from "./order_book";
 import { typeDefs as paymentPathTypeDefs } from "./payment_path";
-import { typeDefs as tradeAggregationsTypeDefs } from "./trade_aggregations";
 import { typeDefs as tradesTypeDefs } from "./trades";
 import { typeDefs as transactionsTypeDefs } from "./transactions";
 import { typeDefs } from "./type_defs";
@@ -25,7 +24,6 @@ const schema = makeExecutableSchema({
     operationsTypeDefs,
     orderBookTypeDefs,
     paymentPathTypeDefs,
-    tradeAggregationsTypeDefs,
     tradesTypeDefs
   ],
   resolverValidationOptions: { requireResolversForResolveType: false }
