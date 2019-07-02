@@ -4,7 +4,7 @@ import { BaseStorage } from "./base";
 export class TradesStorage extends BaseStorage {
   public forAccount(account: AccountID) {
     this.searchParams.query.bool.must.push({
-      bool: { should: [{ seller: account }, { buyer: account }] }
+      bool: { should: [{ term: { seller_id: account } }, { term: { buyer_id: account } }] }
     });
 
     return this;
