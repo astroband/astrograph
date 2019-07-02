@@ -1,24 +1,30 @@
-import { IHorizonTradeData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
-import { Trade } from "../../model";
+import { ITrade } from "../../model";
 import { TradeFactory } from "../../model/factories";
+import { ITradeData as IStorageTradeData } from "../../storage/types";
 import { makeConnection } from "./util";
 
 import * as resolvers from "./shared";
 
 export default {
   Trade: {
-    baseAsset: resolvers.asset,
-    counterAsset: resolvers.asset,
-    baseAccount: resolvers.account,
-    counterAccount: resolvers.account
+    assetSold: resolvers.asset,
+    assetBought: resolvers.asset,
+    seller: resolvers.account,
+    buyer: resolvers.account
   },
   Query: {
     trades: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const { baseAsset, counterAsset, offerID } = args;
+      const { assetSold, assetBought, offer, ...paging } = args;
+      const storage = ctx.storage.trades;
 
-      const records = await ctx.dataSources.trades.all(args, baseAsset, counterAsset, offerID);
-      return makeConnection<IHorizonTradeData, Trade>(records, r => TradeFactory.fromHorizon(r));
+      if (offer) {
+        storage.forOffer(offer);
+      }
+
+      const records = await storage.filter({ assetSold, assetBought }).all(paging);
+
+      return makeConnection<IStorageTradeData, ITrade>(records, r => TradeFactory.fromStorage(r));
     }
   }
 };

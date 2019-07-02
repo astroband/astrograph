@@ -16,8 +16,8 @@ export type StorageOpType =
 
 export interface IAsset {
   code: AssetCode;
-  issuer: AccountID;
-  key: string;
+  issuer?: AccountID;
+  key: AssetID;
 }
 
 interface IBaseOperationData {
@@ -151,4 +151,18 @@ export interface ITransactionData {
   memo?: { type: 0 | 1 | 2 | 3 | 4; value: string };
   time_bounds?: { min_time: number; max_time: number };
   paging_token: string;
+}
+
+export interface ITradeData {
+  id: string;
+  paging_token: string;
+  sold: string;
+  bought: string;
+  asset_sold: IAsset;
+  asset_bought: IAsset;
+  sold_offer_id: number;
+  seller_id: AccountID;
+  buyer_id: AccountID;
+  price: string;
+  ledger_close_time: string; // ISO datetime
 }

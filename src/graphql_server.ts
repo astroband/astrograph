@@ -8,7 +8,7 @@ import { GraphQLError } from "graphql";
 import { HorizonTradesDataSource } from "./datasource/horizon";
 import schema from "./schema";
 import { listenOffers, orderBook } from "./service/dex";
-import { OperationsStorage, TransactionsStorage } from "./storage";
+import { OperationsStorage, TradesStorage, TransactionsStorage } from "./storage";
 import logger from "./util/logger";
 import { BIND_ADDRESS, PORT } from "./util/secrets";
 import { listenBaseReserveChange } from "./util/stellar";
@@ -47,6 +47,7 @@ export interface IApolloContext {
   orderBook: { load: typeof orderBook.load };
   storage: {
     operations: OperationsStorage;
+    trades: TradesStorage;
     transactions: TransactionsStorage;
   };
   dataSources: DataSources;
@@ -67,7 +68,8 @@ init().then(() => {
       return {
         storage: {
           operations: new OperationsStorage(),
-          transactions: new TransactionsStorage(),
+          trades: new TradesStorage(),
+          transactions: new TransactionsStorage()
         }
       };
     },
