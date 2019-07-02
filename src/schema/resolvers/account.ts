@@ -7,7 +7,7 @@ import * as resolvers from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import { Balance, Operation, ITrade, PaymentOperations, Transaction } from "../../model";
+import { Balance, ITrade, Operation, PaymentOperations, Transaction } from "../../model";
 import { BalanceFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { Account, Offer } from "../../orm/entities";
 import {
@@ -15,7 +15,6 @@ import {
   ITradeData as IStorageTradeData,
   ITransactionData as IStorageTransactionData
 } from "../../storage/types";
-
 
 import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";

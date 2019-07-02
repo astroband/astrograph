@@ -131,7 +131,7 @@ export class DataMapper {
       ...{
         destination: this.data.destination_account_id,
         amount: this.data.source_amount.toString(),
-        asset: AssetFactory.fromId(this.data.source_asset.key),
+        asset: AssetFactory.fromId(this.data.source_asset.key)
       }
     };
   }

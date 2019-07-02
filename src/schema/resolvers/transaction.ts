@@ -9,7 +9,7 @@ import { Operation, PaymentOperations, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import {
   IOperationData as IStorageOperationData,
-  ITransactionData as IStorageTransactionData,
+  ITransactionData as IStorageTransactionData
 } from "../../storage/types";
 
 export default {
