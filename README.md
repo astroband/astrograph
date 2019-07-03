@@ -124,8 +124,8 @@ query {
     sequenceNumber
     balances {
       asset {
+        id
         code
-        native
         issuer { id }
       }
       balance
@@ -171,8 +171,6 @@ query {
   }
 }
 ```
-
-*NOTE*: Please note that native balance is returned inside a trustline too, and is marked with the boolean flag.
 
 ## Subscriptions
 
@@ -226,9 +224,9 @@ subscription {
     account { id }
     values {
       asset {
+        id
         code
         issuer { id }
-        native
       }
       balance
     }

@@ -28,11 +28,13 @@ const SUBSCRIPTION = gql`
       }
       mutationType
       asset {
+        id
         code
         issuer { id }
       }
       values {
         asset {
+          id
           code
           issuer { id }
         }
@@ -69,7 +71,7 @@ apolloClient
 
       console.log(
         "New balance for",
-        values.id,
+        values.asset.id,
         "is now",
         values.balance,
         "with limit",

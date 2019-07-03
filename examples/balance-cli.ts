@@ -24,6 +24,7 @@ client
             balance
             limit
             asset {
+              id
               code
               issuer { id }
             }
@@ -37,6 +38,6 @@ client
   })
   .then((result: { data: any }) => {
     for (const t of result.data.account.balances) {
-      console.log("Balance", t.balance, t.id, "with limit", t.limit);
+      console.log("Balance", t.balance, t.asset.id, "with limit", t.limit);
     }
   });
