@@ -36,6 +36,7 @@ $ yarn ts-node src/ingestd.ts # live ingesting for subscriptions
 Create assets view in database:
 
 ```
+CREATE VIEW assets AS
 ( SELECT (t.assetcode::text || '-'::text) || t.issuer::text AS assetid,
     t.assetcode AS code,
     t.issuer,
