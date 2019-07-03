@@ -25,7 +25,6 @@ client
             limit
             asset {
               code
-              native
               issuer { id }
             }
           }
@@ -38,7 +37,6 @@ client
   })
   .then((result: { data: any }) => {
     for (const t of result.data.account.balances) {
-      const assetId = t.asset.native ? t.asset.code : `${t.asset.code}-${t.asset.issuer.id}`;
-      console.log("Balance", t.balance, assetId, "with limit", t.limit);
+      console.log("Balance", t.balance, t.id, "with limit", t.limit);
     }
   });
