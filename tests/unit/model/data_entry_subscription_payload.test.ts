@@ -1,10 +1,11 @@
+import { expect } from "chai";
+import sinon from "sinon";
 import stellar from "stellar-base";
 
 import { DataEntrySubscriptionPayload, MutationType } from "../../../src/model";
 import { DataEntryValuesFactory } from "../../../src/model/factories/data_entry_values_factory";
 
-jest.mock("../../../src/model/data_entry_values");
-jest.mock("../../../src/model/factories/data_entry_values_factory");
+DataEntryValuesFactory.fromXDR = sinon.fake();
 
 describe("constructor", () => {
   const rawXDR =
@@ -23,21 +24,21 @@ describe("constructor", () => {
   it("sets account id and mutation type", () => {
     subject = new DataEntrySubscriptionPayload(MutationType.Update, xdr);
 
-    expect(subject.accountID).toBe("GBA4AZDYADUTSYAUTSUOIYE4QKWSLIWEESR7QTYSAZIRYDUFXZ2D3RCP");
-    expect(subject.mutationType).toBe(MutationType.Update);
+    expect(subject.accountID).to.equal("GBA4AZDYADUTSYAUTSUOIYE4QKWSLIWEESR7QTYSAZIRYDUFXZ2D3RCP");
+    expect(subject.mutationType).to.equal(MutationType.Update);
   });
 
   describe("mutation type is 'Remove'", () => {
     it("doesn't set values", () => {
       subject = new DataEntrySubscriptionPayload(MutationType.Remove, xdr);
-      expect(subject.values).toBeNull();
+      expect(subject.values).to.be.null;
     });
   });
 
   describe("mutation type is not 'Remove'", () => {
-    it("build values from XDR", () => {
+    it("builds values from XDR", () => {
       subject = new DataEntrySubscriptionPayload(MutationType.Update, xdr);
-      expect(DataEntryValuesFactory.fromXDR).toHaveBeenCalledWith(xdr);
+      expect(DataEntryValuesFactory.fromXDR).to.have.been.calledWith(xdr);
     });
   });
 });

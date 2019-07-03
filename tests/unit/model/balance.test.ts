@@ -1,14 +1,12 @@
+import { expect } from "chai";
+import { ImportMock } from "ts-mock-imports";
 import { Balance } from "../../../src/model";
 import { BalanceFactory } from "../../../src/model/factories";
 import { MAX_INT64 } from "../../../src/util";
+import * as baseReserve from "../../../src/util/base_reserve";
 import AccountFactory from "../../factories/account";
 
-jest.mock("../../../src/util/stellar", () => {
-  return {
-    ...jest.requireActual("../../../src/util/stellar"),
-    getReservedBalance: (numSubentries: number) => (numSubentries + 2) * 5000000
-  };
-});
+ImportMock.mockFunction(baseReserve, "getReservedBalance", 3 * 5000000);
 
 const data = {
   accountid: "GDT3N2FHODKJ5ZJRRVEYUYQEWQ5V7T6EPG4UQXDWJXTUDTD252QXCL5K",
@@ -28,14 +26,14 @@ let subject: Balance;
 describe("constructor", () => {
   subject = BalanceFactory.fromDb(data);
 
-  it("sets account id", () => expect(subject.account).toEqual(data.accountid));
-  it("sets lastModified", () => expect(subject.lastModified).toEqual(data.lastmodified));
-  it("sets limit", () => expect(subject.limit.toString()).toEqual("9223372036854775807"));
-  it("sets balance", () => expect(subject.balance.toString()).toEqual("9600000000"));
-  it("sets authorized", () => expect(subject.authorized).toBe(true));
-  it("sets asset", () => expect(subject.asset).toEqual(`${data.assetcode}-${data.issuer}`));
-  it("sets spendable balance", () => expect(subject.spendableBalance.toString()).toEqual("9599999700"));
-  it("sets receivable balance", () => expect(subject.receivableBalance.toString()).toEqual("9223372027254775707"));
+  it("sets account id", () => expect(subject.account).to.equal(data.accountid));
+  it("sets lastModified", () => expect(subject.lastModified).to.equal(data.lastmodified));
+  it("sets limit", () => expect(subject.limit.toString()).to.equal("9223372036854775807"));
+  it("sets balance", () => expect(subject.balance.toString()).to.equal("9600000000"));
+  it("sets authorized", () => expect(subject.authorized).to.be.true);
+  it("sets asset", () => expect(subject.asset).to.equal(`${data.assetcode}-${data.issuer}`));
+  it("sets spendable balance", () => expect(subject.spendableBalance.toString()).to.equal("9599999700"));
+  it("sets receivable balance", () => expect(subject.receivableBalance.toString()).to.equal("9223372027254775707"));
 });
 
 describe("static buildFakeNative(account)", () => {
@@ -43,17 +41,17 @@ describe("static buildFakeNative(account)", () => {
     const account = AccountFactory.build();
     const fake = await BalanceFactory.nativeForAccount(account);
 
-    expect(fake).toMatchObject({
+    expect(fake).to.include({
       account: account.id,
       authorized: true,
       lastModified: account.lastModified
     });
 
-    expect(fake.balance.toString()).toEqual(account.balance);
-    expect(fake.limit.toString()).toEqual(MAX_INT64);
-    expect(fake.spendableBalance.toString()).toEqual("19706072136");
-    expect(fake.receivableBalance.toString()).toEqual("9223372017121827946");
+    expect(fake.balance.toString()).to.equal(account.balance);
+    expect(fake.limit.toString()).to.equal(MAX_INT64);
+    expect(fake.spendableBalance.toString()).to.equal("19706072136");
+    expect(fake.receivableBalance.toString()).to.equal("9223372017121827946");
 
-    expect(fake.asset).toEqual("native");
+    expect(fake.asset).to.equal("native");
   });
 });

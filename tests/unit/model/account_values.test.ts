@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import stellar from "stellar-base";
 import { AccountValues } from "../../../src/model";
 import { AccountThresholdsFactory } from "../../../src/model/factories";
@@ -14,7 +15,7 @@ describe("constructor", () => {
     subject = new AccountValues(rawData);
 
     const assignedSigners = subject.signers.map(s => s.signer);
-    expect(assignedSigners).toEqual(signers.map(s => s.signer).sort());
+    expect(assignedSigners).to.deep.equal(signers.map(s => s.signer).sort());
   });
 });
 
@@ -26,7 +27,7 @@ describe("diffAttrs(other)", () => {
       subject = AccountValuesFactory.build();
       other = AccountValuesFactory.build();
 
-      expect(() => subject.diffAttrs(other)).toThrow();
+      expect(() => subject.diffAttrs(other)).to.throw();
     });
   });
 
@@ -57,7 +58,7 @@ describe("diffAttrs(other)", () => {
 
     subject = new AccountValues(subjectData);
     other = new AccountValues(otherData);
-    expect(subject.diffAttrs(other)).toEqual([
+    expect(subject.diffAttrs(other)).to.deep.equal([
       "balance",
       "sequenceNumber",
       "numSubentries",

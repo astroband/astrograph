@@ -1,4 +1,5 @@
-import { AccountThresholdsFactory, SignerFactory } from "./";
+import { AccountThresholdsFactory } from "./account_thresholds_factory";
+import { SignerFactory } from "./signer_factory";
 
 import { AccountValues, IAccountValues } from "../";
 

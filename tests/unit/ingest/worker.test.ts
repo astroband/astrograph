@@ -1,11 +1,11 @@
-import { Cursor, ICursorResult, Worker } from "../../../src/ingest";
+import { expect } from "chai";
+import sinon from "sinon";
+import { Cursor, Worker } from "../../../src/ingest";
 import { LedgerHeader, TransactionWithXDR } from "../../../src/model";
 import { Publisher } from "../../../src/pubsub";
 
 import { LedgerHeaderFactory } from "../../../src/model/factories";
 import transactionWithXDRFactory from "../../factories/transaction_with_xdr";
-
-jest.mock("../../../src/pubsub");
 
 const cursor = new Cursor(1);
 const header: LedgerHeader = LedgerHeaderFactory.fromXDR(
@@ -16,26 +16,27 @@ const transactions: TransactionWithXDR[] = [transactionWithXDRFactory.build()];
 const subject = new Worker(cursor);
 
 describe("run", () => {
-  describe("when there is new ledger", () => {
-    beforeEach(async () => {
-      cursor.nextLedger = jest.fn(async (): Promise<ICursorResult> => ({ header, transactions }));
-      await subject.run();
-    });
+  beforeEach(() => {
+    Publisher.publish = sinon.fake();
+  });
 
+  describe("when there is new ledger", () => {
     it("calls Publisher.publish", async () => {
-      expect(Publisher.publish).toHaveBeenCalledWith(header, transactions);
+      cursor.nextLedger = sinon.fake.resolves({ header, transactions });
+
+      await subject.run();
+
+      expect(Publisher.publish).to.have.been.calledWith(header, transactions);
     });
   });
 
   describe("when there is no new ledger", () => {
-    beforeEach(async () => {
-      cursor.nextLedger = jest.fn(async () => null);
-      (Publisher.publish as jest.Mock).mockClear();
-      await subject.run();
-    });
-
     it("doesn't publish anything", async () => {
-      expect(Publisher.publish).not.toHaveBeenCalled();
+      cursor.nextLedger = sinon.fake.returns(null);
+
+      await subject.run();
+
+      expect(Publisher.publish).to.not.have.been.called;
     });
   });
 });

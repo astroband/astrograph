@@ -113,6 +113,6 @@ export class TransactionWithXDRFactory {
     // maxTime equal 0 means that it's not set
     const maxTime = timeBoundsXDR.maxTime().toInt() !== 0 ? new Date(timeBoundsXDR.maxTime() * 1000) : undefined;
 
-    return { minTime, maxTime };
+    return maxTime ? { minTime, maxTime } : { minTime };
   }
 }

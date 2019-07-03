@@ -1,33 +1,53 @@
-import { db } from "../../database";
+import { getRepository } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
-import { Asset, AssetID } from "../../model";
+import { AssetID, Balance } from "../../model";
+import { Asset, TrustLine } from "../../orm/entities";
+import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
 import * as resolvers from "./shared";
 import { makeConnection } from "./util";
 
 const holdersResolver = async (root: Asset, args: any, ctx: IApolloContext, info: any) => {
-  const balances = await db.assets.findHolders(root.toInput(), args);
+  const qb = getRepository(TrustLine).createQueryBuilder("trustlines");
 
-  return makeConnection(balances);
+  qb
+    .where("trustlines.assetCode = :code", { code: root.code })
+    .andWhere("trustlines.issuer = :issuer", { issuer: root.issuer });
+
+  const balances = await paginate<TrustLine>(qb, args, ["balance", "account"], Balance.parsePagingToken);
+
+  return makeConnection<TrustLine>(balances);
 };
 
 export default {
   Asset: {
     issuer: resolvers.account,
     lastModifiedIn: resolvers.ledger,
-    totalSupply: (asset: Asset) => toFloatAmountString(asset.totalSupply),
-    circulatingSupply: (asset: Asset) => toFloatAmountString(asset.circulatingSupply),
+    totalSupply: (asset: Asset) => toFloatAmountString(asset.total_supply),
+    circulatingSupply: (asset: Asset) => toFloatAmountString(asset.circulating_supply),
     balances: holdersResolver
   },
   Query: {
     asset: async (root: any, { id }: { id: AssetID }, ctx: IApolloContext, info: any) => {
-      return db.assets.findByID(id);
+      return getRepository(Asset).findOne(id);
     },
     assets: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const { code, issuer } = args;
-      const records = await db.assets.findAll(code || issuer ? { code, issuer } : {}, args);
+      console.log(Asset, TrustLine);
+      const { code, issuer, ...paging } = args;
 
-      return makeConnection(records);
+      const qb = getRepository(Asset).createQueryBuilder("assets");
+
+      if (code) {
+        qb.andWhere("assets.code = :code", { code });
+      }
+
+      if (issuer) {
+        qb.andWhere("assets.issuer = :issuer", { issuer });
+      }
+
+      const assets = await paginate(qb, paging, "assets.assetid");
+
+      return makeConnection<Asset>(assets);
     }
   }
 };
