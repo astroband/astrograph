@@ -23,7 +23,6 @@ const demoQuery = `{
     sequenceNumber
     balances {
       asset {
-        native
         issuer {
           id
         }

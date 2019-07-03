@@ -9,8 +9,6 @@ export const typeDefs = gql`
   "Represents single [asset](https://www.stellar.org/developers/guides/concepts/assets.html) on Stellar network"
   type Asset {
     id: AssetID!
-    "Whether this asset is [lumens](https://www.stellar.org/developers/guides/concepts/assets.html)"
-    native: Boolean!
     "Asset issuer's account. It's \`null\` for native lumens"
     issuer: Account
     "Asset's code"
