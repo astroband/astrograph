@@ -40,8 +40,8 @@ export const typeDefs = gql`
   extend type Query {
     "Get list of trades"
     trades(
-      baseAsset: AssetInput
-      counterAsset: AssetInput
+      baseAsset: AssetID
+      counterAsset: AssetID
       offerID: Int
       first: Int
       after: String

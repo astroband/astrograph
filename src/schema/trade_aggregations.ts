@@ -26,8 +26,8 @@ export const typeDefs = gql`
   extend type Query {
     "Get collected trade aggregations"
     tradeAggregations(
-      baseAsset: AssetInput!
-      counterAsset: AssetInput!
+      baseAsset: AssetID!
+      counterAsset: AssetID!
       "Lower time boundary represented as millis since epoch"
       startTime: Int
       "Upper time boundary represented as millis since epoch"

@@ -1,9 +1,9 @@
-import { IAssetInput } from "../../../model/asset_input";
+import { AssetID } from "../../../model/asset_id";
 import { PagingParams } from "../../../util/paging";
 import { IHorizonAssetData } from "../../types";
 
 export class HorizonAssetsDataSource {
-  public all(criteria: IAssetInput, pagingParams: PagingParams): IHorizonAssetData[] {
+  public all(criteria: AssetID, pagingParams: PagingParams): IHorizonAssetData[] {
     return [
       {
         asset_type: "credit_alphanum4",

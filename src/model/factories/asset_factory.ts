@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { AccountID, Asset, AssetCode, AssetID, IAssetInput } from "../";
+import { AccountID, Asset, AssetCode, AssetID } from "../";
 import { HorizonAssetType } from "../../datasource/types";
 
 export interface IAssetTableRow {
@@ -36,14 +36,6 @@ export class AssetFactory {
 
   public static fromHorizon(type: HorizonAssetType, code?: string, issuer?: string) {
     return type === "native" ? stellar.Asset.native() : new stellar.Asset(code!, issuer!);
-  }
-
-  public static fromInput(arg: IAssetInput) {
-    if (arg.issuer && arg.code) {
-      return new stellar.Asset(arg.code, arg.issuer);
-    }
-
-    return stellar.Asset.native();
   }
 
   public static fromId(id: string) {

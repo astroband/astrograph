@@ -40,8 +40,8 @@ export const typeDefs = gql`
     mutationTypeIn: [MutationType!]
     idEq: AccountID
     idIn: [AccountID!]
-    buyingAssetEq: AssetInput
-    sellingAssetEq: AssetInput
+    buyingAssetEq: AssetID
+    sellingAssetEq: AssetID
   }
 
   type OfferConnection {

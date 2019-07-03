@@ -1,6 +1,6 @@
 import { IDatabase } from "pg-promise";
 import squel from "squel";
-import { Asset, AssetID, Balance, IAssetInput } from "../model";
+import { Asset, AssetID, Balance } from "../model";
 import { AssetFactory, BalanceFactory, IAssetTableRow } from "../model/factories";
 import { PagingParams, parseCursorPagination, properlyOrdered, SortOrder } from "../util/paging";
 
@@ -40,7 +40,7 @@ export default class AssetsRepo {
     return assetIds.map(id => assets.find(a => a.id === id) || null);
   }
 
-  public async findAll(criteria: IAssetInput, paging: PagingParams) {
+  public async findAll(criteria: any, paging: PagingParams) {
     const { limit, cursor, order } = parseCursorPagination(paging);
     // We skip lumens here for the sake of consistent pagination
     // they have `native` as an id and pagination token so it will
@@ -76,7 +76,7 @@ export default class AssetsRepo {
     return properlyOrdered(assets, paging);
   }
 
-  public async findHolders(asset: IAssetInput, paging: PagingParams) {
+  public async findHolders(asset: any, paging: PagingParams) {
     const { limit, cursor, order } = parseCursorPagination(paging);
     const ascending = order === SortOrder.ASC;
 

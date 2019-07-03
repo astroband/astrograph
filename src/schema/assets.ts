@@ -45,11 +45,6 @@ export const typeDefs = gql`
     node: Asset
   }
 
-  input AssetInput {
-    code: AssetCode
-    issuer: AccountID
-  }
-
   type Query {
     "Get single asset"
     asset(id: AssetID): Asset

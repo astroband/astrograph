@@ -1,4 +1,4 @@
-import { AccountID, IAssetInput } from "../../model";
+import { AccountID, AssetID } from "../../model";
 import { AssetFactory } from "../../model/factories";
 import { PagingParams, parseCursorPagination, properlyOrdered } from "../../util/paging";
 import { IHorizonTradeAggregationData, IHorizonTradeData } from "../types";
@@ -7,8 +7,8 @@ import { BaseHorizonDataSource } from "./base";
 export class HorizonTradesDataSource extends BaseHorizonDataSource {
   public async all(
     pagingParams: PagingParams,
-    baseAssetInput?: IAssetInput,
-    counterAssetInput?: IAssetInput,
+    baseAssetID?: AssetID,
+    counterAssetID?: AssetID,
     offerID?: number
   ): Promise<IHorizonTradeData[]> {
     const params: any = {
@@ -17,15 +17,15 @@ export class HorizonTradesDataSource extends BaseHorizonDataSource {
       cacheTtl: 60 * 15
     };
 
-    if (baseAssetInput) {
-      const baseAsset = AssetFactory.fromInput(baseAssetInput);
+    if (baseAssetID) {
+      const baseAsset = AssetFactory.fromId(baseAssetID);
       params.base_asset_type = baseAsset.getAssetType();
       params.base_asset_code = baseAsset.getCode();
       params.base_asset_issuer = baseAsset.getIssuer();
     }
 
-    if (counterAssetInput) {
-      const counterAsset = AssetFactory.fromInput(counterAssetInput);
+    if (counterAssetID) {
+      const counterAsset = AssetFactory.fromId(counterAssetID);
       params.counter_asset_type = counterAsset.getAssetType();
       params.counter_asset_code = counterAsset.getCode();
       params.counter_asset_issuer = counterAsset.getIssuer();
@@ -55,15 +55,15 @@ export class HorizonTradesDataSource extends BaseHorizonDataSource {
   }
 
   public async aggregations(
-    baseAssetInput: IAssetInput,
-    counterAssetInput: IAssetInput,
+    baseAssetID: AssetID,
+    counterAssetID: AssetID,
     startTime: number,
     endTime: number,
     resolution: number,
     pagingParams: PagingParams
   ): Promise<IHorizonTradeAggregationData[]> {
-    const baseAsset = AssetFactory.fromInput(baseAssetInput);
-    const counterAsset = AssetFactory.fromInput(counterAssetInput);
+    const baseAsset = AssetFactory.fromId(baseAssetID);
+    const counterAsset = AssetFactory.fromId(counterAssetID);
 
     return this.request("trade_aggregations", {
       base_asset_type: baseAsset.getAssetType(),
