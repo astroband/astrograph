@@ -6,6 +6,11 @@ import { PagingParams, parseCursorPagination, properlyOrdered, SortOrder } from 
 
 const TABLE_NAME = "assets";
 
+interface IAssetCriteria {
+  code?: string;
+  issuer?: string;
+}
+
 export default class AssetsRepo {
   private db: IDatabase<any>;
 
@@ -40,7 +45,7 @@ export default class AssetsRepo {
     return assetIds.map(id => assets.find(a => a.id === id) || null);
   }
 
-  public async findAll(criteria: any, paging: PagingParams) {
+  public async findAll(criteria: IAssetCriteria, paging: PagingParams) {
     const { limit, cursor, order } = parseCursorPagination(paging);
     // We skip lumens here for the sake of consistent pagination
     // they have `native` as an id and pagination token so it will
@@ -76,7 +81,7 @@ export default class AssetsRepo {
     return properlyOrdered(assets, paging);
   }
 
-  public async findHolders(asset: any, paging: PagingParams) {
+  public async findHolders(asset: IAssetCriteria, paging: PagingParams) {
     const { limit, cursor, order } = parseCursorPagination(paging);
     const ascending = order === SortOrder.ASC;
 
