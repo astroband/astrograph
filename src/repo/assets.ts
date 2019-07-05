@@ -81,9 +81,13 @@ export default class AssetsRepo {
     return properlyOrdered(assets, paging);
   }
 
-  public async findHolders(asset: IAssetCriteria, paging: PagingParams) {
+  public async findHolders(asset: Asset, paging: PagingParams) {
     const { limit, cursor, order } = parseCursorPagination(paging);
     const ascending = order === SortOrder.ASC;
+
+    if (asset.native) {
+      throw new Error("You can not find native asset in the database");
+    }
 
     const queryBuilder = squel
       .select()
