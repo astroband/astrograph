@@ -5,7 +5,6 @@ export * from "./asset_factory";
 export * from "./balance_factory";
 export * from "./balance_values_factory";
 export * from "./data_entry_values_factory";
-export * from "./ledger_header_factory";
 export * from "./offer_values_factory";
 export * from "./operation_factory";
 export * from "./signer_factory";

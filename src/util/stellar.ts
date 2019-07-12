@@ -1,7 +1,8 @@
 import BigNumber from "bignumber.js";
 import { Network } from "stellar-base";
-import { db } from "../database";
+import { getCustomRepository } from "typeorm";
 import { Ledger } from "../model";
+import { LedgerHeaderRepository } from "../orm/repository/ledger_header";
 import { LEDGER_CREATED, pubsub } from "../pubsub";
 import { setBaseReserve } from "./base_reserve";
 import { STELLAR_NETWORK } from "./secrets";
@@ -33,7 +34,12 @@ export function toFloat(amount: string | number | BigNumber): BigNumber {
 }
 
 export async function updateBaseReserve(): Promise<number> {
-  const lastLedgerHeader = await db.ledgerHeaders.getLastLedgerHeader();
+  const lastLedgerHeader = await getCustomRepository(LedgerHeaderRepository).findLast();
+
+  if (!lastLedgerHeader) {
+    throw new Error("No ledgers in the database!");
+  }
+
   setBaseReserve(lastLedgerHeader.baseReserve);
   return lastLedgerHeader.baseReserve;
 }

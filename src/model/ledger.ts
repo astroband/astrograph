@@ -1,4 +1,4 @@
-import { LedgerHeader } from "./";
+import { LedgerHeader } from "../orm/entities";
 
 export class Ledger {
   constructor(public readonly seq: number, public readonly header?: LedgerHeader) {}

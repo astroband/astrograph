@@ -36,3 +36,12 @@ export const AssetTransformer = {
     return xdr.Asset.toXDR(assetXDRObject).toString("base64");
   }
 };
+
+export const DateTransformer = {
+  from: (value: number) => {
+    return new Date(value * 1000);
+  },
+  to: (value: Date) => {
+    return Math.round(value.getTime() / 1000);
+  }
+};
