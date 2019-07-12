@@ -1,5 +1,5 @@
 import { createConnection } from "typeorm";
-import { Account, AccountData, Offer, TrustLine } from "../orm/entities";
+import { Account, AccountData, LedgerHeader, Offer, TrustLine } from "../orm/entities";
 import * as secrets from "../util/secrets";
 
 export async function initDatabase() {
@@ -10,7 +10,7 @@ export async function initDatabase() {
     username: secrets.DBUSER,
     password: secrets.DBPASSWORD,
     database: secrets.DB,
-    entities: [Account, AccountData, Offer, TrustLine],
+    entities: [Account, AccountData, LedgerHeader, Offer, TrustLine],
     synchronize: false,
     logging: process.env.DEBUG_SQL !== undefined
   });

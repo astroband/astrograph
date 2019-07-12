@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js";
+import { getCustomRepository } from "typeorm";
 import { Ledger } from "../model";
+import { LedgerHeaderRepository } from "../orm/repository/ledger_header";
 import { LEDGER_CREATED, pubsub } from "../pubsub";
 import { setBaseReserve } from "./base_reserve";
 
@@ -19,6 +21,17 @@ export function toFloat(amount: string | number | BigNumber): BigNumber {
 
 export function toInt(amount: string | number | BigNumber): BigNumber {
   return new BigNumber(amount).times(new BigNumber("1e" + STELLAR_AMOUNT_PRECISION));
+}
+
+export async function updateBaseReserve(): Promise<number> {
+  const lastLedgerHeader = await getCustomRepository(LedgerHeaderRepository).findLast();
+
+  if (!lastLedgerHeader) {
+    throw new Error("No ledgers in the database!");
+  }
+
+  setBaseReserve(lastLedgerHeader.baseReserve);
+  return lastLedgerHeader.baseReserve;
 }
 
 export function listenBaseReserveChange(): void {
