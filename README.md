@@ -33,6 +33,33 @@ $ yarn run prod               # for live setup
 $ yarn ts-node src/ingestd.ts # live ingesting for subscriptions
 ``` 
 
+Create assets view in database:
+
+```
+CREATE VIEW assets AS
+( SELECT (t.assetcode::text || '-'::text) || t.issuer::text AS assetid,
+    t.assetcode AS code,
+    t.issuer,
+    sum(t.balance) AS total_supply,
+    sum(t.balance) FILTER (WHERE t.flags = 1) AS circulating_supply,
+    count(t.accountid) AS holders_count,
+    count(t.accountid) FILTER (WHERE t.flags = 0) AS unauthorized_holders_count,
+    max(t.lastmodified) AS last_activity
+   FROM trustlines t
+  GROUP BY t.issuer, t.assetcode
+  ORDER BY (count(t.accountid)) DESC)
+UNION
+ SELECT 'native'::text AS assetid,
+    'XLM'::character varying AS code,
+    NULL::character varying AS issuer,
+    sum(accounts.balance) AS total_supply,
+    sum(accounts.balance) AS circulating_supply,
+    count(*) AS holders_count,
+    0 AS unauthorized_holders_count,
+    max(accounts.lastmodified) AS last_activity
+   FROM accounts;
+```
+
 ## Configure
 
 Here is the list of available settings:
@@ -97,8 +124,8 @@ query {
     sequenceNumber
     balances {
       asset {
+        id
         code
-        native
         issuer { id }
       }
       balance
@@ -144,8 +171,6 @@ query {
   }
 }
 ```
-
-*NOTE*: Please note that native balance is returned inside a trustline too, and is marked with the boolean flag.
 
 ## Subscriptions
 
@@ -199,9 +224,9 @@ subscription {
     account { id }
     values {
       asset {
+        id
         code
         issuer { id }
-        native
       }
       balance
     }

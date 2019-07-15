@@ -14,7 +14,7 @@ const pgClient = new Client(db.$cn as string);
 
 export const pubsub = new PostgresPubSub(pgClient, (key: string, value: any) => {
   if (value && value.hasOwnProperty("code")) {
-    return AssetFactory.fromInput(value);
+    return AssetFactory.fromId(value);
   }
 
   return value;

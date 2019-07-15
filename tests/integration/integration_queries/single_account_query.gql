@@ -6,7 +6,6 @@
       }
       asset {
         code
-        native
         issuer { id }
       }
     }

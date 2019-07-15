@@ -25,8 +25,8 @@ const offerMatches = (variables: any, payload: any): boolean => {
     return false;
   }
 
-  const selling = sellingAssetEq ? AssetFactory.fromInput(sellingAssetEq) : undefined;
-  const buying = buyingAssetEq ? AssetFactory.fromInput(buyingAssetEq) : undefined;
+  const selling = sellingAssetEq ? AssetFactory.fromId(sellingAssetEq) : undefined;
+  const buying = buyingAssetEq ? AssetFactory.fromId(buyingAssetEq) : undefined;
 
   if ((selling || buying) && payload.mutationType === MutationType.Remove) {
     return false;

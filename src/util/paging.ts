@@ -29,7 +29,7 @@ export function parseCursorPagination(args: PagingParams) {
   const { first, after, last, before } = args;
 
   if (!first && !last) {
-    throw new Error("Missing paging parameters");
+    throw new Error("Missing paging parameters, specify first: or last:");
   }
 
   return {
