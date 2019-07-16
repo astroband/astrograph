@@ -1,4 +1,4 @@
-import init from "./init";
+import { initGraphqlServer as init } from "./init";
 
 import * as Sentry from "@sentry/node";
 

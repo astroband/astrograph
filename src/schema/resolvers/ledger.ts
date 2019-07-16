@@ -1,9 +1,9 @@
 import { getRepository, In } from "typeorm";
 import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
-import { LedgerHeader } from "../../orm/entities";
 import { Ledger, Operation, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { LedgerHeader } from "../../orm/entities";
 import { LEDGER_CREATED, pubsub } from "../../pubsub";
 import { createBatchResolver, makeConnection } from "./util";
 

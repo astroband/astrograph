@@ -1,10 +1,10 @@
 import PostgresPubSub from "@udia/graphql-postgres-subscriptions";
 import { Client } from "pg";
+import stellar from "stellar-base";
 import { getCustomRepository } from "typeorm";
 import { db } from "./database";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger, OfferSubscriptionPayload, TransactionWithXDR } from "./model";
-import { AssetFactory } from "./model/factories/asset_factory";
 import { LedgerHeader } from "./orm/entities";
 import { OfferRepository } from "./orm/repository/offer";
 import extractOperation from "./util/extract_operation";
@@ -14,7 +14,7 @@ const pgClient = new Client(db.$cn as string);
 
 export const pubsub = new PostgresPubSub(pgClient, (key: string, value: any) => {
   if (value && value.hasOwnProperty("code")) {
-    return AssetFactory.fromId(value);
+    return value.code && value.issuer ? new stellar.Asset(value.code, value.issuer) : stellar.Asset.native();
   }
 
   return value;

@@ -1,4 +1,5 @@
 import { getCustomRepository } from "typeorm";
+// import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError"
 import { db } from "../database";
 import { TransactionWithXDR } from "../model";
 import { LedgerHeader } from "../orm/entities";
@@ -14,6 +15,7 @@ export class Cursor {
   public static async build(seq?: number) {
     const ledgerHeadersRepo = getCustomRepository(LedgerHeaderRepository);
     const n = seq === -1 ? await ledgerHeadersRepo.findMinSeq() : seq || (await ledgerHeadersRepo.findMaxSeq()) + 1;
+
     return new Cursor(n);
   }
 

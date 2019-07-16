@@ -17,22 +17,12 @@ export class LedgerHeaderRepository extends Repository<LedgerHeader> {
   }
 
   public async findMinSeq() {
-    const qb = this.createQueryBuilder();
-    const row = await qb
-      .select("ledgerSeq")
-      .orderBy("ledgerSeq", "ASC")
-      .getRawOne();
-
-    return row.ledgerSeq;
+    const header = await this.findOneOrFail({ order: { ledgerSeq: "ASC" } });
+    return header.ledgerSeq;
   }
 
   public async findMaxSeq() {
-    const qb = this.createQueryBuilder();
-    const row = await qb
-      .select("ledgerSeq")
-      .orderBy("ledgerSeq", "DESC")
-      .getRawOne();
-
-    return row.ledgerSeq;
+    const header = await this.findOneOrFail({ order: { ledgerSeq: "DESC" } });
+    return header.ledgerSeq;
   }
 }
