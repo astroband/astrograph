@@ -1,9 +1,5 @@
-import { getCustomRepository } from "typeorm";
-// import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError"
 import { db } from "../database";
-import { TransactionWithXDR } from "../model";
-import { LedgerHeader } from "../orm/entities";
-import { LedgerHeaderRepository } from "../orm/repository/ledger_header";
+import { LedgerHeader, TransactionWithXDR } from "../model";
 
 export interface ICursorResult {
   header: LedgerHeader;
@@ -13,9 +9,8 @@ export interface ICursorResult {
 // Walks through ledgers in ledgerheaders table.
 export class Cursor {
   public static async build(seq?: number) {
-    const ledgerHeadersRepo = getCustomRepository(LedgerHeaderRepository);
-    const n = seq === -1 ? await ledgerHeadersRepo.findMinSeq() : seq || (await ledgerHeadersRepo.findMaxSeq()) + 1;
-
+    const dbh = db.ledgerHeaders;
+    const n = seq === -1 ? await dbh.findMinSeq() : seq || (await dbh.findMaxSeq()) + 1;
     return new Cursor(n);
   }
 
@@ -27,12 +22,11 @@ export class Cursor {
 
   // Returns next ledger object and transactions
   public async nextLedger(): Promise<ICursorResult | null> {
-    const ledgerHeadersRepo = getCustomRepository(LedgerHeaderRepository);
-    const header = await ledgerHeadersRepo.findBySeq(this.seq);
+    const header = await db.ledgerHeaders.findBySeq(this.seq);
 
     // If there is no next ledger
     if (header == null) {
-      const maxSeq = await ledgerHeadersRepo.findMaxSeq();
+      const maxSeq = await db.ledgerHeaders.findMaxSeq();
 
       // And there is a ledger somewhere forward in history (it is the gap)
       if (this.seq < maxSeq) {
