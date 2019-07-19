@@ -9,7 +9,7 @@ export async function initDatabase() {
     username: secrets.DBUSER,
     password: secrets.DBPASSWORD,
     database: secrets.DB,
-    entities: ["./src/orm/entities/*.ts"],
+    entities: [secrets.TYPEORM_ENTITIES],
     synchronize: false,
     logging: process.env.DEBUG_SQL !== undefined
   });

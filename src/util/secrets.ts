@@ -26,3 +26,5 @@ export const INGEST_INTERVAL = Number.parseInt(process.env.INGEST_INTERVAL || ""
 
 export const STELLAR_NETWORK = process.env.STELLAR_NETWORK || "pubnet";
 export const SENTRY_DSN = process.env.SENTRY_DSN;
+
+export const TYPEORM_ENTITIES = process.env.TYPEORM_ENTITIES || "";
