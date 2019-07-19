@@ -20,7 +20,7 @@ export const typeDefs = gql`
     findPaymentPaths(
       "The sender’s account id. Any returned path must use a source that the sender can hold"
       sourceAccountID: AccountID!
-      destinationAsset: AssetCode!
+      destinationAsset: AssetID!
       destinationAmount: String!
     ): [PaymentPath!]
   }
