@@ -22,13 +22,6 @@ export class PathFinder {
     // the lowest cost so far for a path going from an asset to `destAsset`
     const lowestCost = new Map<AssetID, BigNumber>();
 
-    // take a short-cut if `destAssset` is one of the target assets,
-    // and add a direct path already from the start
-    if (sourceAssets.includes(destAsset)) {
-      this.result[destAsset] = { amountNeeded: destAmount, path: [] };
-      lowestCost.set(destAsset, destAmount);
-    }
-
     const find = (nextAsset: AssetID, amountIn: BigNumber, currentPath: AssetID[] = []) => {
       if (currentPath.includes(nextAsset) || currentPath.length - 1 > maxPathLength) {
         return;
