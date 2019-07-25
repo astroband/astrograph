@@ -15,6 +15,7 @@ COPY --chown=node:node . .
 
 RUN yarn build
 
+# ================================================================================================
 
 FROM node:10-alpine
 ENV NODE_ENV=production
