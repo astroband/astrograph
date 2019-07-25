@@ -17,6 +17,10 @@ export function toFloat(amount: string | number | BigNumber): BigNumber {
   return new BigNumber(amount).div(new BigNumber("1e" + STELLAR_AMOUNT_PRECISION));
 }
 
+export function toInt(amount: string | number | BigNumber): BigNumber {
+  return new BigNumber(amount).times(new BigNumber("1e" + STELLAR_AMOUNT_PRECISION));
+}
+
 export function listenBaseReserveChange(): void {
   pubsub.subscribe(LEDGER_CREATED, (ledger: Ledger) => {
     if (!ledger.header) {

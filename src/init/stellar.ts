@@ -1,6 +1,5 @@
 import { Network } from "stellar-base";
-import { getCustomRepository } from "typeorm";
-import { LedgerHeaderRepository } from "../orm/repository/ledger_header";
+import { db } from "../database";
 import { setBaseReserve } from "../util/base_reserve";
 import { STELLAR_NETWORK } from "../util/secrets";
 
@@ -17,12 +16,7 @@ export function setStellarNetwork(): Promise<string> {
 }
 
 export async function updateBaseReserve(): Promise<number> {
-  const lastLedgerHeader = await getCustomRepository(LedgerHeaderRepository).findLast();
-
-  if (!lastLedgerHeader) {
-    throw new Error("No ledgers in the database!");
-  }
-
+  const lastLedgerHeader = await db.ledgerHeaders.getLastLedgerHeader();
   setBaseReserve(lastLedgerHeader.baseReserve);
   return lastLedgerHeader.baseReserve;
 }
