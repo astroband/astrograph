@@ -64,7 +64,7 @@ UNION
 
 Here is the list of available settings:
 
-* `STELLAR_NETWORK` – which Stellar network to use ("pubnet" or "testnet", "pubnet" by default)
+* `STELLAR_NETWORK` – which Stellar network to use. You can use "pubnet"(default) or "testnet" shortcuts, any other value will be used as a network passphrase
 * `DB` – stellar-core database name ("stellar" by default)
 * `DBPORT` – database port to connect to (5432 by default)
 * `DBHOST` – database host to connect to

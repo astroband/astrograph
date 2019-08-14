@@ -15,7 +15,7 @@ export async function initGraphqlServer() {
   return initSentry()
     .then(() => logger.info("Setting Stellar network..."))
     .then(setStellarNetwork)
-    .then(network => logger.info(`Astrograph will use ${network}`))
+    .then(network => logger.info(`Astrograph will use the network with passphrase "${network}"`))
     .then(() => logger.info("Connecting to the database..."))
     .then(initDatabase)
     .then(() => logger.info("Updating base reserve value..."))
