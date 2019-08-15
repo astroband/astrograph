@@ -65,6 +65,7 @@ UNION
 Here is the list of available settings:
 
 * `STELLAR_NETWORK` – which Stellar network to use. You can use "pubnet"(default) or "testnet" shortcuts, any other value will be used as a network passphrase
+* `HORIZON_ENDPOINT` - Horizon API endpoint. By default `horizon.stellar.org` and `horizon-testnet.stellar.org` are used for pubnet and testnet correspondingly. This option is required for private networks.
 * `DB` – stellar-core database name ("stellar" by default)
 * `DBPORT` – database port to connect to (5432 by default)
 * `DBHOST` – database host to connect to
