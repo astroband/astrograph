@@ -1,0 +1,39 @@
+version: 2.1
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - build:
+          context: astrograph
+          filters:
+            branches:
+              only:
+                - master
+                - es-refresh
+
+jobs:
+  build:
+    docker:
+      - image: docker:18.09.8
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      # Login to Docker
+      - run:
+          name: Login to docker
+          command: |
+            echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_LOGIN --password-stdin
+
+      # build the application image
+      - run:
+          name: Build docker image
+          command: |
+            docker build -t astroband/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}-${CIRCLE_SHA1} .
+
+      # deploy the image
+      - run:
+          name: Push image to DockerHub
+          command: |
+            docker push astroband/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
