@@ -9,7 +9,8 @@ export function setStellarNetwork(): Promise<string> {
   } else if (STELLAR_NETWORK === "testnet") {
     Network.useTestNetwork();
   } else {
-    throw new Error(`Unknown STELLAR_NETWORK "${STELLAR_NETWORK}"`);
+    const network = new Network(STELLAR_NETWORK);
+    Network.use(network);
   }
 
   return Promise.resolve(Network.current().networkPassphrase());

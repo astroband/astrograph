@@ -1,10 +1,18 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 import { SortOrder } from "../../util/paging";
+import { HORIZON_ENDPOINT, STELLAR_NETWORK } from "../../util/secrets";
 
 export abstract class BaseHorizonDataSource extends RESTDataSource {
   constructor() {
     super();
-    this.baseURL = "https://horizon.stellar.org/";
+
+    if (HORIZON_ENDPOINT) {
+      this.baseURL = HORIZON_ENDPOINT;
+    } else if (STELLAR_NETWORK === "pubnet") {
+      this.baseURL = "https://horizon.stellar.org/";
+    } else if (STELLAR_NETWORK === "testnet") {
+      this.baseURL = "https://horizon-testnet.stellar.org/";
+    }
   }
 
   protected async request(
