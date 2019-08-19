@@ -1,15 +1,11 @@
 import { createConnection } from "typeorm";
 import { Account, AccountData, Offer, TrustLine } from "../orm/entities";
-import * as secrets from "../util/secrets";
+import { DATABASE_URL } from "../util/secrets";
 
 export async function initDatabase() {
   return createConnection({
     type: "postgres",
-    host: secrets.DBHOST,
-    port: secrets.DBPORT,
-    username: secrets.DBUSER,
-    password: secrets.DBPASSWORD,
-    database: secrets.DB,
+    url: DATABASE_URL,
     entities: [Account, AccountData, Offer, TrustLine],
     synchronize: false,
     logging: process.env.DEBUG_SQL !== undefined

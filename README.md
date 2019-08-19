@@ -66,11 +66,7 @@ Here is the list of available settings:
 
 * `STELLAR_NETWORK` – which Stellar network to use. You can use "pubnet"(default) or "testnet" shortcuts, any other value will be used as a network passphrase
 * `HORIZON_ENDPOINT` - Horizon API endpoint. By default `horizon.stellar.org` and `horizon-testnet.stellar.org` are used for pubnet and testnet correspondingly. This option is required for private networks.
-* `DB` – stellar-core database name ("stellar" by default)
-* `DBPORT` – database port to connect to (5432 by default)
-* `DBHOST` – database host to connect to
-* `DBUSER` – database user to connect with ("stellar" by default)
-* `DBPASSWORD` – password to access the database (no password by default)
+* `DATABASE_URL` – database connection URL
 * `PORT` - port (4000 by default)
 * `BIND_ADDRESS` - address to bind ("0.0.0.0" by default)
 * `INGEST_INTERVAL` – database polling interval in milliseconds (2000 by default)

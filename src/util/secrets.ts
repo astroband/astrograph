@@ -12,11 +12,7 @@ if (fs.existsSync(envFile)) {
   throw new Error("No .env file found for the test environment. Create `.env.test` file with necessary settings");
 }
 
-export const DB = process.env.DB || "stellar";
-export const DBPORT = Number.parseInt(process.env.DBPORT || "5432", 10);
-export const DBHOST = process.env.DBHOST;
-export const DBUSER = process.env.DBUSER || "stellar";
-export const DBPASSWORD = process.env.DBPASSWORD || "";
+export const DATABASE_URL = process.env.DATABASE_URL || "";
 
 export const PORT = Number.parseInt(process.env.PORT || "4000", 10);
 export const BIND_ADDRESS = process.env.BIND_ADDRESS || "0.0.0.0";
