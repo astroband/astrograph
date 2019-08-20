@@ -7,7 +7,6 @@ export async function initDatabase() {
 
   const connectionString = (queryStart !== -1) ?  DATABASE_URL.slice(0, queryStart) : DATABASE_URL;
 
-  console.log(connectionString);
   return createConnection({
     type: "postgres",
     url: connectionString,
