@@ -6,14 +6,15 @@ image:
   pullPolicy: IfNotPresent
 
 database:
-  fromSecret:
-    name: astrologer-credentials
-    key: database-url
+  url: postgres://localhost/stellar
+  # fromSecret:
+  #   name: credentials
+  #   key: database-url
 es:
-  fromSecret:
-    name: astrologer-credentials
-    key: es-url
-
+  url: https://localhost:9200
+  # fromSecret:
+  #   name: credentials
+  #   key: es-url
 service:
   type: NodePort
   port: 4000
