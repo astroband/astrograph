@@ -25,6 +25,14 @@ spec:
             {{- include "astrograph.env" . | indent 12 }}
           ports:
             - containerPort: {{ .Values.service.port }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.port }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.port }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -37,11 +45,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      readinessProbe:
-        httpGet:
-          path: /
-          port: {{ .Values.service.port }}
-      livenessProbe:
-        httpGet:
-          path: /
-          port: {{ .Values.service.port }}
