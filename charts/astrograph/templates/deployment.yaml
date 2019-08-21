@@ -21,12 +21,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command: ['node', './graphql_server.js']
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
           env:
             {{- include "astrograph.env" . | indent 12 }}
           ports:
-            - containerPort: "{{ .Values.service.port }}"
+            - containerPort: {{ .Values.service.port }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
