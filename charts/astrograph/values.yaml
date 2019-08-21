@@ -1,46 +1,19 @@
-# Default values for astrograph.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: stable
+  repository: astroband/astrograph
+  tag: master-79a3dd6e3200903aa4503c9b5bc19a95ab16b774
   pullPolicy: IfNotPresent
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+database:
+  fromSecret:
+    name: astrologer-credentials
+    key: database-url
+es:
+  fromSecret:
+    name: astrologer-credentials
+    key: es-url
 
 service:
-  type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths: []
-
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+  type: NodePort
+  port: 4000

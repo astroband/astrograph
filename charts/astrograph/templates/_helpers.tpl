@@ -43,3 +43,27 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
+
+{{- define "astrograph.env" -}}
+{{- with .Values.database.fromSecret }}
+- name: DATABASE_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ required "name of database.fromSecret is required" .name | quote }}
+      key: {{ required "key of database.fromSecret is required" .key | quote }}
+{{- else }}
+- name: DATABASE_URL
+  value: {{ .Values.database.url | quote }}
+{{- end }}
+
+{{- with .Values.es.fromSecret }}
+- name: ELASTIC_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ required "name of es.fromSecret is required" .name | quote }}
+      key: {{ required "key of es.fromSecret is required" .key | quote }}
+{{- else }}
+- name: ES_URL
+  value: {{ .Values.es.url | quote }}
+{{- end }}
+{{- end }}

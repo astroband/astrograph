@@ -1,6 +1,6 @@
 apiVersion: v1
 appVersion: "1.0"
-description: Astrograph is a tool which facilitates interaction with Stellar network
+description: Astrograph is GraphQL server for Stellar network
 name: astrograph
 version: 0.1.0
 keywords:
