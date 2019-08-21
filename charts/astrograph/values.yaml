@@ -18,3 +18,6 @@ es:
 service:
   type: NodePort
   port: 4000
+
+ingress:
+  enabled: false
