@@ -21,3 +21,4 @@ service:
 
 ingress:
   enabled: false
+  host: example.com
