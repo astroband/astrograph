@@ -26,14 +26,12 @@ spec:
           ports:
             - containerPort: {{ .Values.service.port }}
           readinessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: {{ .Values.service.port }}
             initialDelaySeconds: 20
             timeoutSeconds: 3
           livenessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: {{ .Values.service.port }}
             initialDelaySeconds: 20
             timeoutSeconds: 3
