@@ -16,5 +16,5 @@ spec:
           - path: /
             backend:
               serviceName: {{ $fullName }}
-              servicePort: {{ .Values.service.port }}
+              servicePort: 80
 {{- end }}
