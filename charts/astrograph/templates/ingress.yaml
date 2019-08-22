@@ -19,8 +19,8 @@ spec:
             backend:
               serviceName: {{ $fullName }}
               servicePort: 80
-      tls:
-        - hosts:
-          - {{ .Values.ingress.host | quote }}
-          secretName: {{ $fullName }}-tls
+  tls:
+    - hosts:
+      - {{ .Values.ingress.host | quote }}
+      secretName: {{ $fullName }}-tls
 {{- end }}
