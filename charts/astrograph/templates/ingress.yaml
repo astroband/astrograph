@@ -19,4 +19,8 @@ spec:
             backend:
               serviceName: {{ $fullName }}
               servicePort: 80
+      tls:
+        - hosts:
+          - ingress-test.gc.astrograph.io
+          secretName: nginx-tls
 {{- end }}
