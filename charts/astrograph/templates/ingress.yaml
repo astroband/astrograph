@@ -22,5 +22,5 @@ spec:
       tls:
         - hosts:
           - {{ .Values.ingress.host | quote }}
-          secretName: nginx-tls
+          secretName: {{ $fullName }}-tls
 {{- end }}
