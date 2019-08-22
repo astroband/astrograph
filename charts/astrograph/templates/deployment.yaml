@@ -29,10 +29,14 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.service.port }}
+            initialDelaySeconds: 20
+            timeoutSeconds: 3
           livenessProbe:
             httpGet:
               path: /
               port: {{ .Values.service.port }}
+            initialDelaySeconds: 20
+            timeoutSeconds: 3
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
