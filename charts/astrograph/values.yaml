@@ -16,6 +16,7 @@ es:
   #   name: credentials
   #   key: es-url
 service:
+  type: NodePort
   port: 4000
 
 ingress:

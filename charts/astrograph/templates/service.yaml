@@ -5,6 +5,7 @@ metadata:
   labels:
 {{ include "astrograph.labels" . | indent 4 }}
 spec:
+  type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: http
