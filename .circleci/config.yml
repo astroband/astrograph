@@ -10,7 +10,7 @@ workflows:
             branches:
               only:
                 - master
-                - es-refresh
+                - elastic
 
 jobs:
   build:
