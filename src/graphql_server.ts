@@ -1,4 +1,4 @@
-import init from "./init";
+import { initGraphqlServer as init } from "./init";
 
 import * as Sentry from "@sentry/node";
 
@@ -18,7 +18,6 @@ const demoQuery = `{
     sequenceNumber
     balances {
       asset {
-        native
         issuer {
           id
         }
@@ -68,13 +67,7 @@ init().then(() => {
     },
     formatError: (error: GraphQLError) => {
       logger.error(error);
-
-      const errorsNotToReport = ["UserInputError", "ValidationError"];
-      const errorName = error.originalError ? error.originalError.constructor.name : error.constructor.name;
-
-      if (!error.originalError || !errorsNotToReport.includes(errorName)) {
-        Sentry.captureException(error);
-      }
+      reportToSentry(error);
 
       return new GraphQLError(
         error.message,
@@ -92,3 +85,14 @@ init().then(() => {
     logger.info(`🚀 Server ready at ${url}`);
   });
 });
+
+function reportToSentry(error: GraphQLError): void {
+  const errorCodesToIgnore = ["BAD_USER_INPUT", "GRAPHQL_VALIDATION_FAILED"];
+  const errorCode = error.extensions ? error.extensions.code : null;
+
+  if (errorCode && errorCodesToIgnore.includes(errorCode)) {
+    return;
+  }
+
+  Sentry.captureException(error);
+}

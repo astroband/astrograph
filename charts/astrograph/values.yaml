@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  repository: astroband/astrograph
+  tag: master-79a3dd6e3200903aa4503c9b5bc19a95ab16b774
+  pullPolicy: IfNotPresent
+
+database:
+  url: postgres://localhost/stellar
+  # fromSecret:
+  #   name: credentials
+  #   key: database-url
+es:
+  url: https://localhost:9200
+  # fromSecret:
+  #   name: credentials
+  #   key: es-url
+service:
+  port: 4000
+
+ingress:
+  enabled: false
+  host: example.com

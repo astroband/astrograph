@@ -1,3 +1,4 @@
+import { db } from "../../../src/database";
 import { Cursor, ICursorResult } from "../../../src/ingest/cursor";
 import { LedgerHeader, TransactionWithXDR } from "../../../src/model";
 import { LedgerHeaderFactory } from "../../../src/model/factories";

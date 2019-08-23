@@ -6,7 +6,7 @@ import * as resolvers from "./shared";
 import { makeConnection } from "./util";
 
 const holdersResolver = async (root: Asset, args: any, ctx: IApolloContext, info: any) => {
-  const balances = await db.assets.findHolders(root.toInput(), args);
+  const balances = await db.assets.findHolders(root, args);
 
   return makeConnection(balances);
 };

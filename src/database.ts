@@ -5,7 +5,7 @@ import { IDatabase, IMain, IOptions } from "pg-promise";
 // Loading and initializing pg-promise:
 import pgPromise = require("pg-promise");
 
-import * as secrets from "./util/secrets";
+import { DATABASE_URL } from "./util/secrets";
 
 import AssetsRepo from "./repo/assets";
 import LedgerHeadersRepo from "./repo/ledger_headers";
@@ -37,18 +37,10 @@ const initOptions: IOptions<IExtensions> = {
   }
 };
 
-const config = {
-  host: secrets.DBHOST,
-  port: secrets.DBPORT,
-  database: secrets.DB,
-  user: secrets.DBUSER,
-  password: secrets.DBPASSWORD
-};
-
 const pgp: IMain = pgPromise(initOptions);
 
 // Create the database instance with extensions:
-const db = pgp(config) as IDatabase<IExtensions> & IExtensions & IMain;
+const db = pgp(DATABASE_URL) as IDatabase<IExtensions> & IExtensions & IMain;
 
 // Load and initialize optional diagnostics:
 import diagnostics = require("./util/db/diagnostics");

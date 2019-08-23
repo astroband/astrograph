@@ -9,7 +9,6 @@ Object {
         "issuer": Object {
           "id": "GBTVGCI5OYBGDMCNKYFVSETXK6TTOQ4DRJBAC5K2PUUNSVB24PPSQ26Q",
         },
-        "native": false,
       },
     ],
   },
@@ -51,8 +50,7 @@ Object {
         },
         "asset": Object {
           "code": "XLM",
-          "issuer": null,
-          "native": true,
+          "issuer": null
         },
       },
     ],

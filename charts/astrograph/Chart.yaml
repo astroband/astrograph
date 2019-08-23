@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: "1.0"
+description: Astrograph is GraphQL server for Stellar network
+name: astrograph
+version: 0.1.0
+keywords:
+- stellar
+- blockchain
+home: http://astrograph.io/
+sources:
+- https://github.com/astroband/astrograph
+maintainers:
+- name: Astroband
+  email: astrograph@evilmartians.io
+engine: gotpl

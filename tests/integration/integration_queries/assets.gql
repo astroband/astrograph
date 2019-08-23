@@ -6,7 +6,6 @@ query {
     nodes {
       code
       issuer { id }
-      native
     }
   }
 }

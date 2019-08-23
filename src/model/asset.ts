@@ -1,4 +1,4 @@
-import { AccountID, AssetCode, IAssetInput } from "./";
+import { AccountID, AssetCode } from "./";
 import { AccountFlagsFactory } from "./factories";
 
 interface IAssetData {
@@ -50,15 +50,5 @@ export class Asset {
 
   public get paging_token() {
     return this.id;
-  }
-
-  public toInput(): IAssetInput {
-    const res: IAssetInput = { code: this.code };
-
-    if (this.issuer) {
-      res.issuer = this.issuer;
-    }
-
-    return res;
   }
 }

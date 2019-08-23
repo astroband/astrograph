@@ -122,6 +122,7 @@ export const typeDefs = gql`
     "Get a lists of accounts by the ids"
     accounts(
       ids: [AccountID!]
+      inflationDestination: AccountID
       homeDomain: String
       data: DataInput
       first: Int

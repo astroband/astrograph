@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { AccountID, Asset, AssetCode, AssetID, IAssetInput } from "../";
+import { AccountID, Asset, AssetCode, AssetID } from "../";
 
 export interface IAssetTableRow {
   assetid: AssetID;
@@ -31,14 +31,6 @@ export class AssetFactory {
     return type === stellar.xdr.AssetType.assetTypeNative().value
       ? stellar.Asset.native()
       : new stellar.Asset(code, issuer);
-  }
-
-  public static fromInput(arg: IAssetInput) {
-    if (arg.issuer && arg.code) {
-      return new stellar.Asset(arg.code, arg.issuer);
-    }
-
-    return stellar.Asset.native();
   }
 
   public static fromId(id: string) {

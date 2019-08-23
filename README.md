@@ -5,6 +5,10 @@
 
 # Astrograph
 
+<img align="right" width="150" height="150"
+     alt="Graph of stars reflected in telescope lens, logo of Astrograph"
+     src="https://astrograph.io/logo.svg">
+
 **Important** This project is still under heavy active development. Until it reaches 1.0 breaking changes may land without prior notice.
 
 Astrograph is a GraphQL server for the [Stellar](https://www.stellar.org/) network. You can think about it as a GraphQL version of [Horizon](https://github.com/stellar/go/tree/master/services/horizon), the client-facing API server for the Stellar ecosystem. 
@@ -29,16 +33,40 @@ $ yarn run prod               # for live setup
 $ yarn ts-node src/ingestd.ts # live ingesting for subscriptions
 ``` 
 
+Create assets view in database:
+
+```
+CREATE VIEW assets AS
+( SELECT (t.assetcode::text || '-'::text) || t.issuer::text AS assetid,
+    t.assetcode AS code,
+    t.issuer,
+    sum(t.balance) AS total_supply,
+    sum(t.balance) FILTER (WHERE t.flags = 1) AS circulating_supply,
+    count(t.accountid) AS holders_count,
+    count(t.accountid) FILTER (WHERE t.flags = 0) AS unauthorized_holders_count,
+    max(t.lastmodified) AS last_activity
+   FROM trustlines t
+  GROUP BY t.issuer, t.assetcode
+  ORDER BY (count(t.accountid)) DESC)
+UNION
+ SELECT 'native'::text AS assetid,
+    'XLM'::character varying AS code,
+    NULL::character varying AS issuer,
+    sum(accounts.balance) AS total_supply,
+    sum(accounts.balance) AS circulating_supply,
+    count(*) AS holders_count,
+    0 AS unauthorized_holders_count,
+    max(accounts.lastmodified) AS last_activity
+   FROM accounts;
+```
+
 ## Configure
 
 Here is the list of available settings:
 
-* `STELLAR_NETWORK` – which Stellar network to use ("pubnet" or "testnet", "pubnet" by default)
-* `DB` – stellar-core database name ("stellar" by default)
-* `DBPORT` – database port to connect to (5432 by default)
-* `DBHOST` – database host to connect to
-* `DBUSER` – database user to connect with ("stellar" by default)
-* `DBPASSWORD` – password to access the database (no password by default)
+* `STELLAR_NETWORK` – which Stellar network to use. You can use "pubnet"(default) or "testnet" shortcuts, any other value will be used as a network passphrase
+* `HORIZON_ENDPOINT` - Horizon API endpoint. By default `horizon.stellar.org` and `horizon-testnet.stellar.org` are used for pubnet and testnet correspondingly. This option is required for private networks.
+* `DATABASE_URL` – database connection URL
 * `PORT` - port (4000 by default)
 * `BIND_ADDRESS` - address to bind ("0.0.0.0" by default)
 * `INGEST_INTERVAL` – database polling interval in milliseconds (2000 by default)
@@ -93,8 +121,8 @@ query {
     sequenceNumber
     balances {
       asset {
+        id
         code
-        native
         issuer { id }
       }
       balance
@@ -140,8 +168,6 @@ query {
   }
 }
 ```
-
-*NOTE*: Please note that native balance is returned inside a trustline too, and is marked with the boolean flag.
 
 ## Subscriptions
 
@@ -195,9 +221,9 @@ subscription {
     account { id }
     values {
       asset {
+        id
         code
         issuer { id }
-        native
       }
       balance
     }
@@ -237,3 +263,7 @@ We haven't done full stress tests yet. Despite that, it looks like the server on
 ## License
 
 The project is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT)
+
+Parts of the path finding engine include the original code from [stellar-pathfinder-server](https://github.com/future-tense/stellar-pathfinder-server)
+project created by [Johan Stén](https://github.com/johansten]) and [Future Tense, LLC](https://github.com/future-tense),
+adapted and modified by Astrograph project team.

@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { Cursor, Worker } from "./ingest";
-import init from "./init";
+import { initIngestd as init } from "./init";
 import logger from "./util/logger";
 import { DEBUG_LEDGER, INGEST_INTERVAL } from "./util/secrets";
 

@@ -1,16 +1,13 @@
-import { BigNumber } from "bignumber.js";
 import { getRepository } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
 import { TrustLine } from "../../orm/entities";
 import { findPaymentPaths } from "../../service/dex";
-import { STELLAR_AMOUNT_PRECISION } from "../../util/stellar";
+import { toFloatAmountString, toInt } from "../../util/stellar";
 import * as resolvers from "./shared";
 
 export default {
   PaymentPath: {
-    sourceAmount: (root: any) => {
-      return root.sourceAmount.toFixed(STELLAR_AMOUNT_PRECISION);
-    },
+    sourceAmount: (root: any) => toFloatAmountString(root.sourceAmount),
     sourceAsset: resolvers.asset,
     destinationAsset: resolvers.asset,
     path: resolvers.asset
@@ -24,7 +21,7 @@ export default {
       const nodes = findPaymentPaths(
         accountTrustlines.map(t => t.asset).concat("native"),
         destinationAsset,
-        new BigNumber(destinationAmount)
+        toInt(destinationAmount)
       );
 
       return Object.entries(nodes).map(([sourceAsset, data]) => {

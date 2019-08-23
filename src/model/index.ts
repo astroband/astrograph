@@ -6,8 +6,6 @@ export * from "./account_subscription_payload";
 export * from "./asset";
 export * from "./asset_code";
 export * from "./asset_id";
-export * from "./asset_input";
-export * from "./asset_code";
 export * from "./data_entry_subscription_payload";
 export * from "./data_entry_values";
 export * from "./ledger";

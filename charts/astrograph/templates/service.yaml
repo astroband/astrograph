@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "astrograph.fullname" . }}
+  labels:
+{{ include "astrograph.labels" . | indent 4 }}
+spec:
+  ports:
+    - port: 80
+      targetPort: {{ .Values.service.port }}
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "astrograph.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

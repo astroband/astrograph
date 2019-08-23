@@ -28,14 +28,15 @@ const SUBSCRIPTION = gql`
       }
       mutationType
       asset {
+        id
         code
         issuer { id }
       }
       values {
         asset {
+          id
           code
           issuer { id }
-          native
         }
         balance
         limit
@@ -67,11 +68,10 @@ apolloClient
       }
 
       const values = payload.values;
-      const assetId = values.asset.native ? values.asset.code : `${values.asset.code}-${values.asset.issuer.id}`;
 
       console.log(
         "New balance for",
-        assetId,
+        values.asset.id,
         "is now",
         values.balance,
         "with limit",
