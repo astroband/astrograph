@@ -19,11 +19,11 @@ export const Base64Transformer = {
 };
 
 export const BigNumberTransformer = {
-  from: (value: string) => {
-    return new BigNumber(value);
+  from: (value: string | null) => {
+    return value ? new BigNumber(value) : value;
   },
-  to: (value: BigNumber) => {
-    return value.toString();
+  to: (value: BigNumber | null) => {
+    return value ? value.toString() : value;
   }
 };
 

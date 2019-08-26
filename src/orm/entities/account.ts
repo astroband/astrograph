@@ -59,16 +59,18 @@ export class Account {
   @Column({
     name: "buyingliabilities",
     type: "bigint",
+    nullable: true,
     transformer: BigNumberTransformer
   })
-  buyingLiabilities: BigNumber;
+  buyingLiabilities: BigNumber | null;
 
   @Column({
     name: "sellingliabilities",
     type: "bigint",
+    nullable: true,
     transformer: BigNumberTransformer
   })
-  sellingLiabilities: BigNumber;
+  sellingLiabilities: BigNumber | null;
 
   @Column({
     type: "text",
