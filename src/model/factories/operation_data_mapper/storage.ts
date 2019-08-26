@@ -131,7 +131,7 @@ export class DataMapper {
       ...{
         destination: this.data.destination_account_id,
         amount: this.data.source_amount.toString(),
-        asset: AssetFactory.fromId(this.data.source_asset.key)
+        asset: AssetFactory.fromId(this.data.source_asset.id)
       }
     };
   }
@@ -171,7 +171,7 @@ export class DataMapper {
       ...{
         trustor: this.data.destination_account_id,
         authorize: this.data.authorize,
-        asset: AssetFactory.fromId(this.data.destination_asset.key)
+        asset: AssetFactory.fromId(this.data.destination_asset.id)
       }
     };
   }
@@ -188,7 +188,7 @@ export class DataMapper {
       ...this.baseData,
       ...{
         limit: this.data.destination_amount.toString(),
-        asset: AssetFactory.fromId(this.data.destination_asset.key)
+        asset: AssetFactory.fromId(this.data.destination_asset.id)
       }
     };
   }
@@ -220,8 +220,8 @@ export class DataMapper {
           n: this.data.offer_price_n_d.n,
           d: this.data.offer_price_n_d.d
         },
-        assetBuying: AssetFactory.fromId(this.data.source_asset.key),
-        assetSelling: AssetFactory.fromId(this.data.destination_asset.key)
+        assetBuying: AssetFactory.fromId(this.data.source_asset.id),
+        assetSelling: AssetFactory.fromId(this.data.destination_asset.id)
       }
     };
   }
@@ -237,8 +237,8 @@ export class DataMapper {
           n: this.data.offer_price_n_d.n,
           d: this.data.offer_price_n_d.d
         },
-        assetBuying: AssetFactory.fromId(this.data.source_asset.key),
-        assetSelling: AssetFactory.fromId(this.data.destination_asset.key)
+        assetBuying: AssetFactory.fromId(this.data.source_asset.id),
+        assetSelling: AssetFactory.fromId(this.data.destination_asset.id)
       }
     };
   }
@@ -251,9 +251,9 @@ export class DataMapper {
         amountReceived: this.data.amount_received,
         amountSent: this.data.amount_sent,
         destinationAccount: this.data.destination_account_id,
-        destinationAsset: AssetFactory.fromId(this.data.destination_asset.key),
-        sourceAsset: AssetFactory.fromId(this.data.source_asset.key),
-        path: this.data.path.map((node: IAsset) => AssetFactory.fromId(node.key))
+        destinationAsset: AssetFactory.fromId(this.data.destination_asset.id),
+        sourceAsset: AssetFactory.fromId(this.data.source_asset.id),
+        path: this.data.path.map((node: IAsset) => AssetFactory.fromId(node.id))
       }
     };
   }

@@ -17,7 +17,7 @@ export type StorageOpType =
 export interface IAsset {
   code: AssetCode;
   issuer?: AccountID;
-  key: AssetID;
+  id: AssetID;
 }
 
 interface IBaseOperationData {

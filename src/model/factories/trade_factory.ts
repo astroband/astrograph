@@ -11,8 +11,8 @@ export class TradeFactory {
       buyer: data.buyer_id,
       amountSold: data.sold,
       amountBought: data.bought,
-      assetSold: data.asset_sold.key,
-      assetBought: data.asset_bought.key,
+      assetSold: data.asset_sold.id,
+      assetBought: data.asset_bought.id,
       price: data.price
     };
   }
