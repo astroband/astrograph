@@ -39,6 +39,7 @@ export abstract class BaseStorage {
       body: requestBody
     });
 
+    console.log(response);
     return response.hits.hits.map((h: any) => {
       return { ...h._source, id: h._id };
     });
