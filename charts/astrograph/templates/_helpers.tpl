@@ -63,7 +63,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
       name: {{ required "name of es.fromSecret is required" .name | quote }}
       key: {{ required "key of es.fromSecret is required" .key | quote }}
 {{- else }}
-- name: ES_URL
+- name: ELASTIC_URL
   value: {{ .Values.es.url | quote }}
 {{- end }}
 {{- end }}
