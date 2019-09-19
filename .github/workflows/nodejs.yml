@@ -1,6 +1,6 @@
 name: Node CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -19,8 +19,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: yarn install, build, and test
       run: |
-        npm install
-        npm run build
-        npm run test:coverage
+        yarn install
+        yarn build
+        yarn test:coverage
       env:
         CI: true
