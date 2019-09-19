@@ -55,6 +55,7 @@ export default {
   SetOptionsOperation: { inflationDestination: resolvers.account },
   AccountMergeOperation: { destination: resolvers.account },
   AllowTrustOperation: { trustor: resolvers.account },
+  ChangeTrustOperation: { asset: resolvers.asset },
   CreateAccountOperation: { destination: resolvers.account },
   PathPaymentOperation: { destinationAccount: resolvers.account },
   SetOptionsSigner: { account: resolvers.account },
