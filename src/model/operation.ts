@@ -41,17 +41,17 @@ export interface IPaymentOperation extends IBaseOperation {
 }
 
 export interface ISetOptionsOperation extends IBaseOperation {
-  masterWeight: number;
-  homeDomain: string;
-  clearFlags: AccountFlagsOption[];
-  setFlags: AccountFlagsOption[];
-  thresholds: {
+  masterWeight?: number;
+  homeDomain?: string;
+  clearFlags?: AccountFlagsOption[];
+  setFlags?: AccountFlagsOption[];
+  thresholds?: {
     high: number;
     medium: number;
     low: number;
   };
-  inflationDestination: AccountID;
-  signer: {
+  inflationDestination?: AccountID;
+  signer?: {
     account: AccountID;
     weight: number;
   };

@@ -81,7 +81,7 @@ export interface IAccountFlagsOptionsData {
   immutable: boolean;
 }
 
-export interface ISetOptionsOperationData extends IBaseOperationData {
+interface ISetOptionsOperationData extends IBaseOperationData {
   inflation_dest: AccountID;
   home_domain: string;
   thresholds: {
@@ -93,7 +93,7 @@ export interface ISetOptionsOperationData extends IBaseOperationData {
   set_flags: IAccountFlagsOptionsData;
   clear_flags: IAccountFlagsOptionsData;
   signer: {
-    key: AccountID;
+    id: AccountID;
     weight: number;
   };
 }

@@ -144,25 +144,39 @@ export class DataMapper {
   }
 
   private mapSetOption(): ISetOptionsOperation {
-    return {
+    const data: ISetOptionsOperation = {
       ...this.baseData,
       ...{
-        masterWeight: this.data.thresholds.master,
         homeDomain: this.data.home_domain,
-        clearFlags: this.mapAccountFlagOptions(this.data.clear_flags),
-        setFlags: this.mapAccountFlagOptions(this.data.set_flags),
-        thresholds: {
-          high: this.data.thresholds.high,
-          medium: this.data.thresholds.medium,
-          low: this.data.thresholds.low
-        },
-        inflationDestination: this.data.inflation_dest,
-        signer: {
-          account: this.data.signer.key,
-          weight: this.data.signer.weight
-        }
+        inflationDestination: this.data.inflation_dest
       }
     };
+
+    if (this.data.thresholds) {
+      data.masterWeight = this.data.thresholds.master;
+      data.thresholds = {
+        high: this.data.thresholds.high,
+        medium: this.data.thresholds.medium,
+        low: this.data.thresholds.low
+      };
+    }
+
+    if (this.data.signer) {
+      data.signer = {
+        account: this.data.signer.id,
+        weight: this.data.signer.weight
+      };
+    }
+
+    if (this.data.clear_flags) {
+      data.clearFlags = this.mapAccountFlagOptions(this.data.clear_flags);
+    }
+
+    if (this.data.set_flags) {
+      data.setFlags = this.mapAccountFlagOptions(this.data.set_flags);
+    }
+
+    return data;
   }
 
   private mapAllowTrust(): IAllowTrustOperation {
