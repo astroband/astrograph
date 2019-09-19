@@ -16,6 +16,8 @@ interface IEdge {
 interface IAssetOrder {
   amount: BigNumber;
   price: BigNumber;
+  priceN: number;
+  priceD: number;
 }
 
 class AssetOrders {
@@ -37,17 +39,17 @@ class AssetOrders {
   public buy(amountToBuy: BigNumber): BigNumber {
     let amountToSell = new BigNumber(0);
 
-    for (const { amount, price } of this.orders) {
+    for (const { amount, priceN, priceD } of this.orders) {
       if (amountToBuy.gt(amount)) {
-        amountToSell = amountToSell.plus(amount.times(price));
+        amountToSell = amountToSell.plus(amount.times(priceN).div(priceD));
         amountToBuy = amountToBuy.minus(amount);
       } else {
-        amountToSell = amountToSell.plus(amountToBuy.times(price));
+        amountToSell = amountToSell.plus(amountToBuy.times(priceN).div(priceD));
         break;
       }
     }
 
-    return amountToSell;
+    return amountToSell.integerValue(BigNumber.ROUND_FLOOR);
   }
 }
 
@@ -70,7 +72,12 @@ export class OffersGraph {
       const [assetToBuy, assetToSell] = [offer.buying, offer.selling];
 
       const edge = this.getEdgeData(assetToSell, assetToBuy);
-      const order: IAssetOrder = { amount: offer.amount, price: offer.price };
+      const order: IAssetOrder = {
+        amount: offer.amount,
+        price: offer.price,
+        priceN: offer.priceN,
+        priceD: offer.priceD
+      };
 
       if (!edge) {
         this.addEdge(assetToSell, assetToBuy, {
@@ -99,8 +106,8 @@ export class OffersGraph {
     let capacity = new BigNumber(0);
     const orderBook = new AssetOrders();
 
-    for (const { amount, price } of offers) {
-      orderBook.addOrder({ amount, price });
+    for (const { amount, price, priceN, priceD } of offers) {
+      orderBook.addOrder({ amount, price, priceN, priceD });
       capacity = capacity.plus(amount);
     }
 
