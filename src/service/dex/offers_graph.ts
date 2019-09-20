@@ -13,20 +13,46 @@ interface IEdge {
   data: IEdgeData;
 }
 
-interface IAssetOrder {
-  amount: BigNumber;
-  price: BigNumber;
+class AssetOrder {
+  public readonly amount: BigNumber;
+  public readonly price: BigNumber; // we use it just for sorting
+  public readonly priceN: number;
+  public readonly priceD: number;
+
+  constructor(offer: Offer) {
+    this.amount = offer.amount;
+    this.price = offer.price;
+    this.priceD = offer.priceD;
+    this.priceN = offer.priceN;
+  }
+
+  public get sellingBound() {
+    const { amount, priceN, priceD } = this;
+    let sellingBound = amount;
+
+    if (priceN <= priceD) {
+      sellingBound = amount
+        .times(priceN)
+        .div(priceD)
+        .integerValue(BigNumber.ROUND_FLOOR)
+        .times(priceD)
+        .div(priceN)
+        .integerValue(BigNumber.ROUND_CEIL);
+    }
+
+    return sellingBound;
+  }
 }
 
 class AssetOrders {
-  constructor(private readonly orders: IAssetOrder[] = []) {}
+  constructor(private readonly orders: AssetOrder[] = []) {}
 
   public getOrders() {
     // return copy of the orders
     return this.orders.map(o => o);
   }
 
-  public addOrder(order: IAssetOrder): void {
+  public addOrder(order: AssetOrder): void {
     this.orders.push(order);
   }
 
@@ -37,12 +63,15 @@ class AssetOrders {
   public buy(amountToBuy: BigNumber): BigNumber {
     let amountToSell = new BigNumber(0);
 
-    for (const { amount, price } of this.orders) {
+    for (const order of this.orders) {
+      const amount = order.sellingBound;
+      const { priceN, priceD } = order;
+
       if (amountToBuy.gt(amount)) {
-        amountToSell = amountToSell.plus(amount.times(price));
+        amountToSell = amountToSell.plus(amount.times(priceN).div(priceD));
         amountToBuy = amountToBuy.minus(amount);
       } else {
-        amountToSell = amountToSell.plus(amountToBuy.times(price));
+        amountToSell = amountToSell.plus(amountToBuy.times(priceN).div(priceD));
         break;
       }
     }
@@ -70,7 +99,7 @@ export class OffersGraph {
       const [assetToBuy, assetToSell] = [offer.buying, offer.selling];
 
       const edge = this.getEdgeData(assetToSell, assetToBuy);
-      const order: IAssetOrder = { amount: offer.amount, price: offer.price };
+      const order = new AssetOrder(offer);
 
       if (!edge) {
         this.addEdge(assetToSell, assetToBuy, {
@@ -99,9 +128,9 @@ export class OffersGraph {
     let capacity = new BigNumber(0);
     const orderBook = new AssetOrders();
 
-    for (const { amount, price } of offers) {
-      orderBook.addOrder({ amount, price });
-      capacity = capacity.plus(amount);
+    for (const offer of offers) {
+      orderBook.addOrder(new AssetOrder(offer));
+      capacity = capacity.plus(offer.amount);
     }
 
     this.updateEdge(selling, buying, { capacity, orderBook });
