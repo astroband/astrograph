@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Login to registry
+      run: |
+        echo "${DOCKER_PASSWORD}" | docker login docker.pkg.github.com --username nebolsin --password-stdin
+      env:
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}    
+    - name: Build Docker image 
+      run: |
+        docker build -t app .
+    - name: Publish image 
+      run: |
+        docker tag app docker.pkg.github.com/${GITHUB_REPOSITORY}/app:${GITHUB_SHA}
+        docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/app:${GITHUB_SHA}
