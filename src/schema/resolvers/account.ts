@@ -69,8 +69,15 @@ export default {
     balances: balancesResolver,
     ledger: resolvers.ledger,
     operations: async (root: Account, args: any, ctx: IApolloContext) => {
+      const { type, ...paging } = args;
+      const storage = ctx.storage.operations;
+
+      if (type) {
+        storage.filterTypes(type);
+      }
+
       return makeConnection<IStorageOperationData, Operation>(
-        await ctx.storage.operations.forAccount(root.id).all(args),
+        await storage.forAccount(root.id).all(paging),
         r => OperationFactory.fromStorage(r)
       );
     },

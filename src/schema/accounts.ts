@@ -43,7 +43,7 @@ export const typeDefs = gql`
     "[Balances](https://www.stellar.org/developers/guides/concepts/assets.html#trustlines) of this account"
     balances: [Balance]
     "A list of [operations](https://www.stellar.org/developers/guides/concepts/operations.html) on the Stellar network that the account performed"
-    operations(first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
+    operations(type: [OperationType], first: Int, after: String, last: Int, before: String, order: Order): OperationConnection
     """
     A list of payment-related operations where the given account was either the sender or receiver
     The payment-related operations are:
