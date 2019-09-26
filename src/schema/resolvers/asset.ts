@@ -17,7 +17,8 @@ export default {
     lastModifiedIn: resolvers.ledger,
     totalSupply: (asset: Asset) => toFloatAmountString(asset.totalSupply),
     circulatingSupply: (asset: Asset) => toFloatAmountString(asset.circulatingSupply),
-    balances: holdersResolver
+    balances: holdersResolver,
+    id: (asset: Asset) => `${asset.code}-${asset.issuer}`
   },
   Query: {
     asset: async (root: any, { id }: { id: AssetID }, ctx: IApolloContext, info: any) => {

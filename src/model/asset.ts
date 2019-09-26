@@ -1,6 +1,12 @@
 import { AccountID, AssetCode } from "./";
 import { AccountFlagsFactory } from "./factories";
 
+export interface IAsset {
+  code: AssetCode;
+  issuer: AccountID;
+  native: boolean;
+}
+
 interface IAssetData {
   code: AssetCode;
   issuer: AccountID;
