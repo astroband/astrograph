@@ -1,4 +1,5 @@
 import { AccountID, AssetCode, AssetID } from "../model";
+import { RequireAtLeastOneProperty } from "../util/types";
 
 export type StorageOpType =
   | "CreateAccount"
@@ -34,7 +35,7 @@ interface IBaseOperationData {
   tx_source_account_id: AccountID;
   type: StorageOpType;
   source_account_id: AccountID;
-  memo: { type: number; value: string };
+  memo?: { type: number; value: string };
 }
 
 export interface ICreateAccountOperationData extends IBaseOperationData {
@@ -81,7 +82,7 @@ export interface IAccountFlagsOptionsData {
   immutable: boolean;
 }
 
-interface ISetOptionsOperationData extends IBaseOperationData {
+type SetOptionsOperationData = RequireAtLeastOneProperty<{
   inflation_dest: AccountID;
   home_domain: string;
   thresholds: {
@@ -96,7 +97,7 @@ interface ISetOptionsOperationData extends IBaseOperationData {
     id: AccountID;
     weight: number;
   };
-}
+}> & IBaseOperationData;
 
 export interface IChangeTrustOperationData extends IBaseOperationData {
   destination_amount: number;
@@ -124,8 +125,8 @@ export interface IBumpSequenceOperationData extends IBaseOperationData {
   bump_to: string;
 }
 
-export type IOperationData = IPaymentOperationData &
-  ISetOptionsOperationData &
+export type OperationData = IPaymentOperationData &
+  SetOptionsOperationData &
   IAccountMergeOperationData &
   IAllowTrustOperationData &
   IBumpSequenceOperationData &

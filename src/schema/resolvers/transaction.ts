@@ -8,7 +8,7 @@ import { makeConnection } from "./util";
 import { Operation, PaymentOperations, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import {
-  IOperationData as IStorageOperationData,
+  OperationData as StorageOperationData,
   ITransactionData as IStorageTransactionData
 } from "../../storage/types";
 
@@ -29,13 +29,13 @@ export default {
       };
     },
     operations: async (root: Transaction, args: any, ctx: IApolloContext) => {
-      return makeConnection<IStorageOperationData, Operation>(
+      return makeConnection<StorageOperationData, Operation>(
         await ctx.storage.operations.forTransaction(root.id).all(args),
         r => OperationFactory.fromStorage(r)
       );
     },
     payments: async (root: Transaction, args: any, ctx: IApolloContext) => {
-      return makeConnection<IStorageOperationData, Operation>(
+      return makeConnection<StorageOperationData, Operation>(
         await ctx.storage.operations
           .forTransaction(root.id)
           .filterTypes(PaymentOperations)

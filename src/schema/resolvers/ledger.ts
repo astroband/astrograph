@@ -4,7 +4,7 @@ import { Ledger, LedgerHeader, Operation, PaymentOperations, Transaction } from 
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { LEDGER_CREATED, pubsub } from "../../pubsub";
 import {
-  IOperationData as IStorageOperationData,
+  OperationData as StorageOperationData,
   ITransactionData as IStorageTransactionData
 } from "../../storage/types";
 import { createBatchResolver, makeConnection } from "./util";
@@ -32,13 +32,13 @@ export default {
       );
     },
     operations: async (root: Ledger, args: any, ctx: IApolloContext) => {
-      return makeConnection<IStorageOperationData, Operation>(
+      return makeConnection<StorageOperationData, Operation>(
         await ctx.storage.operations.forLedger(root.seq).all(args),
         r => OperationFactory.fromStorage(r)
       );
     },
     payments: async (root: Ledger, args: any, ctx: IApolloContext) => {
-      return makeConnection<IStorageOperationData, Operation>(
+      return makeConnection<StorageOperationData, Operation>(
         await ctx.storage.operations
           .forLedger(root.seq)
           .filterTypes(PaymentOperations)

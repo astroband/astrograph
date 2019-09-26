@@ -4,7 +4,7 @@ import { IApolloContext } from "../../graphql_server";
 import { Operation, OperationType, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
-import { IOperationData as IStorageOperationData } from "../../storage/types";
+import { OperationData as StorageOperationData } from "../../storage/types";
 import { makeConnection } from "./util";
 
 import * as resolvers from "./shared";
@@ -90,7 +90,7 @@ export default {
 
       const docs = await ctx.storage.operations.all(paging);
 
-      return makeConnection<IStorageOperationData, Operation>(docs, r => OperationFactory.fromStorage(r));
+      return makeConnection<StorageOperationData, Operation>(docs, r => OperationFactory.fromStorage(r));
     }
   },
   Subscription: {

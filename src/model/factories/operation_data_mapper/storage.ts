@@ -1,4 +1,4 @@
-import { IAccountFlagsOptionsData, IAsset, IOperationData, StorageOpType } from "../../../storage/types";
+import { IAccountFlagsOptionsData, IAsset, OperationData, StorageOpType } from "../../../storage/types";
 import { AssetFactory } from "../asset_factory";
 
 import {
@@ -21,7 +21,7 @@ import {
 } from "../../operation";
 
 export class DataMapper {
-  public static call(data: IOperationData) {
+  public static call(data: OperationData) {
     return new DataMapper(data).call();
   }
 
@@ -85,7 +85,7 @@ export class DataMapper {
 
   private baseData: IBaseOperation;
 
-  constructor(private data: IOperationData) {
+  constructor(private data: OperationData) {
     this.baseData = {
       id: data.id,
       index: data.idx,

@@ -11,7 +11,7 @@ import { Balance, ITrade, Operation, PaymentOperations, Transaction } from "../.
 import { BalanceFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { Account, Offer } from "../../orm/entities";
 import {
-  IOperationData as IStorageOperationData,
+  OperationData as StorageOperationData,
   ITradeData as IStorageTradeData,
   ITransactionData as IStorageTransactionData
 } from "../../storage/types";
@@ -76,13 +76,13 @@ export default {
         storage.filterTypes(type);
       }
 
-      return makeConnection<IStorageOperationData, Operation>(
+      return makeConnection<StorageOperationData, Operation>(
         await storage.forAccount(root.id).all(paging),
         r => OperationFactory.fromStorage(r)
       );
     },
     payments: async (root: Account, args: any, ctx: IApolloContext) => {
-      return makeConnection<IStorageOperationData, Operation>(
+      return makeConnection<StorageOperationData, Operation>(
         await ctx.storage.operations
           .forAccount(root.id)
           .filterTypes(PaymentOperations)
