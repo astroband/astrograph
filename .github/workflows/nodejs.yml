@@ -27,5 +27,5 @@ jobs:
         yarn build
         yarn test:coverage
       env:
-        DATABASE_URL: postgresql://postgres@localhost/astrograph_test?sslmode=disable
+        DATABASE_URL: 'postgresql://localhost/astrograph_test'
         CI: true
