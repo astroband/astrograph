@@ -17,6 +17,7 @@ jobs:
       with:
         postgresql version: '10'
         postgresql db: 'astrograph_test'
+        postgresql user: 'stellar'
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -27,5 +28,5 @@ jobs:
         yarn build
         yarn test:coverage
       env:
-        DATABASE_URL: 'postgresql://localhost/astrograph_test'
+        DATABASE_URL: 'postgresql://stellar@localhost/astrograph_test'
         CI: true
