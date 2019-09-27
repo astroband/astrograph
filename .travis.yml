@@ -1,4 +1,4 @@
-dist: xenial
+dist: xenial,
 language: node_js
 
 addons:
@@ -18,7 +18,7 @@ node_js:
   - 10
 env:
   global:
-    - DB=astrograph_test DBUSER=postgres DBHOST=localhost
+    - DATABASE_URL=postgresql://postgres@localhost/astrograph_test
 
 before_script:
   - psql -U postgres -c 'create database astrograph_test;'
