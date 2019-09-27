@@ -13,6 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - uses: harmon758/postgresql-action@v1
+      with:
+        postgresql version: '10'
+        postgresql db: 'astrograph_test'
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -23,4 +27,5 @@ jobs:
         yarn build
         yarn test:coverage
       env:
+        DATABASE_URL: postgresql://postgres@localhost/astrograph_test?sslmode=disable
         CI: true
