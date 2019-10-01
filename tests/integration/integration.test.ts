@@ -3,11 +3,11 @@ import { createTestClient } from "apollo-server-testing";
 import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
-import { Client as dbClient } from "pg";
 import { Network } from "stellar-base";
-import { createConnection } from "typeorm";
-import { Account, AccountData, Offer, TrustLine } from "../../src/orm/entities";
+import { getConnection, createConnection, getRepository } from "typeorm";
+import { Account, AccountData, LedgerHeader, Offer, TrustLine } from "../../src/orm/entities";
 import schema from "../../src/schema";
+import { pubsub } from "../../src/pubsub";
 import logger from "../../src/util/logger";
 import { DATABASE_URL } from "../../src/util/secrets";
 
@@ -17,32 +17,25 @@ const server = new ApolloServer({ schema });
 
 const queryServer = createTestClient(server).query;
 
-const testCases = ["Assets", "Single account query", "Ledgers"];
+const testCases = ["Single account query", "Ledgers"];
 
-async function importDbDump() {
-  const client = new dbClient(DATABASE_URL);
-
+function importDbDump() {
   const sql = fs.readFileSync(path.join(__dirname, "test_db.sql"), "utf8");
-
-  await client.connect();
-
   logger.log("info", "importing database fixture...");
-
-  await client.query(sql);
-  await client.end();
+  return getConnection().manager.query(sql);
 }
 
 describe("Integration tests", () => {
   beforeAll(async () => {
     try {
-      await importDbDump();
       await createConnection({
         type: "postgres",
         url: DATABASE_URL,
-        entities: [Account, AccountData, Offer, TrustLine],
+        entities: [Account, AccountData, LedgerHeader, Offer, TrustLine],
         synchronize: false,
         logging: process.env.DEBUG_SQL !== undefined
       });
+      // await importDbDump();
     } catch (e) {
       const dbNotExistMessageRegexp = /database "(\w+)" does not exist/;
 
@@ -58,7 +51,13 @@ describe("Integration tests", () => {
     }
   });
 
+  afterAll(() => {
+    getConnection().close();
+  });
+
   test.each(testCases)("%s", async (caseName: string) => {
+    const acc = await getRepository(Account).findOne("GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT");
+    // console.log(acc);
     const queryFile = caseName.toLowerCase().replace(/ /g, "_");
     const query = fs.readFileSync(`${__dirname}/integration_queries/${queryFile}.gql`, "utf8");
 

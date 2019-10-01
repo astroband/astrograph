@@ -37,10 +37,10 @@ export class BalanceFactory {
     return new Balance(data);
   }
 
-  public static async nativeForAccount(account: Account): Promise<IBalance> {
+  public static nativeForAccount(account: Account): IBalance {
     const balance = new BigNumber(account.balance);
     const limit = new BigNumber(MAX_INT64);
-    const minBalance = await getReservedBalance(account.numSubentries);
+    const minBalance = getReservedBalance(account.numSubentries);
 
     return new Balance({
       account: account.id,

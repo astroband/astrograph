@@ -9,7 +9,7 @@ export const asset = createBatchResolver<any, Asset[]>((source: any, args: any, 
   if (onlyFieldsRequested(info, "id", "code", "issuer", "native")) {
     return source.map((obj: any) => {
       if (Array.isArray(obj[field])) {
-        return obj[field].map(expandAsset);
+        return obj[field].map((a: any) => expandAsset(a.toString()));
       }
 
       // this trick will return asset id either `obj[field]`

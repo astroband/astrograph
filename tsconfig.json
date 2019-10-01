@@ -1,4 +1,3 @@
-
 {
   "compilerOptions": {
     "noEmit": true,
@@ -16,7 +15,7 @@
     "strictPropertyInitialization": false, /* TypeORM entities use properties w/o initialization, so we need to turn this off */
 
     /* Additional Checks */
-    "noUnusedLocals": true,                /* Report errors on unused locals. */
+    "noUnusedLocals": false,                /* Report errors on unused locals. */
     "noUnusedParameters": false,           /* Report errors on unused parameters. */
     "noImplicitReturns": true,             /* Report error when not all code paths in function return a value. */
     "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */

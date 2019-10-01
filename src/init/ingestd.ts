@@ -1,3 +1,4 @@
+import { connect as connectPubSub } from "../pubsub";
 import "../util/asset";
 import logger from "../util/logger";
 import { initDatabase } from "./db";
@@ -14,5 +15,7 @@ export async function initIngestd() {
     .then(network => logger.info(`Astrograph will use ${network}`))
     .then(() => logger.info("Connecting to the database..."))
     .then(initDatabase)
+    .then(() => logger.info("Creating connection for pubsub..."))
+    .then(connectPubSub)
     .then(() => logger.info("Ingest daemon is inialized successfully"));
 }
