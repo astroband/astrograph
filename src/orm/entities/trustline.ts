@@ -39,6 +39,16 @@ export class TrustLine implements IBalance {
   @Column({ type: "bigint", name: "sellingliabilities", transformer: BigNumberTransformer })
   sellingLiabilities: BigNumber;
 
+  public static parsePagingToken(token: string) {
+    const [accountId, , balance] =
+      Buffer
+        .from(token, "base64")
+        .toString()
+        .split("_");
+
+    return { balance, account: accountId }
+  }
+
   public get asset(): AssetID {
     return AssetFactory.fromTrustline(this.assetType, this.assetCode, this.issuer).toString();
   }

@@ -1,9 +1,10 @@
-import { db } from "../../../database";
+import { getRepository, In } from "typeorm";
 import { IApolloContext } from "../../../graphql_server";
-import { Asset, AssetID } from "../../../model";
+import { AssetID } from "../../../model";
+import { Asset } from "../../../orm/entities";
 import { createBatchResolver, onlyFieldsRequested } from "../util";
 
-export const asset = createBatchResolver<any, Asset[]>((source: any, args: any, ctx: IApolloContext, info: any) => {
+export const asset = createBatchResolver<any, Asset[]>(async (source: any, args: any, ctx: IApolloContext, info: any) => {
   const field = info.fieldName;
 
   if (onlyFieldsRequested(info, "id", "code", "issuer", "native")) {
@@ -21,7 +22,9 @@ export const asset = createBatchResolver<any, Asset[]>((source: any, args: any, 
 
   const ids: AssetID[] = source.map((s: any) => s[field].toString());
 
-  return db.assets.findAllByIDs(ids);
+  const assets = await getRepository(Asset).find({ id: In(ids) });
+
+  return ids.map(id => assets.find(a => a.id === id) || null);
 });
 
 function expandAsset(assetId: AssetID) {

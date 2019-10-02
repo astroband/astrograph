@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import { Network } from "stellar-base";
 import { getConnection, createConnection, getRepository } from "typeorm";
-import { Account, AccountData, LedgerHeader, Offer, TrustLine } from "../../src/orm/entities";
+import { Account, AccountData, Asset, LedgerHeader, Offer, TrustLine } from "../../src/orm/entities";
 import schema from "../../src/schema";
 import { pubsub } from "../../src/pubsub";
 import logger from "../../src/util/logger";
@@ -17,7 +17,7 @@ const server = new ApolloServer({ schema });
 
 const queryServer = createTestClient(server).query;
 
-const testCases = ["Single account query", "Ledgers"];
+const testCases = ["Assets", "Single account query", "Ledgers"];
 
 function importDbDump() {
   const sql = fs.readFileSync(path.join(__dirname, "test_db.sql"), "utf8");
@@ -31,7 +31,7 @@ describe("Integration tests", () => {
       await createConnection({
         type: "postgres",
         url: DATABASE_URL,
-        entities: [Account, AccountData, LedgerHeader, Offer, TrustLine],
+        entities: [Account, AccountData, Asset, LedgerHeader, Offer, TrustLine],
         synchronize: false,
         logging: process.env.DEBUG_SQL !== undefined
       });
@@ -56,8 +56,6 @@ describe("Integration tests", () => {
   });
 
   test.each(testCases)("%s", async (caseName: string) => {
-    const acc = await getRepository(Account).findOne("GCVIRZIN4CGYY56CSL7RYAFHKQTGE34GIASZ2D4IGZGV3FDL622LPQZT");
-    // console.log(acc);
     const queryFile = caseName.toLowerCase().replace(/ /g, "_");
     const query = fs.readFileSync(`${__dirname}/integration_queries/${queryFile}.gql`, "utf8");
 

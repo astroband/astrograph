@@ -10,7 +10,7 @@ import { IHorizonOperationData, IHorizonTradeData, IHorizonTransactionData } fro
 
 import { IBalance, Operation, Trade, Transaction } from "../../model";
 import { BalanceFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
-import { Account, Offer, TrustLine } from "../../orm/entities";
+import { Account, Asset, Offer, TrustLine } from "../../orm/entities";
 
 import { IApolloContext } from "../../graphql_server";
 import { ACCOUNT, pubsub } from "../../pubsub";
@@ -59,9 +59,8 @@ export default {
   Account: {
     reservedBalance: (root: Account) => toFloatAmountString(getReservedBalance(root.numSubentries)),
     assets: async (root: Account, args: any) => {
-      // const assets = await db.assets.findAll({ issuer: root.id }, args);
-      // return makeConnection(assets);
-      return [];
+      const assets = await getRepository(Asset).find({ issuer: root.id });
+      return makeConnection(assets);
     },
     balances: balancesResolver,
     ledger: ledgerResolver,

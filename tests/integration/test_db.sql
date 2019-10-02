@@ -539,26 +539,28 @@ INSERT INTO public.upgradehistory VALUES (2, 1, 'AAAAAQAAAAo=', 'AAAAAA==');
 INSERT INTO public.upgradehistory VALUES (2, 2, 'AAAAAwAAJxA=', 'AAAAAA==');
 
 CREATE VIEW public.assets AS
-( SELECT (((t.assetcode)::text || '-'::text) || (t.issuer)::text) AS assetid,
+( SELECT (((t.assetcode)::text || '-'::text) || (t.issuer)::text) AS id,
   t.assetcode AS code,
   t.issuer,
-  sum(t.balance) AS total_supply,
-  sum(t.balance) FILTER (WHERE (t.flags = 1)) AS circulating_supply,
-  count(t.accountid) AS holders_count,
-  count(t.accountid) FILTER (WHERE (t.flags = 0)) AS unauthorized_holders_count,
-  max(t.lastmodified) AS last_activity
+  t.flags,
+  sum(t.balance) AS "totalSupply",
+  sum(t.balance) FILTER (WHERE (t.flags = 1)) AS "circulatingSupply",
+  count(t.accountid) AS "holdersCount",
+  count(t.accountid) FILTER (WHERE (t.flags = 0)) AS "unauthorizedHoldersCount",
+  max(t.lastmodified) AS "lastActivity"
   FROM public.trustlines t
-  GROUP BY t.issuer, t.assetcode
+  GROUP BY t.issuer, t.assetcode, t.flags
   ORDER BY (count(t.accountid)) DESC)
 UNION
-SELECT 'native'::text AS assetid,
+SELECT 'native'::text AS id,
 'XLM'::character varying AS code,
 NULL::character varying AS issuer,
-sum(accounts.balance) AS total_supply,
-sum(accounts.balance) AS circulating_supply,
-count(*) AS holders_count,
-0 AS unauthorized_holders_count,
-max(accounts.lastmodified) AS last_activity
+4::integer AS flags,
+sum(accounts.balance) AS "totalSupply",
+sum(accounts.balance) AS "circulatingSupply",
+count(*) AS "holdersCount",
+0 AS "unauthorizedHoldersCount",
+max(accounts.lastmodified) AS "lastActivity"
 FROM public.accounts;
 
 --

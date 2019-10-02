@@ -13,7 +13,7 @@ import transactionResolvers from "./transaction";
 
 export default [
   accountResolvers,
-  // assetResolvers,
+  assetResolvers,
   // dataEntryResolvers,
   ledgerResolvers,
   // offerResolvers,
