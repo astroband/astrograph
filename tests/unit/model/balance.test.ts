@@ -28,7 +28,7 @@ let subject: Balance;
 describe("constructor", () => {
   subject = BalanceFactory.fromDb(data);
 
-  it("sets account id", () => expect(subject.accountId).toEqual(data.accountid));
+  it("sets account id", () => expect(subject.account).toEqual(data.accountid));
   it("sets lastModified", () => expect(subject.lastModified).toEqual(data.lastmodified));
   it("sets limit", () => expect(subject.limit.toString()).toEqual("9223372036854775807"));
   it("sets balance", () => expect(subject.balance.toString()).toEqual("9600000000"));
