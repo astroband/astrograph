@@ -11,9 +11,7 @@ import { makeConnection } from "./util";
 const holdersResolver = async (root: Asset, args: any, ctx: IApolloContext, info: any) => {
   const qb = getRepository(TrustLine).createQueryBuilder("tl");
 
-  qb
-    .where("tl.assetCode = :code", { code: root.code })
-    .andWhere("tl.issuer = :issuer", { issuer: root.issuer });
+  qb.where("tl.assetCode = :code", { code: root.code }).andWhere("tl.issuer = :issuer", { issuer: root.issuer });
 
   const balances = await paginate(qb, args, ["tl.balance", "tl.account"], TrustLine.parsePagingToken);
 

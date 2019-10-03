@@ -4,10 +4,10 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { Network } from "stellar-base";
-import { getConnection, createConnection, getRepository } from "typeorm";
+import { createConnection, getConnection, getRepository } from "typeorm";
 import { Account, AccountData, Asset, LedgerHeader, Offer, TrustLine } from "../../src/orm/entities";
-import schema from "../../src/schema";
 import { pubsub } from "../../src/pubsub";
+import schema from "../../src/schema";
 import logger from "../../src/util/logger";
 import { DATABASE_URL } from "../../src/util/secrets";
 

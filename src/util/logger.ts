@@ -35,7 +35,7 @@ const logger: Logger = createLogger({
     // format.printf(info => `${info.timestamp} ${info.level}: ${info.message} Stacktrace: ${info.stack}`)
   ),
   transports: [
-    new transports.Console({ level: logLevel }),
+    new transports.Console({ level: logLevel })
     // new transports.File({ filename: "error.log", level: LOG_FILE })
   ]
 });

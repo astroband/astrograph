@@ -1,5 +1,5 @@
 import { AfterLoad, ViewColumn, ViewEntity } from "typeorm";
-import { AccountID, AssetID, AssetCode } from "../../model";
+import { AccountID, AssetCode, AssetID } from "../../model";
 import { AccountFlagsFactory } from "../../model/factories";
 
 @ViewEntity({

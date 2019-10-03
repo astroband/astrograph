@@ -21,11 +21,11 @@ import { toFloatAmountString } from "../../util/stellar";
 
 const balancesResolver = createBatchResolver<Account, IBalance[]>(async (source: Account[]) => {
   const accountIDs = source.map(s => s.id);
-  const trustlines = await getRepository(TrustLine).find({ where: { account: In(accountIDs) }});
+  const trustlines = await getRepository(TrustLine).find({ where: { account: In(accountIDs) } });
   const allBalances: IBalance[][] = [];
 
   for (const id of accountIDs) {
-    const account = source.find((acc) => acc.id === id);
+    const account = source.find(acc => acc.id === id);
 
     if (!account) {
       continue;

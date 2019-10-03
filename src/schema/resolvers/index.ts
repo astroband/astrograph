@@ -19,7 +19,7 @@ export default [
   // offerResolvers,
   // operationResolvers,
   // transactionResolvers,
-  balanceResolvers,
+  balanceResolvers
   // orderBookResolvers,
   // paymentPathResolvers,
   // tradeAggregationsResolvers,

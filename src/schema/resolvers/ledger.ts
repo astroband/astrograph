@@ -9,7 +9,9 @@ import { createBatchResolver, makeConnection } from "./util";
 
 const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>(async (ledgers: Ledger[]) => {
   const seqNumsWithoutHeaders = ledgers.filter(l => l.header === undefined).map(l => l.seq);
-  const headers = (await getRepository(LedgerHeader).find({ where: { seq: In(seqNumsWithoutHeaders) } })).map((h) => LedgerHeaderFactory.fromXDR(h.data));
+  const headers = (await getRepository(LedgerHeader).find({ where: { seq: In(seqNumsWithoutHeaders) } })).map(h =>
+    LedgerHeaderFactory.fromXDR(h.data)
+  );
 
   return ledgers.map(l => {
     if (l.header) {

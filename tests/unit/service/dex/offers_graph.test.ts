@@ -4,7 +4,14 @@ import { Offer } from "../../../../src/orm/entities";
 import { buildOffersGraph, findPaymentPaths } from "../../../../src/service/dex";
 import { OffersGraph } from "../../../../src/service/dex/offers_graph";
 
-function buildOffer(data: { selling: AssetID; buying: AssetID; priceN: number; priceD: number, price: number; amount: number }) {
+function buildOffer(data: {
+  selling: AssetID;
+  buying: AssetID;
+  priceN: number;
+  priceD: number;
+  price: number;
+  amount: number;
+}) {
   const offer = new Offer();
   offer.selling = data.selling;
   offer.buying = data.buying;

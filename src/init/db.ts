@@ -5,7 +5,7 @@ import { DATABASE_URL } from "../util/secrets";
 export async function initDatabase() {
   const queryStart = DATABASE_URL.indexOf("?");
 
-  const connectionString = (queryStart !== -1) ?  DATABASE_URL.slice(0, queryStart) : DATABASE_URL;
+  const connectionString = queryStart !== -1 ? DATABASE_URL.slice(0, queryStart) : DATABASE_URL;
 
   return createConnection({
     type: "postgres",

@@ -26,7 +26,7 @@ export default {
     account: accountResolver,
     ledger: ledgerResolver
   },
-  DataEntrySubscriptionPayload: { account: accountResolver },
+  DataEntrySubscriptionPayload: { account: accountResolver }
   // Subscription: {
   //   dataEntry: dataEntrySubscription(DATA_ENTRY)
   // }
