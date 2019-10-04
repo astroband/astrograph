@@ -3,8 +3,10 @@ import { createTestClient } from "apollo-server-testing";
 import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import { Client as pgClient } from "pg";
 import { Network } from "stellar-base";
-import { createConnection, getConnection, getRepository } from "typeorm";
+import { createConnection, getConnection } from "typeorm";
+import { initDatabase } from "../../src/init/db";
 import { Account, AccountData, Asset, LedgerHeader, Offer, TrustLine } from "../../src/orm/entities";
 import { pubsub } from "../../src/pubsub";
 import schema from "../../src/schema";
@@ -19,10 +21,14 @@ const queryServer = createTestClient(server).query;
 
 const testCases = ["Assets", "Single account query", "Ledgers"];
 
-function importDbDump() {
+// FIXME: for some reason using raw sql query from typeorm
+// breaks fixture loading, so we have to use a workaround with pg client
+const db = new pgClient({ connectionString: DATABASE_URL });
+
+async function importDbDump() {
   const sql = fs.readFileSync(path.join(__dirname, "test_db.sql"), "utf8");
   logger.log("info", "importing database fixture...");
-  return getConnection().manager.query(sql);
+  await db.query(sql);
 }
 
 describe("Integration tests", () => {
@@ -35,7 +41,8 @@ describe("Integration tests", () => {
         synchronize: false,
         logging: process.env.DEBUG_SQL !== undefined
       });
-      // await importDbDump();
+      db.connect();
+      await importDbDump();
     } catch (e) {
       const dbNotExistMessageRegexp = /database "(\w+)" does not exist/;
 
@@ -53,6 +60,7 @@ describe("Integration tests", () => {
 
   afterAll(() => {
     getConnection().close();
+    db.end();
   });
 
   test.each(testCases)("%s", async (caseName: string) => {
