@@ -14,14 +14,14 @@ import transactionResolvers from "./transaction";
 export default [
   accountResolvers,
   assetResolvers,
-  // dataEntryResolvers,
+  dataEntryResolvers,
   ledgerResolvers,
-  // offerResolvers,
-  // operationResolvers,
-  // transactionResolvers,
-  balanceResolvers
-  // orderBookResolvers,
-  // paymentPathResolvers,
-  // tradeAggregationsResolvers,
-  // tradesResolvers
+  offerResolvers,
+  operationResolvers,
+  transactionResolvers,
+  balanceResolvers,
+  orderBookResolvers,
+  paymentPathResolvers,
+  tradeAggregationsResolvers,
+  tradesResolvers
 ];
