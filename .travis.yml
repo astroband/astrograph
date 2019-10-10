@@ -15,10 +15,10 @@ services:
   - postgresql
 
 node_js:
-  - 10
+  - 10.15.0
 env:
   global:
-    - DB=astrograph_test DBUSER=postgres DBHOST=localhost
+    - DATABASE_URL=postgresql://postgres@localhost/astrograph_test
 
 before_script:
   - psql -U postgres -c 'create database astrograph_test;'

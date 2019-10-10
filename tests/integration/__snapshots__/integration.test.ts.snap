@@ -50,7 +50,7 @@ Object {
         },
         "asset": Object {
           "code": "XLM",
-          "issuer": null
+          "issuer": null,
         },
       },
     ],

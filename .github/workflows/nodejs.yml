@@ -1,0 +1,32 @@
+name: Node CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: harmon758/postgresql-action@v1
+      with:
+        postgresql version: '10'
+        postgresql db: 'astrograph_test'
+        postgresql user: 'stellar'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: yarn install, build, and test
+      run: |
+        yarn install
+        yarn build
+        yarn test:coverage
+      env:
+        DATABASE_URL: 'postgresql://stellar@localhost/astrograph_test'
+        CI: true
