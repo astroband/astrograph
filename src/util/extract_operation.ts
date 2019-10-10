@@ -15,11 +15,11 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
   const opObject = refineOperationXDR(opXDR);
   const opSource = opObject.source || tx.sourceAccount;
 
-  if (opObject.kind === OperationType.AllowTrust) {
+  if (opObject.type === OperationType.AllowTrust) {
     opObject.asset = new Asset(opObject.asset, opSource);
   }
 
-  if (opObject.kind === OperationType.PathPayment && tx.success) {
+  if (opObject.type === OperationType.PathPayment && tx.success) {
     opObject.amountSent = getSentAmount(tx, index, opSource);
   }
 

@@ -52,7 +52,7 @@ export function refineOperationXDR(xdr: any) {
 
   return {
     source,
-    kind: body.switch().name,
+    type: body.switch().name,
     ...obj
   };
 }
