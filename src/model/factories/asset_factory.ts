@@ -1,5 +1,5 @@
 import stellar from "stellar-base";
-import { AccountID, AssetID } from "../";
+import { AssetID } from "../";
 import { HorizonAssetType } from "../../datasource/types";
 
 export class AssetFactory {

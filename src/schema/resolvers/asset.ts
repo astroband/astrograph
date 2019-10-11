@@ -1,5 +1,4 @@
 import { getRepository } from "typeorm";
-import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
 import { AssetID } from "../../model";
 import { Asset, TrustLine } from "../../orm/entities";

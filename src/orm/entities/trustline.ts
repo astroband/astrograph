@@ -1,10 +1,9 @@
 import BigNumber from "bignumber.js";
 import { xdr as XDR } from "stellar-base";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 import { AccountID, AssetID, IBalance } from "../../model";
 import { AssetFactory } from "../../model/factories";
 import { BigNumberTransformer } from "../../util/orm";
-import { Account } from "./";
 
 @Entity("trustlines")
 /* tslint:disable */
