@@ -47,11 +47,12 @@ CREATE VIEW assets AS
     count(t.accountid) FILTER (WHERE t.flags = 0) AS "unauthorizedHoldersCount",
     max(t.lastmodified) AS "lastActivity"
    FROM trustlines t
-  GROUP BY t.issuer, t.assetcode
+  GROUP BY t.issuer, t.assetcode, t.flags
   ORDER BY (count(t.accountid)) DESC)
 UNION
  SELECT 'native'::text AS id,
     'XLM'::character varying AS code,
+    4 AS flags,
     NULL::character varying AS issuer,
     sum(accounts.balance) AS "totalSupply",
     sum(accounts.balance) AS "circulatingSupply",
