@@ -173,8 +173,32 @@ export const typeDefs = gql`
     value: String
   }
 
-  "Represents [manage offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-offer)"
+  "Represents [manage sell offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-sell-offer)"
   type ManageSellOfferOperation implements Operation {
+    "Operation id, assigned by Horizon"
+    id: String!
+    type: OperationType!
+    "Account on which behalf operation was executed"
+    sourceAccount: Account!
+    "When operations was executed"
+    dateTime: DateTime!
+    "Transaction that contains this operation"
+    transaction: Transaction!
+    "Rational representation of the price"
+    priceComponents: OfferPriceComponents!
+    "Price of 1 unit of \`selling\` in terms of \`buying\`"
+    price: String!
+    offerId: String!
+    "Amount of \`selling\` being sold"
+    amount: String!
+    "Asset the offer creator is selling"
+    assetSelling: Asset!
+    "Asset the offer creator is buying"
+    assetBuying: Asset!
+  }
+
+  "Represents [manage buy offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-buy-offer)"
+  type ManageBuyOfferOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
     type: OperationType!

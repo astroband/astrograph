@@ -59,6 +59,8 @@ export default {
   CreateAccountOperation: { destination: resolvers.account },
   PathPaymentOperation: { destinationAccount: resolvers.account },
   SetOptionsSigner: { account: resolvers.account },
+  ManageBuyOfferOperation: { assetSelling: resolvers.asset, assetBuying: resolvers.asset },
+  ManageSellOfferOperation: { assetSelling: resolvers.asset, assetBuying: resolvers.asset },
   Query: {
     operation: async (root: any, args: { id: string }, ctx: IApolloContext) => {
       const response = await ctx.dataSources.operations.byId(args.id);
