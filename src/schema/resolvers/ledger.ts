@@ -1,21 +1,24 @@
-import { db } from "../../database";
+import { getRepository, In } from "typeorm";
 import { IHorizonOperationData, IHorizonTransactionData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
-import { Ledger, LedgerHeader, Operation, Transaction } from "../../model";
-import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { Ledger, Operation, Transaction } from "../../model";
+import { LedgerHeaderFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { LedgerHeader } from "../../orm/entities";
 import { LEDGER_CREATED, pubsub } from "../../pubsub";
 import { createBatchResolver, makeConnection } from "./util";
 
 const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>(async (ledgers: Ledger[]) => {
   const seqNumsWithoutHeaders = ledgers.filter(l => l.header === undefined).map(l => l.seq);
-  const headersFromDb = await db.ledgerHeaders.findAllBySeq(seqNumsWithoutHeaders);
+  const headers = (await getRepository(LedgerHeader).find({ where: { seq: In(seqNumsWithoutHeaders) } })).map(h =>
+    LedgerHeaderFactory.fromXDR(h.data)
+  );
 
   return ledgers.map(l => {
     if (l.header) {
       return l.header;
     }
 
-    return headersFromDb.find(h => h !== null && h.ledgerSeq === l.seq) || null;
+    return headers.find(h => h.ledgerSeq === l.seq) || null;
   });
 });
 

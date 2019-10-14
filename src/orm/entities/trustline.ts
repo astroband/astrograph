@@ -1,17 +1,15 @@
 import BigNumber from "bignumber.js";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { AccountID, AssetID } from "../../model";
+import { xdr as XDR } from "stellar-base";
+import { Column, Entity, PrimaryColumn } from "typeorm";
+import { AccountID, AssetID, IBalance } from "../../model";
 import { AssetFactory } from "../../model/factories";
 import { BigNumberTransformer } from "../../util/orm";
-import { Account } from "./";
 
 @Entity("trustlines")
 /* tslint:disable */
-export class TrustLine {
+export class TrustLine implements IBalance {
   @PrimaryColumn({ name: "accountid" })
-  @ManyToOne(type => Account, account => account.trustLines)
-  @JoinColumn({ name: "accountid" })
-  account: Account;
+  account: AccountID;
 
   @PrimaryColumn()
   issuer: AccountID;
@@ -40,7 +38,33 @@ export class TrustLine {
   @Column({ type: "bigint", name: "sellingliabilities", transformer: BigNumberTransformer })
   sellingLiabilities: BigNumber;
 
+  public static parsePagingToken(token: string) {
+    const [accountId, , balance] =
+      Buffer
+        .from(token, "base64")
+        .toString()
+        .split("_");
+
+    return { balance, account: accountId }
+  }
+
   public get asset(): AssetID {
     return AssetFactory.fromTrustline(this.assetType, this.assetCode, this.issuer).toString();
+  }
+
+  public get authorized(): boolean {
+    return (this.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0;
+  }
+
+  public get spendableBalance(): BigNumber {
+    return this.balance.minus(this.sellingLiabilities || 0);
+  }
+
+  public get receivableBalance(): BigNumber {
+    return this.limit.minus(this.buyingLiabilities || 0).minus(this.balance);
+  }
+
+  public get paging_token() {
+    return Buffer.from(`${this.account}_${this.asset.toString()}_${this.balance}`).toString("base64");
   }
 }
