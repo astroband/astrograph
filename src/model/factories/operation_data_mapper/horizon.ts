@@ -11,6 +11,7 @@ import {
   ICreatePassiveSellOfferOperation,
   IManageDataOperation,
   IManageSellOfferOperation,
+  IManageBuyOfferOperation,
   IPathPaymentOperation,
   IPaymentOperation,
   ISetOptionsOperation,
@@ -18,15 +19,12 @@ import {
   OperationType
 } from "../../operation";
 
-// Horizon doesn't use buy and sell offers introduced in stellar core v11 yet
-type HorizonOperationType = Exclude<OperationType, OperationType.ManageBuyOffer>;
-
 export class DataMapper {
   public static call(data: IHorizonOperationData) {
     return new DataMapper(data).call();
   }
 
-  public static mapHorizonOpType(type: HorizonOpType): HorizonOperationType {
+  public static mapHorizonOpType(type: HorizonOpType): OperationType {
     switch (type) {
       case "create_account":
         return OperationType.CreateAccount;
@@ -36,6 +34,8 @@ export class DataMapper {
         return OperationType.PathPayment;
       case "manage_offer":
         return OperationType.ManageSellOffer;
+      case "manage_buy_offer":
+        return OperationType.ManageBuyOffer;
       case "create_passive_offer":
         return OperationType.CreatePassiveSellOffer;
       case "set_options":
@@ -67,7 +67,7 @@ export class DataMapper {
   }
 
   public call(): Operation {
-    switch (this.baseData.type as HorizonOperationType) {
+    switch (this.baseData.type) {
       case OperationType.Payment:
         return this.mapPayment();
       case OperationType.SetOption:
@@ -85,6 +85,7 @@ export class DataMapper {
       case OperationType.ManageData:
         return this.mapManageData();
       case OperationType.ManageSellOffer:
+      case OperationType.ManageBuyOffer:
         return this.mapManageOffer();
       case OperationType.CreatePassiveSellOffer:
         return this.mapCreatePassiveOffer();
@@ -207,7 +208,7 @@ export class DataMapper {
     };
   }
 
-  private mapManageOffer(): IManageSellOfferOperation {
+  private mapManageOffer(): IManageSellOfferOperation | IManageBuyOfferOperation {
     const assetBuying =
       this.data.buying_asset_type === "native"
         ? Asset.native()

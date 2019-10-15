@@ -115,16 +115,6 @@ export interface IPathPaymentOperation extends IBaseOperation {
   sourceAsset: stellar.Asset;
 }
 
-// This is a "legacy" interface, we ingest path payments to DGraph in this format
-export interface IDgraphPathPaymentOperation extends IBaseOperation {
-  sendMax: string;
-  destinationAmount: string;
-  destinationAccount: AccountID;
-  destinationAsset: stellar.Asset;
-  sourceAsset: stellar.Asset;
-  path: stellar.Asset[];
-}
-
 export type Operation =
   | IPaymentOperation
   | ISetOptionsOperation
@@ -137,5 +127,4 @@ export type Operation =
   | IManageSellOfferOperation
   | IManageBuyOfferOperation
   | IPathPaymentOperation
-  | ICreatePassiveSellOfferOperation
-  | IDgraphPathPaymentOperation;
+  | ICreatePassiveSellOfferOperation;

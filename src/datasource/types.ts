@@ -10,6 +10,7 @@ export type HorizonOpType =
   | "payment"
   | "path_payment"
   | "manage_offer"
+  | "manage_buy_offer"
   | "create_passive_offer"
   | "set_options"
   | "change_trust"
