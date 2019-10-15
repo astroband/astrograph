@@ -14,7 +14,7 @@ export enum OperationType {
   ManageSellOffer = "manageSellOffer",
   ManageBuyOffer = "manageBuyOffer",
   CreatePassiveSellOffer = "createPassiveSellOffer",
-  PathPayment = "pathPayment",
+  PathPayment = "pathPaymentStrictReceive",
   Inflation = "inflation",
   PathPaymentStrictSend = "pathPaymentStrictSend"
 }
