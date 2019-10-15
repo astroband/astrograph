@@ -14,6 +14,7 @@ export const typeDefs = gql`
     manageBuyOffer
     createPassiveSellOffer
     pathPayment
+    inflation
   }
 
   "Attributes all Stellar [operations](https://www.stellar.org/developers/guides/concepts/operations.html) share"
@@ -262,6 +263,18 @@ export const typeDefs = gql`
     sourceAsset: Asset!
     "Payment receiver account"
     destinationAccount: Account!
+  }
+
+  type InflationOperation implements Operation {
+    "Operation id, assigned by Horizon"
+    id: String!
+    type: OperationType!
+    "Account on which behalf operation was executed"
+    sourceAccount: Account!
+    "When operations was executed"
+    dateTime: DateTime!
+    "Transaction that contains this operation"
+    transaction: Transaction!
   }
 
   """

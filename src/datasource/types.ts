@@ -17,7 +17,8 @@ export type HorizonOpType =
   | "allow_trust"
   | "account_merge"
   | "manage_data"
-  | "bump_sequence";
+  | "bump_sequence"
+  | "inflation";
 
 interface IBaseOperationData {
   id: string;

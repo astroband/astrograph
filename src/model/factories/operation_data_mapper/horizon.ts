@@ -9,6 +9,7 @@ import {
   IChangeTrustOperation,
   ICreateAccountOperation,
   ICreatePassiveSellOfferOperation,
+  IInflationOperation,
   IManageDataOperation,
   IManageSellOfferOperation,
   IManageBuyOfferOperation,
@@ -50,6 +51,8 @@ export class DataMapper {
         return OperationType.ManageData;
       case "bump_sequence":
         return OperationType.BumpSequence;
+      case "inflation":
+        return OperationType.Inflation;
     }
   }
 
@@ -91,6 +94,8 @@ export class DataMapper {
         return this.mapCreatePassiveOffer();
       case OperationType.PathPayment:
         return this.mapPathPayment();
+      case OperationType.Inflation:
+        return this.mapInflation();
     }
   }
 
@@ -255,5 +260,9 @@ export class DataMapper {
         sourceAsset
       }
     };
+  }
+
+  private mapInflation(): IInflationOperation {
+    return this.baseData;
   }
 }

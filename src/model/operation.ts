@@ -14,7 +14,8 @@ export enum OperationType {
   ManageSellOffer = "manageSellOffer",
   ManageBuyOffer = "manageBuyOffer",
   CreatePassiveSellOffer = "createPassiveSellOffer",
-  PathPayment = "pathPayment"
+  PathPayment = "pathPayment",
+  Inflation = "inflation"
 }
 
 export interface IBaseOperation {
@@ -115,6 +116,9 @@ export interface IPathPaymentOperation extends IBaseOperation {
   sourceAsset: stellar.Asset;
 }
 
+export interface IInflationOperation extends IBaseOperation {
+}
+
 export type Operation =
   | IPaymentOperation
   | ISetOptionsOperation
@@ -127,4 +131,5 @@ export type Operation =
   | IManageSellOfferOperation
   | IManageBuyOfferOperation
   | IPathPaymentOperation
-  | ICreatePassiveSellOfferOperation;
+  | ICreatePassiveSellOfferOperation
+  | IInflationOperation;

@@ -46,6 +46,8 @@ export default {
           return "CreatePassiveSellOfferOperation";
         case OperationType.PathPayment:
           return "PathPaymentOperation";
+        case OperationType.Inflation:
+          return "InflationOperation";
       }
 
       return null;
