@@ -10,10 +10,12 @@ import {
   IChangeTrustOperation,
   ICreateAccountOperation,
   ICreatePassiveSellOfferOperation,
+  IInflationOperation,
   IManageBuyOfferOperation,
   IManageDataOperation,
   IManageSellOfferOperation,
   IPathPaymentOperation,
+  IPathPaymentStrictSendOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
@@ -31,8 +33,10 @@ export class DataMapper {
         return OperationType.CreateAccount;
       case "Payment":
         return OperationType.Payment;
-      case "PathPayment":
+      case "PathPaymentStrictReceive":
         return OperationType.PathPayment;
+      case "PathPaymentStrictSend":
+        return OperationType.PathPaymentStrictSend;
       case "ManageSellOffer":
         return OperationType.ManageSellOffer;
       case "ManageBuyOffer":
@@ -51,6 +55,8 @@ export class DataMapper {
         return OperationType.ManageData;
       case "BumpSequence":
         return OperationType.BumpSequence;
+      case "Inflation":
+        return OperationType.Inflation;
     }
   }
 
@@ -61,7 +67,9 @@ export class DataMapper {
       case OperationType.Payment:
         return "Payment";
       case OperationType.PathPayment:
-        return "PathPayment";
+        return "PathPaymentStrictReceive";
+      case OperationType.PathPaymentStrictSend:
+        return "PathPaymentStrictSend";
       case OperationType.ManageSellOffer:
         return "ManageSellOffer";
       case OperationType.ManageBuyOffer:
@@ -80,6 +88,8 @@ export class DataMapper {
         return "ManageData";
       case OperationType.BumpSequence:
         return "BumpSequence";
+      case OperationType.Inflation:
+        return "Inflation";
     }
   }
 
@@ -122,6 +132,10 @@ export class DataMapper {
         return this.mapCreatePassiveSellOffer();
       case OperationType.PathPayment:
         return this.mapPathPayment();
+      case OperationType.PathPaymentStrictSend:
+        return this.mapPathPaymentStrictSend();
+      case OperationType.Inflation:
+        return this.mapInflation();
     }
   }
 
@@ -201,7 +215,7 @@ export class DataMapper {
     return {
       ...this.baseData,
       ...{
-        limit: this.data.destination_amount.toString(),
+        limit: this.data.destination_amount,
         asset: AssetFactory.fromId(this.data.destination_asset.id)
       }
     };
@@ -270,6 +284,25 @@ export class DataMapper {
         path: this.data.path.map((node: IAsset) => AssetFactory.fromId(node.id))
       }
     };
+  }
+
+  private mapPathPaymentStrictSend(): IPathPaymentStrictSendOperation {
+    return {
+      ...this.baseData,
+      ...{
+        destinationMin: this.data.destination_amount,
+        amountReceived: this.data.amount_received,
+        amountSent: this.data.amount_sent,
+        destinationAccount: this.data.destination_account_id,
+        destinationAsset: AssetFactory.fromId(this.data.destination_asset.id),
+        sourceAsset: AssetFactory.fromId(this.data.source_asset.id),
+        path: this.data.path.map((node: IAsset) => AssetFactory.fromId(node.id))
+      }
+    };
+  }
+
+  private mapInflation(): IInflationOperation {
+    return this.baseData;
   }
 
   private mapAccountFlagOptions(data: IAccountFlagsOptionsData) {

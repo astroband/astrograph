@@ -4,7 +4,8 @@ import { RequireAtLeastOneProperty } from "../util/types";
 export type StorageOpType =
   | "CreateAccount"
   | "Payment"
-  | "PathPayment"
+  | "PathPaymentStrictReceive"
+  | "PathPaymentStrictSend"
   | "ManageSellOffer"
   | "ManageBuyOffer"
   | "CreatePassiveSellOffer"
@@ -13,7 +14,8 @@ export type StorageOpType =
   | "AllowTrust"
   | "AccountMerge"
   | "ManageData"
-  | "BumpSequence";
+  | "BumpSequence"
+  | "Inflation"
 
 export interface IAsset {
   code: AssetCode;
@@ -49,7 +51,18 @@ export interface IPaymentOperationData extends IBaseOperationData {
   source_asset: IAsset;
 }
 
-export interface IPathPaymentOperationData extends IBaseOperationData {
+export interface IPathPaymentStrictReceiveOperationData extends IBaseOperationData {
+  destination_account_id: AccountID;
+  destination_amount: string;
+  destination_asset: IAsset;
+  source_amount: string;
+  source_asset: IAsset;
+  amount_received: string;
+  amount_sent: string;
+  path: IAsset[];
+}
+
+export interface IPathPaymentStrictSendOperationData extends IBaseOperationData {
   destination_account_id: AccountID;
   destination_amount: number;
   destination_asset: IAsset;
@@ -135,7 +148,8 @@ export type OperationData = IPaymentOperationData &
   IManageDataOperationData &
   IManageOfferOperationData &
   ICreatePassiveSellOfferOperationData &
-  IPathPaymentOperationData;
+  IPathPaymentStrictReceiveOperationData &
+  IPathPaymentStrictSendOperationData;
 
 export interface ITransactionData {
   id: string;
