@@ -15,6 +15,7 @@ export const typeDefs = gql`
     createPassiveSellOffer
     pathPayment
     inflation
+    pathPaymentStrictSend
   }
 
   "Attributes all Stellar [operations](https://www.stellar.org/developers/guides/concepts/operations.html) share"
@@ -275,6 +276,31 @@ export const typeDefs = gql`
     dateTime: DateTime!
     "Transaction that contains this operation"
     transaction: Transaction!
+  }
+
+  "Represents [path payment operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#path-payment)"
+  type PathPaymentStrictSendOperation implements Operation {
+    "Operation id, assigned by Horizon"
+    id: String!
+    type: OperationType!
+    "Account on which behalf operation was executed"
+    sourceAccount: Account!
+    "When operations was executed"
+    dateTime: DateTime!
+    "Transaction that contains this operation"
+    transaction: Transaction!
+    "Minimum amount of \`destinationAsset\` receiver will get"
+    destinationMin: String!
+    "Amount of \`sourceAsset\` sent by the source account"
+    amountSent: String!
+    "Amount of \`destinationAsset\` received by the destination account"
+    amountReceived: String!
+    "What asset sender wants receiver to receive in the end"
+    destinationAsset: Asset!
+    "What asset sender wants to send"
+    sourceAsset: Asset!
+    "Payment receiver account"
+    destinationAccount: Account!
   }
 
   """

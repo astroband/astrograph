@@ -9,6 +9,7 @@ export type HorizonOpType =
   | "create_account"
   | "payment"
   | "path_payment"
+  | "path_payment_strict_send"
   | "manage_offer"
   | "manage_buy_offer"
   | "create_passive_offer"
@@ -56,6 +57,20 @@ export interface IPathPaymentOperationData extends IBaseOperationData {
   source_asset_issuer: AccountID;
   source_asset_type: string;
   source_max: string;
+  source_amount: string;
+}
+
+export interface IPathPaymentStrictSendOperationData extends IBaseOperationData {
+  from: AccountID;
+  to: AccountID;
+  asset_code: AssetCode;
+  asset_issuer: AccountID;
+  asset_type: HorizonAssetType;
+  amount: string;
+  source_asset_code: AssetCode;
+  source_asset_issuer: AccountID;
+  source_asset_type: string;
+  destination_min: string;
   source_amount: string;
 }
 
@@ -140,7 +155,8 @@ export type IHorizonOperationData = IPaymentOperationData &
   IManageDataOperationData &
   IManageOfferOperationData &
   ICreatePassiveOfferOperationData &
-  IPathPaymentOperationData;
+  IPathPaymentOperationData &
+  IPathPaymentStrictSendOperationData;
 
 export interface IHorizonTransactionData {
   id: string;

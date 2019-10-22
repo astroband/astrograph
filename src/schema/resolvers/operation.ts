@@ -48,6 +48,8 @@ export default {
           return "PathPaymentOperation";
         case OperationType.Inflation:
           return "InflationOperation";
+        case OperationType.PathPaymentStrictSend:
+          return "PathPaymentStrictSendOperation";
       }
 
       return null;
@@ -59,7 +61,16 @@ export default {
   AllowTrustOperation: { trustor: resolvers.account },
   ChangeTrustOperation: { asset: resolvers.asset },
   CreateAccountOperation: { destination: resolvers.account },
-  PathPaymentOperation: { destinationAccount: resolvers.account },
+  PathPaymentOperation: {
+    destinationAccount: resolvers.account,
+    destinationAsset: resolvers.asset,
+    sourceAsset: resolvers.asset,
+  },
+  PathPaymentStrictSendOperation: {
+    destinationAccount: resolvers.account,
+    destinationAsset: resolvers.asset,
+    sourceAsset: resolvers.asset,
+  },
   SetOptionsSigner: { account: resolvers.account },
   ManageBuyOfferOperation: { assetSelling: resolvers.asset, assetBuying: resolvers.asset },
   ManageSellOfferOperation: { assetSelling: resolvers.asset, assetBuying: resolvers.asset },

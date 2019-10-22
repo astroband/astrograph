@@ -14,6 +14,7 @@ import {
   IManageSellOfferOperation,
   IManageBuyOfferOperation,
   IPathPaymentOperation,
+  IPathPaymentStrictSendOperation,
   IPaymentOperation,
   ISetOptionsOperation,
   Operation,
@@ -33,6 +34,8 @@ export class DataMapper {
         return OperationType.Payment;
       case "path_payment":
         return OperationType.PathPayment;
+      case "path_payment_strict_send":
+        return OperationType.PathPaymentStrictSend;
       case "manage_offer":
         return OperationType.ManageSellOffer;
       case "manage_buy_offer":
@@ -96,6 +99,8 @@ export class DataMapper {
         return this.mapPathPayment();
       case OperationType.Inflation:
         return this.mapInflation();
+      case OperationType.PathPaymentStrictSend:
+        return this.mapPathPaymentStrictSend();
     }
   }
 
@@ -264,5 +269,27 @@ export class DataMapper {
 
   private mapInflation(): IInflationOperation {
     return this.baseData;
+  }
+
+  private mapPathPaymentStrictSend(): IPathPaymentStrictSendOperation {
+    const destinationAsset =
+      this.data.asset_type === "native" ? Asset.native() : new Asset(this.data.asset_code, this.data.asset_issuer);
+    const sourceAsset =
+      this.data.source_asset_type === "native"
+      ? Asset.native()
+      : new Asset(this.data.source_asset_code, this.data.source_asset_issuer);
+
+    return {
+      ...this.baseData,
+      ...{
+        destinationMin: this.data.destination_min,
+        amountSent: this.data.source_amount,
+        amountReceived: this.data.amount,
+        destinationAccount: this.data.to,
+        destinationAsset,
+        sourceAccount: this.data.from,
+        sourceAsset
+      }
+    };
   }
 }

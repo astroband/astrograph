@@ -5583,10 +5583,10 @@ stealthy-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
-stellar-base@^1.0.0:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/stellar-base/-/stellar-base-1.1.2.tgz#7b08031f4a5cf4e95b8137472f367903a225ac3d"
-  integrity sha512-dBifZ2NPeOVtHl7pCaSCfvOedUGhKs3qIfqc/ajk9vsOFnHma0sBxb268kQhGWEAUS5tUKYei2ur4dQtB3rDSA==
+stellar-base@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/stellar-base/-/stellar-base-2.1.0.tgz#27c1951920f8013b6dde74f29427a7e9ce9d16d8"
+  integrity sha512-Q+N+H3ch5JHqnTyMyKYVwRMFQSJjno5jvM+zQkr+On1Gwihe0s/T5hNMBfMrpdj4BVt9muVAYm8OpWPVTwq6rQ==
   dependencies:
     base32.js "^0.1.0"
     bignumber.js "^4.0.0"
