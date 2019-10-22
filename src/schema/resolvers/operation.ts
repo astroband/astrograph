@@ -46,6 +46,10 @@ export default {
           return "CreatePassiveSellOfferOperation";
         case OperationType.PathPayment:
           return "PathPaymentOperation";
+        case OperationType.Inflation:
+          return "InflationOperation";
+        case OperationType.PathPaymentStrictSend:
+          return "PathPaymentStrictSendOperation";
       }
 
       return null;
@@ -73,6 +77,11 @@ export default {
   ManageSellOfferOperation: {
     assetBuying: resolvers.asset,
     assetSelling: resolvers.asset
+  },
+  PathPaymentStrictSendOperation: {
+    destinationAccount: resolvers.account,
+    destinationAsset: resolvers.asset,
+    sourceAsset: resolvers.asset
   },
   SetOptionsSigner: { account: resolvers.account },
   Query: {

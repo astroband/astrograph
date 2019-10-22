@@ -14,6 +14,8 @@ export const typeDefs = gql`
     manageBuyOffer
     createPassiveSellOffer
     pathPayment
+    inflation
+    pathPaymentStrictSend
   }
 
   enum AccountFlagsOptions {
@@ -179,8 +181,32 @@ export const typeDefs = gql`
     value: String
   }
 
-  "Represents [manage offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-offer)"
+  "Represents [manage sell offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-sell-offer)"
   type ManageSellOfferOperation implements Operation {
+    "Operation id, assigned by Horizon"
+    id: String!
+    type: OperationType!
+    "Account on which behalf operation was executed"
+    sourceAccount: Account!
+    "When operations was executed"
+    dateTime: DateTime!
+    "Transaction that contains this operation"
+    transaction: Transaction!
+    "Rational representation of the price"
+    priceComponents: OfferPriceComponents!
+    "Price of 1 unit of \`selling\` in terms of \`buying\`"
+    price: String!
+    offerId: String!
+    "Amount of \`selling\` being sold"
+    amount: String!
+    "Asset the offer creator is selling"
+    assetSelling: Asset!
+    "Asset the offer creator is buying"
+    assetBuying: Asset!
+  }
+
+  "Represents [manage buy offer operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#manage-buy-offer)"
+  type ManageBuyOfferOperation implements Operation {
     "Operation id, assigned by Horizon"
     id: String!
     type: OperationType!
@@ -246,6 +272,43 @@ export const typeDefs = gql`
     destinationAccount: Account!
     "The assets (other than send asset and destination asset) involved in the offers the path takes"
     path: [Asset]
+  }
+
+  type InflationOperation implements Operation {
+    "Operation id, assigned by Horizon"
+    id: String!
+    type: OperationType!
+    "Account on which behalf operation was executed"
+    sourceAccount: Account!
+    "When operations was executed"
+    dateTime: DateTime!
+    "Transaction that contains this operation"
+    transaction: Transaction!
+  }
+
+  "Represents [path payment operation](https://www.stellar.org/developers/guides/concepts/list-of-operations.html#path-payment)"
+  type PathPaymentStrictSendOperation implements Operation {
+    "Operation id, assigned by Horizon"
+    id: String!
+    type: OperationType!
+    "Account on which behalf operation was executed"
+    sourceAccount: Account!
+    "When operations was executed"
+    dateTime: DateTime!
+    "Transaction that contains this operation"
+    transaction: Transaction!
+    "Minimum amount of \`destinationAsset\` receiver will get"
+    destinationMin: String!
+    "Amount of \`sourceAsset\` sent by the source account"
+    amountSent: String!
+    "Amount of \`destinationAsset\` received by the destination account"
+    amountReceived: String!
+    "What asset sender wants receiver to receive in the end"
+    destinationAsset: Asset!
+    "What asset sender wants to send"
+    sourceAsset: Asset!
+    "Payment receiver account"
+    destinationAccount: Account!
   }
 
   """

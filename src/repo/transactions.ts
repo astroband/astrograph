@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { IDatabase } from "pg-promise";
 import { TransactionWithXDR } from "../model";
 import { ITransactionTableRow, TransactionWithXDRFactory } from "../model/factories";
@@ -32,7 +31,7 @@ export default class TransactionsRepo {
       return new Array<TransactionWithXDR | null>();
     }
 
-    const res = await this.db.manyOrNone(sql.selectTxIn, [_.uniq(ids)]);
+    const res = await this.db.manyOrNone(sql.selectTxIn, [ids]);
     const txs = res.map((v: ITransactionTableRow) => TransactionWithXDRFactory.fromDb(v));
 
     return ids.map<TransactionWithXDR | null>(id => txs.find(a => a.id === id) || null);
@@ -46,21 +45,17 @@ export default class TransactionsRepo {
       return [];
     }
 
-    const feeMetas = await this.db.many(sql.selectFee, [seq, _.map(txs, "txindex")]);
+    const feeMetas: Array<{ txindex: string; txchanges: string }> = await this.db.many(sql.selectFee, [
+      seq,
+      txs.map(tx => tx.txindex)
+    ]);
 
-    return _.chain(txs)
+    return txs
       .map(tx => {
-        const meta = _.find(feeMetas, { txindex: tx.txindex }) as { txchanges: string };
-        if (!meta) {
-          return;
-        }
-        return {
-          ...tx,
-          txfeemeta: meta.txchanges
-        };
+        const meta = feeMetas.find(m => m.txindex === tx.txindex);
+        return meta ? { ...tx, txfeemeta: meta.txchanges } : null;
       })
-      .filter()
-      .map(t => TransactionWithXDRFactory.fromDb(t))
-      .value();
+      .filter(tx => tx !== null)
+      .map(tx => TransactionWithXDRFactory.fromDb(tx));
   }
 }

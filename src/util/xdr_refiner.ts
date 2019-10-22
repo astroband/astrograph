@@ -13,8 +13,11 @@ export function refineOperationXDR(xdr: any) {
     case t.createAccount():
       obj = refineCreateAccountOpXDR(body.createAccountOp());
       break;
-    case t.pathPayment():
-      obj = refinePathPaymentOpXDR(body.pathPaymentOp());
+    case t.pathPaymentStrictReceive():
+      obj = refinePathPaymentOpXDR(body.pathPaymentStrictReceiveOp());
+      break;
+    case t.pathPaymentStrictSend():
+      obj = refinePathPaymentStrictSendOpXDR(body.pathPaymentStrictSendOp());
       break;
     case t.setOption():
       obj = refineSetOptionsOpXDR(body.setOptionsOp());
@@ -52,7 +55,7 @@ export function refineOperationXDR(xdr: any) {
 
   return {
     source,
-    kind: body.switch().name,
+    type: body.switch().name,
     ...obj
   };
 }
@@ -107,6 +110,16 @@ function refineCreateAccountOpXDR(body: any) {
 function refinePathPaymentOpXDR(body: any) {
   return {
     sendMax: body.sendMax().toString(),
+    amountReceived: body.destAmount().toString(),
+    destinationAccount: publicKeyFromBuffer(body.destination().value()),
+    destinationAsset: Asset.fromOperation(body.destAsset()),
+    sourceAsset: Asset.fromOperation(body.sendAsset())
+  };
+}
+
+function refinePathPaymentStrictSendOpXDR(body: any) {
+  return {
+    destinationMin: body.destMin().toString(),
     amountReceived: body.destAmount().toString(),
     destinationAccount: publicKeyFromBuffer(body.destination().value()),
     destinationAsset: Asset.fromOperation(body.destAsset()),

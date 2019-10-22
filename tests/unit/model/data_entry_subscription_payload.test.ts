@@ -23,7 +23,7 @@ describe("constructor", () => {
   it("sets account id and mutation type", () => {
     subject = new DataEntrySubscriptionPayload(MutationType.Update, xdr);
 
-    expect(subject.accountID).toBe("GBA4AZDYADUTSYAUTSUOIYE4QKWSLIWEESR7QTYSAZIRYDUFXZ2D3RCP");
+    expect(subject.account).toBe("GBA4AZDYADUTSYAUTSUOIYE4QKWSLIWEESR7QTYSAZIRYDUFXZ2D3RCP");
     expect(subject.mutationType).toBe(MutationType.Update);
   });
 

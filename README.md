@@ -37,26 +37,28 @@ Create assets view in database:
 
 ```
 CREATE VIEW assets AS
-( SELECT (t.assetcode::text || '-'::text) || t.issuer::text AS assetid,
+( SELECT (t.assetcode::text || '-'::text) || t.issuer::text AS id,
     t.assetcode AS code,
     t.issuer,
-    sum(t.balance) AS total_supply,
-    sum(t.balance) FILTER (WHERE t.flags = 1) AS circulating_supply,
-    count(t.accountid) AS holders_count,
-    count(t.accountid) FILTER (WHERE t.flags = 0) AS unauthorized_holders_count,
-    max(t.lastmodified) AS last_activity
-   FROM trustlines t
-  GROUP BY t.issuer, t.assetcode
+    a.flags,
+    sum(t.balance) AS "totalSupply",
+    sum(t.balance) FILTER (WHERE t.flags = 1) AS "circulatingSupply",
+    count(t.accountid) AS "holdersCount",
+    count(t.accountid) FILTER (WHERE t.flags = 0) AS "unauthorizedHoldersCount",
+    max(t.lastmodified) AS "lastActivity"
+   FROM trustlines t JOIN accounts a ON t.issuer::text = a.accountid::text
+  GROUP BY t.issuer, t.assetcode, a.flags
   ORDER BY (count(t.accountid)) DESC)
 UNION
- SELECT 'native'::text AS assetid,
+ SELECT 'native'::text AS id,
     'XLM'::character varying AS code,
     NULL::character varying AS issuer,
-    sum(accounts.balance) AS total_supply,
-    sum(accounts.balance) AS circulating_supply,
-    count(*) AS holders_count,
-    0 AS unauthorized_holders_count,
-    max(accounts.lastmodified) AS last_activity
+    4 AS flags,
+    sum(accounts.balance) AS "totalSupply",
+    sum(accounts.balance) AS "circulatingSupply",
+    count(*) AS "holdersCount",
+    0 AS "unauthorizedHoldersCount",
+    max(accounts.lastmodified) AS "lastActivity"
    FROM accounts;
 ```
 

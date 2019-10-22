@@ -1,47 +1,46 @@
 import { fieldsList } from "graphql-fields-list";
 import { withFilter } from "graphql-subscriptions";
-import _ from "lodash";
-import { getRepository } from "typeorm";
+import { getRepository, In } from "typeorm";
 
-import * as resolvers from "./shared";
+import { account as accountResolver, ledger as ledgerResolver } from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import { Balance, ITrade, Operation, PaymentOperations, Transaction } from "../../model";
+import { IBalance, ITrade, Operation, PaymentOperations, Transaction } from "../../model";
 import { BalanceFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
-import { Account, Offer } from "../../orm/entities";
+import { Account, Asset, Offer, TrustLine } from "../../orm/entities";
 import {
   OperationData as StorageOperationData,
   ITradeData as IStorageTradeData,
   ITransactionData as IStorageTransactionData
 } from "../../storage/types";
 
-import { db } from "../../database";
 import { IApolloContext } from "../../graphql_server";
 import { ACCOUNT, pubsub } from "../../pubsub";
-import { joinToMap } from "../../util/array";
 import { getReservedBalance } from "../../util/base_reserve";
 import { AssetTransformer } from "../../util/orm";
 import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
 
-const balancesResolver = createBatchResolver<Account, Balance[]>(async (source: Account[]) => {
+const balancesResolver = createBatchResolver<Account, IBalance[]>(async (source: Account[]) => {
   const accountIDs = source.map(s => s.id);
-  const balances = await db.trustLines.findAllByAccountIDs(accountIDs);
+  const trustlines = await getRepository(TrustLine).find({ where: { account: In(accountIDs) } });
+  const allBalances: IBalance[][] = [];
 
-  const map = joinToMap(accountIDs, balances);
-
-  for (const [accountID, accountBalances] of map) {
-    const account = source.find((acc: Account) => acc.id === accountID);
+  for (const id of accountIDs) {
+    const account = source.find(acc => acc.id === id);
 
     if (!account) {
       continue;
     }
 
-    accountBalances.unshift(await BalanceFactory.nativeForAccount(account));
+    const balances: IBalance[] = trustlines.filter(t => t.account === id);
+    balances.unshift(BalanceFactory.nativeForAccount(account));
+
+    allBalances.push(balances);
   }
 
-  return balances;
+  return allBalances;
 });
 
 const accountSubscription = (event: string) => {
@@ -63,11 +62,11 @@ export default {
   Account: {
     reservedBalance: (root: Account) => toFloatAmountString(getReservedBalance(root.numSubentries)),
     assets: async (root: Account, args: any) => {
-      const assets = await db.assets.findAll({ issuer: root.id }, args);
+      const assets = await getRepository(Asset).find({ issuer: root.id });
       return makeConnection(assets);
     },
     balances: balancesResolver,
-    ledger: resolvers.ledger,
+    ledger: ledgerResolver,
     operations: async (root: Account, args: any, ctx: IApolloContext) => {
       const { type, ...paging } = args;
       const storage = ctx.storage.operations;
@@ -119,7 +118,7 @@ export default {
 
       return makeConnection<Offer>(offers);
     },
-    inflationDestination: resolvers.account
+    inflationDestination: accountResolver
   },
   Query: {
     account(root: any, args: any, ctx: IApolloContext, info: any) {

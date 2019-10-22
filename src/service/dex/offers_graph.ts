@@ -27,20 +27,17 @@ class AssetOrder {
   }
 
   public get sellingBound() {
-    const { amount, priceN, priceD } = this;
-    let sellingBound = amount;
-
-    if (priceN <= priceD) {
-      sellingBound = amount
-        .times(priceN)
-        .div(priceD)
-        .integerValue(BigNumber.ROUND_FLOOR)
-        .times(priceD)
-        .div(priceN)
-        .integerValue(BigNumber.ROUND_CEIL);
+    if (this.priceN > this.priceD) {
+      return this.amount;
     }
 
-    return sellingBound;
+    return this.amount
+      .times(this.priceN)
+      .div(this.priceD)
+      .integerValue(BigNumber.ROUND_FLOOR)
+      .times(this.priceD)
+      .div(this.priceN)
+      .integerValue(BigNumber.ROUND_CEIL);
   }
 }
 

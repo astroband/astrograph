@@ -15,7 +15,9 @@ export enum OperationType {
   ManageSellOffer = "manageSellOffer",
   ManageBuyOffer = "manageBuyOffer",
   CreatePassiveSellOffer = "createPassiveSellOffer",
-  PathPayment = "pathPayment"
+  PathPayment = "pathPaymentStrictReceive",
+  Inflation = "inflation",
+  PathPaymentStrictSend = "pathPaymentStrictSend"
 }
 
 export const PaymentOperations = [
@@ -130,7 +132,18 @@ export interface IPathPaymentOperation extends IBaseOperation {
   destinationAccount: AccountID;
   destinationAsset: stellar.Asset;
   sourceAsset: stellar.Asset;
-  path: stellar.Asset[];
+}
+
+export interface IPathPaymentStrictSendOperation extends IBaseOperation {
+  destinationMin: string;
+  amountSent: string;
+  amountReceived: string;
+  destinationAccount: AccountID;
+  destinationAsset: stellar.Asset;
+  sourceAsset: stellar.Asset;
+}
+
+export interface IInflationOperation extends IBaseOperation {
 }
 
 export type Operation =
@@ -145,4 +158,6 @@ export type Operation =
   | IManageSellOfferOperation
   | IManageBuyOfferOperation
   | IPathPaymentOperation
-  | ICreatePassiveSellOfferOperation;
+  | ICreatePassiveSellOfferOperation
+  | IInflationOperation
+  | IPathPaymentStrictSendOperation;

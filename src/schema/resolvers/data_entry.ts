@@ -1,5 +1,5 @@
 import { withFilter } from "graphql-subscriptions";
-import * as resolvers from "./shared";
+import { account as accountResolver, ledger as ledgerResolver } from "./shared";
 import { eventMatches } from "./util";
 
 import { IApolloContext } from "../../graphql_server";
@@ -21,12 +21,12 @@ const dataEntrySubscription = (event: string) => {
 };
 
 export default {
-  DataEntry: { ledger: resolvers.ledger },
+  DataEntry: { ledger: ledgerResolver },
   DataEntryValues: {
-    account: resolvers.account,
-    ledger: resolvers.ledger
+    account: accountResolver,
+    ledger: ledgerResolver
   },
-  DataEntrySubscriptionPayload: { account: resolvers.account },
+  DataEntrySubscriptionPayload: { account: accountResolver },
   Subscription: {
     dataEntry: dataEntrySubscription(DATA_ENTRY)
   }
