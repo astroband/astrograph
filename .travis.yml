@@ -16,7 +16,6 @@ services:
 
 node_js:
   - 10.16.3
-  - 12.11.1
 env:
   global:
     - DATABASE_URL=postgresql://postgres@localhost/astrograph_test
