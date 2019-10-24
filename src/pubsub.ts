@@ -1,4 +1,4 @@
-import PostgresPubSub from "@udia/graphql-postgres-subscriptions";
+import PostgresPubSub from "@astroband/graphql-postgres-subscriptions";
 import { Client } from "pg";
 import stellar from "stellar-base";
 import { getCustomRepository } from "typeorm";
