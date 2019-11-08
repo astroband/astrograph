@@ -23,6 +23,10 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
     opObject.amountSent = getSentAmount(tx, index, opSource);
   }
 
+  if (opObject.type === OperationType.PathPaymentStrictSend && tx.success) {
+    opObject.amountReceived = getReceivedAmount(tx, index, opObject.destinationAccount);
+  }
+
   delete opObject.source;
 
   return {
@@ -48,4 +52,21 @@ function getSentAmount(tx: TransactionWithXDR, index: number, source: AccountID)
   const data = lastChange.entry === EntryType.Account ? lastChange.data.account() : lastChange.data.trustLine();
 
   return new BigNumber(lastChange.prevState.balance).minus(data.balance().toString()).toString();
+}
+
+function getReceivedAmount(tx: TransactionWithXDR, index: number, destination: AccountID) {
+  // we should skip fee changes and transaction changes, that's why +2. Not sure, why it's working, need more research
+  const changes = ChangesExtractor.call(tx)[index + 2].filter(c => {
+    return (
+      c.type === ChangeType.Updated &&
+      (c.entry === EntryType.Trustline || c.entry === EntryType.Account) &&
+      publicKeyFromXDR(c.data.value()) === destination
+    );
+  });
+
+  const lastChange = changes[changes.length - 1];
+
+  const data = lastChange.entry === EntryType.Account ? lastChange.data.account() : lastChange.data.trustLine();
+
+  return new BigNumber(data.balance().toString()).minus(lastChange.prevState.balance).toString();
 }

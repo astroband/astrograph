@@ -120,7 +120,7 @@ function refinePathPaymentOpXDR(body: any) {
 function refinePathPaymentStrictSendOpXDR(body: any) {
   return {
     destinationMin: body.destMin().toString(),
-    amountReceived: body.destAmount().toString(),
+    amountSent: body.sendAmount().toString(),
     destinationAccount: publicKeyFromBuffer(body.destination().value()),
     destinationAsset: Asset.fromOperation(body.destAsset()),
     sourceAsset: Asset.fromOperation(body.sendAsset())
