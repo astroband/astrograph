@@ -136,5 +136,8 @@ function reportToSentry(error: GraphQLError): void {
     return;
   }
 
-  Sentry.captureException(error);
+  Sentry.withScope((scope) => {
+    scope.setExtra("query", error.source);
+    Sentry.captureException(error.originalError || error);
+  });
 }
