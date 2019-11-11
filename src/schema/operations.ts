@@ -254,10 +254,10 @@ export const typeDefs = gql`
     transaction: Transaction!
     "Max send amount"
     sendMax: String!
-    "Amount of \`sourceAsset\` sent by the source account"
-    amountSent: String!
-    "Amount of \`destinationAsset\` received by the destination account"
-    amountReceived: String!
+    "Amount of \`sourceAsset\` sent by the source account. Can be empty for the failed transaction"
+    amountSent: String
+    "Amount of \`destinationAsset\` received by the destination account. Can be empty for the failed transaction"
+    amountReceived: String
     "What asset sender wants receiver to receive in the end"
     destinationAsset: Asset!
     "What asset sender wants to send"
@@ -289,12 +289,12 @@ export const typeDefs = gql`
     dateTime: DateTime!
     "Transaction that contains this operation"
     transaction: Transaction!
-    "Minimum amount of \`destinationAsset\` receiver will get"
+    "Minimum amount of \`destinationAsset\` receiver will get. Can be empty for the failed transaction"
     destinationMin: String!
-    "Amount of \`sourceAsset\` sent by the source account"
-    amountSent: String!
+    "Amount of \`sourceAsset\` sent by the source account. Can be empty for the failed transaction"
+    amountSent: String
     "Amount of \`destinationAsset\` received by the destination account"
-    amountReceived: String!
+    amountReceived: String
     "What asset sender wants receiver to receive in the end"
     destinationAsset: Asset!
     "What asset sender wants to send"

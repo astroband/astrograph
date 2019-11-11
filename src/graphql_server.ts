@@ -3,9 +3,11 @@ import { initGraphqlServer as init } from "./init";
 import * as Sentry from "@sentry/node";
 
 import { ApolloServer } from "apollo-server";
+import { InMemoryLRUCache } from 'apollo-server-caching';
 import { GraphQLError } from "graphql";
 
 import {
+  BaseHorizonDataSource,
   HorizonOperationsDataSource,
   HorizonPaymentsDataSource,
   HorizonTradesDataSource,
@@ -54,6 +56,27 @@ export interface IApolloContext {
   dataSources: DataSources;
 }
 
+// There is the known issue with Apollo Server that datasources
+// are not available in the subscription resolver context.
+// So we initialize them manually
+// (this particular code snippet is taken from
+// https://github.com/apollographql/apollo-server/issues/1526#issuecomment-503285841)
+// This issue should be fixed in apollo-server v3
+const constructDataSourcesForSubscriptions = (context: any) => {
+  const initializeDataSource = (dataSourceClass: new () => BaseHorizonDataSource ) => {
+    const instance = new dataSourceClass();
+    instance.initialize({ context, cache: new InMemoryLRUCache() });
+    return instance;
+  }
+
+  return {
+    operations: initializeDataSource(HorizonOperationsDataSource),
+    payments: initializeDataSource(HorizonPaymentsDataSource),
+    trades: initializeDataSource(HorizonTradesDataSource),
+    transactions: initializeDataSource(HorizonTransactionsDataSource)
+  }
+}
+
 init().then(() => {
   listenBaseReserveChange();
   listenOffers();
@@ -64,8 +87,16 @@ init().then(() => {
     introspection: true,
     playground: process.env.NODE_ENV === "production" ? { endpoint, tabs: [{ endpoint, query: demoQuery }] } : true,
     debug: true,
-    context: () => {
-      return { orderBook };
+    context: ({ req, connection }) => {
+      // initialize datasources manually only for subscriptions
+      if (connection) {
+        return {
+          orderBook,
+          dataSources: constructDataSourcesForSubscriptions(connection.context),
+        };
+      } else {
+        return { orderBook };
+      }
     },
     cors: true,
     dataSources: (): DataSources => {
