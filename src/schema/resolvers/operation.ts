@@ -55,7 +55,7 @@ export default {
       return null;
     }
   },
-  PaymentOperation: { destination: resolvers.account },
+  PaymentOperation: { destination: resolvers.account, asset: resolvers.asset },
   SetOptionsOperation: { inflationDestination: resolvers.account },
   AccountMergeOperation: { destination: resolvers.account },
   AllowTrustOperation: { trustor: resolvers.account },

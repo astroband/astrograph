@@ -5,7 +5,7 @@ import { AccountID, Operation, OperationType, Transaction, TransactionWithXDR } 
 import { publicKeyFromXDR } from "./xdr/account";
 import { refineOperationXDR } from "./xdr_refiner";
 
-export default function extractOperation(tx: TransactionWithXDR, index: number): Operation {
+export default function extractOperation(tx: TransactionWithXDR, index: number, closeTime: Date): Operation {
   const opXDR = tx.operationsXDR[index];
 
   if (!opXDR) {
@@ -13,6 +13,8 @@ export default function extractOperation(tx: TransactionWithXDR, index: number):
   }
 
   const opObject = refineOperationXDR(opXDR);
+  opObject.dateTime = closeTime;
+
   const opSource = opObject.source || tx.sourceAccount;
 
   if (opObject.type === OperationType.AllowTrust) {

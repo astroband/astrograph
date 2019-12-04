@@ -72,7 +72,7 @@ export class Publisher {
 
     for (const tx of transactions) {
       for (let index = 0; index < tx.operationsXDR.length; index++) {
-        pubsub.publish(NEW_OPERATION, extractOperation(tx, index));
+        pubsub.publish(NEW_OPERATION, extractOperation(tx, index, header.closeTime));
       }
     }
   }
