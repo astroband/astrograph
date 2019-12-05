@@ -9,10 +9,9 @@ import {
   IChangeTrustOperation,
   ICreateAccountOperation,
   ICreatePassiveSellOfferOperation,
-  IInflationOperation,
+  IManageBuyOfferOperation,
   IManageDataOperation,
   IManageSellOfferOperation,
-  IManageBuyOfferOperation,
   IPathPaymentOperation,
   IPathPaymentStrictSendOperation,
   IPaymentOperation,
@@ -98,7 +97,8 @@ export class DataMapper {
       case OperationType.PathPayment:
         return this.mapPathPayment();
       case OperationType.Inflation:
-        return this.mapInflation();
+        // INLFATION operation doesn't have any specific properties
+        return this.baseData;
       case OperationType.PathPaymentStrictSend:
         return this.mapPathPaymentStrictSend();
     }
@@ -267,17 +267,13 @@ export class DataMapper {
     };
   }
 
-  private mapInflation(): IInflationOperation {
-    return this.baseData;
-  }
-
   private mapPathPaymentStrictSend(): IPathPaymentStrictSendOperation {
     const destinationAsset =
       this.data.asset_type === "native" ? Asset.native() : new Asset(this.data.asset_code, this.data.asset_issuer);
     const sourceAsset =
       this.data.source_asset_type === "native"
-      ? Asset.native()
-      : new Asset(this.data.source_asset_code, this.data.source_asset_issuer);
+        ? Asset.native()
+        : new Asset(this.data.source_asset_code, this.data.source_asset_issuer);
 
     return {
       ...this.baseData,

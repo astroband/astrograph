@@ -3,7 +3,7 @@ import { initGraphqlServer as init } from "./init";
 import * as Sentry from "@sentry/node";
 
 import { ApolloServer } from "apollo-server";
-import { InMemoryLRUCache } from 'apollo-server-caching';
+import { InMemoryLRUCache } from "apollo-server-caching";
 import { GraphQLError } from "graphql";
 
 import {

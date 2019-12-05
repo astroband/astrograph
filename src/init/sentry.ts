@@ -9,9 +9,11 @@ export function initSentry(): Promise<boolean> {
 
   Sentry.init({
     dsn: SENTRY_DSN,
-    integrations: [new Integrations.RewriteFrames({
-      root: __dirname ? `${__dirname}/../..` : process.cwd()
-    })]
+    integrations: [
+      new Integrations.RewriteFrames({
+        root: __dirname ? `${__dirname}/../..` : process.cwd()
+      })
+    ]
   });
 
   return Promise.resolve(true);

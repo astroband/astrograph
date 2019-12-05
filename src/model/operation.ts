@@ -117,9 +117,6 @@ export interface IPathPaymentOperation extends IBaseOperation {
   sourceAsset: stellar.Asset;
 }
 
-export interface IInflationOperation extends IBaseOperation {
-}
-
 export interface IPathPaymentStrictSendOperation extends IBaseOperation {
   destinationMin: string;
   amountSent: string;
@@ -142,6 +139,5 @@ export type Operation =
   | IManageBuyOfferOperation
   | IPathPaymentOperation
   | ICreatePassiveSellOfferOperation
-  | IInflationOperation
   | IPathPaymentStrictSendOperation
   | ICreatePassiveSellOfferOperation;
