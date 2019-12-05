@@ -2,10 +2,15 @@ import BigNumber from "bignumber.js";
 import { Asset } from "stellar-base";
 import { ChangesExtractor, ChangeType, EntryType } from "../changes_extractor";
 import { AccountID, Operation, OperationType, Transaction, TransactionWithXDR } from "../model";
+import { buildOperationId } from "./horizon";
 import { publicKeyFromXDR } from "./xdr/account";
 import { refineOperationXDR } from "./xdr_refiner";
 
-export default function extractOperation(tx: TransactionWithXDR, index: number, closeTime: Date): Operation {
+export default function extractOperation(
+  ledgerInfo: { ledgerSeq: number; closeTime: Date },
+  tx: TransactionWithXDR,
+  index: number
+): Operation {
   const opXDR = tx.operationsXDR[index];
 
   if (!opXDR) {
@@ -13,7 +18,8 @@ export default function extractOperation(tx: TransactionWithXDR, index: number, 
   }
 
   const opObject = refineOperationXDR(opXDR);
-  opObject.dateTime = closeTime;
+  opObject.dateTime = ledgerInfo.closeTime;
+  opObject.id = buildOperationId(ledgerInfo.ledgerSeq, tx.index, index + 1);
 
   const opSource = opObject.source || tx.sourceAccount;
 

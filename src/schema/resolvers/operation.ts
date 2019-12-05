@@ -64,12 +64,12 @@ export default {
   PathPaymentOperation: {
     destinationAccount: resolvers.account,
     destinationAsset: resolvers.asset,
-    sourceAsset: resolvers.asset,
+    sourceAsset: resolvers.asset
   },
   PathPaymentStrictSendOperation: {
     destinationAccount: resolvers.account,
     destinationAsset: resolvers.asset,
-    sourceAsset: resolvers.asset,
+    sourceAsset: resolvers.asset
   },
   SetOptionsSigner: { account: resolvers.account },
   ManageBuyOfferOperation: { assetSelling: resolvers.asset, assetBuying: resolvers.asset },
