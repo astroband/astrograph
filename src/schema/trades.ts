@@ -1,29 +1,24 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
-  "Represents single [trade](https://www.stellar.org/developers/horizon/reference/resources/trade.html)(fulfilled offer)"
+  "Represents single trade(fulfilled offer)"
   type Trade {
     id: String
     "When the ledger with this trade was closed"
     ledgerCloseTime: DateTime!
     "The sell offer"
     offer: OfferID
-    baseOffer: OfferID
-    "Base party of this trade"
-    baseAccount: Account
-    "Amount of \`baseAsset\` that was moved from \`baseAccount\` to \`counterAccount\`"
-    baseAmount: Float!
-    baseAsset: Asset!
-    counterOffer: OfferID
+    seller: Account
+    "Amount of \`assetSold\` that was moved from \`seller\` to \`buyer\`"
+    amountSold: String!
+    assetSold: Asset!
     "Counter party of this trade"
-    counterAccount: Account
-    "Amount of \`counterAsset\` that was moved from \`counterAccount\` to \`baseAccount\`"
-    counterAmount: Float!
-    counterAsset: Asset!
-    "Indicates which party of the trade made the sell offer"
-    baseIsSeller: Boolean
+    buyer: Account
+    "Amount of \`assetBought\` that was moved from \`buyer\` to \`seller\`"
+    amountBought: String!
+    assetBought: Asset!
     "Original offer price"
-    price: Float
+    price: String
   }
 
   type TradeConnection {
@@ -40,9 +35,9 @@ export const typeDefs = gql`
   extend type Query {
     "Get list of trades"
     trades(
-      baseAsset: AssetID
-      counterAsset: AssetID
-      offerID: Int
+      assetSold: AssetID
+      assetBought: AssetID
+      offer: String
       first: Int
       after: String
       last: Int

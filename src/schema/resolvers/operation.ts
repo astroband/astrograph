@@ -1,10 +1,10 @@
 import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
-import { IHorizonOperationData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
 import { Operation, OperationType, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
+import { OperationData as StorageOperationData } from "../../storage/types";
 import { makeConnection } from "./util";
 
 import * as resolvers from "./shared";
@@ -17,8 +17,8 @@ export default {
         return operation.tx;
       }
 
-      const records = await ctx.dataSources.transactions.byIds([operation.tx.id]);
-      return TransactionWithXDRFactory.fromHorizon(records[0]);
+      const tx = await ctx.storage.transactions.get(operation.tx.id);
+      return TransactionWithXDRFactory.fromStorage(tx);
     },
     __resolveType(operation: Operation) {
       switch (operation.type) {
@@ -64,7 +64,16 @@ export default {
   PathPaymentOperation: {
     destinationAccount: resolvers.account,
     destinationAsset: resolvers.asset,
-    sourceAsset: resolvers.asset
+    sourceAsset: resolvers.asset,
+    path: resolvers.asset
+  },
+  CreatePassiveSellOfferOperation: {
+    assetBuying: resolvers.asset,
+    assetSelling: resolvers.asset
+  },
+  ManageSellOfferOperation: {
+    assetBuying: resolvers.asset,
+    assetSelling: resolvers.asset
   },
   PathPaymentStrictSendOperation: {
     destinationAccount: resolvers.account,
@@ -72,22 +81,22 @@ export default {
     sourceAsset: resolvers.asset
   },
   SetOptionsSigner: { account: resolvers.account },
-  ManageBuyOfferOperation: { assetSelling: resolvers.asset, assetBuying: resolvers.asset },
-  ManageSellOfferOperation: { assetSelling: resolvers.asset, assetBuying: resolvers.asset },
   Query: {
     operation: async (root: any, args: { id: string }, ctx: IApolloContext) => {
-      const response = await ctx.dataSources.operations.byId(args.id);
-      return OperationFactory.fromHorizon(response);
+      const doc = await ctx.storage.operations.get(args.id);
+      return OperationFactory.fromStorage(doc);
     },
     operations: async (root: any, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.operations.all(args), r =>
-        OperationFactory.fromHorizon(r)
-      );
-    },
-    payments: async (root: any, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(await ctx.dataSources.payments.all(args), r =>
-        OperationFactory.fromHorizon(r)
-      );
+      const { type, ...paging } = args;
+      const storage = ctx.storage.operations;
+
+      if (type) {
+        storage.filterTypes(type);
+      }
+
+      const docs = await ctx.storage.operations.all(paging);
+
+      return makeConnection<StorageOperationData, Operation>(docs, r => OperationFactory.fromStorage(r));
     }
   },
   Subscription: {

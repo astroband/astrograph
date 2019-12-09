@@ -4,14 +4,15 @@ import { getCustomRepository, getRepository } from "typeorm";
 import * as resolvers from "./shared";
 import { eventMatches, makeConnection } from "./util";
 
-import { MutationType, OfferValues, Trade } from "../../model";
+import { ITrade, MutationType, OfferValues } from "../../model";
 import { AssetFactory, TradeFactory } from "../../model/factories";
 import { Offer } from "../../orm/entities";
 import { OfferRepository } from "../../orm/repository/offer";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
-import { IHorizonTradeData } from "../../datasource/types";
 import { IApolloContext } from "../../graphql_server";
+
+import { ITradeData as IStorageTradeData } from "../../storage/types";
 import { AssetTransformer } from "../../util/orm";
 import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
@@ -64,8 +65,8 @@ export default {
     buying: resolvers.asset,
     ledger: resolvers.ledger,
     trades: async (root: Offer, args: any, ctx: IApolloContext, info: any) => {
-      const records = await ctx.dataSources.trades.forOffer(root.id, args);
-      return makeConnection<IHorizonTradeData, Trade>(records, r => TradeFactory.fromHorizon(r));
+      const records = await ctx.storage.trades.forOffer(root.id).all(args);
+      return makeConnection<IStorageTradeData, ITrade>(records, r => TradeFactory.fromStorage(r));
     }
   },
   OfferValues: {

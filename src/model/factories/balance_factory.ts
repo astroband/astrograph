@@ -14,8 +14,8 @@ export interface ITrustLineTableRow {
   balance: string;
   flags: number;
   lastmodified: number;
-  buyingliabilities: string;
-  sellingliabilities: string;
+  buyingliabilities: string | null;
+  sellingliabilities: string | null;
 }
 
 export class BalanceFactory {
@@ -49,8 +49,8 @@ export class BalanceFactory {
       limit,
       authorized: true,
       lastModified: account.lastModified,
-      spendableBalance: balance.minus(account.sellingLiabilities).minus(minBalance),
-      receivableBalance: limit.minus(account.buyingLiabilities).minus(balance)
+      spendableBalance: balance.minus(account.sellingLiabilities || 0).minus(minBalance),
+      receivableBalance: limit.minus(account.buyingLiabilities || 0).minus(balance)
     });
   }
 }

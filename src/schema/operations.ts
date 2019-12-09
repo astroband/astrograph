@@ -18,6 +18,12 @@ export const typeDefs = gql`
     pathPaymentStrictSend
   }
 
+  enum AccountFlagsOptions {
+    authRequired
+    authImmutable
+    authRevokable
+  }
+
   "Attributes all Stellar [operations](https://www.stellar.org/developers/guides/concepts/operations.html) share"
   interface Operation {
     "Operation id, assigned by Horizon"
@@ -62,9 +68,9 @@ export const typeDefs = gql`
     "Transaction that contains this operation"
     transaction: Transaction!
     "Indicates which flags to clear"
-    clearFlags: Int
+    clearFlags: [AccountFlagsOptions]
     "Indicates which flags to set"
-    setFlags: Int
+    setFlags: [AccountFlagsOptions]
     "Indicates, which home domain to set on account"
     homeDomain: String
     "Indicates value of master weight to set"
@@ -264,6 +270,8 @@ export const typeDefs = gql`
     sourceAsset: Asset!
     "Payment receiver account"
     destinationAccount: Account!
+    "The assets (other than send asset and destination asset) involved in the offers the path takes"
+    path: [Asset]
   }
 
   type InflationOperation implements Operation {
@@ -336,11 +344,9 @@ export const typeDefs = gql`
 
   extend type Query {
     "Get list of operations"
-    operations(first: Int, after: String, last: Int, before: String): OperationConnection
+    operations(type: [OperationType], first: Int, after: String, last: Int, before: String): OperationConnection
     "Get single operation by its id"
     operation(id: String): Operation
-    "Get payment-related operations"
-    payments(first: Int, after: String, last: Int, before: String): OperationConnection
   }
 
   extend type Subscription {

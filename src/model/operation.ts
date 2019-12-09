@@ -1,6 +1,7 @@
 import stellar from "stellar-base";
-import { HorizonAccountFlag } from "../datasource/types";
 import { AccountID } from "./";
+
+export type AccountFlagsOption = "authRequired" | "authImmutable" | "authRevocable";
 
 export enum OperationType {
   Payment = "payment",
@@ -19,6 +20,13 @@ export enum OperationType {
   PathPaymentStrictSend = "pathPaymentStrictSend"
 }
 
+export const PaymentOperations = [
+  OperationType.CreateAccount,
+  OperationType.Payment,
+  OperationType.PathPayment,
+  OperationType.AccountMerge
+];
+
 export interface IBaseOperation {
   id?: string;
   type: OperationType;
@@ -35,17 +43,17 @@ export interface IPaymentOperation extends IBaseOperation {
 }
 
 export interface ISetOptionsOperation extends IBaseOperation {
-  masterWeight: number;
-  homeDomain: string;
-  clearFlags: HorizonAccountFlag[];
-  setFlags: HorizonAccountFlag[];
-  thresholds: {
+  masterWeight?: number;
+  homeDomain?: string;
+  clearFlags?: AccountFlagsOption[];
+  setFlags?: AccountFlagsOption[];
+  thresholds?: {
     high: number;
     medium: number;
     low: number;
   };
-  inflationDestination: AccountID;
-  signer: {
+  inflationDestination?: AccountID;
+  signer?: {
     account: AccountID;
     weight: number;
   };
@@ -108,6 +116,15 @@ export interface ICreatePassiveSellOfferOperation extends IBaseOperation {
 
 // This is more of a "effect" of particular path payment
 // Horizon returns data this way, so we use it too
+export interface IHorizonPathPaymentOperation extends IBaseOperation {
+  sendMax: string;
+  amountSent: string;
+  amountReceived: string;
+  destinationAccount: AccountID;
+  destinationAsset: stellar.Asset;
+  sourceAsset: stellar.Asset;
+}
+
 export interface IPathPaymentOperation extends IBaseOperation {
   sendMax: string;
   amountSent: string;
@@ -140,4 +157,5 @@ export type Operation =
   | IPathPaymentOperation
   | ICreatePassiveSellOfferOperation
   | IPathPaymentStrictSendOperation
-  | ICreatePassiveSellOfferOperation;
+  | ICreatePassiveSellOfferOperation
+  | IPathPaymentStrictSendOperation;

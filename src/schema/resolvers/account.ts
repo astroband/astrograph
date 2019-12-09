@@ -6,11 +6,14 @@ import { account as accountResolver, ledger as ledgerResolver } from "./shared";
 
 import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
-import { IHorizonOperationData, IHorizonTradeData, IHorizonTransactionData } from "../../datasource/types";
-
-import { IBalance, Operation, Trade, Transaction } from "../../model";
+import { IBalance, ITrade, Operation, PaymentOperations, Transaction } from "../../model";
 import { BalanceFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { Account, Asset, Offer, TrustLine } from "../../orm/entities";
+import {
+  OperationData as StorageOperationData,
+  ITradeData as IStorageTradeData,
+  ITransactionData as IStorageTransactionData
+} from "../../storage/types";
 
 import { IApolloContext } from "../../graphql_server";
 import { ACCOUNT, pubsub } from "../../pubsub";
@@ -65,25 +68,36 @@ export default {
     balances: balancesResolver,
     ledger: ledgerResolver,
     operations: async (root: Account, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonOperationData, Operation>(
-        await ctx.dataSources.operations.forAccount(root.id, args),
-        r => OperationFactory.fromHorizon(r)
+      const { type, ...paging } = args;
+      const storage = ctx.storage.operations;
+
+      if (type) {
+        storage.filterTypes(type);
+      }
+
+      return makeConnection<StorageOperationData, Operation>(
+        await storage.forAccount(root.id).all(paging),
+        r => OperationFactory.fromStorage(r)
       );
     },
     payments: async (root: Account, args: any, ctx: IApolloContext) => {
-      const records = await ctx.dataSources.payments.forAccount(root.id, args);
-      return makeConnection<IHorizonOperationData, Operation>(records, r => OperationFactory.fromHorizon(r));
+      return makeConnection<StorageOperationData, Operation>(
+        await ctx.storage.operations
+          .forAccount(root.id)
+          .filterTypes(PaymentOperations)
+          .all(args),
+        r => OperationFactory.fromStorage(r)
+      );
     },
     transactions: async (root: Account, args: any, ctx: IApolloContext) => {
-      return makeConnection<IHorizonTransactionData, Transaction>(
-        await ctx.dataSources.transactions.forAccount(root.id, args),
-        r => TransactionWithXDRFactory.fromHorizon(r)
+      return makeConnection<IStorageTransactionData, Transaction>(
+        await ctx.storage.transactions.forAccount(root.id).all(args),
+        r => TransactionWithXDRFactory.fromStorage(r)
       );
     },
     trades: async (root: Account, args: any, ctx: IApolloContext, info: any) => {
-      return makeConnection<IHorizonTradeData, Trade>(await ctx.dataSources.trades.forAccount(root.id, args), r =>
-        TradeFactory.fromHorizon(r)
-      );
+      const trades = await ctx.storage.trades.forAccount(root.id).all(args);
+      return makeConnection<IStorageTradeData, ITrade>(trades, r => TradeFactory.fromStorage(r));
     },
     offers: async (root: Account, args: any, ctx: any) => {
       const { selling, buying, ...paging } = args;
