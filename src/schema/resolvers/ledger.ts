@@ -5,8 +5,8 @@ import { LedgerHeaderFactory, OperationFactory, TransactionWithXDRFactory } from
 import { LedgerHeader } from "../../orm/entities";
 import { LEDGER_CREATED, pubsub } from "../../pubsub";
 import {
-  OperationData as StorageOperationData,
-  ITransactionData as IStorageTransactionData
+  ITransactionData as IStorageTransactionData,
+  OperationData as StorageOperationData
 } from "../../storage/types";
 import { createBatchResolver, makeConnection } from "./util";
 

@@ -24,7 +24,7 @@ export default {
     totalSupply: (asset: Asset) => toFloatAmountString(asset.totalSupply),
     circulatingSupply: (asset: Asset) => toFloatAmountString(asset.circulatingSupply),
     balances: holdersResolver,
-    id: (asset: Asset) => `${asset.code}-${asset.issuer}`
+    id: (asset: Asset) => asset.toString()
   },
   Query: {
     asset: async (root: any, { id }: { id: AssetID }, ctx: IApolloContext, info: any) => {

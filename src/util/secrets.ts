@@ -30,3 +30,5 @@ if (!["pubnet", "testnet"].includes(STELLAR_NETWORK) && !HORIZON_ENDPOINT) {
 export const SENTRY_DSN = process.env.SENTRY_DSN;
 
 export const ELASTIC_URL = process.env.ELASTIC_URL || "http://localhost:9200";
+
+export const STELLAR_CORE_CURSOR_NAME = process.env.STELLAR_CORE_CURSOR_NAME || "ASTROGRAPH";

@@ -1,17 +1,35 @@
-import { db } from "../database";
-import { LedgerHeader, TransactionWithXDR } from "../model";
+import { getManager } from "typeorm";
+import { LedgerHeader } from "../model";
+import { LedgersStorage } from "../storage/ledgers";
+import { STELLAR_CORE_CURSOR_NAME } from "../util/secrets";
 
-export interface ICursorResult {
-  header: LedgerHeader;
-  transactions: TransactionWithXDR[];
-}
-
-// Walks through ledgers in ledgerheaders table.
 export class Cursor {
   public static async build(seq?: number) {
-    const dbh = db.ledgerHeaders;
-    const n = seq === -1 ? await dbh.findMinSeq() : seq || (await dbh.findMaxSeq()) + 1;
-    return new Cursor(n);
+    let cursorValue: number;
+
+    if (seq) {
+      cursorValue = seq === -1 ? await LedgersStorage.minSeq() : seq;
+    } else {
+      const coreCursor = await Cursor.getCursorFromDatabase();
+
+      if (coreCursor) {
+        cursorValue = coreCursor;
+      } else {
+        cursorValue = (await LedgersStorage.maxSeq()) + 1;
+      }
+    }
+
+    await Cursor.updateCursorInDatabase(cursorValue);
+    return new Cursor(cursorValue);
+  }
+
+  private static async getCursorFromDatabase(): Promise<number | null> {
+    const rows = await getManager().query("SELECT lastread FROM pubsub WHERE resid = $1", [STELLAR_CORE_CURSOR_NAME]);
+    return rows[0] ? rows[0].lastread : null;
+  }
+
+  private static async updateCursorInDatabase(value: number): Promise<void> {
+    await getManager().query("UPDATE pubsub SET lastread = $1 WHERE resid = $2", [value, STELLAR_CORE_CURSOR_NAME]);
   }
 
   constructor(private seq: number) {}
@@ -21,12 +39,12 @@ export class Cursor {
   }
 
   // Returns next ledger object and transactions
-  public async nextLedger(): Promise<ICursorResult | null> {
-    const header = await db.ledgerHeaders.findBySeq(this.seq);
+  public async nextLedger(): Promise<LedgerHeader | null> {
+    const header = await LedgersStorage.findBySeq(this.seq);
 
     // If there is no next ledger
     if (header == null) {
-      const maxSeq = await db.ledgerHeaders.findMaxSeq();
+      const maxSeq = await LedgersStorage.maxSeq();
 
       // And there is a ledger somewhere forward in history (it is the gap)
       if (this.seq < maxSeq) {
@@ -36,14 +54,9 @@ export class Cursor {
       return null;
     }
 
-    const transactions = await db.transactions.findAllBySeq(this.seq);
-    this.incrementSeq();
-
-    return { header, transactions };
-  }
-
-  // Increments current ledger number
-  private incrementSeq() {
     this.seq += 1;
+    await Cursor.updateCursorInDatabase(this.seq);
+
+    return header;
   }
 }

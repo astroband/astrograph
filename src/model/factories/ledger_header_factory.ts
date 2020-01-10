@@ -1,4 +1,5 @@
 import stellar from "stellar-base";
+import { ILedgerHeaderData } from "../../storage/types";
 import { ILedgerHeader, LedgerHeader } from "../ledger_header";
 
 export interface ILedgerHeaderTableRow {
@@ -30,5 +31,18 @@ export class LedgerHeaderFactory {
 
   public static fromDb(data: ILedgerHeaderTableRow): LedgerHeader {
     return LedgerHeaderFactory.fromXDR(data.data);
+  }
+
+  public static fromStorage(data: ILedgerHeaderData): LedgerHeader {
+    return new LedgerHeader({
+      ledgerSeq: data.seq,
+      previousLedgerHash: data.prev_hash,
+      txSetResultHash: data.tx_set_result_hash,
+      ledgerVersion: data.version,
+      baseFee: data.base_fee,
+      baseReserve: data.base_reserve,
+      maxTxSetSize: data.max_tx_set_size,
+      closeTime: new Date(data.close_time)
+    });
   }
 }

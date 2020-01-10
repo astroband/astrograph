@@ -5,7 +5,8 @@ import { getCustomRepository } from "typeorm";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger, LedgerHeader, OfferSubscriptionPayload, TransactionWithXDR } from "./model";
 import { OfferRepository } from "./orm/repository/offer";
-import extractOperation from "./util/extract_operation";
+// import extractOperation from "./util/extract_operation";
+import { OperationsStorage } from "./storage/operations";
 import logger from "./util/logger";
 import { DATABASE_URL } from "./util/secrets";
 
@@ -70,9 +71,13 @@ export class Publisher {
       pubsub.publish(OFFERS_TICK, { selling, buying, bestAsk, bestBid });
     });
 
+    const operationsStorage = new OperationsStorage();
+
     for (const tx of transactions) {
-      for (let index = 0; index < tx.operationsXDR.length; index++) {
-        pubsub.publish(NEW_OPERATION, extractOperation(header, tx, index));
+      const operations = await operationsStorage.forTransaction(tx.id).all();
+
+      for (const operation of operations) {
+        pubsub.publish(NEW_OPERATION, operation);
       }
     }
   }

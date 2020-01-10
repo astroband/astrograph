@@ -1,4 +1,5 @@
-import { AccountID, AssetID } from "../model";
+import { AccountID, AssetID, ITrade } from "../model";
+import { TradeFactory } from "../model/factories";
 import { BaseStorage } from "./base";
 
 export class TradesStorage extends BaseStorage {
@@ -29,5 +30,9 @@ export class TradesStorage extends BaseStorage {
 
   protected get elasticIndexName() {
     return "trades";
+  }
+
+  protected convertRawDoc(doc: any): ITrade {
+    return TradeFactory.fromStorage(doc);
   }
 }

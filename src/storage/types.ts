@@ -15,7 +15,7 @@ export type StorageOpType =
   | "AccountMerge"
   | "ManageData"
   | "BumpSequence"
-  | "Inflation"
+  | "Inflation";
 
 export interface IAsset {
   code: AssetCode;
@@ -23,7 +23,7 @@ export interface IAsset {
   id: AssetID;
 }
 
-interface IBaseOperationData {
+export interface IBaseOperationData {
   id: string;
   tx_id: string;
   tx_idx: number;
@@ -110,7 +110,8 @@ type SetOptionsOperationData = RequireAtLeastOneProperty<{
     id: AccountID;
     weight: number;
   };
-}> & IBaseOperationData;
+}> &
+  IBaseOperationData;
 
 export interface IChangeTrustOperationData extends IBaseOperationData {
   destination_amount: number;
@@ -166,6 +167,8 @@ export interface ITransactionData {
   memo?: { type: 0 | 1 | 2 | 3 | 4; value: string };
   time_bounds?: { min_time: number; max_time: number };
   paging_token: string;
+  meta: string;
+  fee_meta: string;
 }
 
 export interface ITradeData {
@@ -180,4 +183,21 @@ export interface ITradeData {
   buyer_id: AccountID;
   price: string;
   ledger_close_time: string; // ISO datetime
+}
+
+export interface ILedgerHeaderData {
+  hash: string;
+  prev_hash: string;
+  bucket_list_hash: string;
+  tx_set_result_hash: string;
+  seq: number;
+  paging_token: string;
+  close_time: string; // ISO datetime
+  version: number;
+  total_coins: number;
+  fee_pool: number;
+  id_pool: number;
+  base_fee: number;
+  base_reserve: number;
+  max_tx_set_size: number;
 }

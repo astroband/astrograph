@@ -1,4 +1,5 @@
-import { AccountID } from "../model";
+import { AccountID, Transaction } from "../model";
+import { TransactionWithXDRFactory } from "../model/factories";
 import { BaseStorage } from "./base";
 
 export class TransactionsStorage extends BaseStorage {
@@ -16,5 +17,9 @@ export class TransactionsStorage extends BaseStorage {
 
   protected get elasticIndexName() {
     return "tx";
+  }
+
+  protected convertRawDoc(doc: any): Transaction {
+    return TransactionWithXDRFactory.fromStorage(doc);
   }
 }

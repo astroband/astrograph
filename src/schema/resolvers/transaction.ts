@@ -8,8 +8,8 @@ import { makeConnection } from "./util";
 import { Operation, PaymentOperations, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
 import {
-  OperationData as StorageOperationData,
-  ITransactionData as IStorageTransactionData
+  ITransactionData as IStorageTransactionData,
+  OperationData as StorageOperationData
 } from "../../storage/types";
 
 export default {
