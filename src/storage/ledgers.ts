@@ -11,10 +11,10 @@ export class LedgersStorage extends BaseStorage {
     return new LedgersStorage().maxSeq();
   }
 
-  public static async findBySeq(seq: number): Promise<LedgerHeader> {
+  public static async findBySeq(seq: number): Promise<LedgerHeader | null> {
     const header = await new LedgersStorage().addTerm({ seq }).one();
 
-    return header as LedgerHeader;
+    return header ? header as LedgerHeader : null;
   }
 
   public async minSeq(): Promise<number> {
