@@ -14,7 +14,7 @@ export class LedgersStorage extends BaseStorage {
   public static async findBySeq(seq: number): Promise<LedgerHeader | null> {
     const header = await new LedgersStorage().addTerm({ seq }).one();
 
-    return header ? header as LedgerHeader : null;
+    return header ? (header as LedgerHeader) : null;
   }
 
   public async minSeq(): Promise<number> {

@@ -5,7 +5,6 @@ import { getCustomRepository } from "typeorm";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger, LedgerHeader, OfferSubscriptionPayload, TransactionWithXDR } from "./model";
 import { OfferRepository } from "./orm/repository/offer";
-// import extractOperation from "./util/extract_operation";
 import { OperationsStorage } from "./storage/operations";
 import logger from "./util/logger";
 import { DATABASE_URL } from "./util/secrets";
