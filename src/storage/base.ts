@@ -23,15 +23,30 @@ export abstract class BaseStorage {
     });
   }
 
-  public async all(pagingParams: PagingParams) {
-    this.paginate(pagingParams);
+  public async all(pagingParams?: PagingParams) {
+    if (pagingParams) {
+      this.paginate(pagingParams);
+    }
 
     const docs = await this.search(this.searchParams);
 
-    return properlyOrdered(docs, pagingParams);
+    return (pagingParams ? properlyOrdered(docs, pagingParams) : docs).map((doc: any) => this.convertRawDoc(doc));
+  }
+
+  public async one() {
+    this.searchParams.size = 1;
+
+    const docs = await this.search(this.searchParams);
+
+    if (docs.length === 0) {
+      return null;
+    }
+
+    return this.convertRawDoc(docs[0]);
   }
 
   protected abstract get elasticIndexName(): string;
+  protected abstract convertRawDoc<T>(doc: any): unknown;
 
   protected async search(requestBody: any) {
     const { body: response } = await this.client.search({
@@ -44,8 +59,26 @@ export abstract class BaseStorage {
     });
   }
 
+  protected async aggregation(queries: any) {
+    const { body: response } = await this.client.search(
+      {
+        index: this.elasticIndexName,
+        body: { aggs: queries }
+      },
+      { querystring: { size: 0 } }
+    );
+
+    return response.aggregations;
+  }
+
   protected addTerm(term: any) {
     this.searchParams.query.bool.must.push({ term });
+    return this;
+  }
+
+  protected addTerms(terms: any) {
+    this.searchParams.query.bool.must.push({ terms });
+    return this;
   }
 
   protected paginate(pagingParams: PagingParams) {

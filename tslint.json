@@ -9,6 +9,7 @@
     "object-literal-sort-keys": false,
     "no-implicit-dependencies": [true, "dev"],
     "no-namespace": [true, "allow-declarations"],
-    "no-bitwise": false
+    "no-bitwise": false,
+    "prefer-conditional-expression": false
   }
 }

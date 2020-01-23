@@ -1,6 +1,9 @@
+import { getManager } from "typeorm";
+import { db } from "../database";
 import { connect as connectPubSub } from "../pubsub";
 import "../util/asset";
 import logger from "../util/logger";
+import { STELLAR_CORE_CURSOR_NAME } from "../util/secrets";
 import { initDatabase } from "./db";
 import { initSentry } from "./sentry";
 import { setStellarNetwork } from "./stellar";
@@ -15,6 +18,14 @@ export async function initIngestd() {
     .then(network => logger.info(`Astrograph will use ${network}`))
     .then(() => logger.info("Connecting to the database..."))
     .then(initDatabase)
+    .then(() => logger.info("Setting cursor..."))
+    .then(async () => {
+      const cursorValue = await db.ledgerHeaders.findMaxSeq();
+      return getManager().query("INSERT INTO pubsub (resid, lastread) VALUES ($1, $2) ON CONFLICT DO NOTHING", [
+        STELLAR_CORE_CURSOR_NAME,
+        cursorValue
+      ]);
+    })
     .then(() => logger.info("Creating connection for pubsub..."))
     .then(connectPubSub)
     .then(() => logger.info("Ingest daemon is inialized successfully"));

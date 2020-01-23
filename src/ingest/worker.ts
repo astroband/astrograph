@@ -1,3 +1,4 @@
+import { db } from "../database";
 import { Publisher } from "../pubsub";
 import { setBaseReserve } from "../util/base_reserve";
 import { Cursor } from "./cursor";
@@ -10,10 +11,11 @@ export class Worker {
   }
 
   public async run(): Promise<boolean> {
-    const result = await this.cursor.nextLedger();
+    const header = await this.cursor.nextLedger();
 
-    if (result) {
-      const { header, transactions } = result;
+    if (header) {
+      const transactions = await db.transactions.findAllBySeq(header.ledgerSeq);
+
       setBaseReserve(header.baseReserve);
       await Publisher.publish(header, transactions);
       return true;

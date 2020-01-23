@@ -1,4 +1,5 @@
-import { AccountID, OperationType } from "../model";
+import { AccountID, Operation, OperationType } from "../model";
+import { OperationFactory } from "../model/factories";
 import { DataMapper } from "../model/factories/operation_data_mapper/storage";
 import { BaseStorage } from "./base";
 
@@ -30,5 +31,9 @@ export class OperationsStorage extends BaseStorage {
 
   protected get elasticIndexName() {
     return "op";
+  }
+
+  protected convertRawDoc(doc: any): Operation {
+    return OperationFactory.fromStorage(doc);
   }
 }
