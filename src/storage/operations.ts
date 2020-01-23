@@ -4,6 +4,10 @@ import { DataMapper } from "../model/factories/operation_data_mapper/storage";
 import { BaseStorage } from "./base";
 
 export class OperationsStorage extends BaseStorage {
+  public static async forTransaction(txId: string): Promise<Operation[]> {
+    return new OperationsStorage().addTerm({ tx_id: txId }).all();
+  }
+
   public filterTypes(types: OperationType[]) {
     const storageTypes = types.map(type => DataMapper.mapOperationType(type));
     this.searchParams.query.bool.must.push({ terms: { type: storageTypes } });

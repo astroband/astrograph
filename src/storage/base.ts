@@ -30,6 +30,10 @@ export abstract class BaseStorage {
 
     const docs = await this.search(this.searchParams);
 
+    if (!docs) {
+      return [];
+    }
+
     return (pagingParams ? properlyOrdered(docs, pagingParams) : docs).map((doc: any) => this.convertRawDoc(doc));
   }
 

@@ -70,10 +70,8 @@ export class Publisher {
       pubsub.publish(OFFERS_TICK, { selling, buying, bestAsk, bestBid });
     });
 
-    const operationsStorage = new OperationsStorage();
-
     for (const tx of transactions) {
-      const operations = await operationsStorage.forTransaction(tx.id).all();
+      const operations = await OperationsStorage.forTransaction(tx.id);
 
       for (const operation of operations) {
         pubsub.publish(NEW_OPERATION, operation);
