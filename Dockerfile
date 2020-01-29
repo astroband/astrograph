@@ -1,11 +1,12 @@
 FROM node:10-alpine
 RUN npm install -g typescript@3.4
 
-RUN mkdir -p /home/node/astrograph/node_modules && chown -R node:node /home/node/astrograph
 WORKDIR /home/node/astrograph
 
 COPY package.json ./
 COPY yarn.lock ./
+
+RUN mkdir -p /home/node/astrograph/node_modules && chown -R node:node /home/node/astrograph
 
 USER node
 
