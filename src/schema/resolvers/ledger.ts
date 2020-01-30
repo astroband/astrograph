@@ -1,7 +1,7 @@
 import { getRepository, In } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
-import { Ledger, Operation, PaymentOperations, Transaction } from "../../model";
-import { LedgerHeaderFactory, OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { Ledger, LedgerHeader as LedgerHeaderModel, Operation, PaymentOperations, Transaction } from "../../model";
+import { LedgerHeaderFactory } from "../../model/factories";
 import { LedgerHeader } from "../../orm/entities";
 import { LEDGER_CREATED, pubsub } from "../../pubsub";
 import {
@@ -12,16 +12,16 @@ import { createBatchResolver, makeConnection } from "./util";
 
 const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>(async (ledgers: Ledger[]) => {
   const seqNumsWithoutHeaders = ledgers.filter(l => l.header === undefined).map(l => l.seq);
-  const headers = (await getRepository(LedgerHeader).find({ where: { seq: In(seqNumsWithoutHeaders) } })).map(h =>
-    LedgerHeaderFactory.fromXDR(h.data)
-  );
+  let fetchedHeaders: LedgerHeaderModel[] = [];
+
+  if (seqNumsWithoutHeaders.length != 0) {
+    fetchedHeaders = (await getRepository(LedgerHeader).find({ where: { seq: In(seqNumsWithoutHeaders) } })).map(h =>
+      LedgerHeaderFactory.fromXDR(h.data)
+    );
+  }
 
   return ledgers.map(l => {
-    if (l.header) {
-      return l.header;
-    }
-
-    return headers.find(h => h.ledgerSeq === l.seq) || null;
+    return l.header || fetchedHeaders.find(h => h.ledgerSeq === l.seq) || null;
   });
 });
 
@@ -30,14 +30,12 @@ export default {
     header: ledgerHeaderResolver,
     transactions: async (root: Ledger, args: any, ctx: IApolloContext) => {
       return makeConnection<IStorageTransactionData, Transaction>(
-        await ctx.storage.transactions.forLedger(root.seq).all(args),
-        r => TransactionWithXDRFactory.fromStorage(r)
+        await ctx.storage.transactions.forLedger(root.seq).all(args)
       );
     },
     operations: async (root: Ledger, args: any, ctx: IApolloContext) => {
       return makeConnection<StorageOperationData, Operation>(
-        await ctx.storage.operations.forLedger(root.seq).all(args),
-        r => OperationFactory.fromStorage(r)
+        await ctx.storage.operations.forLedger(root.seq).all(args)
       );
     },
     payments: async (root: Ledger, args: any, ctx: IApolloContext) => {
@@ -45,8 +43,7 @@ export default {
         await ctx.storage.operations
           .forLedger(root.seq)
           .filterTypes(PaymentOperations)
-          .all(args),
-        r => OperationFactory.fromStorage(r)
+          .all(args)
       );
     }
   },
