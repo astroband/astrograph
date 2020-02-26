@@ -12,7 +12,7 @@ services:
     entrypoint: node ./graphql_server.js
     environment:
       - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-pubnet/stellar?sslmode=disable
-      - ELASTIC_URL=http://elasticsearch:9200
+      - ELASTIC_URL=http://elasticsearch-pubnet:9200
       - STELLAR_NETWORK=pubnet
     image: astroband/astrograph:latest
     networks:
@@ -28,7 +28,7 @@ services:
     entrypoint: node ./ingestd.js
     environment:
       - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-pubnet/stellar?sslmode=disable
-      - ELASTIC_URL=http://elasticsearch:9200
+      - ELASTIC_URL=http://elasticsearch-pubnet:9200
       - STELLAR_NETWORK=pubnet
     image: astroband/astrograph:latest
     networks:
@@ -41,7 +41,7 @@ services:
       - stellar-core-postgres-pubnet
     environment:
       - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-pubnet/stellar?sslmode=disable
-      - ES_URL=http://elasticsearch:9200
+      - ES_URL=http://elasticsearch-pubnet:9200
     image: astroband/astrologer:latest
     networks:
       - astrograph-network-pubnet
