@@ -22,7 +22,49 @@ Astrograph was initially developed by Evil Martians for [Mobius](https://mobius.
 
 ## Install
 
-You can install Astrograph, using [yarn](https://yarnpkg.com/):
+### Docker compose
+
+So the most simple way to launch Astrograph to try it out is with `docker-compose`:
+
+```shell
+# For the pubnet
+docker-compose -f docker_compose/docker-compose.pubnet.yaml up -d
+# wait a little for the stellar-core and postgres to start up and then run the next command
+# to to enhance core database for the Astrograph needs
+docker exec -it astrograph-stellar-core-postgres-pubnet psql -U stellar -d stellar -f /init.sql
+
+# For the testnet
+docker-compose -f docker_compose/docker-compose.testnet.yaml up -d
+# wait a little for the stellar-core and postgres to start up and then run the next command
+# to to enhance core database for the Astrograph needs
+docker exec -it astrograph-stellar-core-postgres-testnet psql -U stellar -d stellar -f /init.sql
+```
+
+Containers created with these commands export the next ports you can access:
+
+* Astrograph GraphQL sandbox -- `4000`(pubnet) and `5000`(testnet)
+* Stellar core HTTP ports -- `11625` and `11626`(pubnet), `12625` and `12626`(testnet)
+* Elasticsearch HTTP endpoint -- `9200` (pubnet) and `9300` (testnet)
+
+We chose such port mapping to allow both pubnet and testnet instances to run simultaneously
+
+To test that Astrograph was setup correctly, visit GraphQL sandbox (http://localhost:4000 for pubnet and http://localhost:5000 for testnet), and
+try to subscribe to new ledgers:
+
+```graphql
+subscription {
+  ledgerCreated {
+    seq
+  }
+}
+```
+
+You should see new ledgers coming. Remember that you should wait for stellar-core to start applying ledgers, so monitor it with stellar-core `info` HTTP-command
+(e.g., like this: `curl localhost:11626/info` for pubnet and `curl localhost:12626/info` for testnet, you need `state` attribute) before running the test above.
+
+## Develop
+
+For the developing purposes you can setup Astrograph as a standalone js-application:
 
 ```shell
 $ git clone https://github.com/astroband/astrograph
@@ -67,7 +109,6 @@ UNION
 Here is the list of available settings:
 
 * `STELLAR_NETWORK` – which Stellar network to use. You can use "pubnet"(default) or "testnet" shortcuts, any other value will be used as a network passphrase
-* `HORIZON_ENDPOINT` - Horizon API endpoint. By default `horizon.stellar.org` and `horizon-testnet.stellar.org` are used for pubnet and testnet correspondingly. This option is required for private networks.
 * `DATABASE_URL` – database connection URL
 * `PORT` - port (4000 by default)
 * `BIND_ADDRESS` - address to bind ("0.0.0.0" by default)
@@ -83,8 +124,6 @@ DB="stellar_core"
 DBUSER="john"
 ...
 ```
-
-## Develop
 
 In order to develop locally, you need to get the stellar-core database. The easiest way to get it is to run stellar-core node in docker (check [docker-stellar-core](https://github.com/mobius-network/docker-stellar-core)) and let it ingest some ledgers.
 
