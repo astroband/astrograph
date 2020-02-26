@@ -13,7 +13,7 @@ services:
       - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-testnet/stellar?sslmode=disable
       - ELASTIC_URL=http://elasticsearch-testnet:9200
       - STELLAR_NETWORK=testnet
-    image: astroband/astrograph:master-89f8c27930ef427797cae17a66567962b27020e0
+    image: astroband/astrograph:latest
     networks:
       - astrograph-network-testnet
     ports:
@@ -29,7 +29,7 @@ services:
       - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-testnet/stellar?sslmode=disable
       - ELASTIC_URL=http://elasticsearch-testnet:9200
       - STELLAR_NETWORK=testnet
-    image: astroband/astrograph:master-89f8c27930ef427797cae17a66567962b27020e0
+    image: astroband/astrograph:latest
     networks:
       - astrograph-network-testnet
     restart: on-failure
@@ -41,7 +41,7 @@ services:
     environment:
       - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-testnet/stellar?sslmode=disable
       - ES_URL=http://elasticsearch-testnet:9200
-    image: astroband/astrologer:master-e5bfef702c9679fc83f08711d6023305d07190c9
+    image: astroband/astrologer:latest
     networks:
       - astrograph-network-testnet
     restart: on-failure
