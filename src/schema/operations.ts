@@ -13,7 +13,7 @@ export const typeDefs = gql`
     manageSellOffer
     manageBuyOffer
     createPassiveSellOffer
-    pathPayment
+    pathPaymentStrictReceive
     inflation
     pathPaymentStrictSend
   }
