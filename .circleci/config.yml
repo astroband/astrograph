@@ -30,10 +30,11 @@ jobs:
       - run:
           name: Build docker image
           command: |
-            docker build -t astroband/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}-${CIRCLE_SHA1} .
+            docker build -t astroband/${CIRCLE_PROJECT_REPONAME}:latest -t astroband/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}-${CIRCLE_SHA1} .
 
       # deploy the image
       - run:
           name: Push image to DockerHub
           command: |
+            docker push astroband/${CIRCLE_PROJECT_REPONAME}:latest
             docker push astroband/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
