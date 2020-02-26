@@ -1,0 +1,95 @@
+version: '3.7'
+
+networks:
+  astrograph-network-pubnet:
+    name: astrograph-network-pubnet
+services:
+  astrograph-graphql-server-pubnet:
+    container_name: astrograph-graphql-server-pubnet
+    depends_on:
+      - astrologer-pubnet
+      - stellar-core-pubnet
+    entrypoint: node ./graphql_server.js
+    environment:
+      - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-pubnet/stellar?sslmode=disable
+      - ELASTIC_URL=http://elasticsearch:9200
+      - STELLAR_NETWORK=pubnet
+    image: astroband/astrograph:master-89f8c27930ef427797cae17a66567962b27020e0
+    networks:
+      - astrograph-network-pubnet
+    ports:
+      - 4000:4000
+    restart: on-failure
+  astrograph-ingest-pubnet:
+    container_name: astrograph-ingest-pubnet
+    depends_on:
+      - astrologer-pubnet
+      - stellar-core-pubnet
+    entrypoint: node ./ingestd.js
+    environment:
+      - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-pubnet/stellar?sslmode=disable
+      - ELASTIC_URL=http://elasticsearch:9200
+      - STELLAR_NETWORK=pubnet
+    image: astroband/astrograph:master-89f8c27930ef427797cae17a66567962b27020e0
+    networks:
+      - astrograph-network-pubnet
+    restart: on-failure
+  astrologer-pubnet:
+    container_name: astrologer-pubnet
+    depends_on:
+      - elasticsearch-pubnet
+      - stellar-core-postgres-pubnet
+    environment:
+      - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-pubnet/stellar?sslmode=disable
+      - ES_URL=http://elasticsearch:9200
+    image: astroband/astrologer:master-e5bfef702c9679fc83f08711d6023305d07190c9
+    networks:
+      - astrograph-network-pubnet
+    restart: on-failure
+  elasticsearch-pubnet:
+    container_name: astrograph-elasticsearch-pubnet
+    environment:
+      discovery.type: single-node
+    image: elasticsearch:7.6.0
+    networks:
+      - astrograph-network-pubnet
+    ports:
+      - 9200:9200
+    restart: on-failure
+    volumes:
+      - esdata_pubnet:/usr/share/elasticsearch/data:rw
+  stellar-core-pubnet:
+    container_name: stellar-core-pubnet
+    depends_on:
+      - stellar-core-postgres-pubnet
+    env_file: ./pubnet.env
+    environment:
+      - DATABASE=postgresql://dbname=stellar user=stellar password=DATABASE_PASSWORD host=stellar-core-postgres-pubnet
+      - DATABASE_PASSWORD=123asd123
+    image: satoshipay/stellar-core:12.3.0
+    networks:
+      - astrograph-network-pubnet
+    ports:
+      - 11625:11625
+      - 11626:11626
+    restart: on-failure
+  stellar-core-postgres-pubnet:
+    container_name: astrograph-stellar-core-postgres-pubnet
+    environment:
+      - POSTGRES_DB=stellar
+      - POSTGRES_PASSWORD=123asd123
+      - POSTGRES_USER=stellar
+    image: postgres:12-alpine
+    networks:
+      - astrograph-network-pubnet
+    restart: on-failure
+    volumes:
+      - pgdata_pubnet:/var/lib/postgresql/data
+      - ./init.sql:/init.sql
+volumes:
+  esdata_pubnet:
+    driver: local
+    name: astrograph-esdata-pubnet
+  pgdata_pubnet:
+    driver: local
+    name: astrograph-pgdata-pubnet

@@ -1,0 +1,94 @@
+version: '3.7'
+networks:
+  astrograph-network-testnet:
+    name: astrograph-network-testnet
+services:
+  astrograph-graphql-server-testnet:
+    container_name: astrograph-graphql-server-testnet
+    depends_on:
+      - astrologer-testnet
+      - stellar-core-testnet
+    entrypoint: node ./graphql_server.js
+    environment:
+      - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-testnet/stellar?sslmode=disable
+      - ELASTIC_URL=http://elasticsearch-testnet:9200
+      - STELLAR_NETWORK=testnet
+    image: astroband/astrograph:master-89f8c27930ef427797cae17a66567962b27020e0
+    networks:
+      - astrograph-network-testnet
+    ports:
+      - 5000:4000
+    restart: on-failure
+  astrograph-ingest-testnet:
+    container_name: astrograph-ingest-testnet
+    depends_on:
+      - astrologer-testnet
+      - stellar-core-testnet
+    entrypoint: node ./ingestd.js
+    environment:
+      - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-testnet/stellar?sslmode=disable
+      - ELASTIC_URL=http://elasticsearch-testnet:9200
+      - STELLAR_NETWORK=testnet
+    image: astroband/astrograph:master-89f8c27930ef427797cae17a66567962b27020e0
+    networks:
+      - astrograph-network-testnet
+    restart: on-failure
+  astrologer-testnet:
+    container_name: astrologer-testnet
+    depends_on:
+      - elasticsearch-testnet
+      - stellar-core-postgres-testnet
+    environment:
+      - DATABASE_URL=postgres://stellar:123asd123@stellar-core-postgres-testnet/stellar?sslmode=disable
+      - ES_URL=http://elasticsearch-testnet:9200
+    image: astroband/astrologer:master-e5bfef702c9679fc83f08711d6023305d07190c9
+    networks:
+      - astrograph-network-testnet
+    restart: on-failure
+  elasticsearch-testnet:
+    container_name: astrograph-elasticsearch-testnet
+    environment:
+      discovery.type: single-node
+    image: elasticsearch:7.6.0
+    networks:
+      - astrograph-network-testnet
+    ports:
+      - 9300:9200
+    restart: on-failure
+    volumes:
+      - esdata_testnet:/usr/share/elasticsearch/data
+  stellar-core-testnet:
+    container_name: stellar-core-testnet
+    depends_on:
+      - stellar-core-postgres-testnet
+    env_file: ./testnet.env
+    environment:
+      - DATABASE=postgresql://dbname=stellar user=stellar password=DATABASE_PASSWORD host=stellar-core-postgres-testnet
+      - DATABASE_PASSWORD=123asd123
+    image: satoshipay/stellar-core:12.3.0
+    networks:
+      - astrograph-network-testnet
+    ports:
+      - 12625:11625
+      - 12626:11626
+    restart: on-failure
+  stellar-core-postgres-testnet:
+    container_name: astrograph-stellar-core-postgres-testnet
+    environment:
+      - POSTGRES_DB=stellar
+      - POSTGRES_PASSWORD=123asd123
+      - POSTGRES_USER=stellar
+    image: postgres:12-alpine
+    networks:
+      - astrograph-network-testnet
+    restart: on-failure
+    volumes:
+      - pgdata_testnet:/var/lib/postgresql/data
+      - ./init.sql:/init.sql
+volumes:
+  esdata_testnet:
+    driver: local
+    name: astrograph-esdata-testnet
+  pgdata_testnet:
+    driver: local
+    name: astrograph-pgdata-testnet
