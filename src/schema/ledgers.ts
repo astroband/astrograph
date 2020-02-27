@@ -36,7 +36,7 @@ export const typeDefs = gql`
     "Get single ledger by its sequence number"
     ledger(seq: LedgerSeq!): Ledger!
     "Get list of ledgers by sequence numbers"
-    ledgers(seq: [LedgerSeq!]): [Ledger]!
+    ledgers(seq: [LedgerSeq!]!): [Ledger]!
   }
 
   extend type Subscription {
