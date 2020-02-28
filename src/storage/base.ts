@@ -1,13 +1,17 @@
 import { Client as ElasticClient } from "@elastic/elasticsearch";
 import { PagingParams, parseCursorPagination, properlyOrdered } from "../util/paging";
 import * as secrets from "../util/secrets";
+import { ConnectionPool } from "./connection_pool";
 
 export abstract class BaseStorage {
   protected searchParams: any;
   private client: ElasticClient;
 
   constructor() {
-    this.client = new ElasticClient({ node: secrets.ELASTIC_URL });
+    this.client = new ElasticClient({
+      node: secrets.ELASTIC_URL,
+      ConnectionPool
+    });
     this.searchParams = {
       query: {
         bool: {
