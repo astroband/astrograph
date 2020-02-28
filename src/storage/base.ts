@@ -1,17 +1,10 @@
-import { Client as ElasticClient } from "@elastic/elasticsearch";
 import { PagingParams, parseCursorPagination, properlyOrdered } from "../util/paging";
-import * as secrets from "../util/secrets";
-import { ConnectionPool } from "./connection_pool";
+import { connection } from "./connection";
 
 export abstract class BaseStorage {
   protected searchParams: any;
-  private client: ElasticClient;
 
   constructor() {
-    this.client = new ElasticClient({
-      node: secrets.ELASTIC_URL,
-      ConnectionPool
-    });
     this.searchParams = {
       query: {
         bool: {
@@ -22,7 +15,7 @@ export abstract class BaseStorage {
   }
 
   public async get(id: string) {
-    return this.client.get({ index: this.elasticIndexName, id }).then(({ body }: { body: any }) => {
+    return connection.get({ index: this.elasticIndexName, id }).then(({ body }: { body: any }) => {
       return { ...body._source, id: body._id };
     });
   }
@@ -57,7 +50,7 @@ export abstract class BaseStorage {
   protected abstract convertRawDoc<T>(doc: any): unknown;
 
   protected async search(requestBody: any) {
-    const { body: response } = await this.client.search({
+    const { body: response } = await connection.search({
       index: this.elasticIndexName,
       body: requestBody
     });
@@ -68,7 +61,7 @@ export abstract class BaseStorage {
   }
 
   protected async aggregation(queries: any) {
-    const { body: response } = await this.client.search(
+    const { body: response } = await connection.search(
       {
         index: this.elasticIndexName,
         body: { aggs: queries }
