@@ -280,7 +280,7 @@ export class DataMapper {
         destinationAccount: this.data.destination_account_id,
         destinationAsset: AssetFactory.fromId(this.data.destination_asset.id),
         sourceAsset: AssetFactory.fromId(this.data.source_asset.id),
-        path: this.data.path.map((node: IAsset) => AssetFactory.fromId(node.id))
+        path: (this.data.path || []).map((node: IAsset) => AssetFactory.fromId(node.id))
       }
     };
   }
@@ -295,7 +295,7 @@ export class DataMapper {
         destinationAccount: this.data.destination_account_id,
         destinationAsset: AssetFactory.fromId(this.data.destination_asset.id),
         sourceAsset: AssetFactory.fromId(this.data.source_asset.id),
-        path: this.data.path.map((node: IAsset) => AssetFactory.fromId(node.id))
+        path: (this.data.path || []).map((node: IAsset) => AssetFactory.fromId(node.id))
       }
     };
   }
