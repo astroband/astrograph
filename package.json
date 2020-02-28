@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@astroband/graphql-postgres-subscriptions": "^1.0.10",
-    "@elastic/elasticsearch": "^7.0.0-rc.2",
+    "@elastic/elasticsearch": "^7.6.0",
     "@sentry/integrations": "^5.7.1",
     "@sentry/node": "^5.7.1",
     "apollo-datasource-rest": "^0.3.1",
