@@ -29,17 +29,21 @@ async function importDbDump() {
   await db.query(sql);
 }
 
+async function connectToDb(): Promise<void> {
+  await createConnection({
+    type: "postgres",
+    url: DATABASE_URL,
+    entities: [Account, AccountData, Asset, LedgerHeader, Offer, TrustLine],
+    synchronize: false,
+    logging: process.env.DEBUG_SQL !== undefined
+  });
+  await db.connect();
+}
+
 describe("Integration tests", () => {
   beforeAll(async () => {
     try {
-      await createConnection({
-        type: "postgres",
-        url: DATABASE_URL,
-        entities: [Account, AccountData, Asset, LedgerHeader, Offer, TrustLine],
-        synchronize: false,
-        logging: process.env.DEBUG_SQL !== undefined
-      });
-      db.connect();
+      await connectToDb();
       await importDbDump();
     } catch (e) {
       const dbNotExistMessageRegexp = /database "(\w+)" does not exist/;
@@ -52,6 +56,8 @@ describe("Integration tests", () => {
 
       logger.log("info", `${e.message}. Creating...`);
       execSync(`createdb ${dbName}`);
+
+      await connectToDb();
       await importDbDump();
     }
   });
