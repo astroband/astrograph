@@ -22,6 +22,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Debugging with tmate
+      uses: mxschmitt/action-tmate@v1.0.2
     - name: yarn install, build, and test
       run: |
         yarn install
