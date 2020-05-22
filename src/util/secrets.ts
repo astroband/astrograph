@@ -20,7 +20,7 @@ export const BIND_ADDRESS = process.env.BIND_ADDRESS || "0.0.0.0";
 export const DEBUG_LEDGER = Number.parseInt(process.env.DEBUG_LEDGER || "", 10);
 export const INGEST_INTERVAL = Number.parseInt(process.env.INGEST_INTERVAL || "", 10) || 2000;
 
-export const STELLAR_NETWORK = process.env.STELLAR_NETWORK || "pubnet";
+export const STELLAR_NETWORK = process.env.STELLAR_NETWORK || "testnet";
 export const HORIZON_ENDPOINT = process.env.HORIZON_ENDPOINT;
 
 if (!["pubnet", "testnet"].includes(STELLAR_NETWORK) && !HORIZON_ENDPOINT) {
@@ -32,3 +32,5 @@ export const SENTRY_DSN = process.env.SENTRY_DSN;
 export const ELASTIC_URL = process.env.ELASTIC_URL || "http://localhost:9200";
 
 export const STELLAR_CORE_CURSOR_NAME = process.env.STELLAR_CORE_CURSOR_NAME || "ASTROGRAPH";
+
+export const STELLAR_HTTP_ENDPOINT = process.env.STELLAR_HTTP_ENDPOINT || "http://localhost:11626";

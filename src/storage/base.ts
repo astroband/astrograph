@@ -41,7 +41,7 @@ export abstract class BaseStorage {
   public async findById(id: string) {
     const { body: response } = await connection.get({
       index: this.elasticIndexName,
-      id,
+      id
     });
 
     return this.convertRawDoc(response._source);
