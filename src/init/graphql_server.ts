@@ -7,16 +7,13 @@ import logger from "../util/logger";
 import "../util/memo";
 import { initDatabase } from "./db";
 import { initSentry } from "./sentry";
-import { setStellarNetwork, updateBaseReserve } from "./stellar";
+import { updateBaseReserve } from "./stellar";
 
 export async function initGraphqlServer() {
   logger.info("Initializing...");
 
   logger.info("Sentry...");
   return initSentry()
-    .then(() => logger.info("Setting Stellar network..."))
-    .then(setStellarNetwork)
-    .then(network => logger.info(`Astrograph will use the network with passphrase "${network}"`))
     .then(() => logger.info("Connecting to the database..."))
     .then(initDatabase)
     .then(() => logger.info("Creating connection for pubsub..."))

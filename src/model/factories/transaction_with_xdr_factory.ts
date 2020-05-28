@@ -22,7 +22,20 @@ export class TransactionWithXDRFactory {
     const metaXDR = stellar.xdr.TransactionMeta.fromXDR(row.txmeta, "base64");
     const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(row.txfeemeta, "base64");
 
-    const body = bodyXDR.tx();
+    let body: any;
+
+    switch(bodyXDR.switch()) {
+      case stellar.xdr.EnvelopeType.envelopeTypeTxV0():
+        body = bodyXDR.v0().tx();
+        break;
+      case stellar.xdr.EnvelopeType.envelopeTypeTx():
+        body = bodyXDR.v1().tx();
+        break;
+      case stellar.xdr.EnvelopeType.envelopeTypeTxFeeBump():
+        body = bodyXDR.feeBump().innerTx().tx();
+        break;
+    }
+
     const result = resultXDR.result();
 
     const memo = stellar.Memo.fromXDRObject(body.memo());
