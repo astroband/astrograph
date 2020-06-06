@@ -1,6 +1,6 @@
-import { createLogger, format, Logger, transports } from "winston";
+import { createLogger, format, transports } from "winston";
 
-const { colorize, combine, errors, prettyPrint, splat, timestamp } = format;
+const { colorize, combine, errors, printf, splat, timestamp } = format;
 
 enum LoggerLevel {
   error = "error",
@@ -20,13 +20,13 @@ if (!logLevel || !LoggerLevel[logLevel]) {
   logLevel = process.env.NODE_ENV === "production" ? PROD_LOG_LEVEL : DEV_LOG_LEVEL;
 }
 
-const logger: Logger = createLogger({
+const logger = createLogger({
   format: combine(
     errors({ stack: true }),
     colorize(),
     splat(),
     timestamp(),
-    prettyPrint(),
+    printf(info => `${info.timestamp} ${info.level}: ${info.message}${info.stack ? `\n${info.stack}` : ""}`)
   ),
   transports: [
     new transports.Console({ level: logLevel }),
