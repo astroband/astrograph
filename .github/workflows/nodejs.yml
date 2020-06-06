@@ -9,24 +9,51 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [12.x, 14.x]
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: astrograph_test
+          POSTGRES_PASSWORD: stellar
+          POSTGRES_USER: stellar
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
-    - uses: actions/checkout@v1
-    - uses: harmon758/postgresql-action@v1
-      with:
-        postgresql version: '10'
-        postgresql db: 'astrograph_test'
-        postgresql user: 'stellar'
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: yarn install, build, and test
-      run: |
-        yarn install
-        yarn build
-        yarn test:coverage
+
+    - name: Cache Node.js modules
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/yarn
+        key: ${{ runner.OS }}-node-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-${{ matrix.node-version }}-
+          ${{ runner.OS }}-node-
+          ${{ runner.OS }}-
+
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+
+    - name: Build project
+      run: yarn build
+
+    - name: Run tests
+      run: yarn test:coverage
       env:
-        DATABASE_URL: 'postgresql://stellar@localhost/astrograph_test'
         CI: true
+        DATABASE_URL: 'postgresql://stellar:stellar@localhost/astrograph_test'
+        NODE_ENV: test
