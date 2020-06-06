@@ -58,7 +58,7 @@
     "apollo-client": "^2.4.1",
     "apollo-link-http": "^1.5.4",
     "apollo-link-ws": "^1.0.8",
-    "apollo-server-testing": "^2.4.8",
+    "apollo-server-testing": "^2.14.2",
     "codecov": "^3.6.5",
     "jest": "^24.7.1",
     "jest-sonar-reporter": "^2.0.0",
@@ -72,7 +72,7 @@
     "tslint": "^5.15.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.6.4",
+    "typescript": "^3.9.5",
     "ws": "^6.0.0"
   },
   "resolutions": {
