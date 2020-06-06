@@ -62,9 +62,9 @@ describe("Integration tests", () => {
     }
   });
 
-  afterAll(() => {
-    getConnection().close();
-    db.end();
+  afterAll(async () => {
+    await getConnection().close();
+    await db.end();
   });
 
   test.each(testCases)("%s", async (caseName: string) => {
