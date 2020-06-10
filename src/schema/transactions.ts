@@ -67,4 +67,9 @@ export const typeDefs = gql`
     "Get list of transactions"
     transactions(first: Int, after: String, last: Int, before: String): TransactionConnection
   }
+
+  extend type Subscription {
+    "Subscribe to new transactions on the network"
+    transactions: Transaction!
+  }
 `;
