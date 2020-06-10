@@ -78,7 +78,8 @@
   "resolutions": {
     "stellar-sdk/axios": "^0.19.0",
     "acorn": "^6.4.1",
-    "kind-of": "^6.0.3"
+    "kind-of": "^6.0.3",
+    "minimist": "^0.2.1"
   },
   "scripts": {
     "build": "tsc --build tsconfig.build.json",
