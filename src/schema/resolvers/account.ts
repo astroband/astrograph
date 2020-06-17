@@ -75,8 +75,9 @@ export default {
         storage.filterTypes(type);
       }
 
-      return makeConnection<StorageOperationData, Operation>(await storage.forAccount(root.id).all(paging), r =>
-        OperationFactory.fromStorage(r)
+      return makeConnection<StorageOperationData, Operation>(
+        await storage.forAccount(root.id).all(paging),
+        r => OperationFactory.fromStorage(r),
       );
     },
     payments: async (root: Account, args: any, ctx: IApolloContext) => {

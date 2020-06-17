@@ -31,7 +31,7 @@ export abstract class BaseStorage {
       return [];
     }
 
-    return (pagingParams ? properlyOrdered(docs, pagingParams) : docs).map((doc: any) => this.convertRawDoc(doc));
+    return (pagingParams ? properlyOrdered(docs, pagingParams) : docs);
   }
 
   public async one() {
