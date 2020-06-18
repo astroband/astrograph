@@ -6,20 +6,17 @@ import logger from "../util/logger";
 import { STELLAR_CORE_CURSOR_NAME } from "../util/secrets";
 import { initDatabase } from "./db";
 import { initSentry } from "./sentry";
-import { setStellarNetwork } from "./stellar";
 
 export async function initIngestd() {
   logger.info("Initializing...");
 
   logger.info("Sentry...");
   return initSentry()
-    .then(() => logger.info("Setting Stellar network..."))
-    .then(setStellarNetwork)
     .then(network => logger.info(`Astrograph will use ${network}`))
     .then(() => logger.info("Connecting to the database..."))
     .then(initDatabase)
     .catch((e: Error) => {
-      console.error(`Failed to connect to the database: ${e.message}`);
+      logger.error(`Failed to connect to the database: ${e.message}`);
       process.exit(1);
     })
     .then(() => logger.info("Setting cursor..."))

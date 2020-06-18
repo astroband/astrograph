@@ -34,7 +34,7 @@ export abstract class BaseStorage {
       }
     };
 
-    return (pagingParams ? properlyOrdered(docs, pagingParams) : docs);
+    return pagingParams ? properlyOrdered(docs, pagingParams) : docs;
   }
 
   // Finds document by ElasticSearch id

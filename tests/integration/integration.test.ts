@@ -4,14 +4,11 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { Client as pgClient } from "pg";
-import { Network } from "stellar-base";
 import { createConnection, getConnection } from "typeorm";
 import { Account, AccountData, Asset, LedgerHeader, Offer, TrustLine } from "../../src/orm/entities";
 import schema from "../../src/schema";
 import logger from "../../src/util/logger";
 import { DATABASE_URL } from "../../src/util/secrets";
-
-Network.useTestNetwork();
 
 const server = new ApolloServer({ schema });
 

@@ -1,6 +1,5 @@
 import stellar from "stellar-base";
 import { ITransactionData as IStorageTransactionData } from "../../storage/types";
-import { publicKeyFromBuffer } from "../../util/xdr";
 import { ITimeBounds, Transaction } from "../transaction";
 import { ITransactionWithXDR, TransactionWithXDR } from "../transaction_with_xdr";
 
@@ -17,44 +16,48 @@ export interface ITransactionTableRow {
 // NOTE: Might use some instantiation from static method here
 export class TransactionWithXDRFactory {
   public static fromDb(row: ITransactionTableRow): TransactionWithXDR {
-    const bodyXDR = stellar.xdr.TransactionEnvelope.fromXDR(row.txbody, "base64");
     const resultXDR = stellar.xdr.TransactionResultPair.fromXDR(row.txresult, "base64");
     const metaXDR = stellar.xdr.TransactionMeta.fromXDR(row.txmeta, "base64");
     const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(row.txfeemeta, "base64");
 
-    const body = bodyXDR.tx();
+    const tx = new stellar.Transaction(row.txbody, stellar.Networks.TESTNET);
+
     const result = resultXDR.result();
-
-    const memo = stellar.Memo.fromXDRObject(body.memo());
-
-    const timeBounds = this.parseTimeBounds(body.timeBounds());
 
     const resultCode = result.result().switch().value;
     const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
-    const feeAmount = body.fee().toString();
     const feeCharged = result.feeCharged().toString();
-    const sourceAccount = publicKeyFromBuffer(body.sourceAccount().value());
+
+    let timeBounds: ITimeBounds | undefined;
+
+    if (tx.timeBounds) {
+      timeBounds = { minTime: new Date(tx.timeBounds.minTime * 1000) };
+
+      if (tx.timeBounds.maxTime !== "0") {
+        timeBounds.maxTime = new Date(tx.timeBounds.maxTime * 1000);
+      }
+    }
 
     const data: ITransactionWithXDR = {
       id: row.txid,
       index: row.txindex,
       ledgerSeq: row.ledgerseq,
       body: row.txbody,
-      bodyXDR,
+      bodyXDR: tx.tx,
       result: row.txresult,
       resultXDR,
       meta: row.txmeta,
       metaXDR,
       feeMeta: row.txfeemeta,
       feeMetaXDR,
-      memo: memo.value ? memo : undefined,
+      memo: tx.memo.value ? tx.memo : undefined,
       timeBounds,
-      feeAmount,
+      feeAmount: tx.fee,
       feeCharged,
       resultCode,
       success,
-      sourceAccount,
-      operationsXDR: body.operations(),
+      sourceAccount: tx.source,
+      operationsXDR: tx.operations,
       operationResultsXDR: result.result().results()
     };
 

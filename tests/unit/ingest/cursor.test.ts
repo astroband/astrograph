@@ -1,8 +1,8 @@
-import typeorm = require('typeorm');
-import { LedgersStorage } from "../../../src/storage/ledgers";
+import typeorm = require("typeorm");
 import { Cursor } from "../../../src/ingest/cursor";
 import { LedgerHeader } from "../../../src/model";
 import { LedgerHeaderFactory } from "../../../src/model/factories";
+import { LedgersStorage } from "../../../src/storage/ledgers";
 
 let subject: Cursor;
 let currentSeq: number;

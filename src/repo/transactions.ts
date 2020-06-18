@@ -1,6 +1,6 @@
 import { IDatabase } from "pg-promise";
 import { TransactionWithXDR } from "../model";
-import { ITransactionTableRow, TransactionWithXDRFactory } from "../model/factories";
+import { TransactionWithXDRFactory } from "../model/factories";
 
 const sql = {
   selectTx:
@@ -16,25 +16,6 @@ export default class TransactionsRepo {
 
   constructor(db: any) {
     this.db = db;
-  }
-
-  // Tries to find a transaction by id;
-  public findByID(id: string): Promise<TransactionWithXDR | null> {
-    return this.db.oneOrNone(sql.selectTx, id, (res: ITransactionTableRow) =>
-      res ? TransactionWithXDRFactory.fromDb(res) : null
-    );
-  }
-
-  // TODO: Must be DRYed
-  public async findAllByID(ids: string[]): Promise<Array<TransactionWithXDR | null>> {
-    if (ids.length === 0) {
-      return new Array<TransactionWithXDR | null>();
-    }
-
-    const res = await this.db.manyOrNone(sql.selectTxIn, [ids]);
-    const txs = res.map((v: ITransactionTableRow) => TransactionWithXDRFactory.fromDb(v));
-
-    return ids.map<TransactionWithXDR | null>(id => txs.find(a => a.id === id) || null);
   }
 
   // Fetches all transactions by ledger seq;

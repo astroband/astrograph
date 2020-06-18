@@ -14,7 +14,7 @@ const ledgerHeaderResolver = createBatchResolver<Ledger, LedgerHeader>(async (le
   const seqNumsWithoutHeaders = ledgers.filter(l => l.header === undefined).map(l => l.seq);
   let fetchedHeaders: LedgerHeaderModel[] = [];
 
-  if (seqNumsWithoutHeaders.length != 0) {
+  if (seqNumsWithoutHeaders.length !== 0) {
     fetchedHeaders = (await getRepository(LedgerHeader).find({ where: { seq: In(seqNumsWithoutHeaders) } })).map(h =>
       LedgerHeaderFactory.fromXDR(h.data)
     );
