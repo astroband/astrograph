@@ -2,7 +2,7 @@ import { withFilter } from "graphql-subscriptions";
 import { Asset } from "stellar-base";
 import { IApolloContext } from "../../graphql_server";
 import { Operation, OperationType, Transaction } from "../../model";
-import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { OperationFactory } from "../../model/factories";
 import { NEW_OPERATION, pubsub } from "../../pubsub";
 import { OperationData as StorageOperationData } from "../../storage/types";
 import { makeConnection } from "./util";
@@ -17,8 +17,7 @@ export default {
         return operation.tx;
       }
 
-      const tx = await ctx.storage.transactions.get(operation.tx.id);
-      return TransactionWithXDRFactory.fromStorage(tx);
+      return ctx.storage.transactions.findById(operation.tx.id);
     },
     __resolveType(operation: Operation) {
       switch (operation.type) {
@@ -83,8 +82,7 @@ export default {
   SetOptionsSigner: { account: resolvers.account },
   Query: {
     operation: async (root: any, args: { id: string }, ctx: IApolloContext) => {
-      const doc = await ctx.storage.operations.get(args.id);
-      return OperationFactory.fromStorage(doc);
+      return ctx.storage.operations.findById(args.id);
     },
     operations: async (root: any, args: any, ctx: IApolloContext) => {
       const { type, ...paging } = args;

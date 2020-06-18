@@ -15,8 +15,16 @@ export class TransactionsStorage extends BaseStorage {
     return this;
   }
 
+  public async findById(id: string) {
+    return this.addTerm({ id }).one();
+  }
+
   protected get elasticIndexName() {
     return "tx";
+  }
+
+  protected hitID(hit: any): string {
+    return hit._source.id;
   }
 
   protected convertRawDoc(doc: any): Transaction {

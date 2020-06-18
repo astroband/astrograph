@@ -7,6 +7,7 @@ import { makeConnection } from "./util";
 
 import { Operation, PaymentOperations, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { OperationsStorage } from "../../storage";
 import {
   ITransactionData as IStorageTransactionData,
   OperationData as StorageOperationData
@@ -30,7 +31,7 @@ export default {
     },
     operations: async (root: Transaction, args: any, ctx: IApolloContext) => {
       return makeConnection<StorageOperationData, Operation>(
-        await ctx.storage.operations.forTransaction(root.id).all(args),
+        await OperationsStorage.forTransaction(root.id, args),
         r => OperationFactory.fromStorage(r)
       );
     },
@@ -46,8 +47,7 @@ export default {
   },
   Query: {
     transaction: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const tx = await ctx.storage.transactions.get(args.id);
-      return TransactionWithXDRFactory.fromStorage(tx);
+      return await ctx.storage.transactions.findById(args.id);
     },
     transactions: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const records = await ctx.storage.transactions.all(args);

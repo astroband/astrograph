@@ -1,7 +1,7 @@
 import { getRepository, In } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
 import { Ledger, LedgerHeader as LedgerHeaderModel, Operation, PaymentOperations, Transaction } from "../../model";
-import { LedgerHeaderFactory } from "../../model/factories";
+import { LedgerHeaderFactory, TransactionWithXDRFactory } from "../../model/factories";
 import { LedgerHeader } from "../../orm/entities";
 import { LEDGER_CREATED, pubsub } from "../../pubsub";
 import {
@@ -30,7 +30,8 @@ export default {
     header: ledgerHeaderResolver,
     transactions: async (root: Ledger, args: any, ctx: IApolloContext) => {
       return makeConnection<IStorageTransactionData, Transaction>(
-        await ctx.storage.transactions.forLedger(root.seq).all(args)
+        await ctx.storage.transactions.forLedger(root.seq).all(args),
+        r => TransactionWithXDRFactory.fromStorage(r)
       );
     },
     operations: async (root: Ledger, args: any, ctx: IApolloContext) => {

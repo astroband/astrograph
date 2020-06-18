@@ -14,12 +14,6 @@ export abstract class BaseStorage {
     };
   }
 
-  public async get(id: string) {
-    return connection.get({ index: this.elasticIndexName, id }).then(({ body }: { body: any }) => {
-      return { ...body._source, id: body._id };
-    });
-  }
-
   public async all(pagingParams?: PagingParams) {
     if (pagingParams) {
       this.paginate(pagingParams);
@@ -31,7 +25,26 @@ export abstract class BaseStorage {
       return [];
     }
 
+    // reset everything
+    this.searchParams = {
+      query: {
+        bool: {
+          must: []
+        }
+      }
+    };
+
     return (pagingParams ? properlyOrdered(docs, pagingParams) : docs);
+  }
+
+  // Finds document by ElasticSearch id
+  public async findById(id: string) {
+    const { body: response } = await connection.get({
+      index: this.elasticIndexName,
+      id,
+    });
+
+    return this.convertRawDoc(response._source);
   }
 
   public async one() {
@@ -56,8 +69,12 @@ export abstract class BaseStorage {
     });
 
     return response.hits.hits.map((h: any) => {
-      return { ...h._source, id: h._id };
+      return { ...h._source, id: this.hitID(h) };
     });
+  }
+
+  protected hitID(hit: any): string {
+    return hit._id;
   }
 
   protected async aggregation(queries: any) {

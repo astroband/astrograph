@@ -1,11 +1,13 @@
 import { AccountID, Operation, OperationType } from "../model";
 import { OperationFactory } from "../model/factories";
 import { DataMapper } from "../model/factories/operation_data_mapper/storage";
+import { PagingParams } from "../util/paging";
 import { BaseStorage } from "./base";
+import { OperationData as StorageOperationData } from "./types";
 
 export class OperationsStorage extends BaseStorage {
-  public static async forTransaction(txId: string): Promise<Operation[]> {
-    return new OperationsStorage().addTerm({ tx_id: txId }).all();
+  public static async forTransaction(txId: string, paging?: PagingParams): Promise<StorageOperationData[]> {
+    return new OperationsStorage().addTerm({ tx_id: txId }).all(paging);
   }
 
   public filterTypes(types: OperationType[]) {
