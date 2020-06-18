@@ -16,7 +16,7 @@ export async function initIngestd() {
     .then(() => logger.info("Connecting to the database..."))
     .then(initDatabase)
     .catch((e: Error) => {
-      console.error(`Failed to connect to the database: ${e.message}`);
+      logger.error(`Failed to connect to the database: ${e.message}`);
       process.exit(1);
     })
     .then(() => logger.info("Setting cursor..."))

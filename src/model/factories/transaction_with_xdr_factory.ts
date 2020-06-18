@@ -25,7 +25,7 @@ export class TransactionWithXDRFactory {
     let body: any;
     let sourceAccount: string;
 
-    switch(bodyXDR.switch()) {
+    switch (bodyXDR.switch()) {
       case stellar.xdr.EnvelopeType.envelopeTypeTxV0():
         body = bodyXDR.v0().tx();
         sourceAccount = publicKeyFromBuffer(body.sourceAccountEd25519());
@@ -35,11 +35,14 @@ export class TransactionWithXDRFactory {
         sourceAccount = stellar.encodeMuxedAccountToAddres(body.sourceAccount());
         break;
       case stellar.xdr.EnvelopeType.envelopeTypeTxFeeBump():
-        body = bodyXDR.feeBump().innerTx().tx();
+        body = bodyXDR
+          .feeBump()
+          .innerTx()
+          .tx();
         sourceAccount = stellar.encodeMuxedAccountToAddres(body.feeSource());
         break;
       default:
-        throw `Unknown envelope type ${bodyXDR.switch()}`;
+        throw new Error(`Unknown envelope type ${bodyXDR.switch()}`);
     }
 
     const result = resultXDR.result();

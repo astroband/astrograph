@@ -20,19 +20,13 @@ if (!logLevel || !LoggerLevel[logLevel]) {
   logLevel = process.env.NODE_ENV === "production" ? PROD_LOG_LEVEL : DEV_LOG_LEVEL;
 }
 
-const logFormat = printf((info) => {
+const logFormat = printf(info => {
   const stacktrace = info.stack ? `\n${info.stack}` : "";
   return `${info.timestamp} ${info.level}: ${info.message}${stacktrace}`;
 });
 
 const logger = createLogger({
-  format: combine(
-    errors({ stack: true }),
-    colorize(),
-    splat(),
-    timestamp(),
-    logFormat,
-  ),
+  format: combine(errors({ stack: true }), colorize(), splat(), timestamp(), logFormat),
   transports: [
     new transports.Console({ level: logLevel }),
     new transports.File({ filename: "error.log", level: LOG_FILE })
