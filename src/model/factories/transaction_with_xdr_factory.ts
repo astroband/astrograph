@@ -28,6 +28,16 @@ export class TransactionWithXDRFactory {
     const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
     const feeCharged = result.feeCharged().toString();
 
+    let timeBounds: ITimeBounds | undefined;
+
+    if (tx.timeBounds) {
+      timeBounds = { minTime: new Date(tx.timeBounds.minTime * 1000) };
+
+      if (tx.timeBounds.maxTime !== "0") {
+        timeBounds.maxTime = new Date(tx.timeBounds.maxTime * 1000);
+      }
+    }
+
     const data: ITransactionWithXDR = {
       id: row.txid,
       index: row.txindex,
@@ -41,7 +51,7 @@ export class TransactionWithXDRFactory {
       feeMeta: row.txfeemeta,
       feeMetaXDR,
       memo: tx.memo.value ? tx.memo : undefined,
-      timeBounds: tx.timeBounds,
+      timeBounds,
       feeAmount: tx.fee,
       feeCharged,
       resultCode,
