@@ -23,17 +23,23 @@ export class TransactionWithXDRFactory {
     const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(row.txfeemeta, "base64");
 
     let body: any;
+    let sourceAccount: string;
 
     switch(bodyXDR.switch()) {
       case stellar.xdr.EnvelopeType.envelopeTypeTxV0():
         body = bodyXDR.v0().tx();
+        sourceAccount = publicKeyFromBuffer(body.sourceAccountEd25519());
         break;
       case stellar.xdr.EnvelopeType.envelopeTypeTx():
         body = bodyXDR.v1().tx();
+        sourceAccount = stellar.encodeMuxedAccountToAddres(body.sourceAccount());
         break;
       case stellar.xdr.EnvelopeType.envelopeTypeTxFeeBump():
         body = bodyXDR.feeBump().innerTx().tx();
+        sourceAccount = stellar.encodeMuxedAccountToAddres(body.feeSource());
         break;
+      default:
+        throw `Unknown envelope type ${bodyXDR.switch()}`;
     }
 
     const result = resultXDR.result();
@@ -46,7 +52,6 @@ export class TransactionWithXDRFactory {
     const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
     const feeAmount = body.fee().toString();
     const feeCharged = result.feeCharged().toString();
-    const sourceAccount = publicKeyFromBuffer(body.sourceAccount().value());
 
     const data: ITransactionWithXDR = {
       id: row.txid,
