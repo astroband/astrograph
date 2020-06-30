@@ -3,7 +3,7 @@ import { Client } from "pg";
 import stellar from "stellar-base";
 import { getCustomRepository } from "typeorm";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
-import { Ledger, LedgerHeader, OfferSubscriptionPayload, TransactionWithXDR } from "./model";
+import { Ledger, LedgerHeader, OfferSubscriptionPayload, Transaction, TransactionWithXDR } from "./model";
 import { OfferRepository } from "./orm/repository/offer";
 import { OperationsStorage } from "./storage/operations";
 import logger from "./util/logger";
@@ -27,6 +27,7 @@ export const ACCOUNT = "ACCOUNT";
 export const BALANCE = "BALANCE";
 export const DATA_ENTRY = "DATA_ENTRY";
 export const OFFER = "OFFER";
+export const NEW_TRANSACTION = "NEW_TRANSACTION";
 export const NEW_OPERATION = "NEW_OPERATION";
 export const OFFERS_TICK = "OFFERS_TICK";
 
@@ -71,6 +72,8 @@ export class Publisher {
     });
 
     for (const tx of transactions) {
+      pubsub.publish(NEW_TRANSACTION, new Transaction(tx));
+
       const operations = await OperationsStorage.forTransaction(tx.id);
 
       for (const operation of operations) {

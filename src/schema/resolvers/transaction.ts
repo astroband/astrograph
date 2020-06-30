@@ -12,6 +12,7 @@ import {
   ITransactionData as IStorageTransactionData,
   OperationData as StorageOperationData
 } from "../../storage/types";
+import { NEW_TRANSACTION, pubsub } from "../../pubsub";
 
 export default {
   Transaction: {
@@ -49,11 +50,21 @@ export default {
     transaction: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       return await ctx.storage.transactions.findById(args.id);
     },
-    transactions: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const records = await ctx.storage.transactions.all(args);
-      return makeConnection<IStorageTransactionData, Transaction>(records, r =>
-        TransactionWithXDRFactory.fromStorage(r)
+    transactions: async (_root: any, args: any, ctx: IApolloContext, _info: any) => {
+      return makeConnection<IStorageTransactionData, Transaction>(
+        await ctx.storage.transactions.all(args),
+        r => TransactionWithXDRFactory.fromStorage(r)
       );
+    }
+  },
+  Subscription: {
+    transactions: {
+      resolve(payload: Transaction) {
+        return payload;
+      },
+      subscribe() {
+        return pubsub.asyncIterator(NEW_TRANSACTION);
+      }
     }
   }
 };
