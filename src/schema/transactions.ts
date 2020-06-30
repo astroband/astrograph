@@ -61,6 +61,12 @@ export const typeDefs = gql`
     node: Transaction
   }
 
+  type TransactionSubmitResponse {
+    status: String!
+    hash: String!
+    error: String
+  }
+
   extend type Query {
     "Get single transaction by id"
     transaction(id: TransactionHash!): Transaction
@@ -70,6 +76,10 @@ export const typeDefs = gql`
 
   extend type Subscription {
     "Subscribe to new transactions on the network"
-    transactions: Transaction!
+    transactions(id: TransactionHash): Transaction!
+  }
+
+  type Mutation {
+    submitTransaction(envelopeBase64: String!): TransactionSubmitResponse
   }
 `;

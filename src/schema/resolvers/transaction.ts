@@ -1,3 +1,5 @@
+import axios from "axios";
+import { withFilter } from "graphql-subscriptions";
 import stellar from "stellar-base";
 
 import { IApolloContext } from "../../graphql_server";
@@ -7,12 +9,13 @@ import { makeConnection } from "./util";
 
 import { Operation, PaymentOperations, Transaction } from "../../model";
 import { OperationFactory, TransactionWithXDRFactory } from "../../model/factories";
+import { NEW_TRANSACTION, pubsub } from "../../pubsub";
 import { OperationsStorage } from "../../storage";
 import {
   ITransactionData as IStorageTransactionData,
   OperationData as StorageOperationData
 } from "../../storage/types";
-import { NEW_TRANSACTION, pubsub } from "../../pubsub";
+import { STELLAR_HTTP_ENDPOINT, STELLAR_NETWORK_PASSPHRASE } from "../../util/secrets";
 
 export default {
   Transaction: {
@@ -31,9 +34,8 @@ export default {
       };
     },
     operations: async (root: Transaction, args: any, ctx: IApolloContext) => {
-      return makeConnection<StorageOperationData, Operation>(
-        await OperationsStorage.forTransaction(root.id, args),
-        r => OperationFactory.fromStorage(r)
+      return makeConnection<StorageOperationData, Operation>(await OperationsStorage.forTransaction(root.id, args), r =>
+        OperationFactory.fromStorage(r)
       );
     },
     payments: async (root: Transaction, args: any, ctx: IApolloContext) => {
@@ -48,12 +50,11 @@ export default {
   },
   Query: {
     transaction: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      return await ctx.storage.transactions.findById(args.id);
+      return ctx.storage.transactions.findById(args.id);
     },
-    transactions: async (_root: any, args: any, ctx: IApolloContext, _info: any) => {
-      return makeConnection<IStorageTransactionData, Transaction>(
-        await ctx.storage.transactions.all(args),
-        r => TransactionWithXDRFactory.fromStorage(r)
+    transactions: async (root: any, args: any, ctx: IApolloContext, info: any) => {
+      return makeConnection<IStorageTransactionData, Transaction>(await ctx.storage.transactions.all(args), r =>
+        TransactionWithXDRFactory.fromStorage(r)
       );
     }
   },
@@ -62,9 +63,42 @@ export default {
       resolve(payload: Transaction) {
         return payload;
       },
-      subscribe() {
-        return pubsub.asyncIterator(NEW_TRANSACTION);
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(NEW_TRANSACTION),
+        (payload: Transaction, args) => {
+          if (!args.id) {
+            return true;
+          }
+
+          return args.id == payload.id;
+        }
+      )
+    }
+  },
+  Mutation: {
+    submitTransaction: async (root: any, args: any) => {
+      const coreResponse = await axios({
+        baseURL: STELLAR_HTTP_ENDPOINT,
+        url: "/tx",
+        method: "POST",
+        params: { blob: args.envelopeBase64 }
+      });
+
+      const status = coreResponse.data.status;
+      const tx = new stellar.Transaction(args.envelopeBase64, STELLAR_NETWORK_PASSPHRASE);
+
+      const response: { status: string; hash: string; error?: string } = {
+        status,
+        hash: tx.hash().toString("hex")
+      };
+
+      if (status === "ERROR") {
+        response.error = stellar.xdr.TransactionResult.fromXDR(coreResponse.data.error, "base64")
+          .result()
+          .switch().name;
       }
+
+      return response;
     }
   }
 };
