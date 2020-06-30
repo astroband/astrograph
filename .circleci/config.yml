@@ -10,6 +10,7 @@ workflows:
             branches:
               only:
                 - master
+                - elastic
 
 jobs:
   build:
@@ -30,13 +31,10 @@ jobs:
           name: Build docker image
           command: |
             docker build -t astroband/${CIRCLE_PROJECT_REPONAME}:latest -t astroband/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}-${CIRCLE_SHA1} .
-            docker build -t docker.pkg.github.com/astroband/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}:latest -t docker.pkg.github.com/astroband/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_SHA1} .
 
       # deploy the image
       - run:
-          name: Push image to DockerHub and Github packages
+          name: Push image to DockerHub
           command: |
             docker push astroband/${CIRCLE_PROJECT_REPONAME}:latest
             docker push astroband/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
-            docker push docker.pkg.github.com/astroband/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}:latest
-            docker push docker.pkg.github.com/astroband/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_SHA1}

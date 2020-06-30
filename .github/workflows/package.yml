@@ -1,0 +1,19 @@
+name: Build Github package
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+    - name: Login to docker
+      run: docker login docker.pkg.github.com --username ${{ github.actor }} --password ${{ github.token }}
+    - name: Build images
+      run: docker build -t docker.pkg.github.com/${{ github.repository }}/astrograph:${{ github:sha }} -t docker.pkg.github.com/${{ github.repository }}/astrograph:latest .
+    - name: Push images
+      run: |
+        docker push docker.pkg.github.com/${{ github.repository }}/astrograph:${{ github:sha }}
+        docker push docker.pkg.github.com/${{ github.repository }}/astrograph:latest
