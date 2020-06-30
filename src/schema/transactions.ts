@@ -76,7 +76,7 @@ export const typeDefs = gql`
 
   extend type Subscription {
     "Subscribe to new transactions on the network"
-    transactions: Transaction!
+    transactions(id: TransactionHash): Transaction!
   }
 
   type Mutation {

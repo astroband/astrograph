@@ -1,4 +1,5 @@
 import axios from "axios";
+import { withFilter } from "graphql-subscriptions";
 import stellar from "stellar-base";
 
 import { IApolloContext } from "../../graphql_server";
@@ -14,7 +15,7 @@ import {
   ITransactionData as IStorageTransactionData,
   OperationData as StorageOperationData
 } from "../../storage/types";
-import { STELLAR_HTTP_ENDPOINT } from "../../util/secrets";
+import { STELLAR_HTTP_ENDPOINT, STELLAR_NETWORK_PASSPHRASE } from "../../util/secrets";
 
 export default {
   Transaction: {
@@ -62,9 +63,16 @@ export default {
       resolve(payload: Transaction) {
         return payload;
       },
-      subscribe() {
-        return pubsub.asyncIterator(NEW_TRANSACTION);
-      }
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(NEW_TRANSACTION),
+        (payload: Transaction, args) => {
+          if (!args.id) {
+            return true;
+          }
+
+          return args.id == payload.id;
+        }
+      )
     }
   },
   Mutation: {
@@ -77,7 +85,7 @@ export default {
       });
 
       const status = coreResponse.data.status;
-      const tx = new stellar.Transaction(args.envelopeBase64);
+      const tx = new stellar.Transaction(args.envelopeBase64, STELLAR_NETWORK_PASSPHRASE);
 
       const response: { status: string; hash: string; error?: string } = {
         status,

@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import fs from "fs";
+import stellar from "stellar-base"
 import logger from "./logger";
 
 const environment = process.env.NODE_ENV;
@@ -20,12 +21,7 @@ export const BIND_ADDRESS = process.env.BIND_ADDRESS || "0.0.0.0";
 export const DEBUG_LEDGER = Number.parseInt(process.env.DEBUG_LEDGER || "", 10);
 export const INGEST_INTERVAL = Number.parseInt(process.env.INGEST_INTERVAL || "", 10) || 2000;
 
-export const STELLAR_NETWORK = process.env.STELLAR_NETWORK || "testnet";
-export const HORIZON_ENDPOINT = process.env.HORIZON_ENDPOINT;
-
-if (!["pubnet", "testnet"].includes(STELLAR_NETWORK) && !HORIZON_ENDPOINT) {
-  throw new Error("If you use private network, you must provide HORIZON_ENDPOINT env variable");
-}
+export const STELLAR_NETWORK_PASSPHRASE = process.env.STELLAR_NETWORK_PASSPHRASE || stellar.Networks.TESTNET;
 
 export const SENTRY_DSN = process.env.SENTRY_DSN;
 
