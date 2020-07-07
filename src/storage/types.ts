@@ -157,7 +157,7 @@ export interface ITransactionData {
   idx: number;
   seq: number;
   order: number;
-  fee: number;
+  max_fee: number;
   fee_charged: number;
   operation_count: number;
   close_time: string; // ISO datetime

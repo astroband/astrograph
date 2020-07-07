@@ -81,7 +81,7 @@ export class TransactionWithXDRFactory {
       ledgerSeq: data.seq,
       memo: data.memo ? TransactionWithXDRFactory.parseMemo(data.memo.type, data.memo.value) : undefined,
       timeBounds,
-      feeAmount: data.fee.toString(),
+      feeAmount: data.max_fee.toString(),
       feeCharged: data.fee_charged,
       resultCode: data.result_code,
       success: data.successful,
