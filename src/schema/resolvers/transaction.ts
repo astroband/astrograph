@@ -20,6 +20,7 @@ import { STELLAR_HTTP_ENDPOINT, STELLAR_NETWORK_PASSPHRASE } from "../../util/se
 export default {
   Transaction: {
     sourceAccount: resolvers.account,
+    feeAccount: resolvers.account,
     ledger: resolvers.ledger,
     memo: (obj: any) => {
       if (!obj.memo) {

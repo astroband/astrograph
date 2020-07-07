@@ -1,4 +1,5 @@
 import stellar from "stellar-base";
+import { AccountID } from "./";
 
 export interface ITimeBounds {
   minTime: Date;
@@ -11,7 +12,8 @@ export interface ITransaction {
   ledgerSeq: number;
   memo?: stellar.Memo;
   feeAmount: string;
-  sourceAccount: string;
+  sourceAccount: AccountID;
+  feeAccount?: AccountID;
   timeBounds?: ITimeBounds;
   feeCharged: number;
   success: boolean;
@@ -24,7 +26,8 @@ export class Transaction implements ITransaction {
   public ledgerSeq: number;
   public memo?: stellar.Memo;
   public feeAmount: string;
-  public sourceAccount: string;
+  public sourceAccount: AccountID;
+  public feeAccount?: AccountID;
   public timeBounds?: ITimeBounds;
   public feeCharged: number;
   public success: boolean;
@@ -37,6 +40,7 @@ export class Transaction implements ITransaction {
     this.memo = data.memo;
     this.feeAmount = data.feeAmount;
     this.sourceAccount = data.sourceAccount;
+    this.feeAccount = data.feeAccount;
     this.timeBounds = data.timeBounds;
     this.feeCharged = data.feeCharged;
     this.success = data.success;

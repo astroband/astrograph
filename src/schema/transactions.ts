@@ -38,6 +38,8 @@ export const typeDefs = gql`
     feeAmount: Int!
     "Account that issued the transaction"
     sourceAccount: Account!
+    "Account that paid the fee. Not empty only for fee bump transactions"
+    feeAccount: Account
     "Time range, in which transaction is considered valid. [More info](https://www.stellar.org/developers/guides/concepts/transactions.html#time-bounds)"
     timeBounds: TimeBounds
     "The actual fee paid by the source account"

@@ -85,7 +85,8 @@ export class TransactionWithXDRFactory {
       feeCharged: data.fee_charged,
       resultCode: data.result_code,
       success: data.successful,
-      sourceAccount: data.source_account_id
+      sourceAccount: data.source_account_id,
+      feeAccount: data.fee_account_id,
     });
   }
 

@@ -164,6 +164,7 @@ export interface ITransactionData {
   successful: boolean;
   result_code: number;
   source_account_id: AccountID;
+  fee_account_id: AccountID;
   memo?: { type: 0 | 1 | 2 | 3 | 4; value: string };
   time_bounds?: { min_time: number; max_time: number };
   paging_token: string;
