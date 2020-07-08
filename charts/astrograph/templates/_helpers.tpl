@@ -66,4 +66,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 - name: ELASTIC_URL
   value: {{ .Values.es.url | quote }}
 {{- end }}
+- name: STELLAR_HTTP_ENDPOINT
+  value: {{ .Values.stellarHttpEndpoint | quote }}
 {{- end }}
