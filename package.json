@@ -59,7 +59,7 @@
     "apollo-link-http": "^1.5.4",
     "apollo-link-ws": "^1.0.8",
     "apollo-server-testing": "^2.14.2",
-    "codecov": "^3.6.5",
+    "codecov": "^3.7.1",
     "jest": "^24.7.1",
     "jest-sonar-reporter": "^2.0.0",
     "nodemon": "^1.18.7",
