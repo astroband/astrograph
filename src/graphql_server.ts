@@ -9,7 +9,7 @@ import schema from "./schema";
 import { listenOffers, orderBook } from "./service/dex";
 import { OperationsStorage, TradesStorage, TransactionsStorage } from "./storage";
 import logger from "./util/logger";
-import { BIND_ADDRESS, PORT } from "./util/secrets";
+import { BIND_ADDRESS, PORT, STELLAR_NETWORK } from "./util/secrets";
 import { listenBaseReserveChange } from "./util/stellar";
 
 const demoQuery = `{
@@ -46,6 +46,9 @@ export interface IApolloContext {
 }
 
 init().then(() => {
+  logger.warn(
+    `Astrograph will submit transactions to the ${STELLAR_NETWORK.toLowerCase()} network. Set STELLAR_NETWORK env variable to change it. Allowed values are "public" and "testnet"`
+  );
   listenBaseReserveChange();
   listenOffers();
 

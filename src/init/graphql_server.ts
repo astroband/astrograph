@@ -25,5 +25,5 @@ export async function initGraphqlServer() {
       const offers = await getRepository(Offer).find();
       await buildOffersGraph(offers);
     })
-    .then(() => logger.info("Astrograph is inialized successfully"));
+    .then(() => logger.info("Astrograph is initialized successfully"));
 }

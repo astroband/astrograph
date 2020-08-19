@@ -68,4 +68,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 - name: STELLAR_HTTP_ENDPOINT
   value: {{ .Values.stellarHttpEndpoint | quote }}
+- name: STELLAR_NETWORK
+  value: {{ .Values.network | quote }}
 {{- end }}

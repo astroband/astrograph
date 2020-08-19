@@ -12,7 +12,6 @@ export async function initIngestd() {
 
   logger.info("Sentry...");
   return initSentry()
-    .then(network => logger.info(`Astrograph will use ${network}`))
     .then(() => logger.info("Connecting to the database..."))
     .then(initDatabase)
     .catch((e: Error) => {
@@ -29,5 +28,5 @@ export async function initIngestd() {
     })
     .then(() => logger.info("Creating connection for pubsub..."))
     .then(connectPubSub)
-    .then(() => logger.info("Ingest daemon is inialized successfully"));
+    .then(() => logger.info("Ingest daemon is initialized successfully"));
 }

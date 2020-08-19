@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import fs from "fs";
-import stellar from "stellar-base"
 import logger from "./logger";
 
 const environment = process.env.NODE_ENV;
@@ -21,7 +20,11 @@ export const BIND_ADDRESS = process.env.BIND_ADDRESS || "0.0.0.0";
 export const DEBUG_LEDGER = Number.parseInt(process.env.DEBUG_LEDGER || "", 10);
 export const INGEST_INTERVAL = Number.parseInt(process.env.INGEST_INTERVAL || "", 10) || 2000;
 
-export const STELLAR_NETWORK_PASSPHRASE = process.env.STELLAR_NETWORK_PASSPHRASE || stellar.Networks.TESTNET;
+export const STELLAR_NETWORK = (process.env.STELLAR_NETWORK || "testnet").toUpperCase();
+
+if (!["PUBLIC", "TESTNET"].includes(STELLAR_NETWORK)) {
+  throw new Error(`"STELLAR_NETWORK" can have "public" or "testnet", ${process.env.STELLAR_NETWORK} given`);
+}
 
 export const SENTRY_DSN = process.env.SENTRY_DSN;
 

@@ -15,7 +15,7 @@ import {
   ITransactionData as IStorageTransactionData,
   OperationData as StorageOperationData
 } from "../../storage/types";
-import { STELLAR_HTTP_ENDPOINT, STELLAR_NETWORK_PASSPHRASE } from "../../util/secrets";
+import { STELLAR_HTTP_ENDPOINT, STELLAR_NETWORK } from "../../util/secrets";
 
 export default {
   Transaction: {
@@ -86,7 +86,7 @@ export default {
       });
 
       const status = coreResponse.data.status;
-      const tx = new stellar.Transaction(args.envelopeBase64, STELLAR_NETWORK_PASSPHRASE);
+      const tx = new stellar.Transaction(args.envelopeBase64, stellar.Networks[STELLAR_NETWORK]);
 
       const response: { status: string; hash: string; error?: string } = {
         status,
