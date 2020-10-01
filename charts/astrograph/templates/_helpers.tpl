@@ -70,4 +70,10 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
   value: {{ .Values.stellarHttpEndpoint | quote }}
 - name: STELLAR_NETWORK
   value: {{ .Values.network | quote }}
+{{- if .Values.apolloStudioKey }}
+- name: APOLLO_KEY
+  value: {{ .Values.apolloStudioKey | quote }}
+- name: APOLLO_SCHEMA_REPORTING
+  value: "true"
+{{- end }}
 {{- end }}
