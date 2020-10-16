@@ -2,6 +2,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=astroband_astrograph&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=astroband_astrograph)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=astroband_astrograph&metric=security_rating)](https://sonarcloud.io/dashboard?id=astroband_astrograph)
 [![License](https://img.shields.io/github/license/astroband/astrograph.svg)](raw/master/LICENSE.txt)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fastroband%2Fastrograph.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fastroband%2Fastrograph?ref=badge_shield)
 
 # Astrograph
 
@@ -308,3 +309,6 @@ The project is available as open source under the terms of the [MIT License](htt
 Parts of the path finding engine include the original code from [stellar-pathfinder-server](https://github.com/future-tense/stellar-pathfinder-server)
 project created by [Johan Stén](https://github.com/johansten]) and [Future Tense, LLC](https://github.com/future-tense),
 adapted and modified by Astrograph project team.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fastroband%2Fastrograph.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fastroband%2Fastrograph?ref=badge_large)
