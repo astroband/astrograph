@@ -38,7 +38,7 @@
     "progress": "^2.0.3",
     "retry": "^0.12.0",
     "squel": "^5.12.2",
-    "stellar-base": "^3.0.4",
+    "stellar-base": "^4.0.2",
     "typeorm": "^0.2.17",
     "typescript-memoize": "^1.0.0-alpha.3",
     "winston": "^3.0.0"

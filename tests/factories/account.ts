@@ -13,8 +13,6 @@ Factory.define("account")
   .attr("thresholds", "AQAAAA==")
   .attr("flags", 0)
   .attr("lastModified", 6)
-  .attr("sellingLiabilities", new BigNumber("8927364"))
-  .attr("buyingLiabilities", new BigNumber("2948361"));
 
 export default {
   build(overrides?: object): Account {
