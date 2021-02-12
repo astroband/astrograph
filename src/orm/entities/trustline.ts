@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { xdr as XDR } from "stellar-base";
+import { xdr } from "stellar-base";
 import { Column, Entity, PrimaryColumn } from "typeorm";
 import { AccountID, AssetID, IBalance } from "../../model";
 import { AssetFactory } from "../../model/factories";
@@ -32,11 +32,47 @@ export class TrustLine implements IBalance {
   @Column({ name: "lastmodified" })
   lastModified: number;
 
-  @Column({ type: "bigint", name: "buyingliabilities", transformer: BigNumberTransformer })
-  buyingLiabilities: BigNumber;
+  @Column({
+    name: "extension",
+    type: "text",
+    nullable: true,
+    transformer: {
+      from: (value: string | null) => {
+        if (!value) {
+          return null;
+        }
 
-  @Column({ type: "bigint", name: "sellingliabilities", transformer: BigNumberTransformer })
-  sellingLiabilities: BigNumber;
+        const extension = xdr.AccountEntryExt.fromXDR(value, "base64")
+
+        return new BigNumber(extension.v1().liabilities().buying());
+      },
+      // we don't actually need `to` transform,
+      // because we never write to the db, so it's just a stab
+      to: (value: BigNumber) => null
+    }
+  })
+  buyingLiabilities: BigNumber | null;
+
+  @Column({
+    name: "extension",
+    type: "text",
+    nullable: true,
+    transformer: {
+      from: (value: string | null) => {
+        if (!value) {
+          return null;
+        }
+
+        const extension = xdr.AccountEntryExt.fromXDR(value, 'base64');
+
+        return new BigNumber(extension.v1().liabilities().selling());
+      },
+      // we don't actually need `to` transform,
+      // because we never write to the db, so it's just a stab
+      to: (value: BigNumber) => null
+    }
+  })
+  sellingLiabilities: BigNumber | null;
 
   public static parsePagingToken(token: string) {
     const [accountId, , balance] =
@@ -53,7 +89,7 @@ export class TrustLine implements IBalance {
   }
 
   public get authorized(): boolean {
-    return (this.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0;
+    return (this.flags & xdr.TrustLineFlags.authorizedFlag().value) > 0;
   }
 
   public get spendableBalance(): BigNumber {

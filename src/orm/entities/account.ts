@@ -57,18 +57,44 @@ export class Account {
   lastModified: number;
 
   @Column({
-    name: "buyingliabilities",
-    type: "bigint",
+    name: "extension",
+    type: "text",
     nullable: true,
-    transformer: BigNumberTransformer
+    transformer: {
+      from: (value: string | null) => {
+        if (!value) {
+          return null;
+        }
+
+        const extension = xdr.AccountEntryExt.fromXDR(value, "base64")
+
+        return new BigNumber(extension.v1().liabilities().buying());
+      },
+      // we don't actually need `to` transform,
+      // because we never write to the db, so it's just a stab
+      to: (value: BigNumber) => null
+    }
   })
   buyingLiabilities: BigNumber | null;
 
   @Column({
-    name: "sellingliabilities",
-    type: "bigint",
+    name: "extension",
+    type: "text",
     nullable: true,
-    transformer: BigNumberTransformer
+    transformer: {
+      from: (value: string | null) => {
+        if (!value) {
+          return null;
+        }
+
+        const extension = xdr.AccountEntryExt.fromXDR(value, 'base64');
+
+        return new BigNumber(extension.v1().liabilities().selling());
+      },
+      // we don't actually need `to` transform,
+      // because we never write to the db, so it's just a stab
+      to: (value: BigNumber) => null
+    }
   })
   sellingLiabilities: BigNumber | null;
 
