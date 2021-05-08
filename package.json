@@ -39,7 +39,7 @@
     "retry": "^0.12.0",
     "squel": "^5.12.2",
     "stellar-base": "^3.0.4",
-    "typeorm": "^0.2.17",
+    "typeorm": "^0.2.25",
     "typescript-memoize": "^1.0.0-alpha.3",
     "winston": "^3.0.0"
   },
