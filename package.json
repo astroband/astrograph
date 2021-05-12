@@ -28,7 +28,7 @@
     "graphql-relay": "^0.6.0",
     "graphql-resolve-batch": "^1.0.2",
     "graphql-subscriptions": "^1.0.0",
-    "grpc": "^1.24.3",
+    "grpc": "^1.24.9",
     "js-xdr": "^1.1.0",
     "minimist": "^1.2.3",
     "object-dig": "^0.1.3",
