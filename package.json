@@ -41,7 +41,8 @@
     "stellar-base": "^3.0.4",
     "typeorm": "^0.2.17",
     "typescript-memoize": "^1.0.0-alpha.3",
-    "winston": "^3.0.0"
+    "winston": "^3.0.0",
+    "@snyk/protect": "latest"
   },
   "devDependencies": {
     "@types/big.js": "^4.0.5",
@@ -94,7 +95,9 @@
     "test:coverage": "jest --coverage",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
-    "bench": "ts-node ./benchmark/index.ts"
+    "bench": "ts-node ./benchmark/index.ts",
+    "prepare": "yarn run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "license": "MIT",
   "private": true,
@@ -109,5 +112,6 @@
   },
   "jestSonar": {
     "reportPath": "reports"
-  }
+  },
+  "snyk": true
 }
