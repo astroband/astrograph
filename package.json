@@ -41,7 +41,7 @@
     "stellar-base": "^3.0.4",
     "typeorm": "^0.2.17",
     "typescript-memoize": "^1.0.0-alpha.3",
-    "winston": "^3.0.0"
+    "winston": "^3.3.0"
   },
   "devDependencies": {
     "@types/big.js": "^4.0.5",
