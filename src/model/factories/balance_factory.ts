@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js";
 import { xdr as XDR } from "stellar-base";
 import { Balance, IBalance } from "../";
 import { Account } from "../../orm/entities";
@@ -20,8 +19,10 @@ export interface ITrustLineTableRow {
 
 export class BalanceFactory {
   public static fromDb(row: ITrustLineTableRow): Balance {
-    const balance = new BigNumber(row.balance);
-    const limit = new BigNumber(row.tlimit);
+    const balance = BigInt(row.balance);
+    const limit = BigInt(row.tlimit);
+    const sellingLiabilities = row.sellingliabilities ? BigInt(row.sellingliabilities) : 0n;
+    const buyingLiabilities = row.buyingliabilities ? BigInt(row.buyingliabilities) : 0n;
 
     const data: IBalance = {
       account: row.accountid,
@@ -30,17 +31,19 @@ export class BalanceFactory {
       lastModified: row.lastmodified,
       asset: `${row.assetcode}-${row.issuer}`,
       authorized: (row.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0,
-      spendableBalance: balance.minus(row.sellingliabilities || 0),
-      receivableBalance: limit.minus(row.buyingliabilities || 0).minus(balance)
+      spendableBalance: balance - sellingLiabilities,
+      receivableBalance: limit - balance - buyingLiabilities
     };
 
     return new Balance(data);
   }
 
   public static nativeForAccount(account: Account): IBalance {
-    const balance = new BigNumber(account.balance);
-    const limit = new BigNumber(MAX_INT64);
+    const balance = BigInt(account.balance.toString(10));
+    const limit = BigInt(MAX_INT64);
     const minBalance = getReservedBalance(account.numSubentries);
+    const selling = account.sellingLiabilities ? BigInt(account.sellingLiabilities.toString(10)) : 0n;
+    const buying = account.buyingLiabilities ? BigInt(account.buyingLiabilities.toString(10)) : 0n;
 
     return new Balance({
       account: account.id,
@@ -49,8 +52,8 @@ export class BalanceFactory {
       limit,
       authorized: true,
       lastModified: account.lastModified,
-      spendableBalance: balance.minus(account.sellingLiabilities || 0).minus(minBalance),
-      receivableBalance: limit.minus(account.buyingLiabilities || 0).minus(balance)
+      spendableBalance: balance - minBalance - selling,
+      receivableBalance: limit - balance - buying
     });
   }
 }

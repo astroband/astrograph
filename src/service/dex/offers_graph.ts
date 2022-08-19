@@ -3,16 +3,6 @@ import { AssetID } from "../../model";
 import { Offer } from "../../orm/entities";
 import logger from "../../util/logger";
 
-interface IEdgeData {
-  capacity: BigNumber;
-  orderBook: AssetOrders;
-}
-
-interface IEdge {
-  vertex: AssetID;
-  data: IEdgeData;
-}
-
 class AssetOrder {
   public readonly amount: BigNumber;
   public readonly price: BigNumber; // we use it just for sorting
@@ -75,6 +65,16 @@ class AssetOrders {
 
     return amountToSell;
   }
+}
+
+interface IEdgeData {
+  capacity: BigNumber;
+  orderBook: AssetOrders;
+}
+
+interface IEdge {
+  vertex: AssetID;
+  data: IEdgeData;
 }
 
 export class OffersGraph {

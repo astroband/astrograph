@@ -1,14 +1,13 @@
-import { getRepository } from "typeorm";
 import { IApolloContext } from "../../graphql_server";
 import { AssetID } from "../../model";
-import { Asset, TrustLine } from "../../orm/entities";
+import { Asset, AssetRepository, TrustLine, TrustLineRepository } from "../../orm";
 import { paginate } from "../../util/paging";
 import { toFloatAmountString } from "../../util/stellar";
 import * as resolvers from "./shared";
 import { makeConnection } from "./util";
 
 const holdersResolver = async (root: Asset, args: any, ctx: IApolloContext, info: any) => {
-  const qb = getRepository(TrustLine).createQueryBuilder("tl");
+  const qb = TrustLineRepository.createQueryBuilder("tl");
 
   qb.where("tl.assetCode = :code", { code: root.code }).andWhere("tl.issuer = :issuer", { issuer: root.issuer });
 
@@ -28,11 +27,11 @@ export default {
   },
   Query: {
     asset: async (root: any, { id }: { id: AssetID }, ctx: IApolloContext, info: any) => {
-      return getRepository(Asset).findOne({ id });
+      return AssetRepository.findOneBy({ id });
     },
     assets: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { code, issuer, ...paging } = args;
-      const qb = getRepository(Asset).createQueryBuilder("assets");
+      const qb = AssetRepository.createQueryBuilder("assets");
 
       if (code) {
         qb.andWhere("assets.code = :code", { code });

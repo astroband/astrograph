@@ -1,28 +1,23 @@
-FROM node:10-alpine
-RUN npm install -g typescript@3.4
+# syntax = docker/dockerfile:1
+FROM node:18-alpine as build_stage
 
-WORKDIR /home/node/astrograph
+WORKDIR /code
 
-COPY package.json ./
-COPY yarn.lock ./
-
-RUN mkdir -p /home/node/astrograph/node_modules && chown -R node:node /home/node/astrograph
-
-USER node
-
+COPY package.json yarn.lock ./
 RUN yarn install --ignore-optional
 
-COPY --chown=node:node . .
-
+COPY . .
 RUN yarn build
 
 # ================================================================================================
-
-FROM node:10-alpine
+FROM node:18-alpine
 ENV NODE_ENV=production
 
-RUN mkdir -p /home/node/astrograph-server
 WORKDIR /home/node/astrograph-server
 
-COPY --from=0 /home/node/astrograph/dist ./
-COPY --from=0 /home/node/astrograph/node_modules ./node_modules
+COPY --from=build_stage /code/package.json /code/yarn.lock ./
+RUN  yarn install --prod && chown -R node:node /home/node
+
+COPY --from=build_stage --chown=node:node /code/dist ./
+
+USER node

@@ -1,9 +1,11 @@
 import stellar from "stellar-base";
-import { getRepository, In } from "typeorm";
+import { In } from "typeorm";
+
 import { IApolloContext } from "../../../graphql_server";
 import { AssetID } from "../../../model";
 import { AssetFactory } from "../../../model/factories";
-import { Asset } from "../../../orm/entities";
+import { Asset, AssetRepository } from "../../../orm";
+
 import { createBatchResolver, onlyFieldsRequested } from "../util";
 
 export const asset = createBatchResolver<any, Asset[]>(
@@ -24,7 +26,7 @@ export const asset = createBatchResolver<any, Asset[]>(
     }
 
     const ids: AssetID[] = source.map((s: any) => s[field].toString());
-    const assets = await getRepository(Asset).find({ id: In(ids) });
+    const assets = await AssetRepository.findBy({ id: In(ids) });
 
     return ids.map(id => assets.find(a => a.id === id) || null);
   }

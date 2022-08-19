@@ -1,10 +1,9 @@
 import PostgresPubSub from "@astroband/graphql-postgres-subscriptions";
 import { Client } from "pg";
-import stellar from "stellar-base";
-import { getCustomRepository } from "typeorm";
+import { Asset } from "stellar-base";
 import { SubscriptionPayloadCollection } from "./ingest/subscription_payload_collection";
 import { Ledger, LedgerHeader, OfferSubscriptionPayload, Transaction, TransactionWithXDR } from "./model";
-import { OfferRepository } from "./orm/repository/offer";
+import { OfferRepository } from "./orm";
 import { OperationsStorage } from "./storage/operations";
 import logger from "./util/logger";
 import { DATABASE_URL } from "./util/secrets";
@@ -13,7 +12,7 @@ const pgClient = new Client({ connectionString: DATABASE_URL });
 
 export const pubsub = new PostgresPubSub(pgClient, (key: string, value: any) => {
   if (value && value.hasOwnProperty("code")) {
-    return value.code && value.issuer ? new stellar.Asset(value.code, value.issuer) : stellar.Asset.native();
+    return value.code && value.issuer ? new Asset(value.code, value.issuer) : Asset.native();
   }
 
   return value;
@@ -42,7 +41,7 @@ export class Publisher {
   public static async publish(header: LedgerHeader, transactions: TransactionWithXDR[]) {
     const collection = new SubscriptionPayloadCollection(transactions);
 
-    pubsub.publish(LEDGER_CREATED, new Ledger(header.ledgerSeq, header));
+    await pubsub.publish(LEDGER_CREATED, new Ledger(header.ledgerSeq, header));
 
     const assetsBidTicks: Set<string> = new Set();
 
@@ -52,7 +51,7 @@ export class Publisher {
           continue;
         }
 
-        pubsub.publish(m.event, entry);
+        await pubsub.publish(m.event, entry);
 
         if (entry instanceof OfferSubscriptionPayload) {
           assetsBidTicks.add(`${entry.selling}/${entry.buying}`);
@@ -62,22 +61,21 @@ export class Publisher {
 
     assetsBidTicks.forEach(async tick => {
       const [selling, buying] = tick.split("/");
-      const repo = getCustomRepository(OfferRepository);
 
-      const bestAsk = await repo.findBestAsk(selling, buying);
-      const bestAskInv = await repo.findBestAsk(buying, selling);
+      const bestAsk = await OfferRepository.findBestAsk(selling, buying);
+      const bestAskInv = await OfferRepository.findBestAsk(buying, selling);
       const bestBid = bestAskInv ? 1 / bestAskInv : null;
 
-      pubsub.publish(OFFERS_TICK, { selling, buying, bestAsk, bestBid });
+      return pubsub.publish(OFFERS_TICK, { selling, buying, bestAsk, bestBid });
     });
 
     for (const tx of transactions) {
-      pubsub.publish(NEW_TRANSACTION, new Transaction(tx));
+      await pubsub.publish(NEW_TRANSACTION, new Transaction(tx));
 
       const operations = await OperationsStorage.forTransaction(tx.id);
 
       for (const operation of operations) {
-        pubsub.publish(NEW_OPERATION, operation);
+        await pubsub.publish(NEW_OPERATION, operation);
       }
     }
   }

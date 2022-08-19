@@ -1,11 +1,15 @@
 // Bluebird is the best promise library available today, and is the one recommended here:
-import * as promise from "bluebird";
-import { IDatabase, IMain, IOptions } from "pg-promise";
+import promise from "bluebird";
+import { IDatabase, IInitOptions, IMain } from "pg-promise";
+import { DataSource } from "typeorm";
 
 // Loading and initializing pg-promise:
 import pgPromise = require("pg-promise");
+import diagnostics = require("./util/db/diagnostics");
 
 import { DATABASE_URL } from "./util/secrets";
+
+import { Account, AccountData, Asset, LedgerHeader, Offer, TrustLine } from "./orm/entities";
 
 import LedgerHeadersRepo from "./repo/ledger_headers";
 import StoreStateRepo from "./repo/store_state";
@@ -19,7 +23,7 @@ interface IExtensions {
 }
 
 // pg-promise initialization options:
-const initOptions: IOptions<IExtensions> = {
+const initOptions: IInitOptions<IExtensions> = {
   promiseLib: promise,
 
   extend(obj: IExtensions) {
@@ -34,13 +38,20 @@ const initOptions: IOptions<IExtensions> = {
 const pgp: IMain = pgPromise(initOptions);
 
 // Create the database instance with extensions:
-const db = pgp(DATABASE_URL) as IDatabase<IExtensions> & IExtensions & IMain;
+export const db = pgp(DATABASE_URL) as IDatabase<IExtensions> & IExtensions & IMain;
 
 // Load and initialize optional diagnostics:
-import diagnostics = require("./util/db/diagnostics");
-
 diagnostics.init(initOptions);
+
+const queryStart = DATABASE_URL.indexOf("?");
+
+export const dataSource = new DataSource({
+  type: "postgres",
+  url: queryStart !== -1 ? DATABASE_URL.slice(0, queryStart) : DATABASE_URL,
+  entities: [Account, AccountData, Asset, Offer, LedgerHeader, TrustLine],
+  synchronize: false,
+  logging: process.env.DEBUG_SQL !== undefined
+});
 
 // If you ever need access to the library's root (pgp object), you can do it via db.$config.pgp
 // See: http://vitaly-t.github.io/pg-promise/Database.html#.$config
-export { db };

@@ -1,4 +1,4 @@
-import { getManager } from "typeorm";
+import { dataSource } from "../database";
 import { LedgerHeader } from "../model";
 import { LedgersStorage } from "../storage/ledgers";
 import { STELLAR_CORE_CURSOR_NAME } from "../util/secrets";
@@ -24,12 +24,17 @@ export class Cursor {
   }
 
   private static async getCursorFromDatabase(): Promise<number | null> {
-    const rows = await getManager().query("SELECT lastread FROM pubsub WHERE resid = $1", [STELLAR_CORE_CURSOR_NAME]);
+    const rows = await dataSource.manager.query("SELECT lastread FROM pubsub WHERE resid = $1", [
+      STELLAR_CORE_CURSOR_NAME
+    ]);
     return rows[0] ? rows[0].lastread : null;
   }
 
   private static async updateCursorInDatabase(value: number): Promise<void> {
-    await getManager().query("UPDATE pubsub SET lastread = $1 WHERE resid = $2", [value, STELLAR_CORE_CURSOR_NAME]);
+    await dataSource.manager.query("UPDATE pubsub SET lastread = $1 WHERE resid = $2", [
+      value,
+      STELLAR_CORE_CURSOR_NAME
+    ]);
   }
 
   constructor(private seq: number) {}

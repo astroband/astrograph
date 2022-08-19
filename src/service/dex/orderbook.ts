@@ -1,4 +1,4 @@
-import { getManager } from "typeorm";
+import { dataSource } from "../../database";
 import { AssetID } from "../../model";
 import { AssetTransformer } from "../../util/orm";
 
@@ -79,7 +79,7 @@ interface IOrderBook {
 }
 
 export async function load(selling: AssetID, buying: AssetID, limit: number): Promise<IOrderBook> {
-  const em = getManager();
+  const em = dataSource.manager;
 
   selling = AssetTransformer.to(selling);
   buying = AssetTransformer.to(buying);

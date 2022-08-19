@@ -1,6 +1,6 @@
 import { fieldsList } from "graphql-fields-list";
 import { withFilter } from "graphql-subscriptions";
-import { getRepository, In } from "typeorm";
+import { In } from "typeorm";
 
 import { account as accountResolver, ledger as ledgerResolver } from "./shared";
 
@@ -8,7 +8,6 @@ import { createBatchResolver, eventMatches, makeConnection } from "./util";
 
 import { IBalance, ITrade, Operation, PaymentOperations, Transaction } from "../../model";
 import { BalanceFactory, OperationFactory, TradeFactory, TransactionWithXDRFactory } from "../../model/factories";
-import { Account, Asset, Offer, TrustLine } from "../../orm/entities";
 import {
   ITradeData as IStorageTradeData,
   ITransactionData as IStorageTransactionData,
@@ -16,6 +15,7 @@ import {
 } from "../../storage/types";
 
 import { IApolloContext } from "../../graphql_server";
+import { Account, AccountRepository, AssetRepository, Offer, OfferRepository, TrustLineRepository } from "../../orm";
 import { ACCOUNT, pubsub } from "../../pubsub";
 import { getReservedBalance } from "../../util/base_reserve";
 import { AssetTransformer } from "../../util/orm";
@@ -24,7 +24,7 @@ import { toFloatAmountString } from "../../util/stellar";
 
 const balancesResolver = createBatchResolver<Account, IBalance[]>(async (source: Account[]) => {
   const accountIDs = source.map(s => s.id);
-  const trustlines = await getRepository(TrustLine).find({ where: { account: In(accountIDs) } });
+  const trustlines = await TrustLineRepository.find({ where: { account: In(accountIDs) } });
   const allBalances: IBalance[][] = [];
 
   for (const id of accountIDs) {
@@ -62,7 +62,7 @@ export default {
   Account: {
     reservedBalance: (root: Account) => toFloatAmountString(getReservedBalance(root.numSubentries)),
     assets: async (root: Account, args: any) => {
-      const assets = await getRepository(Asset).find({ issuer: root.id });
+      const assets = await AssetRepository.findBy({ issuer: root.id });
       return makeConnection(assets);
     },
     balances: balancesResolver,
@@ -101,7 +101,7 @@ export default {
     offers: async (root: Account, args: any, ctx: any) => {
       const { selling, buying, ...paging } = args;
 
-      const qb = getRepository(Offer).createQueryBuilder("offers");
+      const qb = OfferRepository.createQueryBuilder("offers");
 
       qb.where("offers.seller = :seller", { seller: root.id });
 
@@ -123,11 +123,11 @@ export default {
     account(root: any, args: any, ctx: IApolloContext, info: any) {
       const relations = fieldsList(info).indexOf("data") !== -1 ? ["data"] : [];
 
-      return getRepository(Account).findOne(args.id, { relations });
+      return AccountRepository.findOne({ where: { id: args.id }, relations });
     },
     accounts: async (root: any, args: any) => {
       const { ids, inflationDestination, homeDomain, data, ...paging } = args;
-      const qb = getRepository(Account).createQueryBuilder("accounts");
+      const qb = AccountRepository.createQueryBuilder("accounts");
 
       if (ids && ids.length !== 0) {
         qb.whereInIds(ids);

@@ -1,14 +1,20 @@
-import stellar from "stellar-base";
+import { StrKey, xdr } from "stellar-base";
 
-export function signerKeyFromXDR(xdr: any) {
-  switch (xdr.switch()) {
-    case stellar.xdr.SignerKeyType.signerKeyTypeEd25519():
-      return stellar.StrKey.encodeEd25519PublicKey(xdr.ed25519());
+export function signerKeyFromXDR(input: xdr.SignerKey): string {
+  switch (input.switch()) {
+    case xdr.SignerKeyType.signerKeyTypeEd25519():
+      return StrKey.encodeEd25519PublicKey(input.ed25519());
 
-    case stellar.xdr.SignerKeyType.signerKeyTypePreAuthTx():
-      return stellar.StrKey.encodePreAuthTx(xdr.preAuthTx());
+    case xdr.SignerKeyType.signerKeyTypePreAuthTx():
+      return StrKey.encodePreAuthTx(input.preAuthTx());
 
-    case stellar.xdr.SignerKeyType.signerKeyTypeHashX():
-      return stellar.StrKey.encodeSha256Hash(xdr.hashX());
+    case xdr.SignerKeyType.signerKeyTypeHashX():
+      return StrKey.encodeSha256Hash(input.hashX());
+
+    case xdr.SignerKeyType.signerKeyTypeEd25519SignedPayload():
+      return StrKey.encodeSignedPayload(input.ed25519SignedPayload().payload());
+
+    default:
+      throw new Error("invalid SignerKey");
   }
 }

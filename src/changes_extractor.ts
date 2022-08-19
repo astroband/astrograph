@@ -1,4 +1,4 @@
-import stellar from "stellar-base";
+import { Asset, xdr } from "stellar-base";
 import { Transaction, TransactionWithXDR } from "./model";
 import { AccountValuesFactory } from "./model/factories/account_values_factory";
 
@@ -16,8 +16,8 @@ export enum EntryType {
   Offer = "offer"
 }
 
-const changeType = stellar.xdr.LedgerEntryChangeType;
-const ledgerEntryType = stellar.xdr.LedgerEntryType;
+const changeType = xdr.LedgerEntryChangeType;
+const ledgerEntryType = xdr.LedgerEntryType;
 
 export interface IChange {
   type: string;
@@ -85,7 +85,7 @@ export class ChangesExtractor {
         return EntryType.Account;
       case ledgerEntryType.trustline():
         return EntryType.Trustline;
-      case ledgerEntryType.datum():
+      case ledgerEntryType.data():
         return EntryType.Data;
       case ledgerEntryType.offer():
         return EntryType.Offer;
@@ -129,7 +129,7 @@ export class ChangesExtractor {
   }
 
   private buildPrevState(ledgerEntryState: any, entry: EntryType) {
-    const result: { ledgerSeq: number; balance?: string; selling?: stellar.Asset; buying?: stellar.Asset } = {
+    const result: { ledgerSeq: number; balance?: string; selling?: Asset; buying?: Asset } = {
       ledgerSeq: ledgerEntryState.lastModifiedLedgerSeq()
     };
 
@@ -149,8 +149,8 @@ export class ChangesExtractor {
           .toString();
         break;
       case EntryType.Offer:
-        result.selling = stellar.Asset.fromOperation(prevStateData.offer().selling());
-        result.buying = stellar.Asset.fromOperation(prevStateData.offer().buying());
+        result.selling = Asset.fromOperation(prevStateData.offer().selling());
+        result.buying = Asset.fromOperation(prevStateData.offer().buying());
         break;
     }
 

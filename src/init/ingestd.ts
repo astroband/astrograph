@@ -1,5 +1,4 @@
-import { getManager } from "typeorm";
-import { db } from "../database";
+import { dataSource, db } from "../database";
 import { connect as connectPubSub } from "../pubsub";
 import "../util/asset";
 import logger from "../util/logger";
@@ -14,14 +13,11 @@ export async function initIngestd() {
   return initSentry()
     .then(() => logger.info("Connecting to the database..."))
     .then(initDatabase)
-    .catch((e: Error) => {
-      logger.error(`Failed to connect to the database: ${e.message}`);
-      process.exit(1);
-    })
+    .catch(() => process.exit(1))
     .then(() => logger.info("Setting cursor..."))
     .then(async () => {
       const cursorValue = await db.ledgerHeaders.findMaxSeq();
-      return getManager().query("INSERT INTO pubsub (resid, lastread) VALUES ($1, $2) ON CONFLICT DO NOTHING", [
+      return dataSource.manager.query("INSERT INTO pubsub (resid, lastread) VALUES ($1, $2) ON CONFLICT DO NOTHING", [
         STELLAR_CORE_CURSOR_NAME,
         cursorValue
       ]);

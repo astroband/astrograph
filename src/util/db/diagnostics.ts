@@ -5,7 +5,7 @@
 // which may be a little better performing, but lacks all the nice formatting
 // provided by pg-monitor.
 import * as pgMonitor from "pg-monitor";
-import { IOptions } from "pg-promise";
+import { IInitOptions } from "pg-promise";
 
 import logger from "../logger";
 
@@ -40,7 +40,7 @@ pgMonitor.setLog((msg, info) => {
 
 export = {
   // Monitor initialization function;
-  init(options: IOptions<any>) {
+  init(options: IInitOptions<any>) {
     if ($DEBUG) {
       // In a DEV environment, we attach to all supported events:
       pgMonitor.attach(options);

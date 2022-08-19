@@ -1,20 +1,15 @@
 import { BigNumber } from "bignumber.js";
 import { xdr } from "stellar-base";
+
 import { AssetID } from "../model";
 import { AssetFactory } from "../model/factories";
 
 export const Base64Transformer = {
   from: (value: string | null) => {
-    if (!value) {
-      return null;
-    }
-    return Buffer.from(value, "base64").toString();
+    return value ? Buffer.from(value, "base64").toString() : null;
   },
   to: (value: string | null) => {
-    if (!value) {
-      return null;
-    }
-    return Buffer.from(value).toString("base64");
+    return value ? Buffer.from(value).toString("base64") : null;
   }
 };
 
@@ -32,7 +27,18 @@ export const AssetTransformer = {
     return AssetFactory.fromXDR(value).toString();
   },
   to: (value: AssetID) => {
-    const assetXDRObject = AssetFactory.fromId(value).toXDRObject();
-    return xdr.Asset.toXDR(assetXDRObject).toString("base64");
+    return AssetFactory.fromId(value)
+      .toXDRObject()
+      .toXDR("base64");
+  }
+};
+
+export const TrustLineEntryTransformer = {
+  from: (value: string) => {
+    const entry = xdr.LedgerEntry.fromXDR(value, "base64").data().value();
+    return entry instanceof xdr.TrustLineEntry ? entry : null;
+  },
+  to: (value: xdr.TrustLineEntry) => {
+    return value.toXDR("base64");
   }
 };
