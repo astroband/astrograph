@@ -1,18 +1,17 @@
-import { BigNumber } from "bignumber.js";
 import { AccountID, AssetID } from "./";
 
 export interface IBalanceBase {
   account: AccountID;
   asset: AssetID;
-  limit: BigNumber;
-  balance: BigNumber;
+  limit: bigint;
+  balance: bigint;
   authorized: boolean;
 }
 
 export interface IBalance extends IBalanceBase {
   lastModified: number;
-  spendableBalance: BigNumber;
-  receivableBalance: BigNumber;
+  spendableBalance: bigint;
+  receivableBalance: bigint;
 }
 
 export class Balance implements IBalance {
@@ -24,13 +23,13 @@ export class Balance implements IBalance {
 
   public account: AccountID;
   public asset: AssetID;
-  public readonly limit: BigNumber;
-  public readonly balance: BigNumber;
   public authorized: boolean;
   public lastModified: number;
 
-  public readonly spendableBalance: BigNumber;
-  public readonly receivableBalance: BigNumber;
+  public readonly limit: bigint;
+  public readonly balance: bigint;
+  public readonly spendableBalance: bigint;
+  public readonly receivableBalance: bigint;
 
   constructor(data: IBalance) {
     this.account = data.account;

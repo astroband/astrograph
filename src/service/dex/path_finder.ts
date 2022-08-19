@@ -2,7 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { AssetID } from "../../model";
 import { OffersGraph } from "./offers_graph";
 
-interface IPaths {
+export interface IPaths {
   [sourceAsset: string]: { amountNeeded: BigNumber; path: AssetID[] };
 }
 

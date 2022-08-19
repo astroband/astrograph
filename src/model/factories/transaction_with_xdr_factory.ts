@@ -1,4 +1,4 @@
-import stellar from "stellar-base";
+import { FeeBumpTransaction, Memo, Networks, TransactionBuilder, xdr } from "stellar-base";
 import { ITransactionData as IStorageTransactionData } from "../../storage/types";
 import { ITimeBounds, Transaction } from "../transaction";
 import { ITransactionWithXDR, TransactionWithXDR } from "../transaction_with_xdr";
@@ -16,25 +16,29 @@ export interface ITransactionTableRow {
 // NOTE: Might use some instantiation from static method here
 export class TransactionWithXDRFactory {
   public static fromDb(row: ITransactionTableRow): TransactionWithXDR {
-    const resultXDR = stellar.xdr.TransactionResultPair.fromXDR(row.txresult, "base64");
-    const metaXDR = stellar.xdr.TransactionMeta.fromXDR(row.txmeta, "base64");
-    const feeMetaXDR = stellar.xdr.OperationMeta.fromXDR(row.txfeemeta, "base64");
-
-    const tx = new stellar.Transaction(row.txbody, stellar.Networks.TESTNET);
+    const envelopeXDR = xdr.TransactionEnvelope.fromXDR(row.txbody, "base64");
+    const resultXDR = xdr.TransactionResultPair.fromXDR(row.txresult, "base64");
+    const metaXDR = xdr.TransactionMeta.fromXDR(row.txmeta, "base64");
+    const feeMetaXDR = xdr.OperationMeta.fromXDR(row.txfeemeta, "base64");
 
     const result = resultXDR.result();
 
     const resultCode = result.result().switch().value;
-    const success = resultCode === stellar.xdr.TransactionResultCode.txSuccess().value;
-    const feeCharged = result.feeCharged().toString();
+    const success = resultCode === xdr.TransactionResultCode.txSuccess().value;
+    const feeCharged = result.feeCharged().low;
+
+    let tx = TransactionBuilder.fromXDR(envelopeXDR, Networks.TESTNET);
+    if (tx instanceof FeeBumpTransaction) {
+      tx = tx.innerTransaction;
+    }
 
     let timeBounds: ITimeBounds | undefined;
 
     if (tx.timeBounds) {
-      timeBounds = { minTime: new Date(tx.timeBounds.minTime * 1000) };
+      timeBounds = { minTime: new Date(Number.parseInt(tx.timeBounds.minTime, 10) * 1000) };
 
       if (tx.timeBounds.maxTime !== "0") {
-        timeBounds.maxTime = new Date(tx.timeBounds.maxTime * 1000);
+        timeBounds.maxTime = new Date(Number.parseInt(tx.timeBounds.maxTime, 10) * 1000);
       }
     }
 
@@ -43,7 +47,7 @@ export class TransactionWithXDRFactory {
       index: row.txindex,
       ledgerSeq: row.ledgerseq,
       body: row.txbody,
-      bodyXDR: tx.tx,
+      bodyXDR: envelopeXDR,
       result: row.txresult,
       resultXDR,
       meta: row.txmeta,
@@ -86,7 +90,7 @@ export class TransactionWithXDRFactory {
       resultCode: data.result_code,
       success: data.successful,
       sourceAccount: data.source_account_id,
-      feeAccount: data.fee_account_id,
+      feeAccount: data.fee_account_id
     });
   }
 
@@ -105,15 +109,15 @@ export class TransactionWithXDRFactory {
   public static parseMemo(type: 0 | 1 | 2 | 3 | 4, value: string) {
     switch (type) {
       case 0:
-        return stellar.Memo.none();
+        return Memo.none();
       case 1:
-        return stellar.Memo.text(value);
+        return Memo.text(value);
       case 2:
-        return stellar.Memo.id(value);
+        return Memo.id(value);
       case 3:
-        return stellar.Memo.hash(Buffer.from(value, "base64").toString("hex"));
+        return Memo.hash(Buffer.from(value, "base64").toString("hex"));
       case 4:
-        return stellar.Memo.return(Buffer.from(value, "base64").toString("hex"));
+        return Memo.return(Buffer.from(value, "base64").toString("hex"));
     }
   }
 }

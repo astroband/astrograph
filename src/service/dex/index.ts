@@ -1,6 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { AssetID } from "../../model";
-import { Offer } from "../../orm/entities/offer";
+import { Offer, OfferRepository } from "../../orm";
+
 import { OffersGraph } from "./offers_graph";
 import { load as loadOrderBook } from "./orderbook";
 import { PathFinder } from "./path_finder";
@@ -8,6 +9,15 @@ import { PathFinder } from "./path_finder";
 const offersGraph = new OffersGraph();
 
 export * from "./offers_listener";
+
+export async function initOffersGraph() {
+  const qb = OfferRepository.createQueryBuilder("offers")
+    .addOrderBy("offerid", "DESC")
+    .limit(100000);
+  const offers = await qb.getMany();
+
+  buildOffersGraph(offers);
+}
 
 export function buildOffersGraph(offers: Offer[]): void {
   offersGraph.build(offers);

@@ -1,13 +1,11 @@
 import { withFilter } from "graphql-subscriptions";
-import { getCustomRepository, getRepository } from "typeorm";
 
 import * as resolvers from "./shared";
 import { eventMatches, makeConnection } from "./util";
 
 import { ITrade, MutationType, OfferValues } from "../../model";
 import { AssetFactory, TradeFactory } from "../../model/factories";
-import { Offer } from "../../orm/entities";
-import { OfferRepository } from "../../orm/repository/offer";
+import { Offer, OfferRepository } from "../../orm";
 import { OFFER, OFFERS_TICK, pubsub } from "../../pubsub";
 
 import { IApolloContext } from "../../graphql_server";
@@ -79,7 +77,7 @@ export default {
     offers: async (root: any, args: any, ctx: IApolloContext, info: any) => {
       const { selling, buying, ...paging } = args;
 
-      const qb = getRepository(Offer).createQueryBuilder("offers");
+      const qb = OfferRepository.createQueryBuilder("offers");
 
       qb.where("offers.selling = :selling")
         .andWhere("offers.buying = :buying")
@@ -91,11 +89,10 @@ export default {
       return makeConnection<Offer>(offers);
     },
     tick: async (root: any, args: any, ctx: IApolloContext, info: any) => {
-      const repo = getCustomRepository(OfferRepository);
       const { selling, buying } = args;
 
-      const bestAsk = await repo.findBestAsk(selling, buying);
-      const bestAskInv = await repo.findBestAsk(buying, selling);
+      const bestAsk = await OfferRepository.findBestAsk(selling, buying);
+      const bestAskInv = await OfferRepository.findBestAsk(buying, selling);
       const bestBid = bestAskInv ? 1 / bestAskInv : null;
 
       return { selling, buying, bestAsk, bestBid };

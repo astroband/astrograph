@@ -1,9 +1,7 @@
-import BigNumber from "bignumber.js";
 import { xdr as XDR } from "stellar-base";
 import { Column, Entity, PrimaryColumn } from "typeorm";
 import { AccountID, AssetID, IBalance } from "../../model";
-import { AssetFactory } from "../../model/factories";
-import { BigNumberTransformer } from "../../util/orm";
+import { AssetTransformer, TrustLineEntryTransformer } from "../../util/orm";
 
 @Entity("trustlines")
 /* tslint:disable */
@@ -11,32 +9,14 @@ export class TrustLine implements IBalance {
   @PrimaryColumn({ name: "accountid" })
   account: AccountID;
 
-  @PrimaryColumn()
-  issuer: AccountID;
+  @PrimaryColumn({ name: "asset", type: "text", transformer: AssetTransformer } )
+  asset: AssetID;
 
-  @PrimaryColumn({ name: "assetcode" })
-  assetCode: string;
-
-  @Column({ name: "assettype" })
-  assetType: number;
-
-  @Column({ name: "tlimit", type: "bigint", transformer: BigNumberTransformer })
-  limit: BigNumber;
-
-  @Column({ type: "bigint", transformer: BigNumberTransformer })
-  balance: BigNumber;
-
-  @Column()
-  flags: number;
+  @Column({ name: "ledgerentry", type: "text", transformer: TrustLineEntryTransformer })
+  ledgerEntry: XDR.TrustLineEntry;
 
   @Column({ name: "lastmodified" })
   lastModified: number;
-
-  @Column({ type: "bigint", name: "buyingliabilities", transformer: BigNumberTransformer })
-  buyingLiabilities: BigNumber;
-
-  @Column({ type: "bigint", name: "sellingliabilities", transformer: BigNumberTransformer })
-  sellingLiabilities: BigNumber;
 
   public static parsePagingToken(token: string) {
     const [accountId, , balance] =
@@ -48,20 +28,45 @@ export class TrustLine implements IBalance {
     return { balance, account: accountId }
   }
 
-  public get asset(): AssetID {
-    return AssetFactory.fromTrustline(this.assetType, this.assetCode, this.issuer).toString();
+  public get flags(): number {
+    return this.ledgerEntry?.flags();
   }
 
   public get authorized(): boolean {
     return (this.flags & XDR.TrustLineFlags.authorizedFlag().value) > 0;
   }
 
-  public get spendableBalance(): BigNumber {
-    return this.balance.minus(this.sellingLiabilities || 0);
+
+  public get limit(): bigint {
+    return BigInt(this.ledgerEntry?.limit().toString());
   }
 
-  public get receivableBalance(): BigNumber {
-    return this.limit.minus(this.buyingLiabilities || 0).minus(this.balance);
+  public get balance(): bigint {
+    return BigInt(this.ledgerEntry?.balance().toString());
+  }
+
+  public get buyingLiabilities(): bigint {
+    const ext = this.ledgerEntry?.ext().value();
+    if (ext instanceof XDR.TrustLineEntryV1) {
+      return BigInt(ext.liabilities().buying().toString());
+    }
+    return 0n;
+  }
+
+  public get sellingLiabilities(): bigint {
+    const ext = this.ledgerEntry?.ext().value();
+    if (ext instanceof XDR.TrustLineEntryV1) {
+      return BigInt(ext.liabilities().selling().toString());
+    }
+    return 0n;
+  }
+
+  public get spendableBalance(): bigint {
+    return this.balance - this.sellingLiabilities;
+  }
+
+  public get receivableBalance(): bigint {
+    return this.limit - this.balance - this.buyingLiabilities;
   }
 
   public get paging_token() {

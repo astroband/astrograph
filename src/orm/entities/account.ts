@@ -79,8 +79,7 @@ export class Account {
         if (!value) {
           return null;
         }
-        const signersArray = new VarArray(xdr.Signer).fromXDR(value, "base64");
-        return signersArray.map((signerXDR: any) => SignerFactory.fromXDR(signerXDR));
+        return new VarArray(xdr.Signer).fromXDR(value, "base64").map(SignerFactory.fromXDR);
       },
       // we don't actually need `to` transform,
       // because we never write to the db, so it's just a stab

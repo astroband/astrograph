@@ -1,17 +1,11 @@
-import { createConnection } from "typeorm";
-import { Account, AccountData, Asset, LedgerHeader, Offer, TrustLine } from "../orm/entities";
-import { DATABASE_URL } from "../util/secrets";
+import { dataSource } from "../database";
+import logger from "../util/logger";
 
 export async function initDatabase() {
-  const queryStart = DATABASE_URL.indexOf("?");
-
-  const connectionString = queryStart !== -1 ? DATABASE_URL.slice(0, queryStart) : DATABASE_URL;
-
-  return createConnection({
-    type: "postgres",
-    url: connectionString,
-    entities: [Account, AccountData, Asset, Offer, LedgerHeader, TrustLine],
-    synchronize: false,
-    logging: process.env.DEBUG_SQL !== undefined
-  });
+  try {
+    await dataSource.initialize();
+    logger.debug("Initialized ORM data source");
+  } catch (err) {
+    logger.error(`Error connecting to ORM data source: ${err}`);
+  }
 }

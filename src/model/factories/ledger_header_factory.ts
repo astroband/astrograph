@@ -1,4 +1,4 @@
-import stellar from "stellar-base";
+import { xdr } from "stellar-base";
 import { ILedgerHeaderData } from "../../storage/types";
 import { ILedgerHeader, LedgerHeader } from "../ledger_header";
 
@@ -13,7 +13,7 @@ export interface ILedgerHeaderTableRow {
 
 export class LedgerHeaderFactory {
   public static fromXDR(base64: string): LedgerHeader {
-    const header = stellar.xdr.LedgerHeader.fromXDR(base64, "base64");
+    const header = xdr.LedgerHeader.fromXDR(base64, "base64");
 
     const data: ILedgerHeader = {
       ledgerSeq: header.ledgerSeq(),
@@ -23,7 +23,7 @@ export class LedgerHeaderFactory {
       baseFee: header.baseFee(),
       baseReserve: header.baseReserve(),
       maxTxSetSize: header.maxTxSetSize(),
-      closeTime: new Date(header.scpValue().closeTime() * 1000)
+      closeTime: new Date(header.scpValue().closeTime().low * 1000)
     };
 
     return new LedgerHeader(data);

@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
+    "typeRoots": ["src/@types"],
     "noEmit": true,
     "noEmitOnError": true,
     "pretty": true,
-    "target": "es2017",
+    "target": "es2022",
     "module": "commonjs",
-    "lib": ["es2018", "esnext.asynciterable"],
+    // "lib": ["es2018", "esnext.asynciterable"],
     "declaration": true,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,

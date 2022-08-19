@@ -26,7 +26,7 @@ init().then(async () => {
         setTimeout(tick, INGEST_INTERVAL);
       }
     } catch (e) {
-      logger.error(e);
+      logger.error(e as any);
       Sentry.captureException(e);
       setTimeout(tick, 200);
     }

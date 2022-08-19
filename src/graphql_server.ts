@@ -6,14 +6,15 @@ import { ApolloServer } from "apollo-server";
 import { GraphQLError } from "graphql";
 
 import schema from "./schema";
+import logger from "./util/logger";
+
 import { listenOffers, orderBook } from "./service/dex";
 import { OperationsStorage, TradesStorage, TransactionsStorage } from "./storage";
-import logger from "./util/logger";
 import { BIND_ADDRESS, PORT, STELLAR_NETWORK } from "./util/secrets";
 import { listenBaseReserveChange } from "./util/stellar";
 
 const demoQuery = `{
-  account(id: "GB6NVEN5HSUBKMYCE5ZOWSK5K23TBWRUQLZY3KNMXUZ3AQ2ESC4MY4AQ") {
+  account(id: "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H") {
     id
     sequenceNumber
     balances {
