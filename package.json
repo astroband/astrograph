@@ -18,7 +18,7 @@
     "@sentry/integrations": "^5.7.1",
     "@sentry/node": "^5.7.1",
     "apollo-datasource-rest": "^0.3.1",
-    "apollo-server": "^2.14.2",
+    "apollo-server": "^3.13.0",
     "axios": "^0.21.1",
     "bignumber.js": "^8.0.1",
     "bluebird": "^3.5.3",
@@ -38,7 +38,7 @@
     "progress": "^2.0.3",
     "retry": "^0.12.0",
     "squel": "^5.12.2",
-    "stellar-base": "^3.0.4",
+    "stellar-base": "^13.1.0",
     "typeorm": "^0.2.17",
     "typescript-memoize": "^1.0.0-alpha.3",
     "winston": "^3.0.0"
