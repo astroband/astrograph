@@ -18,6 +18,7 @@ export class Worker {
 
       setBaseReserve(header.baseReserve);
       await Publisher.publish(header, transactions);
+      await this.cursor.acknowledge();
       return true;
     }
 

@@ -54,9 +54,12 @@ export class Cursor {
       return null;
     }
 
-    this.seq += 1;
-    await Cursor.updateCursorInDatabase(this.seq);
-
     return header;
+  }
+
+  public async acknowledge(): Promise<void> {
+    const nextSeq = this.seq + 1;
+    await Cursor.updateCursorInDatabase(nextSeq);
+    this.seq = nextSeq;
   }
 }

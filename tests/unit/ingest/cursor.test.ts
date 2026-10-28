@@ -32,7 +32,12 @@ describe("nextLedger", () => {
       expect(nextLedger).toBeInstanceOf(LedgerHeader);
     });
 
-    it("increments sequence number", async () => {
+    it("keeps the sequence on the ledger until acknowledged", async () => {
+      expect(subject.current).toBe(currentSeq);
+    });
+
+    it("increments sequence after acknowledgement", async () => {
+      await subject.acknowledge();
       expect(subject.current).toBe(currentSeq + 1);
     });
   });
